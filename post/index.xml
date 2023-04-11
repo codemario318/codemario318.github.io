@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 10 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/db/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/db/</guid><description>&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/db/mysql_4_1.png"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 10 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1.png"
 width="780"
 height="802"
-srcset="https://codemario318.github.io/post/db/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/db/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 전체 구조"
 class="gallery-image"
@@ -103,10 +103,10 @@ MySQL 서버는 크게 &lt;strong>MySQL 엔진&lt;/strong>과 &lt;strong>스토�
 &lt;li>MyISAM: 사용자 스레드가 쓰기 작업까지 함께 처리하도록 설계되어, 일반적인 쿼리는 쓰기 버퍼링 기능을 사용할 수 없다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="메모리-할당-및-사용-구조">메모리 할당 및 사용 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/db/mysql_4_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3.png"
 width="640"
 height="423"
-srcset="https://codemario318.github.io/post/db/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/db/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 메모리 할당 구조"
 class="gallery-image"
@@ -197,10 +197,10 @@ data-flex-basis="363px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="쿼리-실행-구조">쿼리 실행 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/db/mysql_4_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6.png"
 width="411"
 height="302"
-srcset="https://codemario318.github.io/post/db/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/db/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="쿼리 실행 구조"
 class="gallery-image"
