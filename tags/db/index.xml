@@ -1,4 +1,76 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 13 Apr 2023 12:39:01 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(3)</title><link>https://codemario318.github.io/post/real_mysql_4_2_3/</link><pubDate>Thu, 13 Apr 2023 12:39:01 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_2_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(3)" />&lt;h2 id="double-write-buffer">Double Write Buffer&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 14 Apr 2023 15:52:19 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>4.3 MyISAM 스토리지 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_3/</link><pubDate>Fri, 14 Apr 2023 15:52:19 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/real_mysql.jpeg" alt="Featured image of post 4.3 MyISAM 스토리지 엔진 아키텍처" />&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam.png"
+width="1280"
+height="1077"
+srcset="https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MyISAM 스토리지 엔진 구조"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="285px"
+>&lt;/p>
+&lt;h2 id="키-캐시">키 캐시&lt;/h2>
+&lt;p>키 버퍼라고도 불리는 MyISAM의 키 캐시는 InnoDB의 버퍼풀과 비슷한 역할을 수행한다. 키 캐시는 인덱스만을 대상으로 작동하며, 인덱스의 디스크 쓰기 작업에 대해서만 부분적으로 버퍼링 역할을 한다.&lt;/p>
+&lt;blockquote>
+&lt;p>키 캐시 효율성 수식
+키 캐시 히트율 = 100 - (Key_reads / Key_read_requests * 100)&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;code>Key_reads&lt;/code>: 인덱스를 디스크에서 읽어들인 횟수를 저장하는 상태 변수&lt;/li>
+&lt;li>&lt;code>Key_read_requests&lt;/code>: 키 캐시로부터 인덱스를 읽은 횟수를 저장하는 상태변수&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">GLOBAL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Key%&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>메뉴얼에서는 키 캐시를 이용한 쿼리의 비율(Hit rate)을 99% 로 유지할 것을 권장하며, 99% 미만이라면 키 캐시를 조금 더 크게 설정하는 것이 좋다.&lt;/p>
+&lt;p>32비트 운영체제에서는 하나의 키 캐시에 4GB 이상 메모리 공간을 설정할 수 없고, 64비트 운영체제에서는 &lt;code>OS_PER_PROCESS_LIMIT&lt;/code> 값에 설정된 크기만큼의 메모리를 할당할 수 있다.&lt;/p>
+&lt;p>제한 값 이상의 키 캐시를 할당하고 싶다면 기본 키 캐시 이외에 별도 명ㅁ여된 키 캐시 공간을 설정해야 하며, 기본 키 캐시 공간을 설정하는 파라미터는 key_buffer_size다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">key_buffer_size = 4GB
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kbuf_board.key_buffer_size = 2GB
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kbuf_comment.key_buffer_size = 2GB
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 같이 설정하면 기본 키 캐시 4GB와 kbuf_board, kbuf_comment라는 이름의 키 캐시가 각각 2GB씩 생성된다.&lt;/p>
+&lt;p>기본 키 캐시 영역외 키 캐시 영역은 아무런 설정이 없다면 할당만 해두고 사용하지 않아 추가된 키 캐시는 어떤 인덱스를 캐시할지 MySQL에 알려야 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CACHE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">board&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">board&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">kbuf_board&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CACHE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">comment&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">comment&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">kbuf_comment&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="운영체제의-캐시-및-버퍼">운영체제의 캐시 및 버퍼&lt;/h3>
+&lt;p>MyISAM 테이블의 인덱스는 키 캐시를 이용해 디스크를 검색하지 않고도 빠르게 검색될 수 있으나, 디스크 데이터 I/O를 성능을 위한 캐시나 버퍼링 기능은 없다. 따라서 MyISAM 테이블의 데이터 읽기나 쓰기 작업은 항상 운영체제의 디스크 읽기 또는 쓰기 작업으로 요청된다.&lt;/p>
+&lt;p>운영체제의 캐시 공간은 남는 메모리를 사용하는 것이 기본 원칙이어서 남는 공간이 없다면 MyISAM 스토리지 엔진 데이터 I/O에 사용될 메모리를 확보할 수 없어 느려진다.&lt;/p>
+&lt;p>MyISAM이 주로 사용되는 MySQL에서 일반적으로 키 캐시는 최대 물리 메모리의 40% 이상을 넘지 않게 설정하고, 나머지 메모리 공간은 운영체제가 자체적은 파일 시스템을 위한 캐시 공간을 마련할 수 있게 해주는 것이 좋다.&lt;/p>
+&lt;h3 id="데이터-파일과-프라이머리-키인덱스-구조">데이터 파일과 프라이머리 키(인덱스) 구조&lt;/h3>
+&lt;p>InnoDB 스토리지 엔진을 사용하는 테이블은 프라이머리 키에 의해서 클러스터링되어 저장되지만, MyISAM 테이블은 프라이머리 키에 의한 클러스터링 없이 데이터 파일이 Heap 공간처럼 활용된다. (프라이머리 키 값과 무관하게 INSERT되는 순서대로 데이터 파일에 저장된다.)&lt;/p>
+&lt;p>MyISAM 테이블에 저장되는 레크드는 모두 ROWID라는 물리적인 주소값을 가지는데, 프라이머리 키와 세컨더리 인덱스는 모두 데이터 파일에 저장된 레코드의 ROWID 값을 포인터로 가진다.&lt;/p>
+&lt;p>ROWID는 두가지 방법으로 저장된다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>고정 길이 ROWID&lt;br>
+자주 사용되지는 않지만 MyISAM 테이블을 생성할 때 MAX_ROWS 옵션을 사용해 명시하면 MySQL 서버는 쵀대로 가질 수 있는 레코드가 한정된 테이블을 생성한다. 레코드 개수가 한정되면 MyISAM 테이블은 ROWID값으로 4바이트 정수를 사용하여 INSERT된 순번으로 ROWID를 사용한다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>가변 길이 ROWID&lt;br>
+MAX_ROWS 옵션을 사용하지 않으면 MyISAM 테이블의 ROWID는 최대 myisam_data_pointer_size 시스템 변수에 설정된 바이트 수 만큼에 공간을 사용할 수 있다. 기본값은 7이며 최소 2byte 부터 7byte 까지 가변적인 ROWID를 갖게 된다. 첫 바이트는 ROWID의 길이를 저장하는 용도로 사용되고 나머지 공간은 실제 ROWID를 저장하는데 사용한다. 가변적인 ROWID를 가지면 데이터 파일에서 레코드의 위치가 ROWID로 사용되어, 가변 길이 ROWID인 테이블일때 최대 크기 256TB(2**(8(7-1)))가질 수 있다.&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(3)</title><link>https://codemario318.github.io/post/real_mysql_4_2_3/</link><pubDate>Thu, 13 Apr 2023 12:39:01 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_2_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(3)" />&lt;h2 id="double-write-buffer">Double Write Buffer&lt;/h2>
 &lt;p>InnoDB 스토리지 엔진의 리두 로그는 공간 낭비를 막기 위해 페이지의 변경된 내용만 기록한다. 이로인해 더티 페이지를 디스크 파일로 플러시할 때 일부만 기록되는 문제가 발생하면 그 페이지의 내용은 복구할 수 없을 가능성이 있다.&lt;/p>
 &lt;p>이런 현상을 파셜 페이지 또는 톤 페이지라고 하는데, 하드웨어의 오작동이나 시스템의 비정상 종료 등으로 발생할 수 있다.&lt;/p>
 &lt;ul>
