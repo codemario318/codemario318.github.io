@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 14 Apr 2023 16:31:23 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>4.4 MySQL 로그 파일</title><link>https://codemario318.github.io/post/real_mysql_4_4/</link><pubDate>Fri, 14 Apr 2023 16:31:23 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_4/real_mysql.jpeg" alt="Featured image of post 4.4 MySQL 로그 파일" />&lt;p>MySQL 서버는 서버의 상태를 진단할 수 있는 많은 도구들을 지원하지만 이러한 기능은 많은 지식을 필요로 하는 경우가 많다. 로그 파일을 활용하면 MySQL 서버에 대해 깊은 지식이 없어도 서버의 상태나 부하를 일으키는 원인을 쉽게 찾아 해결할 수 있다.&lt;/p>
 &lt;h2 id="에러-로그-파일">에러 로그 파일&lt;/h2>
 &lt;p>MySQL이 실행되는 도중 발생하는 에러나 경고 메시지가 출력되는 로그 파일이다. MySQL 설정 파일(&lt;code>my.cnf&lt;/code>)에서 &lt;code>log_error&lt;/code>라는 이름의 파라미터로 정의된 경로에 생성되는데 설정 파일에 별도로 정의도지 않은 경우 데이터 디렉터리(&lt;code>datadir&lt;/code> 파라미터에 설정된 디렉터리)에 &lt;code>.err&lt;/code>라는 확장자가 붙은 파일로 생성된다.&lt;/p>
-&lt;h3 id="mysql이-시작하는-과정과-곤련된-정보성-및-에러-메시지">MySQL이 시작하는 과정과 곤련된 정보성 및 에러 메시지&lt;/h3>
+&lt;h2 id="mysql이-시작하는-과정과-곤련된-정보성-및-에러-메시지">MySQL이 시작하는 과정과 곤련된 정보성 및 에러 메시지&lt;/h2>
 &lt;p>MySQL 설정 파일을 변경하거나 데이터베이스가 비정상적으로 종료된 후 다시 시작하는 경우에는 반드시 MySQL 에러 로그 파일을 통해 설정된 변수의 이름이나 값이 명확하게 설정되고 의도한 대로 적용됐는지 확인해야 한다.&lt;/p>
 &lt;p>MySQL 서버가 정상적으로 기동했고(&lt;code>mysqld: ready for commections&lt;/code> 메시지 확인), 새로 변경하거나 추가된 파라미터에 대한 에러나 경고성 메시지가 없다면 정상적으로 적용된 것으로 판단하면 된다.&lt;/p>
 &lt;ul>
@@ -10,10 +10,10 @@
 &lt;/ul>
 &lt;h3 id="마지막으로-종료할-때-비정상적으로-종료된-경우-나타나는-트랜잭션-복구-메시지">마지막으로 종료할 때 비정상적으로 종료된 경우 나타나는 트랜잭션 복구 메시지&lt;/h3>
 &lt;p>InnoDB의 경우 MySQL 서버가 비정상적으로 종료됐다면 다시 시작되면서 완료하지 못한 트랜잭션을 정리하고 디스크에 기록되지 못한 데이터가 있다면 다시 기록하는데, 이 과정에서 간단한 메시지가 출력된다.&lt;/p>
-&lt;p>복구가 불가능한 경우 해당 에러메시지를 출력하고 MySQL은 다시 종료되며, 이 단계에서 발생하는 문제는 해결하기 어려운 문제점 일 때가 많고, innodb_force_recovery 파라미트를 설정하여 재시작 해야 할 수 있다.&lt;/p>
+&lt;p>복구가 불가능한 경우 해당 에러메시지를 출력하고 MySQL은 다시 종료되며, 이 단계에서 발생하는 문제는 해결하기 어려운 문제점 일 때가 많고, &lt;code>innodb_force_recovery&lt;/code> 파라미터를 설정하여 재시작 해야 할 수 있다.&lt;/p>
 &lt;h3 id="쿼리-처리-도중에-발생하는-문제에-대한-에러-메시지">쿼리 처리 도중에 발생하는 문제에 대한 에러 메시지&lt;/h3>
 &lt;p>쿼리 도중 발생하는 문제점은 사전 예방이 어려우며, 에러 로그 파일을 검토하는 과정에서 알게 된다.&lt;/p>
-&lt;p>쿼리 실행 도중 ㅂ라생한 에러나 복제에서 문제가 될 만한 쿼리에 대한 경고 메시지가 에러 로그에 기록되므로 자주 검토하는 것이 숨겨진 문제점을 해결하는데 많은 도움이 될 수 있다.&lt;/p>
+&lt;p>쿼리 실행 도중 발생한 에러나 복제에서 문제가 될 만한 쿼리에 대한 경고 메시지가 에러 로그에 기록되므로 자주 검토하는 것이 숨겨진 문제점을 해결하는데 많은 도움이 될 수 있다.&lt;/p>
 &lt;h3 id="비정상적으로-종료된-커넥션-메시지aborted-connection">비정상적으로 종료된 커넥션 메시지(Aborted connection)&lt;/h3>
 &lt;p>클라이언트 애플리케이션에서 정상적으로 접속 종료를 하지 못하고 프로그램이 종료된 경우 MySQL 서버의 에러 로그 파일에 이런 내용이 기록된다. (네트워크 문제로 인한 겨우 포함)&lt;/p>
 &lt;p>이런 메시지가 아주 많이 기록된다면 애플리케이션의 커넥션 종료 로직을 한번 검토해볼 필요가 있다.&lt;/p>
@@ -22,7 +22,7 @@
 &lt;p>InnoDB 테이블 모니터링이나 락 모니터링, 또는 엔진 상태를 조회하는 명령은 상대적으로 큰 메시지를 로그 파일에 기록한다.&lt;/p>
 &lt;p>InnoDB의 모니터링을 활성화 상태로 유지하는 경우에는 에러 로그 파일이 매우 커져서 파일 시스템의 공간을 많이 사용할 수 있으므로, 다시 비활성화하여 에러 로그 파일이 커지지 않게 만들어야 한다.&lt;/p>
 &lt;h3 id="mysql의-종료-메시지">MySQL의 종료 메시지&lt;/h3>
-&lt;p>가끔 MySQL이 아무도 모르게 종료돼 있거나 재시작 되는 경우가 있는데, 이러한 경우 에러 로그 파일에서 MySQL이 마지막으로 종료되면서 출력한 메시지를 확는 것이 서버가 종료된 이류를 확인하는 유일한 방법이다.&lt;/p>
+&lt;p>가끔 MySQL이 아무도 모르게 종료돼 있거나 재시작 되는 경우가 있는데, 이러한 경우 에러 로그 파일에서 MySQL이 마지막으로 종료되면서 출력한 메시지를 확는 것이 서버가 종료된 이유를 확인하는 유일한 방법이다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>Received SHOUTDOWN from user ...&lt;/code> 메시지: 특정 유저가 종료한 경우&lt;/li>
 &lt;li>없거나 스택 트레이스(16진수 주소값이 잔뜩 출력되는) 메시지: 세그멘테이션 폴트로 비정상 종료된 경우
@@ -32,7 +32,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="제너럴-쿼리-로그-파일제너럴-로그-파일-general-log">제너럴 쿼리 로그 파일(제너럴 로그 파일, General log)&lt;/h3>
+&lt;h2 id="제너럴-쿼리-로그-파일">제너럴 쿼리 로그 파일&lt;/h2>
 &lt;p>MySQL 서버에서 실행되는 쿼리 목륵을 검토하고 싶다면, 쿼리 로그를 활성화하여 실행 쿼리를 쿼리 로그 파일로 기록하게 한 다음, 해당 파일을 검토한다.&lt;/p>
 &lt;p>슬로우 쿼리 로그와는 다르게 제너럴 로그는 실행되기 전에 MySQL이 요청을 받으면 바로 기록하기 때문에 쿼리 실행 중에 에러가 발생해도 일단 로그 파일에 기록된다.&lt;/p>
 &lt;p>쿼리 로그 파일의 경로는 &lt;code>general_log_file&lt;/code> 파라미터에 설정되있으며, 쿼리 로그를 파일이 아닌 테이블에 저장하도록 설정할 수 있으므로 이 경우에는 테이블을 SQL로 조회해 검토해야 한다.&lt;/p>
@@ -44,7 +44,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">GLOBAL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">VARIABLES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;general_log_file&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="슬로우-쿼리-로그">슬로우 쿼리 로그&lt;/h3>
+&lt;/div>&lt;h2 id="슬로우-쿼리-로그">슬로우 쿼리 로그&lt;/h2>
 &lt;p>서비스 운영 중에 MySQL 서버의 전체적인 성능 저하를 검사하거나 정기적인 점검을 위한 튜닝이 필요할 때 어떤 쿼리가 문제인지를 판단하는데 많은 도움을 준다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>long_query_time&lt;/code>: 해당 시스템 변수에 설정한 시간 이상의 시간이 소요된 쿼리가 모두 기록된다.&lt;/li>
@@ -56,12 +56,12 @@
 &lt;/li>
 &lt;/ul>
 &lt;p>로그 파일의 분석이 완료되면 그 결과는 3개의 그룹으로 나뉘어 저장된다.&lt;/p>
-&lt;h4 id="슬로우-쿼리-통계">슬로우 쿼리 통계&lt;/h4>
+&lt;h3 id="슬로우-쿼리-통계">슬로우 쿼리 통계&lt;/h3>
 &lt;p>분석 결과의 최상단에 표시되며, 모든 쿼리를 대상으로 슬로우 쿼리 로그의 실행 시간(Exec time), 잠금 대기 시간(Lock time) 등에 대해 평균 및 최소/최대 값을 표시한다.&lt;/p>
-&lt;h4 id="실행-빈도-및-누적-실행-시간순-랭킹">실행 빈도 및 누적 실행 시간순 랭킹&lt;/h4>
+&lt;h3 id="실행-빈도-및-누적-실행-시간순-랭킹">실행 빈도 및 누적 실행 시간순 랭킹&lt;/h3>
 &lt;p>각 쿼리별로 응답 시간과 실행 횟수를 보여주는데, &lt;code>pt-query-digest&lt;/code> 명령 실행 시 &lt;code>--oorder-by&lt;/code>옵션으로 정렬 순서를 변경할 수 있다.&lt;/p>
-&lt;p>&lt;code>Query ID&lt;/code>는 실행된 쿼리 문장을 정규화(쿼리에 사용된 리터럴을 제거)해서 만들어지 ㄴ해시 값을 의미하는데, 같은 모양의 쿼리라면 동일한 Query ID를 가지게 된다.&lt;/p>
-&lt;h4 id="쿼리별-실행-횟수-및-누적-실행-시간-상세-정보">쿼리별 실행 횟수 및 누적 실행 시간 상세 정보&lt;/h4>
+&lt;p>&lt;code>Query ID&lt;/code>는 실행된 쿼리 문장을 정규화(쿼리에 사용된 리터럴을 제거)해서 만들어진 해시 값을 의미하는데, 같은 모양의 쿼리라면 동일한 &lt;code>Query ID&lt;/code>를 가지게 된다.&lt;/p>
+&lt;h3 id="쿼리별-실행-횟수-및-누적-실행-시간-상세-정보">쿼리별 실행 횟수 및 누적 실행 시간 상세 정보&lt;/h3>
 &lt;p>&lt;code>Query ID&lt;/code>별 쿼리를 쿼리 랭킹에 표시된 순서대로 자세한 내용을 보여준다. 랭킹별 쿼리에서는 대상 테이블에 대해 어떤 쿼리인지만을 표시하는데, 실제 상세한 쿼리 내용은 개별 쿼리의 정보를 확인해보면 된다.&lt;/p></description></item><item><title>4.3 MyISAM 스토리지 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_3/</link><pubDate>Fri, 14 Apr 2023 15:52:19 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/real_mysql.jpeg" alt="Featured image of post 4.3 MyISAM 스토리지 엔진 아키텍처" />&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam.png"
 width="1280"
 height="1077"
