@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQ on Mario Blog</title><link>https://codemario318.github.io/tags/mq/</link><description>Recent content in MQ on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 17 Apr 2023 19:42:33 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mq/index.xml" rel="self" type="application/rss+xml"/><item><title>메시징 시스템이란?</title><link>https://codemario318.github.io/post/messaging_system/</link><pubDate>Mon, 17 Apr 2023 19:42:33 +0900</pubDate><guid>https://codemario318.github.io/post/messaging_system/</guid><description>&lt;img src="https://codemario318.github.io/post/messaging_system/messaging_cover.png" alt="Featured image of post 메시징 시스템이란?" />&lt;h2 id="용어정리">용어정리&lt;/h2>
+&lt;ul>
+&lt;li>MOM (Message Oriented Middleware, 메시지 지향 미들웨어)
+&lt;ul>
+&lt;li>독립된 어플리케이션 간에 데이터를 주고받을 수 있도록 하는 시스템 디자인
+&lt;ul>
+&lt;li>함수 호출, 공유메모리 등이 방식이 아닌, 메시지 교환을 이용하는 중간 계층에 대한 인프라 아키텍쳐 개념&lt;/li>
+&lt;li>분산 컴퓨팅이 가능해지며, 서비스간의 결합성이 낮아짐&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지동기로 메시지를 전달하는 것이 특징&lt;/li>
+&lt;li>Queue, Broadcast, Multicast 등의 방식으로 메시지 전달&lt;/li>
+&lt;li>Pub/Sub 구조
+&lt;ul>
+&lt;li>메시지를 발행하는 Publisher(Producer), 메시지를 소비하는 Subscribe(Consumer)로 구성&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Message Broker
+&lt;ul>
+&lt;li>메시지처리 또는 메시지 수신자에게 메시지를 전달하는 시스템이며, 일반적으로 MOM 기반으로 구축됨&lt;/li>
+&lt;li>MQ (Message Queue, 메시지 큐)
+&lt;ul>
+&lt;li>Message bBroker와 MOM을 구현한 소프트웨어 (RabbitMQ, ActiveMQ, Kafka 등)&lt;/li>
+&lt;li>MOM은 메시지 전송 보장을 해야하므로 AMQP를 구현함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>AMQP (Advanced Message Queueing Protocol)
+&lt;ul>
+&lt;li>메시지를 안정적으로 주고박기 위한 인터넷 프로토콜&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>RabbitMQ, Kafka 등은 &lt;strong>AMQP를 구현한 MOM 시스템이다.&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="메시징-시스템이란">메시징 시스템이란?&lt;/h2>
+&lt;blockquote>
+&lt;p>로그 데이터, 이벤트 메시지 등 API로 호출할 떄 보내는 데이터들을 처리하는 시스템&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://codemario318.github.io/post/messaging_system/messaging_1.png"
+width="400"
+height="181"
+srcset="https://codemario318.github.io/post/messaging_system/messaging_1_hu53fb739e7356313ed742b3b702b5cc38_12763_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/messaging_system/messaging_1_hu53fb739e7356313ed742b3b702b5cc38_12763_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="530px"
+>&lt;/p>
+&lt;p>예를 들어, 다음과 같이 자동 메일을 발송 시스템이 있다고 가정하면,&lt;/p>
+&lt;ul>
+&lt;li>회원가입을 했을 때, 이메일을 발송하는 MemberService&lt;/li>
+&lt;li>주문완료가 되었을 때, 이메일을 발송하는 OrderService&lt;/li>
+&lt;li>메일을 실제 발송하는 MailService&lt;/li>
+&lt;/ul>
+&lt;p>이렇게 서비스가 분리되었을 때 프로세스는 다음과 같이 처리될 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>MemberService에서 회원가입, OrderService에서 주문완료 이벤트가 발생&lt;/li>
+&lt;li>Messaging Client로 메일 전송에 필요한 데이터( 받는/보내는 사람 이메일 주소, 메시지 제목/내용 등.. )를 API 호출&lt;/li>
+&lt;li>Messaging Client에서 MOM을 구현한 소프트웨어(ex. kafka)로 메시지를 생산&lt;/li>
+&lt;li>MailService에서 메시지가 존재하는지 구독하고 있다가 메시지가 존재하면 메시지를 소비&lt;/li>
+&lt;li>MailService에서 API 정보들을 통해 User에게 메일 발송&lt;/li>
+&lt;/ol>
+&lt;h2 id="장점">장점&lt;/h2>
+&lt;ul>
+&lt;li>서비스간의 결합성이 낮아지므로 각자의 비즈니스 로직에만 집중할 수 있다.&lt;/li>
+&lt;li>메시지 처리 방식은 Message Broker에 위임
+&lt;ul>
+&lt;li>각 서비스는 Client를 통해 메시지를 보내고 받기만 하면 됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>각 서비스는 비동기 방식으로 메시지를 보내기만 하면, Message Broker에서 순서 보장, 메시지 전송 보장 등을 처리&lt;/li>
+&lt;li>메시징 시스템이 잠깐 다운되어도 각 서비스에는 직접적인 영향을 미치지 않음&lt;/li>
+&lt;/ul>
+&lt;h2 id="단점">단점&lt;/h2>
+&lt;ul>
+&lt;li>Message Broker 구축, 예를 들면 kafka 클러스터 구축에 필요한 금전, 인적 자원에 대한 비용&lt;/li>
+&lt;li>비동기의 양면성 - 정말 메시지가 잘 전달되었는가?&lt;/li>
+&lt;li>함수호출, 공유 메모리 사용 방식보다 메시징 시스템을 사용했을 때 호출 구간이 늘어나므로 네트워크 비용 발생&lt;/li>
+&lt;/ul>
+&lt;h2 id="mom-메세지-지향-미들웨어message-oriented-middleware">MOM, 메세지 지향 미들웨어(Message-Oriented-Middleware)&lt;/h2>
+&lt;ul>
+&lt;li>미들웨어: 어플리케이션들을 연결해 이들이 서로 데이터를 교환할 수 있게 해주는 소프트웨어&lt;/li>
+&lt;li>메시지 지향(=메시징 시스템): 메시지 API를 통해 각 분산되어 있는 어플리케이션간의 다리 역할을 함으로써 데이터를 교환 할 수 있도록 하는 시스템&lt;/li>
+&lt;/ul>
+&lt;h3 id="메시지-지향-미들웨어란">메시지 지향 미들웨어란?&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/messaging_system/messaging_1.png"
+width="400"
+height="181"
+srcset="https://codemario318.github.io/post/messaging_system/messaging_1_hu53fb739e7356313ed742b3b702b5cc38_12763_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/messaging_system/messaging_1_hu53fb739e7356313ed742b3b702b5cc38_12763_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="530px"
+>&lt;/p>
+&lt;p>메시지를 통해 여러 분산되어 있는 시스템 간의 Connector 역할로 결합성을 낮추고, 이들이 서로 &lt;strong>실시간 비동기식 데이터&lt;/strong>를 교환할 수 있도록 하는 소프트웨어&lt;/p>
+&lt;h3 id="message-queue-기반-패턴">Message Queue 기반 패턴&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/messaging_system/messaging_2.png"
+width="976"
+height="256"
+srcset="https://codemario318.github.io/post/messaging_system/messaging_2_hu622ff7574f5df87fefb41f7d9aad0875_15158_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/messaging_system/messaging_2_hu622ff7574f5df87fefb41f7d9aad0875_15158_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="381"
+data-flex-basis="915px"
+>&lt;/p>
+&lt;p>메시지 대기열 패턴은 일종의 지점 간(peer to peer) 메시징 시스템이다. Queue 대기열의 메시지는 Consumer가 소비하면 지워지는 형태&lt;/p>
+&lt;p>소비하면 지워지는 형태라는 의미는 Producer 서버가 메시지를 Queue에 보내고 서버가 다운이 되도 Consumer가 소비하지 않았다면 Queue 대기열에 데이터가 존재한다는 걸 의미한다.&lt;/p>
+&lt;h3 id="발행publish-구독subscribe-메시지-패턴">발행(Publish)-구독(Subscribe) 메시지 패턴&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/messaging_system/messaging_3.png"
+width="1023"
+height="240"
+srcset="https://codemario318.github.io/post/messaging_system/messaging_3_hu67aace2a43e43583798959e51b12e062_18305_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/messaging_system/messaging_3_hu67aace2a43e43583798959e51b12e062_18305_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="426"
+data-flex-basis="1023px"
+>&lt;/p>
+&lt;p>메시지 큐와 마찬가지로 메시지를 생산하는 Producer와 메시지를 소비하는 Consumer로 구성되어 있다.&lt;/p>
+&lt;p>차이점은 여러 소비자가 하나의 주제에서 각 메시지를 수신할 수 있다는 점. 또한 모든 Consumer가 메시지를 사용하는 경우에만 메시지가 대기열에서 지워진다.&lt;/p>
+&lt;blockquote>
+&lt;p>kafka와 같은 메시징 시스템에는 메시지가 대기열에 있어야 하는 기간을 지정한 보존 정책이 있다. 따라서 메시지는 모든 Consumer가 소비하더라도 지정된 기간 동안 대기열에 사용할 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="언제-쓰이는가">언제 쓰이는가?&lt;/h3>
+&lt;ul>
+&lt;li>분산 시스템
+&lt;ul>
+&lt;li>여러 컴퓨터를 분산시켜 네트워크를 연결하여 데이터들을 나눠서 처리하면 서버의 과부하를 분산할 수 있으며, 성는개선과 장애요소를 최소화하기 위해 분산 시스템을 사용함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="과거-분산-시스템의-단점과-웹-api-통신의-한계">과거 분산 시스템의 단점과 웹 API 통신의 한계&lt;/h3>
+&lt;h4 id="과거-분산시스템의-단점">과거 분산시스템의 단점&lt;/h4>
+&lt;p>수많은 데이터를 처리하기 위하여 분산 시스템을 운영하였지만, 시스템이 거대해질수록 분산 시스템의 설계도의 복잡성 문제가 발생한다. 하나의 응용프로그램이 변경되면, 다른 응용프로그램에도 영향을 미쳐 분산 시스템 간의 결합도가 강한 단점을 가지고 있었다.&lt;/p>
+&lt;h4 id="웹-api-통신의-특성">웹 API 통신의 특성&lt;/h4>
+&lt;ul>
+&lt;li>MSA를 사용한 분산 시스템은 웹 API 서버로 요청 시 응답을 기다려야 한다.&lt;/li>
+&lt;li>여러 분산되어있는 서비스 간에는 실시간으로 비동기식으로 데이터를 처리해야 하기 떄문에 웹 API로도 비동기식 구현이 가능하지만 순서가 보장되지 않는다는 특성이 있다.&lt;/li>
+&lt;li>메시지를 보내는 A어플리케이션은 메시지를 보낼 때 B라는 어플리케이션의 목적지(도착점)을 알아야 통신할 수 있다.
+&lt;ul>
+&lt;li>두 어플리케이션간 불필요한 결합도가 발생되고, 응답을 취하는 B어플리케이션이 서버 장애시 요청되었던 데이터 때문에 A어플리케이션에게도 장애가 전파될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="메시징-지향-미들웨어의-필요성">메시징 지향 미들웨어의 필요성&lt;/h3>
+&lt;ul>
+&lt;li>메시지 API는 비동기 프로토콜을 지원하며, 메시지 순서를 보장합니다.&lt;/li>
+&lt;li>메시지가 대기열에 전달되면, 응답을 즉시 할 필요가 없다.
+&lt;ul>
+&lt;li>메시지 대기열에 전달 된 상황이라면 메시지는 시스템에 보존되어 있어, 다른 어플리케이션간의 의존성이 낮게 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="message-broker">Message Broker&lt;/h2>
+&lt;blockquote>
+&lt;p>송신자와 수신자 사이에서 메시지의 전달을 중재하는 컴퓨터 프로그램 모듈&lt;/p>
+&lt;/blockquote>
+&lt;p>메시지 브로커는 정형화된 메시지의 교환을 통해 어플리케이션간의 소통이 이뤚디는 네트워크 엘리먼드이다.&lt;/p>
+&lt;h3 id="목적">목적&lt;/h3>
+&lt;p>메시지의 유효성, 정송, 라우팅을 위한 아키텍처 패턴&lt;/p>
+&lt;ul>
+&lt;li>어플리케이션 사이의 커뮤니케이션 중재&lt;/li>
+&lt;li>어플리케이션간의 메시지 전달을 위한 상호 인식(mutal awareness)를 줄여 어플리케이션간의 결합성을 낮춘다(decoupling)&lt;/li>
+&lt;/ul>
+&lt;h3 id="기능">기능&lt;/h3>
+&lt;ul>
+&lt;li>엔드 포인트 분리&lt;/li>
+&lt;li>NFR(non-functional requirement) 충조&lt;/li>
+&lt;li>중재함수 (intermediary function)의 간편한 재사용&lt;/li>
+&lt;li>하나이상의 목적지로의 메시지 라우팅&lt;/li>
+&lt;li>메시지의 형태 변형&lt;/li>
+&lt;li>메시지를 수집하여 여러 메시지로 분해하고 대상으로 보내 응답을 하나의 메시지로 재구성하여 사용자에게 반환&lt;/li>
+&lt;li>메시지 양 증가 또는 저장을 위한 외부 저장소와 상호작용&lt;/li>
+&lt;li>데이터 검색을 위한 웹 서비스 호출&lt;/li>
+&lt;li>이벤트 또는 에러의 응담&lt;/li>
+&lt;li>발행-구독 패턴을 활용한 컨텐츠와 토픽 기반 메시지 라우팅 제공&lt;/li>
+&lt;/ul>
+&lt;h3 id="설계">설계&lt;/h3>
+&lt;ul>
+&lt;li>허브 앤 스포크(hub and spoke)&lt;br>
+중앙 서버가 통합 서비스를 제공하는 메커니즘으로 작동&lt;/li>
+&lt;li>메시지 버스(message bus)&lt;br>
+메시지 브로커가 버스에서 작동하는 통신 백본 또는 분산 서비스&lt;/li>
+&lt;/ul></description></item></channel></rss>
