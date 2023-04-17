@@ -1,4 +1,218 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 17 Apr 2023 19:10:21 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Nginx VS Apache</title><link>https://codemario318.github.io/post/nginx_vs_apache/</link><pubDate>Mon, 17 Apr 2023 19:10:21 +0900</pubDate><guid>https://codemario318.github.io/post/nginx_vs_apache/</guid><description>&lt;img src="https://codemario318.github.io/post/nginx_vs_apache/web_cover.jpeg" alt="Featured image of post Nginx VS Apache" />&lt;h2 id="apache">Apache&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 17 Apr 2023 19:24:48 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>NoSQL</title><link>https://codemario318.github.io/post/nosql/</link><pubDate>Mon, 17 Apr 2023 19:24:48 +0900</pubDate><guid>https://codemario318.github.io/post/nosql/</guid><description>&lt;img src="https://codemario318.github.io/post/nosql/nosql_cover.png" alt="Featured image of post NoSQL" />&lt;p>Not Only SQL: SQL만을 사용하지 않는 데이터베이스 관리 시스템을 지칭하는 단어.
+&lt;strong>&amp;lsquo;데이터를 저장하는 데에는 SQL 외에 다른 방법들도 있다.&amp;rsquo;&lt;/strong>&lt;/p>
+&lt;h2 id="정의">정의&lt;/h2>
+&lt;p>NoSQL에 내려진 구체적인 정의는 없으나 공통적인 성향을 가지고 있다.&lt;/p>
+&lt;ul>
+&lt;li>대부분 클러스터에서 실행할 목적으로 만들어졌기 때문에 관계형 모델을 사용하지 않는다.&lt;/li>
+&lt;li>오픈 소스이다.&lt;/li>
+&lt;li>스키마 없이 동작하며, 구조에 대한 정의를 변경할 필요 없이 데이터베이스 레코드에 자유롭게 필드를 추가할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>21세기 초반에 개발 된 SQL을 사용하지 않는 Schema-less 데이터베이스&lt;/p>
+&lt;blockquote>
+&lt;p>클러스터&lt;br>
+저렴한 상용 제품 여러 대를 조합하여 더 빠르고 안정적인 시스템을 목표로 만들어진 방법&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="등장배경">등장배경&lt;/h2>
+&lt;p>여러 대의 컴퓨터에 데이터를 분산 저장하는 것을 목표로 등장했다.&lt;/p>
+&lt;p>기존에는 안정적인 데이터 관리가 가장 중요했기 때문에, 트랙잭션을 통한 관리가 가능한 RDBMS가 많이 이용되었지만 웹 2.0 환경과 빅데이터가 등장하면서 RDBMS는 &lt;strong>데이터와 트래픽 양이 기하급수적으로 증가&lt;/strong>함에 따라 한 대에서 실행되도록 설계된 RDBMS를 사용하는 데 필요한 &lt;strong>비용 증가 이슈&lt;/strong>가 생겨났다.&lt;/p>
+&lt;p>NoSQL은 데이터의 일관성을 약간 포기한 대신 여러 대의 컴퓨터에 데이터를 분산하여 저장하는 것을 목표로 등장하였고, NoSQL의 등장으로 작고 값싼 장비 여러 대로 대량의 데이터와 컴퓨팅 부하를 처리하는 것이 가능하게 되었다.&lt;/p>
+&lt;h2 id="특징">특징&lt;/h2>
+&lt;ol>
+&lt;li>일관성과 확장성 사이의 Trade-off&lt;br>
+일관성이 데이터베이스의 절대적인 요소가 아님을 주장하는 움직임이 생기기 시작했다.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>다수가 동시에 읽고 쓰는 상황에서의 성능 향상을 위해서.&lt;/li>
+&lt;li>분산 환경에서 노드들이 잘 작동하고 있음에도, 시스템의 일부가 고장나면 데이터베이스를 사용할 수 없게 되는 문제를 해결하기 위해서.&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>분산 저장&lt;br>
+데이터와 트래픽이 증가함에 따라 기존의 장비로는 원할한 데이터의 처리가 어려워졌다.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>이를 해결하기 위한 방법으로 장비의 성능을 키우는 수직적 확장과 처리하는 장비 수를 늘리는 수평적 확장이 있다. 수직적 확장은 큰 비용적인 문제가 발생하므로 수평적 확장을 고려했지만, &lt;strong>RDBMS가 클러스터 상에서 효율적으로 동작하도록 설계되지 않았다&lt;/strong>.&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>샤딩(Sharding)&lt;br>
+샤드키를 기준으로 하나의 테이블을 수평 분할하여 서로 다른 클러스터에 분산 저장하고 질의할 수 있는 기법.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>RDBMS에서도 사용 가능하지만 어플리케이션 레벨에서 모든 샤딩을 제어해야 한다.(어떤 데이터를 어느 클러스터에서 처리해야 하는지 등) 또한 여러 샤드에 걸치는 쿼리나 참조 정합성, 트랜잭션, 일관성 문제가 발생할 수 있다.&lt;/li>
+&lt;li>분산 저장을 지원하는 NoSQL 데이터베이스의 경후, 집합-지향(Aggregtae-oriented) 모델을 사용하여 이러한 문제를 해결한다. 연관된 데이터들이 함께 분산되므로, 관계형 모델에서처럼 복잡한 제어가 필요하지 않게 된다.&lt;/li>
+&lt;/ul>
+&lt;ol start="4">
+&lt;li>데이터 일치&lt;br>
+RDBMS에서 관계형 튜플 안의 값은 단순해야 하며 중첩된 레코드나 리스트 등 다른 구조를 포함할 수 없느 반면, 메모리 내 데이터 구조에서는 이런 제약이 없어 훨씬 복잡한 구조를 사용한다.(리스트, 딕셔너리, 중첩된 객체 구조)&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>그 결과 복잡한 메모리내 데이터 구조를 데이터베이스에 저장하려면 먼저 관계형 표현으로 변환해야 한다. (ORM 프레임워크등을 이용)&lt;/li>
+&lt;li>NoSQL은 메모리 내의 데이터가 어떤 구조이든지 상관하지 않고 하나의 Aggregation으로 취급하여 저장하기 때문에 자유롭다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>Impedance mismatch&lt;/strong>&lt;br>
+관계형 모델과 메모리 내 데이터 구조 간의 불일치&lt;/p>
+&lt;/blockquote>
+&lt;ol start="5">
+&lt;li>Schema-less&lt;br>
+NoSQL 데이터베이스의 공통적인 특징은 스키마 없이 동작한다는 점이다.&lt;/li>
+&lt;/ol>
+&lt;h2 id="장점">장점&lt;/h2>
+&lt;ul>
+&lt;li>데이터 구조를 미리 정의할 필요가 없다.&lt;/li>
+&lt;li>시간이 지나더라도 언제든지 바꿀 수 있기 때문에 비형식적인 데이터를 저장하는 데 용이하다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="단점">단점&lt;/h2>
+&lt;ul>
+&lt;li>단일 값에 대한 데이터 타입에서 불일치가 발생할 수 있다.
+&lt;ul>
+&lt;li>데이터베이스가 스키마를 직접 관리하지 않는 것을 의미할 뿐, 데이터 타입에 따른 암묵적인 스키마는 여전히 존재하기 때문&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="종류">종류&lt;/h2>
+&lt;p>네 가지 모델로 나눌 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>key-value&lt;/li>
+&lt;li>Document&lt;/li>
+&lt;li>Column-family&lt;/li>
+&lt;li>Graph&lt;/li>
+&lt;/ul>
+&lt;p>이 중 그래프 모델을 제외한 나머지 세 모델은 집합-지향(Aggregate-orented)모델이다.&lt;/p>
+&lt;h3 id="집합-지향-agregate-orented-모델">집합-지향 (Agregate-orented) 모델&lt;/h3>
+&lt;p>집합 지향 데이터베이스는 집합 자료구조로 이루어져 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>집합&lt;/strong>&lt;br>
+연산의 한 단위로 취급되는 연관된 객체들의 집합.&lt;/p>
+&lt;/blockquote>
+&lt;p>관계형 모델처람 하나의 엔티티에 대한 ACID 트랜잭션을 지원하지는 않지만, 하나의 집합에 대한 연산에서는 트랜잭션을 지원한다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>장점&lt;/p>
+&lt;ul>
+&lt;li>집합 지향 데이터베이스는 여러 대의 클러스터로 이루어진 시스템에서 사용하기 적합하다.
+&lt;ul>
+&lt;li>수평적 확장이 용이하다. 이는 관계형 데이터베이스와는 달리 연관된 데이터들이 함께 움직이기 떄문이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메모리 내의 자료구조와 집합 간 데이터가 잘 일치하므로, 관계형 데이터베이스처럼 객체-관계 매핑 프레임워크가 필요하지 않다.&lt;/li>
+&lt;li>데이터의 검색도 아주 쉬운편으로, key나 ID를 사용하면 쉽게 집합 레코드를 찾아낼 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>단점&lt;/p>
+&lt;ul>
+&lt;li>집합 지향 데이터베이스는 조인 연산이 불가능
+&lt;ul>
+&lt;li>MongoDB나 Cassandra등의 데이터베이스에서는 맵리듀스(MapReduce) 기능을 제공함으로써 조인과 유사한 연산을 가능하도록 설계했지만 사용법이 어렵고 Hadoop의 맵 리듀스에 비하면 속도도 매우 느리다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="key-value">Key-Value&lt;/h3>
+&lt;p>키 값 저장소는 가장 단순한 형태의 NoSQL&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>장점&lt;/p>
+&lt;ul>
+&lt;li>수평적 확장이 용이하다.&lt;/li>
+&lt;li>아주 간단한 API만을 제공하기 떄문에 배우는 것이 어렵지 않다.&lt;/li>
+&lt;li>간단한 API를 제공하는 만큼 질의의 속도가 굉장히 빠른편&lt;/li>
+&lt;li>어떠한 형태의 데이터라도 담을 수 있다.
+&lt;ul>
+&lt;li>이미지나 비디오도 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>단점&lt;/p>
+&lt;ul>
+&lt;li>값의 내용을 사용한 쿼리가 불가능하다.
+&lt;ul>
+&lt;li>키를 사용해 값을 읽어들인 뒤, 어플리케이션 레벨에서 적절히 처리해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="document">Document&lt;/h3>
+&lt;p>데이터가 키와 문서 형태로 저장되는 키-값 모델의 개선 형태&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>키-값 모델과의 차이점&lt;/strong>&lt;br>
+Value가 계층적인 형태인 도큐먼트로 저장된다. 객체지향의 객체와 유사하며, 하나의 단위로 취급되어 저장된다.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>장점&lt;/p>
+&lt;ul>
+&lt;li>하나의 객체를 여러 테이블에 나눠 저장할 필요가 없다.&lt;/li>
+&lt;li>도큐먼트 내의 item을 이용한 쿼리가 가능하다.
+&lt;ul>
+&lt;li>단, Xquery나 다른 도큐먼트 질의 언어가 필요&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>객체-관계 매핑이 필요하지 않다.
+&lt;ul>
+&lt;li>객체를 도큐먼트의 형태로 바로 저장 가능하기 떄문&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>검색에 최적화 되어있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>단점&lt;/p>
+&lt;ul>
+&lt;li>사용이 번거롭고 쿼리가 SQL과 다르다.&lt;/li>
+&lt;li>질의의 결과가 JSON이나 XML 형태로 출력되기 때문에 사용방법이 RDBMS와 다르다.&lt;/li>
+&lt;li>질의 언어가 SQL과 다르기 떄문에 사용에 익숙해지기까지 다소 어려움이 있을 수 있음.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="종류-1">종류&lt;/h2>
+&lt;h3 id="mongodb">MongoDB&lt;/h3>
+&lt;p>도큐먼트 지향 데이터 베이스이다.&lt;/p>
+&lt;ul>
+&lt;li>bson 데이터 구조로 저장&lt;/li>
+&lt;li>문서를 기본 저장 단위로 이용하면서 내장 문서와 배열을 이용하여 복잡한 계층구조를 하나의 레코드로 표현한다.&lt;/li>
+&lt;li>스키마가 없다.&lt;/li>
+&lt;li>필드 추가 제거는 자유로우며 필요할 때 마다 자유자재로 변경 가능하다.&lt;/li>
+&lt;li>RDBMS 보다 매우 빠르다.&lt;/li>
+&lt;li>조인과 트랜잭션을 지원하지 않으며 여러 제약조건에 대한 처리도 없다.
+→버전에 따라 다름&lt;/li>
+&lt;/ul>
+&lt;h3 id="redisremote-dictionary-server">Redis(REmote DIctionary Server)&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/nosql/redis_1.png"
+width="640"
+height="533"
+srcset="https://codemario318.github.io/post/nosql/redis_1_hufb6bac17b4ca4009d276a8b15380e506_182417_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/nosql/redis_1_hufb6bac17b4ca4009d276a8b15380e506_182417_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Redis 구조"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>메모리 기반의 &amp;ldquo;Key-Value&amp;rdquo; 구조 데이터 관리 시스템이며, 모든 데이터를 메모리에 저장하고 조회하기에 빠른 Read, Write 속도를 보장하는 비 관계형 데이터베이스이다.&lt;/p>
+&lt;ul>
+&lt;li>String, set, Sorted Set, Hash, List 데이터 형식을 지원한다.&lt;/li>
+&lt;/ul>
+&lt;p>Redis는 빠른 오픈 소스인 메모리 키-값 데이터 구조 스토어이며, 다양한 인메모리 데이터 구조 집합을 제공하므로 사용자 정의 어플리케이션을 손쉽게 생성 할 수 있다.&lt;/p>
+&lt;h4 id="특징-1">특징&lt;/h4>
+&lt;ul>
+&lt;li>
+&lt;p>영속성을 지원하는 인메모리 데이터 저장소&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>읽기 성능 증대를 위한 서버측 복제 지원&lt;/p>
+&lt;ul>
+&lt;li>Redis가 실행중인 서버가 충돌하는 경우 장애 조치 처리와 함께 더 높은 읽기 성능을 지원하기 위해 슬레이브가 마스터에 연결하고 전체 데이터베이스의 초기 복사본을 받는 마스터/ 슬레이브 복제를 지원.
+마스터에서 쓰기가 수행되면 슬레이브 데이터 세트를 실시간으로 업데이트 하기 위해 연결된 모든 슬레이브로 전송됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>쓰기 성능 증대를 위한 클라이언트&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>Nginx VS Apache</title><link>https://codemario318.github.io/post/nginx_vs_apache/</link><pubDate>Mon, 17 Apr 2023 19:10:21 +0900</pubDate><guid>https://codemario318.github.io/post/nginx_vs_apache/</guid><description>&lt;img src="https://codemario318.github.io/post/nginx_vs_apache/web_cover.jpeg" alt="Featured image of post Nginx VS Apache" />&lt;h2 id="apache">Apache&lt;/h2>
 &lt;p>아파치는 클라이언트 요청을 받으면 MPM(Multi Processing Module : 다중처리모듈) 방식으로 처리한다.&lt;/p>
 &lt;h3 id="스레드프로세스-기반-구조-동작">스레드/프로세스 기반 구조 동작&lt;/h3>
 &lt;p>&lt;img src="https://codemario318.github.io/post/nginx_vs_apache/apache_1.png"
