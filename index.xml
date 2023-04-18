@@ -1,4 +1,86 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 19:48:26 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>랜더링 업데이트 최적화</title><link>https://codemario318.github.io/post/rendering_optimize/</link><pubDate>Tue, 18 Apr 2023 19:48:26 +0900</pubDate><guid>https://codemario318.github.io/post/rendering_optimize/</guid><description>&lt;img src="https://codemario318.github.io/post/rendering_optimize/browser_cover.jpeg" alt="Featured image of post 랜더링 업데이트 최적화" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 20:05:16 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Vue3</title><link>https://codemario318.github.io/post/vue3/</link><pubDate>Tue, 18 Apr 2023 20:05:16 +0900</pubDate><guid>https://codemario318.github.io/post/vue3/</guid><description>&lt;img src="https://codemario318.github.io/post/vue3/vue3_cover.webp" alt="Featured image of post Vue3" />&lt;h2 id="vue">Vue?&lt;/h2>
+&lt;p>개발자에게 더 쉽고, 가볍고, 누구나 빨리 배울 수 있는 접근성이 뛰어난 프레임워크를 목표로 개발됨&lt;/p>
+&lt;ul>
+&lt;li>기존 HTML 마크업 기반의 템플릿을 그대로 활용&lt;/li>
+&lt;li>CSS를 작성하는 스타일도 기존 문법을 그대로 따름&lt;/li>
+&lt;li>라우팅, 상태 관리, 빌드 도구 등 공식적으로 지원하는 라이브러리와 패키지를 통해 배포하여 복잡한 로직의 프론트엔드 개발을 비교적 단순하고 쉽게 만듦&lt;/li>
+&lt;/ul>
+&lt;p>React, Anguler에 비해서 처음 접하는 사용자들이 진입하기에 부담스럽지 않음&lt;/p>
+&lt;h2 id="vue3-개선점">Vue3 개선점&lt;/h2>
+&lt;h3 id="가상돔-최적화">가상돔 최적화&lt;/h3>
+&lt;p>&lt;strong>AS-IS&lt;/strong>&lt;/p>
+&lt;p>기존 Vue의 렌더링을 위한 가상 DOM 설계는 HTML 기반의 템플릿을 제공하고 이 템플릿 구문을 가상 DOM 트리로 반환한 후 실제로 DOM의 어떤 영역이 업데이트 되어야 하는지 재귀적으로 탐색하는 방식&lt;/p>
+&lt;ul>
+&lt;li>이러한 방식은 변경사항 확인을 위해 DOM 트리를 완전 탐색을 하게 되므로, 작은 변경도 트리 전체를 확인하게 되어 비효율적임&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>TO-BE&lt;/strong>&lt;/p>
+&lt;p>불필요한 탐색을 위한 코드를 제거하여 렌더링 성능을 향상시켜 가상돔 최적화를 진행함&lt;/p>
+&lt;ol>
+&lt;li>탬플릿 구문에서 정적 요소와 동적 요소를 구분하여 트리를 탐색할 때 변경이 발생하는 동적 요소만 탐색할 수 있게 변경&lt;/li>
+&lt;li>렌더링 시 객체가 여러 번 생성되는 것을 방지하기 위해 컴파일러가 미리 템플릿 구문 내에서 정적 요소, 서브 트리, 데이터 객체 등을 탐지해 렌더러 함수 밖으로 호이스팅함&lt;/li>
+&lt;li>컴파일러가 미리 템플릿 구문 내에서 동적 바인딩 요소에 대해 플래그를 생성함
+&lt;ul>
+&lt;li>특정 요소가 동적 클래스 바인딩을 가지고 있고 정적인 값이 지정된 속성을 갖고 있다면 클래스만 처리하면 되므로, 컴파일러가 미리 생성해둔 플래그로 필요한 부분만 처리하여 렌더링 속도 향상&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="트리쉐이킹-강화">트리쉐이킹 강화&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/vue3/vue3_1.jpg"
+width="844"
+height="185"
+srcset="https://codemario318.github.io/post/vue3/vue3_1_hu0864643fa8eec5604bc841ee767cee36_67113_480x0_resize_q75_box.jpg 480w, https://codemario318.github.io/post/vue3/vue3_1_hu0864643fa8eec5604bc841ee767cee36_67113_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="456"
+data-flex-basis="1094px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>트리쉐이킹이란?&lt;/strong>&lt;br>
+나무를 흔들어 잎을 떨어트리듯 모듈을 번들링하는 과정에서 사용하지 않는 코드를 제거하여 파일 크기를 줄이는 최적화 방안&lt;/p>
+&lt;/blockquote>
+&lt;p>Vue3는 템플릿 컴파일러가 실제 사용하는 코드만 임포트 하도록 하였음.&lt;/p>
+&lt;p>양방향 데이터 바인딩을 지원하는 v-model 디렉티브와 같은 대부분의 사용자 정의 기능에서 트리쉐이킹이 가능했는데, 이를 강화하여 번들 크기를 절반 이상으로 대폭 줄일 수 있음&lt;/p>
+&lt;h3 id="compoistion-api">Compoistion API&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/vue3/vue3_2.jpg"
+width="844"
+height="403"
+srcset="https://codemario318.github.io/post/vue3/vue3_2_hu92b804dcb27f035654d81ef49a2b6939_38490_480x0_resize_q75_box.jpg 480w, https://codemario318.github.io/post/vue3/vue3_2_hu92b804dcb27f035654d81ef49a2b6939_38490_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="502px"
+>&lt;/p>
+&lt;p>&lt;strong>AS-IS&lt;/strong>&lt;/p>
+&lt;p>기존 Vue에서 하나의 컴포넌트에 여러 기능이 포함되면, 기능별로 데이터영역, 메소드 영역, 컴퓨티드 영역, 라이프 사이클 훅, 와치 등 많은 로직이 추가되고, 이러한 기능 별로 분리된 코드들이 각각 기능에 맞는 메서드에 포함되게 되어 필연적으로 섞이게 됨.&lt;/p>
+&lt;p>이에 따라 여러 기능이 활용될수록 코드는 커지며 복잡도가 증가함&lt;/p>
+&lt;p>&lt;strong>TO-BE&lt;/strong>&lt;/p>
+&lt;p>컴포지션 API는 모든 코드를 독립적으로 정의할 수 있다. 각 기능을 함수로 묶어 모듈화 하기 때문에 특정 기능의 유지 보수를 위해 해당 기능을 수행하는 함수만 확인하면 된다.&lt;/p>
+&lt;h3 id="코드-재사용">코드 재사용&lt;/h3>
+&lt;p>&lt;strong>AS-IS&lt;/strong>&lt;/p>
+&lt;p>기존 Vue 에서도 mixin, slot 등으로 컴포넌트 코드를 재사용 할 수 있었으나, 믹스인은 한계가 존재했음&lt;/p>
+&lt;ol>
+&lt;li>프로젝트가 커져 믹스인을 다중으로 상속하게 되면 이름 충돌로 인해 컨벤션 룰이 필요했음&lt;/li>
+&lt;li>매개변수를 믹스인을 통해 전달할 수 없어 유연성이 떨어짐&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>TO-BE&lt;/strong>&lt;/p>
+&lt;p>컴포지션 API를 사용하면 인스턴스의 특정 기능 단위로 모듈화된 로직을 여러 컴포넌트에서 재사용 할 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>mixin?&lt;/strong>&lt;br>
+Vue 컴포넌트에 재사용 가능한 기능을 배포하는 유연한 방법. mixin 객체는 모든 구성요서 옵션을 포함할 수 있으며, 컴포넌트에 mixin을 사용하면 해당 mixin의 모든 옵션이 컴포넌트의 고유 옵션에 “혼합”됨&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="그-외-주요-변화">그 외 주요 변화&lt;/h2>
+&lt;h3 id="텔레포트">텔레포트&lt;/h3>
+&lt;p>리엑트에서 기본으로 제공하는 포털과 유사한 기능. vue가 기존에 Portal-Vue 플러그인을 통해 제공하고 있었던 기능.&lt;/p>
+&lt;p>모달이나 알림 등과 같은 요소를 렌더링하려는 위치가 템플릿 구문이 속하는 컴포넌트와 다른 컴포넌트에 존재할 때, 다른 태그 위치로 모달의 위치를 조정하는 것 처럼 보이게 만드는 것을 CSS를 통해 해결하기 번거롭기 때문에, 보통 모달이 포함된 컴포넌트를 하나 더 만들어 컴포넌트의 구조를 변경하는 방식으로 구현되었음.&lt;/p>
+&lt;p>vue3는 텔레포트를 사용하여 모달 컴포넌트를 분리하지 않고도 &lt;!-- raw HTML omitted --> 내부의 HTML을 특정 태그로 옮겨 렌더링 할 수 있게 되었음&lt;/p>
+&lt;h3 id="서스펜스">서스펜스&lt;/h3>
+&lt;p>서스팬스 컴포넌트는 리액트가 지원하던 컴포넌트 종류 중 하나로, 컴포넌트 내에 있는 조건인 Async 구문이 충족되지 않으면 조건이 충족될 때까지 템플릿 내에 Fallback 구문을 렌더링함.&lt;/p>
+&lt;p>컴포지션 API를 통해 setup() 함수 내에서 외부 API에 접근해 데이터를 가져오는 비동기 작업을 수행하면 데이터를 모두 가져올 때까지 로딩 표시를 해야 할 수 있다. 이럴 때 서스펜스를 사용해 컴포넌트를 감싸면 대체할 템플릿 구문을 렌더링 할 수 있다.&lt;/p>
+&lt;p>데이터를 가져오는 도중 오류가 발생하면 Vue3의 새로운 라이프사이클 훅인 OnErrorCaptured를 제공하여, 에러에 대한 처리 구문을 Fallback 구문 대신 표시할 수 있다.&lt;/p>
+&lt;h3 id="리액티비티-api">리액티비티 API&lt;/h3>
+&lt;p>이전 버전의 Vue는 인스턴스 내부에 오브젝트를 선언하고 새로운 속성을 추가하는 것을 감지할 수 없었다. 그래서 기존에는 Vue.set 메소드를 사용하여 기존 객체에 반응성을 부여했다.&lt;/p>
+&lt;p>Vue3는 이러한 데이터 반응성을 해결하기 위해 리액티비티 API를 지원한다. 객체에 반응성을 추가하기 위해서 리액티브 메소드를 사용하면 된다.&lt;/p>
+&lt;p>단순 값이라면 &lt;code>ref&lt;/code> 메소드를 사용한다. 이외에도 &lt;code>Readonly&lt;/code>, &lt;code>ToRef&lt;/code> 등 반응성을 지원하는 여러 API 가 추가되었다.&lt;/p></description></item><item><title>랜더링 업데이트 최적화</title><link>https://codemario318.github.io/post/rendering_optimize/</link><pubDate>Tue, 18 Apr 2023 19:48:26 +0900</pubDate><guid>https://codemario318.github.io/post/rendering_optimize/</guid><description>&lt;img src="https://codemario318.github.io/post/rendering_optimize/browser_cover.jpeg" alt="Featured image of post 랜더링 업데이트 최적화" />&lt;blockquote>
 &lt;p>화면이 수정될 때, 렌더링 과정을 최적화하는 방법&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="재배치reflow와-다시-그리기repainting">재배치(Reflow)와 다시 그리기(Repainting)&lt;/h2>
