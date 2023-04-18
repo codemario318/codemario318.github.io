@@ -1,4 +1,75 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 16:07:19 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>JVM</title><link>https://codemario318.github.io/post/jvm/</link><pubDate>Tue, 18 Apr 2023 16:07:19 +0900</pubDate><guid>https://codemario318.github.io/post/jvm/</guid><description>&lt;img src="https://codemario318.github.io/post/jvm/jvm_cover.jpeg" alt="Featured image of post JVM" />&lt;h2 id="jvm-이란">JVM 이란?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 16:24:22 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>JVM - Garbage Collection</title><link>https://codemario318.github.io/post/jvm_gc/</link><pubDate>Tue, 18 Apr 2023 16:24:22 +0900</pubDate><guid>https://codemario318.github.io/post/jvm_gc/</guid><description>&lt;img src="https://codemario318.github.io/post/jvm_gc/jvm_cover.jpeg" alt="Featured image of post JVM - Garbage Collection" />&lt;p>&lt;img src="https://codemario318.github.io/post/jvm_gc/jvm_gc_1.png"
+width="1444"
+height="758"
+srcset="https://codemario318.github.io/post/jvm_gc/jvm_gc_1_huffa1b0b04f7aa5fa473d93e9bbf2fa2a_361840_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jvm_gc/jvm_gc_1_huffa1b0b04f7aa5fa473d93e9bbf2fa2a_361840_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="457px"
+>&lt;/p>
+&lt;h2 id="stop-the-world">Stop-the-world&lt;/h2>
+&lt;p>GC를 실행하기 위해 JVM이 애플리케이션 실행을 멈추는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>stop-the-world가 발생하면 GC를 실행하는 쓰레드를 제외한 나머지 쓰레드는 모두 작업을 멈춘다.&lt;/li>
+&lt;li>GC작업을 완료한 이후에야 중단했던 작업을 다시 시작한다.&lt;/li>
+&lt;li>어떤 GC 알고리즘을 사용하더라도 Stop-the-world는 발생한다.&lt;/li>
+&lt;li>대개의 경우 GC 튜닝이란 이 Stop-the-world 시간을 줄이는 것이다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="gc-필요성">GC 필요성&lt;/h2>
+&lt;p>Java의 경우 (대부분의 언어) 프로그램 코드에서 메모리를 명시적으로 지정하여 헤제하지 않는다. 따라서
+가비지 컬렉터가 더이상 필요 없는 객체를 찾아 지우는 작업을 수행하여 메모리 공간을 확보한다.&lt;/p>
+&lt;blockquote>
+&lt;p>가끔 명시적으로 해제하려고 해당 객체를 &lt;code>null&lt;/code>로 지정하거나 &lt;code>System.gc()&lt;/code> 메서드를 호출하는 경우가 있다.
+&lt;code>null&lt;/code>로 지정하는 것은 큰 문제가 안되지만, &lt;code>System.gc()&lt;/code> 메서드를 호출하는 것은 시스템의 매우 큰 영향을 끼치므로 &lt;code>System.gc()&lt;/code> 메서드는 절대 사용하면 안된다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="garbage-collector">Garbage Collector&lt;/h2>
+&lt;p>가비지 컬렉터는 두 가지 가설 하에 만들어졌다.(가정 또는 전제 조건이라 표현하는 것이 맞다.)&lt;/p>
+&lt;h3 id="weak-generational-hypothesis">Weak generational hypothesis&lt;/h3>
+&lt;ul>
+&lt;li>대부분의 객체는 금방 접근 불가능 상태(Unreachable)가 된다.&lt;/li>
+&lt;li>오래된 객체에서 젊은 객체로의 참조는 아주 적게 존재한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="young-영역과-old-영역">Young 영역과 Old 영역&lt;/h3>
+&lt;p>이 가설의 장점을 최대한 살리기 위해 HotSpot VM 에서는 크게 2개로 물리적 공간을 나누었다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Young 영역&lt;/strong>&lt;br>
+새롭게 생성한 객체의 대부분이 여기에 위치한다. 대부분의 객체가 금방 접근 불가능 상태가 되기 때문에 매우 많은 객체가 young 영역에 생성되었다가 사라진다.
+이 영역에서 객체가 사라질 때 Minor GC가 발생한다고 말한다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Old 영역&lt;/strong>&lt;br>
+접근 불가능 상태로 되지 않아 Young 영역에서 살아남은 객체가 여기로 복사된다. 대부분 Young 영역보다 크게 할당하며, 크기가 큰 만큼 Young 영역보다 GC는 적게 발생한다. 이 영역에서 객체가 사라질 때 Major GC(Full GC)가 발생한다고 말한다.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="minor-gc">Minor GC&lt;/h3>
+&lt;p>새로 생성된 대부분의 객체는 Eden 영역에 위치한다. Eden 영역에서 GC가 한 번 발생한 후 살아남은 객체는 Survivor 영역 중 하나로 이동된다.&lt;/p>
+&lt;p>이 과정을 반복하다가 계속해서 살아남아 있는 객체는 일정시간 참조되고 있다는 뜻이므로 Old 영역으로 이동시킨다.&lt;/p>
+&lt;h3 id="major-gc">Major GC&lt;/h3>
+&lt;p>Old 영역에 있는 모든 객체들을 검사하여 참조되지 않은 객체들을 한꺼번에 삭제한다.&lt;/p>
+&lt;h2 id="가비지-컬렉션은-어떤-원리로-소멸시킬-대상을-선정하는가">가비지 컬렉션은 어떤 원리로 소멸시킬 대상을 선정하는가?&lt;/h2>
+&lt;p>알고리즘에 따라 동작 방식이 매우 다양하지만 공통적인 원리가 있다.&lt;/p>
+&lt;p>가비지 컬렉터는 힙 내의 객체 중에서 가비지를 찾아내고 찾아낸 가비지를 처리해서 힙의 메모리를 회수한다.&lt;/p>
+&lt;p>참조되고 있지 않은 객체를 가비지라고 하며 객체가 가비지인지 아닌지 판단하기 위해서 reachablitiy라는 개념을 사용한다.&lt;/p>
+&lt;blockquote>
+&lt;p>어떤 힙 영역에 할당된 객체가 유효한 참조가 있으면 reachability, 없다면 unreachability로 판단한다. 하나의 객체는 다른 객체를 참조하고, 다른 객체는 또 다른 객체를 참조할 수 있기 때문에 참조 사슬이 형성되는데, 이 참조 사슬 중 최초에 참조한 것을 Root Set이라고 칭한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>힙 영역에 있는 객체들은 총 4가지 경우에 대하여 참조를 가지게 된다.&lt;/p>
+&lt;ol>
+&lt;li>힘 내의 다른 객체에 의한 참조&lt;/li>
+&lt;li>Java스택, 즉 Java 메서드 실행 시에 사용하는 지역변수와 파라미터들에 의한 참조&lt;/li>
+&lt;li>네이티브 스택에 의해 생성된 객체에 대한 참조&lt;/li>
+&lt;li>메서드 영역의 정적 변수에 의한 참조&lt;/li>
+&lt;/ol>
+&lt;p>2, 3, 4는 Root set이다. 즉 참조 사슬 중 최초에 참조한 것이다.&lt;/p>
+&lt;p>인스턴스가 가비지 컬렉션의 대상이 되었다고 해서 바로 소멸이 되는 것은 아니다. 빈번한 가비지 컬렉션의 실행은 시스템에 부담이 될 수 있기에 성능에 영향을 미치지 않도록 가비지 컬렉션 실행 타이밍은 별도의 알고리즘을 기반으로 계산이 되며, 이 계산 결과를 기반으로 가비지 컬렉션이 수행된다.&lt;/p>
+&lt;h3 id="serial-gc">Serial GC&lt;/h3>
+&lt;p>적은 메모리와 CPU 코어 개수가 적을 때 적합한 방식으로 위에서 언급한 방식으로 동작&lt;/p>
+&lt;h3 id="parallel-gc">Parallel GC&lt;/h3>
+&lt;p>기본적인 GC 알고리즘은 Serial GC와 동일하지만 Parallel GC는 GC를 처리하는 스레드가 여러 개라서 보다 빠른 GC를 수행할 수 있다.&lt;/p>
+&lt;p>메모리가 충분하고 코어의 개수가 많을 때 유리하다.&lt;/p>
+&lt;h3 id="parallel-old-gc-parallel-compacting-gc">Parallel Old GC (Parallel Compacting GC)&lt;/h3>
+&lt;p>별도로 살아있는 객체를 식별한다는 부분에서 보다 복잡한 단계로 수행된다.&lt;/p></description></item><item><title>JVM</title><link>https://codemario318.github.io/post/jvm/</link><pubDate>Tue, 18 Apr 2023 16:07:19 +0900</pubDate><guid>https://codemario318.github.io/post/jvm/</guid><description>&lt;img src="https://codemario318.github.io/post/jvm/jvm_cover.jpeg" alt="Featured image of post JVM" />&lt;h2 id="jvm-이란">JVM 이란?&lt;/h2>
 &lt;p>&lt;img src="https://codemario318.github.io/post/jvm/jvm_1.png"
 width="700"
 height="525"
