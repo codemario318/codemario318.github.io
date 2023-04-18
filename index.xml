@@ -1,4 +1,34 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 17:09:29 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript_tutorial_2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 17:19:16 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Message Queue</title><link>https://codemario318.github.io/post/message_queue/</link><pubDate>Tue, 18 Apr 2023 17:19:16 +0900</pubDate><guid>https://codemario318.github.io/post/message_queue/</guid><description>&lt;img src="https://codemario318.github.io/post/message_queue/mq_cover.jpeg" alt="Featured image of post Message Queue" />&lt;h2 id="message-queue란">Message Queue란?&lt;/h2>
+&lt;p>MQ란 메시지 기반의 미들웨어로 메시지를 이용하여 여러 어플리케이션, 시스템, 서비스들을 연결해주는 솔루션이다. MOM(Message Oriented Middleware)를 구현한 솔루션으로 비동기 메시지를 사용하는 서비스들 사이에서 데이터를 교환해주는 역할을 한다.&lt;/p>
+&lt;p>Producer(sender)가 메시지를 큐에 전송하면 Consumer(receiver)가 처리하는 방식으로, Producer와 Consumer에 message 프로세스가 추가되는 것이 특징이다.&lt;/p>
+&lt;p>MQ를 사용하여 비동기로 요청을 처리하고 Queue 에 저장하여 Consumer에게 병목을 줄여줄 수 있으나 제품마다 구현이 다르고 장단이 있다.&lt;/p>
+&lt;h2 id="대표-솔루션">대표 솔루션&lt;/h2>
+&lt;h3 id="ibm-mq">IBM MQ&lt;/h3>
+&lt;p>가장 많이 사용되는 상용 MQ 제품으로 표준 JMS 메시지 ㅇ기반으로 MQTT 프로토콜을 지원한다.&lt;/p>
+&lt;h3 id="apache-activemq">Apache ActiveMQ&lt;/h3>
+&lt;ul>
+&lt;li>자바 기반의 JMS Queue를 지원하는 오픈소스로 MQTT, AMQP, OpenWire, STOMP 프로토콜을 지원한다.&lt;/li>
+&lt;li>다양한 언어를 지원하며 크러스터링이 가능하다. 단 모니터링 도구는 없다.&lt;/li>
+&lt;li>REST API를 통해 웹기반 메시징 API를 지원하며 Ajax를 통해 순수한 DHTML을 사용한 웹스트리밍을 지원&lt;/li>
+&lt;/ul>
+&lt;h3 id="rabbit-mq">Rabbit MQ&lt;/h3>
+&lt;ul>
+&lt;li>고성능을 목표로 AMQP 프로토콜을 사용하여 개발된 MQ 로 Erlang OTP 기반으로 개발되었다.&lt;/li>
+&lt;li>실시간 모니터링이 용이하고 다양한 언어 및 OS 지원, RabbitMQ 서버간 클러스터링이 가능하다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="kafka">Kafka&lt;/h3>
+&lt;ul>
+&lt;li>Linkedin에서 구직정보들을 처리할 수 있는 플랫폼으로 개발이 시작되었다.&lt;/li>
+&lt;li>실시간 로그 처리에 특화되어 설계된 시스템으로 개발되어 타 MQ 대비 TPS가 매우 우수하나 특화된 솔루션이기 때문에 타 MQ솔루션에서 제공하는 다양한 기능들은 제공되지 않는다.&lt;/li>
+&lt;li>AMQP, JMS 이 아닌 단순 메시지 헤더를 이용한 TCP 통신이다.&lt;/li>
+&lt;li>MQ는 broker가 pruducer에게 메세지를 받아서 consumer 에게 push해주는 방식인데 반해, kafka는 consumer가 Broker로 부터 직접 메시지를 가지고 가는 pull 방식으로 동작한다.
+&lt;ul>
+&lt;li>Consumer는 자신의 처리능력 만큼의 메시지만 broker로부터 가져오기 때문에 최적의 성능을 낼 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>많은 데이터 전송과 최대 처리량을 유지하기에 대량 데이터 스트리밍에 적합하다.&lt;/li>
+&lt;li>상태 변경이 시간순으로 기록되어야 하는 응용 프로그램인 이벤트 소싱(Event Sourcing) 저장소로 적합하다.&lt;/li>
+&lt;/ul></description></item><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript_tutorial_2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
 &lt;p>타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다.&lt;/p>
 &lt;p>&lt;code>: type&lt;/code> 구문을 식별자 뒤에 붙이는 타입 어노테이션으로 사용한다.&lt;/p>
 &lt;ul>
