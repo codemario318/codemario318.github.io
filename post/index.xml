@@ -1,4 +1,478 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 18:48:11 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>브라우저</title><link>https://codemario318.github.io/post/browser/</link><pubDate>Tue, 18 Apr 2023 18:48:11 +0900</pubDate><guid>https://codemario318.github.io/post/browser/</guid><description>&lt;img src="https://codemario318.github.io/post/browser/browser_cover.jpeg" alt="Featured image of post 브라우저" />&lt;h2 id="브라우저-기본-구조">브라우저 기본 구조&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 19:48:26 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>랜더링 업데이트 최적화</title><link>https://codemario318.github.io/post/rendering_optimize/</link><pubDate>Tue, 18 Apr 2023 19:48:26 +0900</pubDate><guid>https://codemario318.github.io/post/rendering_optimize/</guid><description>&lt;img src="https://codemario318.github.io/post/rendering_optimize/browser_cover.jpeg" alt="Featured image of post 랜더링 업데이트 최적화" />&lt;blockquote>
+&lt;p>화면이 수정될 때, 렌더링 과정을 최적화하는 방법&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="재배치reflow와-다시-그리기repainting">재배치(Reflow)와 다시 그리기(Repainting)&lt;/h2>
+&lt;p>처음 화면이 그려진 후 사용자의 인터렉션에 의해 요소가 변경되는 일이 발생하였을때, Render 트리가 변경되면서 발생한다.&lt;/p>
+&lt;p>이 과정이 빈번하게 발생할 수록 성능 및 사용자 경험이 저하되기 때문에 이를 최소화하는 것이 좋다.&lt;/p>
+&lt;h3 id="다시-그리기repainting">다시 그리기(Repainting)&lt;/h3>
+&lt;p>재배치가 발생하거나 요소의 색상등이 변경된 경우, 다시 화면에 표현하는 동작.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>화면의 구조가 변경되었을 때&lt;/strong>&lt;br>
+Reflow 과정을 거쳐 화면 구조를 다시 계산한 후 Repaint 과정을 통해 화면을 다시 그린다.&lt;/p>
+&lt;ul>
+&lt;li>화면의 구조가 변경되었을 때에는 Reflow와 Repaint 모두 발생합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>화면의 구조가 변경되지 않는 화면 변화의 경우&lt;/strong>&lt;br>
+Repaint만 발생화면 구조(Layout)이 변경되었을 때, 뷰포트 내에서 렌더 트리의 노드의 정확한 위치와 크기를 계산하는 과정을 다시 수행해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>opacity&lt;/code>, &lt;code>background-color&lt;/code>, &lt;code>visibility&lt;/code>, &lt;code>outline&lt;/code> 등의 스타일 변경 시에는 Repaint만 동작한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Repaint는 변경된 화면을 실제 화면에 반영하는 과정으로 최적화할 수 있는 방법은 화면 변화를 최소화할 수 있는 방법 뿐이다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="재배치reflow">재배치(Reflow)&lt;/h3>
+&lt;p>화면 구조(Layout)이 변경되었을 때, 뷰포트 내에서 렌더 트리의 노드의 정확한 위치와 크기를 계산하는 과정&lt;/p>
+&lt;h2 id="reflow가-발생하는-경우">Reflow가 발생하는 경우&lt;/h2>
+&lt;ul>
+&lt;li>DOM 노드의 추가, 제거&lt;/li>
+&lt;li>DOM 노드의 위치 변경&lt;/li>
+&lt;li>DOM 노드의 크기 변경(margin, padding, border, width, height 등..)&lt;/li>
+&lt;li>CSS3 애니메이션과 트랜지션&lt;/li>
+&lt;li>폰트 변경, 텍스트 내용 변경&lt;/li>
+&lt;li>이미지 크기 변경&lt;/li>
+&lt;li>offset, scrollTop, scrollLeft과 같은 계산된 스타일 정보 요청&lt;/li>
+&lt;li>페이지 초기 렌더링&lt;/li>
+&lt;li>윈도우 리사이징&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>위의 내용에서 빠졌더라도 화면의 구조가 변경되었다면 Reflow가 발생한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="reflow-최적화">Reflow 최적화&lt;/h2>
+&lt;p>재배치 작업은 다시 그리기 작업을 동반하기 때문에 경우에 따라 Render 트리 전체를 재구성할 수도 있으므로 다시 그리기만 발생할 떄에 비해서 비용이 훨씬 비싸다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>재배치, 다시 그리기 작업을 최소화 하는 과정을 통해 최적화를 한다.&lt;/p>
+&lt;ul>
+&lt;li>Reflow는 렌더 트리의 변화를 최소화하는 등..&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>DOM의 depth를 최소화&lt;/p>
+&lt;ul>
+&lt;li>DOM의 깊이와 크기를 작게 구성하여 재배치를 더 빠르게 처리하게 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>스타일 변경을 한번에 처리한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-css" data-lang="css">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span>&lt;span class="nc">newstyles&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">width&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="kt">px&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">height&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="kt">px&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">margin&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="kt">px&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-jsx" data-lang="jsx">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 비효율적인 코드 예시
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">myelement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getElementById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;myelement&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">myelement&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">width&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;100px&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">myelement&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">height&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;200px&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">myelement&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">style&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">margin&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;10px&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-jsx" data-lang="jsx">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 개선된 예시
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">myelement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getElementById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;myelement&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">myelement&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;newstyles&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>미리 만들어놓은 스타일을 한번에 적용하여 재배치를 최소화 할 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>주변에 영향을 주는 요소를 제한한다.&lt;br>
+인터렉션에 의해 크기나 위치가 변경되는 요소는 병경될 때 주변 요소들이 최대한 영향받지 않도록 정의한다.&lt;/p>
+&lt;ul>
+&lt;li>스타일을 변경할 경우 가장 하위 노드의 클래스를 변경&lt;/li>
+&lt;li>애니메이션이 있는 노드는 &lt;code>position&lt;/code>을 &lt;code>fixed&lt;/code> 또는 &lt;code>absolute&lt;/code> 로 지정한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>개발자 도구를 이용하여 분석&lt;br>
+개발자 도구를 이용하여 재배치와 다시 그리기가 얼마나 발생하는지 확인하고 해당 요소를 최적화 시도한다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>라이브러리를 사용한다.&lt;br>
+React, Vue는 트리 형태의 Object를 통해 Virtual DOM을 구성하고 요소가 변경될 때 업데이트한다. 그 후 최종 상태의 Virtual DOM을 실제 DOM에 반영하여 재배치와 다시 그리기를 최소화 시켜 렌더링 최적화를 구현한다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>스타일을 변경할 경우 가장 하위 노드의 클래스를 변경&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>DOM 노드의 크기 또는 위치가 변경되면 하위 노드와 상위 노드까지 영향을 미칠 수 있다. 따라서 가장 하위 노드의 스타일을 변경할 경우, 전체 노드가 아니니 일부 노드로 영향을 최소화 할 수 있다.&lt;/p>
+&lt;p>하지만 실무에서는 보통 변경해야 할 노드들이 정해져 있기 때문에 적용 범위가 크지 않을 수 있다.&lt;/p>
+&lt;h3 id="애니메이션이-있는-노드는-position을-fixed-또는-absolute로-지정한다">애니메이션이 있는 노드는 &lt;code>position&lt;/code>을 &lt;code>fixed&lt;/code> 또는 &lt;code>absolute&lt;/code>로 지정한다.&lt;/h3>
+&lt;p>애니메이션 효과는 많은 Reflow 비용이 발생하게 됨.&lt;/p>
+&lt;p>&lt;code>position&lt;/code> 속성을 &lt;code>fixed&lt;/code> 또는 &lt;code>absolute&lt;/code> 로 지정하면, 해당 노드를 전체 노드에서 분리시켜 일부만 Reflow가 발생하도록 제한시킬 수 있다.&lt;/p>
+&lt;p>애니메이션 효과를 줘야 하는 노드에 &lt;code>position&lt;/code> 속성이 적용되지 않았다면 애니메이션 시작 시 &lt;code>position&lt;/code> 속성 값을 &lt;code>fixed&lt;/code> 또는 &lt;code>absolute&lt;/code>로 변경하였다가 &lt;strong>애니메이션 종료 후 다시 원복 시켜 렌더링을 최적화&lt;/strong>할 수 있다.&lt;/p>
+&lt;h3 id="table-레이아웃을-피한다">&lt;code>&amp;lt;table&amp;gt;&lt;/code> 레이아웃을 피한다.&lt;/h3>
+&lt;p>&lt;code>&amp;lt;table&amp;gt;&lt;/code> 은 점진적으로 렌더링 되지 않고, 모두 로드되고 테이블 너비가 계산된 후 화면에 그려진다. 테이블 안의 콘텐츠의 값에 따라 테이블 너비가 계산된다.&lt;/p>
+&lt;p>콘텐츠의 값에 따라 테이블 너비가 계산되기 때문에, 테이블 콘텐츠의 작은 변경만 있어도 테이블 너비가 다시 계산되고 테이블의 모든 노드들이 Reflow가 발생한다.&lt;/p>
+&lt;p>부득이하게 &lt;code>&amp;lt;table&amp;gt;&lt;/code>을 사용할 때는 &lt;code>table-layout:fixed&lt;/code> 값을 지정하는 것이 좋다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>table-layout:fixed&lt;/code>는 테이블의 콘텐츠의 길이에 따라 테이블의 너비가 계산되는 것이 아니기 때문에, &lt;code>table-layout&lt;/code>의 기본 값인 &lt;code>auto&lt;/code>에 비해 성능이 더 좋다. &lt;code>&amp;lt;table&amp;gt;&lt;/code>을 레이아웃 용도가 아닌 데이터 표시 용도로 사용할 때도 &lt;code>table-layout:fixed&lt;/code>를 지정하는 것이 성능 면에서 더 좋습니다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="ie의-css-표현식을-사용하지-않는다">IE의 CSS 표현식을 사용하지 않는다.&lt;/h3>
+&lt;p>CSS 표현식은 비용이 매우 높기 때문에 사용을 피해야 함&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-css" data-lang="css">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span>&lt;span class="nc">expression&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">width&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nf">expression&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">document&lt;/span>&lt;span class="err">.&lt;/span>&lt;span class="n">documentElement&lt;/span>&lt;span class="err">.&lt;/span>&lt;span class="n">clientWidth&lt;/span> &lt;span class="err">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="err">?&lt;/span> &lt;span class="s1">&amp;#39;1000px&amp;#39;&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="s1">&amp;#39;auto&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Reflow가 발생할 때마다 자바스크립트 표현식이 다시 계산되기 때문에 CSS 표현식은 비용이 비싸다.&lt;/p>
+&lt;ul>
+&lt;li>애니메이션이 동작한다면, 애니메이션에 의한 Reflow가 발생할 때마다 자바스크립트 표현식이 계산됨.&lt;/li>
+&lt;/ul>
+&lt;h3 id="css-하위-선택자를-최소화한다">CSS 하위 선택자를 최소화한다.&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-css" data-lang="css">&lt;span class="line">&lt;span class="cl">&lt;span class="c">/* 잘못된 예 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span>&lt;span class="nc">reflow_box&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nc">reflow_list&lt;/span> &lt;span class="nt">li&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nc">btn&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">display&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="kc">block&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">/* 올바른 예 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span>&lt;span class="nc">reflow_list&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nc">btn&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">display&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="kc">block&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>CSS 하위 선택자를 최소화하는 것이 렌더링 성능에 더 좋다.&lt;/p>
+&lt;p>렌더 트리는 DOM과 CSSOM이 합쳐져서 만들어 지는데, DOM은 HTML이 파싱 되어 만들어진 트리이고, CSSOM은 CSS가 파싱 되어 만들어진 트리이다.&lt;/p>
+&lt;p>두 트리를 결합하여 렌더 트리를 만드는데, CSS 하위 선택자가 많아지만 CSSOM 트리의 깊이가 깊어지게 되고 결국 렌더 트리를 만드는 시간이 더 오래 걸릴 수 있다.&lt;/p>
+&lt;h3 id="숨겨진-노드의-스타일을-변경한다">숨겨진 노드의 스타일을 변경한다.&lt;/h3>
+&lt;p>&lt;code>display:none&lt;/code>으로 숨겨진 노드를 변경할 때는 Reflow가 발생하지 않기 때문에 숨겨진 노드를 표시하기 전에 노드의 콘텐츠를 먼저 변경한 후 화면에 나타내면 Reflow를 줄일 수 있다.&lt;/p>
+&lt;h3 id="클래스를-사용하여-한-번에-스타일을-변경한다">클래스를 사용하여 한 번에 스타일을 변경한다.&lt;/h3>
+&lt;p>스타일을 변경할 때, 스타일을 각각 변경할 경우 추가 Reflow가 발생할 수 있기 때문에 한번에 스타일을 변경하는 것이 좋다.&lt;/p>
+&lt;h2 id="요약">요약&lt;/h2>
+&lt;ul>
+&lt;li>Repaint(Redraw)는 화면에 변화가 있을 때 화면을 그리는 과정&lt;/li>
+&lt;li>Reflow(Layout)는 뷰포트 내에서 렌더 트리의 노드의 정확한 위치와 크기를 계산하는 과정&lt;/li>
+&lt;li>Repaint가 발생하는 경우는 화면이 변경되는 모든 경우&lt;/li>
+&lt;li>Reflow가 발생하는 경우는 화면의 구조가 바뀌었을 경우&lt;/li>
+&lt;li>Reflow를 최적화하는 방법
+&lt;ol>
+&lt;li>스타일을 변경할 경우 가장 하위 노드의 클래스를 변경한다.&lt;/li>
+&lt;li>인라인 스타일을 사용하지 않는다.&lt;/li>
+&lt;li>애니메이션이 있는 노드는 &lt;code>position&lt;/code>을 &lt;code>fixed&lt;/code> 또는 &lt;code>absolute&lt;/code>로 지정한다.&lt;/li>
+&lt;li>퀄리티, 퍼포먼스의 타협점을 찾는다.&lt;/li>
+&lt;li>&lt;code>&amp;lt;table&amp;gt;&lt;/code> 레이아웃을 피한다.&lt;/li>
+&lt;li>IE의 CSS 표현식을 사용하지 않는다.&lt;/li>
+&lt;li>CSS 하위 선택자를 최소화한다.&lt;/li>
+&lt;li>숨겨진 노드의 스타일을 변경한다.&lt;/li>
+&lt;li>클래스를 혹은 &lt;code>cssText&lt;/code> 사용하여 한 번에 스타일을 변경한다.&lt;/li>
+&lt;li>DOM 사용을 최소화한다.&lt;/li>
+&lt;li>캐시를 활용한다.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>라이브러리를 사용한다.&lt;/li>
+&lt;/ul></description></item><item><title>Critical Rendering Path 최적화</title><link>https://codemario318.github.io/post/crp_optimize/</link><pubDate>Tue, 18 Apr 2023 19:27:35 +0900</pubDate><guid>https://codemario318.github.io/post/crp_optimize/</guid><description>&lt;img src="https://codemario318.github.io/post/crp_optimize/browser_cover.jpeg" alt="Featured image of post Critical Rendering Path 최적화" />&lt;blockquote>
+&lt;p>CRP 최적화란 HTML, CSS 및 JS 간 종속성을 이해하고 최적화 하는것이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="critical-rendering-path란">Critical Rendering Path란?&lt;/h2>
+&lt;blockquote>
+&lt;p>브라우저가 페이지의 초기 출력을 위해 실행해야 하는 순서&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>DOM 트리 구축&lt;/li>
+&lt;li>CSSOM 트리 구축&lt;/li>
+&lt;li>JS 실행&lt;/li>
+&lt;li>렌더트리 구축&lt;/li>
+&lt;li>레이아웃 생성&lt;/li>
+&lt;li>페인팅&lt;/li>
+&lt;/ol>
+&lt;h2 id="css">CSS&lt;/h2>
+&lt;p>CSS는 렌더링 차단 리소스이므로 최초 렌더링에 걸리는 시간을 최적화하려면 클라이언트에 최대한 빠르게 다운로드되어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>렌더 트리를 만들 때 사용되는 HTML, CSS 모두 렌더링 차단 리소스&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/crp_optimize/crp_1.png"
+width="300"
+height="552"
+srcset="https://codemario318.github.io/post/crp_optimize/crp_1_hu5d861ecf8436498ea156c64f6fee9767_56786_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/crp_optimize/crp_1_hu5d861ecf8436498ea156c64f6fee9767_56786_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="CSS 적용 전"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="130px"
+>
+&lt;img src="https://codemario318.github.io/post/crp_optimize/crp_2.png"
+width="300"
+height="552"
+srcset="https://codemario318.github.io/post/crp_optimize/crp_2_hu173ae8fc32e346a71529d457affbdc2a_73261_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/crp_optimize/crp_2_hu173ae8fc32e346a71529d457affbdc2a_73261_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="CSS 적용 후"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="130px"
+>&lt;/p>
+&lt;p>CSS가 없는 페이지는 상대적으로 사용성이 떨어지기 때문에 브라우저는 DOM과 CSSOM을 모두 사용할 수 있게 될 때까지 렌더링을 차단한다.&lt;/p>
+&lt;blockquote>
+&lt;p>CSS를 간단하게 유지하고 가능한 빨리 제공하고 최대한 빨리 렌더링의 차단을 해제해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="미디어-쿼리-미디어-유형">미디어 쿼리, 미디어 유형&lt;/h2>
+&lt;p>미디어 쿼리를 사용하면 특정한 사용 사례와 동적인 조건에 맞게 렌더링이 차단되므로 효율을 높힐 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>미디어 유형과 미디어 쿼리를 통해 일부 CSS 리소스를 렌더링 비차단 리소스로 표시할 수 있음&lt;/li>
+&lt;li>브라우저는 차단 동작이든 비차단 동작이든 관계없이 모든 CSS 리소스를 다운로드함&lt;/li>
+&lt;/ul>
+&lt;p>미디어 쿼리는 하나의 미디어 유형과 특정 미디어 기능의 조건을 확인하는 0개 이상의 식으로 구성된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="c">&amp;lt;!-- 1 --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;style.css&amp;#34;&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&amp;lt;!-- 2 --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;print.css&amp;#34;&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span> &lt;span class="na">media&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;print&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&amp;lt;!-- 3 --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;other.css&amp;#34;&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span> &lt;span class="na">media&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;(min-width: 40em)&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol>
+&lt;li>&lt;strong>조건이 없는 경우&lt;/strong>&lt;br>
+미디어 유형이나 미디어 쿼리를 제공하지 않아서 모든 경우에 적용됨
+&lt;ul>
+&lt;li>즉 항상 렌더링을 차단함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>미디어 유형을 적용&lt;/strong>&lt;br>
+콘텐츠가 인쇄될 때만 적용
+&lt;ul>
+&lt;li>처음에 로드될 때 페이지 렌더링을 차단할 필요가 없음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>미디어 쿼리 적용&lt;/strong>&lt;br>
+조건이 일치하면 스타일시트가 다운로드되고 처리될 때까지 브라우저가 렌더링을 차단.&lt;/li>
+&lt;/ol>
+&lt;h2 id="js">JS&lt;/h2>
+&lt;p>자바스크립트는 파서 차단 리소스(parser blocking resource)이며, JS를 사용하면 콘텐츠, 스타일, 사용자와의 상호작용등 거의 모든것을 수정할 수 있다.&lt;/p>
+&lt;p>JS실행은 DOM 생성을 차단하고 페이지 렌더링을 지연하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>자바스크립트를 비동기로 설정하고, CRP에서 불필요한 JS를 제거해야 한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="js와-html의-종속성">JS와 HTML의 종속성&lt;/h3>
+&lt;p>HTML 파서는 &lt;code>script&lt;/code> 태그를 만나면 DOM 생성 프로세스를 중지하고 자바스크립트 엔진에 권한을 넘긴다. 자바스크립트 엔진의 실행이 완료된 후 브라우저가 중지했던 시점부터 DOM 생성을 다시 시작하게 된다.&lt;/p>
+&lt;p>&lt;code>script&lt;/code> 태그의 뒷부분에서 정의된 어떠한 태그들도 아직 생성되지 않았기 때문에 노드를 찾을 수 없다. 또한, 인라인 스크립트를 실행하면 DOM 생성이 차단되고, 이로 인해 초기 렌더링도 지연된다.&lt;/p>
+&lt;p>이러한 이유로 인하여 자바스크립트는 화면에 그려지는 태그들이 모두 파싱 된 후인, &lt;code>&amp;lt;body&amp;gt;&lt;/code> 태그를 닫기 직전에 &lt;code>&amp;lt;script&amp;gt;&lt;/code> 태그를 선언하는 것이 좋다.&lt;/p>
+&lt;h3 id="js와-css의-종속성">JS와 CSS의 종속성&lt;/h3>
+&lt;p>CSS를 파싱 하는 동안 자바스크립트에서 스타일 정보를 요청하는 경우, CSS가 파싱이 끝나지 않은 상태라면 자바스크립트 오류가 발생할 수 있다. CSS 파싱으로 생성되는 CSSOM과 JavaScript에서 스타일 수정 시 발생하는 CSSOM 수정 사이에 경쟁 조건(race condition)이 발생할 수 있다.&lt;/p>
+&lt;p>브라우저는 이 문제를 해결하기 위해 CSSOM을 생성하는 작업이 완료할 때까지 자바스크립트 실행 및 DOM 생성을 지연시킨다. DOM, CSSOM, 자바스크립트 실행 간에 종속성 때문에 브라우저가 화면에 페이지를 처리하고 렌더링 할 때 상당한 지연이 발생할 수 있습니다.&lt;/p>
+&lt;h2 id="비동기-js">비동기 JS&lt;/h2>
+&lt;p>HTML을 파싱 하면서 script 태그를 만나면 DOM 생성을 중지시키고 자바스크립트 엔진에게 제어 권한을 넘겨 자바스크립트를 실행한 후, DOM 생성을 진행한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="c">&amp;lt;!-- index.html --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&amp;lt;!DOCTYPE html&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">meta&lt;/span> &lt;span class="na">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;viewport&amp;#34;&lt;/span> &lt;span class="na">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;width=device-width,initial-scale=1&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;style.css&amp;#34;&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Critical Path: Script&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Hello &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">span&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>web performance&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">span&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> students!&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">script&lt;/span> &lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;app.js&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">script&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-jsx" data-lang="jsx">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// app.js
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">span&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getElementsByTagName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;span&amp;#39;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">span&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">textContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;interactive&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// change DOM text content
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">span&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">style&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">display&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;inline&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// change CSSOM property
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// create a new element, style it, and append it to the DOM
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">loadTime&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;div&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">loadTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">textContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;You loaded this page on: &amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Date&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">loadTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">style&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;blue&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">body&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">appendChild&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">loadTime&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위에서 살펴본 인라인 스크립트뿐만 아니라 위의 코드와 같이 &lt;code>script&lt;/code> 태그를 통해 포함된 자바스크립트 역시 파싱을 중지시킨다.&lt;/p>
+&lt;p>&lt;code>script&lt;/code> 태그를 사용하여 자바스크립트를 실행할 경우, 서버에서 자바스크립트를 가져올 때까지 기다려야하며 이로 인해 수십~수천 밀리초의 지연이 추가로 발생할 수 있다.&lt;/p>
+&lt;p>기본적으로 자바스크립트가 실행될 때, 스크립트가 페이지에서 무엇을 수행할지 모르기 때문에 브라우저는 최악의 대비하여 파서를 차단한다.&lt;/p>
+&lt;p>브라우저에 자바스크립트를 바로 실행할 필요가 없음을 알려준다면, 브라우저는 계속해서 DOM을 생성할 수 있고 DOM 생성이 끝난 후에 자바스크립트를 실행할 수 있게 된다.&lt;/p>
+&lt;p>이때 사용할 수 있는 것이 비동기 자바스크립트이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&amp;lt;!DOCTYPE html&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">meta&lt;/span> &lt;span class="na">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;viewport&amp;#34;&lt;/span> &lt;span class="na">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;width=device-width,initial-scale=1&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;style.css&amp;#34;&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Critical Path: Script Async&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Hello &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">span&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>web performance&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">span&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> students!&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">script&lt;/span> &lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;app.js&amp;#34;&lt;/span> &lt;span class="na">async&lt;/span>&lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">script&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위의 코드와 같이 단순히 &lt;code>script&lt;/code> 태그에 &lt;code>async&lt;/code> 속성을 추가해 주면 됩니다. &lt;code>async&lt;/code> 속성을 &lt;code>script&lt;/code> 태그에 추가하여 자바스크립트가 사용 가능해질 때까지 브라우저에게 DOM 생성을 중지하지 않아도 괜찮다는 것을 알릴 수 있다.&lt;/p>
+&lt;h2 id="리소스-우선순위-지정">리소스 우선순위 지정&lt;/h2>
+&lt;p>브라우저는 가장 중요한 리소스(스크립트나 이미지보다 CSS 우선)를 우선 로드하기 위해 가장 중요하다 생각되는 리소스를 추측하여 먼저 로드한다. 하지만 브라우저에게 리소스의 우선순위를 전달하여 중요한 리소스를 먼저 처리하게 할 수 있다.&lt;/p>
+&lt;h3 id="preload-속성">preload 속성&lt;/h3>
+&lt;p>현재 페이지에서 빠르게 가져와야 하는 리소스에 사용되는 속성이다.&lt;/p>
+&lt;p>&lt;code>&amp;lt;link rel=&amp;quot;preload&amp;quot; as=&amp;quot;...&amp;quot;&amp;gt;&lt;/code>는 브라우저에게 현재 리소스가 필요하며, 가능한 한 빨리 가져오기를 시도해야 한다고 알리는 역할을 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;preload&amp;#34;&lt;/span> &lt;span class="na">as&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;script&amp;#34;&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;super-important.js&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;preload&amp;#34;&lt;/span> &lt;span class="na">as&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;style&amp;#34;&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;critical.css&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>as&lt;/code> 속성을 사용하여 리소스의 유형을 알려줘야 한다.&lt;/li>
+&lt;li>브라우저는 올바른 유형이 설정되어 있지 않으면 미리 가져온 리소스를 사용하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;code>preload&lt;/code>는 브라우저가 반드시 리소스를 가져오게 만들며, 리소스를 두 번 가져오게 하거나, 필요하지 않은 것을 가져오지 않도록 주의해야한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://codemario318.github.io/post/crp_optimize/crp_3.png"
+width="1050"
+height="244"
+srcset="https://codemario318.github.io/post/crp_optimize/crp_3_hu3e7f770005caa7afcfdf1132cb1616de_42404_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/crp_optimize/crp_3_hu3e7f770005caa7afcfdf1132cb1616de_42404_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="430"
+data-flex-basis="1032px"
+>&lt;/p>
+&lt;p>&lt;code>preload&lt;/code>를 이용하여 리소스를 가져왔지만 현재 페이지에서 즉시 사용되지 않는 리소스는 위의 그림과 같이 워닝 로그가 노출된다.&lt;/p>
+&lt;h3 id="prefetch-속성">prefetch 속성&lt;/h3>
+&lt;p>미래에 필요할 수 있는 리소스를 가져와야 할 때 사용되는 속성이다. 
+&lt;code>&amp;lt;link rel=&amp;quot;prefetch&amp;quot;&amp;gt;&lt;/code>는 현재 페이지 로딩이 마치고 다운로드할 여유가 생겼을 때 가장 낮은 우선순위로 리소스를 가져온다.&lt;/p>
+&lt;p>&lt;code>prefetch&lt;/code>는 사용자가 다음에 할 행동을 미리 준비하는 역할을 한다. 예를 들어, 현재 페이지가 1페이지 라면,&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;prefetch&amp;#34;&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;page-2.html&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위의 코드와 같이 사용하여 2페이지를 먼저 가져와 준비하게 된다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>page-2.html&lt;/code>의 HTML만 가져오고 &lt;code>page-2.html&lt;/code>에서 사용되는 리소스는 가져오지 않는다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="요약">요약&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>CSS 최적화 방법&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>미디어 유형, 미디어 쿼리를 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>JavaScript 최적화 방법&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>body&lt;/code> 태그 닫기 직전 &lt;code>&amp;lt;script&amp;gt;&lt;/code> 태그를 선언&lt;/li>
+&lt;li>&lt;code>&amp;lt;script ... async&amp;gt;&lt;/code>와 같이 &lt;code>async&lt;/code> 속성을 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>리소스 우선순위 지정&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>현재 페이지에서 빠르게 가져와야 하는 리소스에 &lt;code>&amp;lt;link rel=&amp;quot;preload&amp;quot; as=&amp;quot;...&amp;quot;&amp;gt;&lt;/code>와 같이 &lt;code>preload&lt;/code> 속성을 사용&lt;/li>
+&lt;li>미래에 사용할 수 있는 리소스는 &lt;code>&amp;lt;link rel=&amp;quot;prefetch&amp;quot;&amp;gt;&lt;/code>와 같이 &lt;code>prefetch&lt;/code> 속성을 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>브라우저</title><link>https://codemario318.github.io/post/browser/</link><pubDate>Tue, 18 Apr 2023 18:48:11 +0900</pubDate><guid>https://codemario318.github.io/post/browser/</guid><description>&lt;img src="https://codemario318.github.io/post/browser/browser_cover.jpeg" alt="Featured image of post 브라우저" />&lt;h2 id="브라우저-기본-구조">브라우저 기본 구조&lt;/h2>
 &lt;p>&lt;img src="https://codemario318.github.io/post/browser/browser_1.png"
 width="500"
 height="339"
