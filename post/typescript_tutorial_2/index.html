@@ -1,0 +1,378 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="What is Type Annotation in TypeScript 타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다. : type 구문을 식별자 뒤에 붙이는 타입 어"><title>TypeScript Tutorial - 2. Basic Types</title><link rel=canonical href=https://codemario318.github.io/post/typescript_tutorial_2/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="TypeScript Tutorial - 2. Basic Types"><meta property="og:description" content="What is Type Annotation in TypeScript 타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다. : type 구문을 식별자 뒤에 붙이는 타입 어"><meta property="og:url" content="https://codemario318.github.io/post/typescript_tutorial_2/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="TypeScript"><meta property="article:published_time" content="2023-04-18T17:09:29+09:00"><meta property="article:modified_time" content="2023-04-18T17:09:29+09:00"><meta property="og:image" content="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp"><meta name=twitter:title content="TypeScript Tutorial - 2. Basic Types"><meta name=twitter:description content="What is Type Annotation in TypeScript 타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다. : type 구문을 식별자 뒤에 붙이는 타입 어"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description>주니어 개발자 이동현입니다.</h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>BackEnd</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>2</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>6</span></a></li><li><a href=/categories/frontend/><span>FrontEnd</span>
+<span class=content-count>6</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#what-is-type-annotation-in-typescript>What is Type Annotation in TypeScript</a></li><li><a href=#type-annotations-in-variables-and-constants>Type annotations in variables and constants</a></li><li><a href=#type-annotation-examples>Type annotation examples</a></li><li><a href=#base-type>Base Type</a></li><li><a href=#object-type>Object Type</a><ol><li><a href=#object-vs-object><code>object</code> VS <code>Object</code></a></li><li><a href=#the-empty-type>The empty type</a></li></ol></li><li><a href=#array>Array</a><ol><li><a href=#배열-타입이-가진-속성과-메소드>배열 타입이 가진 속성과 메소드</a></li><li><a href=#여러-타입-섞어-저장하기>여러 타입 섞어 저장하기</a></li></ol></li><li><a href=#tuple>Tuple</a><ol><li><a href=#optional-tuple-elements>Optional Tuple Elements</a></li></ol></li><li><a href=#enum>Enum</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/typescript_tutorial_2/><img src=/post/typescript_tutorial_2/ts_cover_hua836966f7fcda4b3d2856eb0c525b4e2_8490_800x0_resize_q75_h2_box_2.webp srcset="/post/typescript_tutorial_2/ts_cover_hua836966f7fcda4b3d2856eb0c525b4e2_8490_800x0_resize_q75_h2_box_2.webp 800w, /post/typescript_tutorial_2/ts_cover_hua836966f7fcda4b3d2856eb0c525b4e2_8490_1600x0_resize_q75_h2_box_2.webp 1600w" width=800 height=336 loading=lazy alt="Featured image of post TypeScript Tutorial - 2. Basic Types"></a></div><div class=article-details><header class=article-category><a href=/categories/frontend/>FrontEnd</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/typescript_tutorial_2/>TypeScript Tutorial - 2. Basic Types</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/04/18</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>4 minute read</time></div></footer></div></header><section class=article-content><h2 id=what-is-type-annotation-in-typescript>What is Type Annotation in TypeScript</h2><p>타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다.</p><p><code>: type</code> 구문을 식별자 뒤에 붙이는 타입 어노테이션으로 사용한다.</p><ul><li><code>type</code>은 모든 유효한 유형 가능</li></ul><p>식별자에 타입 어노테이션을 추가하면 해당 타입으로만 사용할 수 있다. 식별자가 다른 유형으로 사용되면 타입스클입트 컴파일러에서 오류를 발생시킨다.</p><h2 id=type-annotations-in-variables-and-constants>Type annotations in variables and constants</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>variableName</span>: <span class=kt>type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>variableName</span>: <span class=kt>type</span> <span class=o>=</span> <span class=nx>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>constantName</span>: <span class=kt>type</span> <span class=o>=</span> <span class=nx>value</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>위 코드에서 타입 어노테이션은 변수, 상수 이름 뒤에 <code>:</code>을 붙이고 그 뒤에 <code>타입</code>이 온다.</p><p>지정한 타입 외 다른 타입 값을 할당하면 컴파일 에러를 발생시킨다.</p><h2 id=type-annotation-examples>Type annotation examples</h2><ul><li><p><strong>배열</strong><br>배열 타입 어노테이션은 <code>: type[]</code> 로 표시한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>arrayName</span>: <span class=kt>type</span><span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>names</span>: <span class=kt>string</span><span class=p>[]</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;John&#39;</span><span class=p>,</span> <span class=s1>&#39;Jane&#39;</span><span class=p>,</span> <span class=s1>&#39;Peter&#39;</span><span class=p>,</span> <span class=s1>&#39;David&#39;</span><span class=p>,</span> <span class=s1>&#39;Mary&#39;</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p><strong>객체</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>person</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>age</span>: <span class=kt>number</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>person</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>age</span>: <span class=kt>25</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p><strong>함수 인자와 반환형</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>greeting</span> <span class=o>:</span> <span class=p>(</span><span class=nx>name</span>: <span class=kt>string</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>greeting</span> <span class=o>=</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>name</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=sb>`Hi </span><span class=si>${</span><span class=nx>name</span><span class=si>}</span><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>위와 같이 타입 어노테이션을 사용할 경우 <code>string</code>을 인자로 받고, <code>string</code>을 반환하는 모든 함수를 <code>greeting</code>에 할당할 수 있다.</p></li></ul><h2 id=base-type>Base Type</h2><ul><li><p><strong>number</strong><br>타입스크립트에서 모든 숫자는 <strong>부동 소수점값</strong>과 <strong>큰 정수값</strong>에 포함된다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>price</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>price</span> <span class=o>=</span> <span class=mf>9.95</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>counter</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>x</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>100</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=nx>y</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>200</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>bin</span> <span class=o>=</span> <span class=mi>0</span><span class=nx>b100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>anotherBin</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>0</span><span class=nx>B010</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>octal</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>0</span><span class=nx>o10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>hexadecimal</span>: <span class=kt>number</span> <span class=o>=</span> <span class=mi>0</span><span class=nx>XA</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>big</span>: <span class=kt>bigint</span> <span class=o>=</span> <span class=mi>9007199254740991</span><span class=nx>n</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p><strong>string</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>firstName</span>: <span class=kt>string</span> <span class=o>=</span> <span class=s1>&#39;John&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>title</span>: <span class=kt>string</span> <span class=o>=</span> <span class=s2>&#34;Web Developer&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>description</span> <span class=o>=</span> <span class=sb>`This TypeScript string can 
+</span></span></span><span class=line><span class=cl><span class=sb>span multiple 
+</span></span></span><span class=line><span class=cl><span class=sb>lines
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>firstName</span>: <span class=kt>string</span> <span class=o>=</span> <span class=sb>`John`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>title</span>: <span class=kt>string</span> <span class=o>=</span> <span class=sb>`Web Developer`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>profile</span>: <span class=kt>string</span> <span class=o>=</span> <span class=sb>`I&#39;m </span><span class=si>${</span><span class=nx>firstName</span><span class=si>}</span><span class=sb>. 
+</span></span></span><span class=line><span class=cl><span class=sb>I&#39;m a </span><span class=si>${</span><span class=nx>title</span><span class=si>}</span><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>profile</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/** result
+</span></span></span><span class=line><span class=cl><span class=cm>I&#39;m John. 
+</span></span></span><span class=line><span class=cl><span class=cm>I&#39;m a Web Developer.
+</span></span></span><span class=line><span class=cl><span class=cm>**/</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p><strong>boolean</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>pending</span>: <span class=kt>boolean</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nx>pending</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// after a while
+</span></span></span><span class=line><span class=cl><span class=c1>// ..
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>pending</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=object-type>Object Type</h2><p>타입스크립트 <code>object</code> 타입은 원시 타입이 아닌 모든 값을 표현할 수 있다.</p><ul><li>타입스크립트 원시 타입<ul><li><code>number</code></li><li><code>bigint</code></li><li><code>string</code></li><li><code>boolean</code></li><li><code>null</code></li><li><code>undfined</code></li><li><code>symbol</code></li></ul></li></ul><blockquote><p><code>object</code>로 선언된 변수는 원시 타입을 제외한 모든 자료형을 할당할 수 있다.</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>employee</span>: <span class=kt>object</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>employee</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastName</span><span class=o>:</span> <span class=s1>&#39;Doe&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>age</span>: <span class=kt>25</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jobTitle</span><span class=o>:</span> <span class=s1>&#39;Web Developer&#39;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>employee</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>firstName</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span><span class=p>,</span>       
+</span></span><span class=line><span class=cl>  <span class=nx>lastName</span><span class=o>:</span> <span class=s1>&#39;Doe&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>age</span>: <span class=kt>25</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>jobTitle</span><span class=o>:</span> <span class=s1>&#39;Web Developer&#39;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>만약 <code>object</code>로 선언된 변수를 다른 원시 타입으로 다시 할당하려고 하면 에러가 발생한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=nx>employee</span> <span class=o>=</span> <span class=s2>&#34;Jane&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// error TS2322: Type &#39;&#34;Jane&#34;&#39; is not assignable to type &#39;object&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><p><code>object</code> 타입은 선언될 때 지정한 프로퍼티 목록을 고정적으로 가지게 되어, 선언되지 않은 프로퍼티를 호출하게 되면 에러를 발생시킨다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>employee</span><span class=p>.</span><span class=nx>hireDate</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// error TS2339: Property &#39;hireDate&#39; does not exist on type &#39;object&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><blockquote><p>💡 자바스크립트는 보유하지 않은 프로퍼티를 호출하면 <code>undefined</code>를 반환한다.</p></blockquote><p><code>object</code> 타입 내부에 지정되는 프로퍼티들의 타입을 지정할 수 도 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>employee</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastName</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>age</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jobTitle</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>employee</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastName</span><span class=o>:</span> <span class=s1>&#39;Doe&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>age</span>: <span class=kt>25</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jobTitle</span><span class=o>:</span> <span class=s1>&#39;Web Developer&#39;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>employee</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastName</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>age</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jobTitle</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastName</span><span class=o>:</span> <span class=s1>&#39;Doe&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>age</span>: <span class=kt>25</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jobTitle</span><span class=o>:</span> <span class=s1>&#39;Web Developer&#39;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=object-vs-object><code>object</code> VS <code>Object</code></h3><p>타입스크립트는 첫 번째 대문자만 다른 <code>Object</code> 타입도 있다.</p><p><code>object</code> 타입은 원시 타입이 아닌 모든 값들을 표현하고, <code>Object</code> 타입은 동작하는 모든 객체들을 의미한다.</p><blockquote><p>💡 자바스크립트에 포함된 모든 생성자들은 <code>Object</code>를 <code>extend</code>한다. 따라서 <code>Object</code>에는 모든 객체가 할당될 수 있다. 즉 동작하는 모든 객체를 의미한다.</p></blockquote><h3 id=the-empty-type>The empty type</h3><p>타입스크립트에서 비어있는 타입을 표현하는 다른 방법으로 <code>{}</code> 가 있는데, object 타입과 유사하게 동작한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>vacant</span><span class=o>:</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl><span class=nx>vacant</span><span class=p>.</span><span class=nx>firstName</span> <span class=o>=</span> <span class=s1>&#39;John&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//error TS2339: Property &#39;firstName&#39; does not exist on type &#39;{}&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>vacant</span><span class=o>:</span> <span class=p>{}</span> <span class=o>=</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>vacant</span><span class=p>.</span><span class=nx>toString</span><span class=p>());</span>
+</span></span><span class=line><span class=cl><span class=c1>// [object Object]
+</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>vacant</span><span class=o>:</span> <span class=p>{}</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>firstName</span><span class=o>:</span> <span class=s1>&#39;John&#39;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>vacant</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// { firstName: &#39;John&#39; }
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>vacant</span><span class=p>.</span><span class=nx>firstName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// error TS2339: Property &#39;firstName&#39; does not exist on type &#39;{}&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=array>Array</h2><p>타입스크립트의 Array는 순서가 있는 데이터 리스트를 의미한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=err>이름</span><span class=o>:</span> <span class=err>타입</span><span class=p>[];</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>skills</span>: <span class=kt>string</span><span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>skills</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;Problem Solving&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nx>skills</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;Programming&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>skills</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=s1>&#39;Software Design&#39;</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>skills</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Problem Sovling&#39;</span><span class=p>,</span><span class=s1>&#39;Software Design&#39;</span><span class=p>,</span><span class=s1>&#39;Programming&#39;</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>skills</span>: <span class=kt>string</span><span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=nx>skills</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Problem Sovling&#39;</span><span class=p>,</span><span class=s1>&#39;Software Design&#39;</span><span class=p>,</span><span class=s1>&#39;Programming&#39;</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><p>위처럼 선언된 skills에 다른 타입을 넣을 경우 에러가 발생한다</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=nx>skills</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=mi>100</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// Argument of type &#39;number&#39; is not assignable to parameter of type &#39;string&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=배열-타입이-가진-속성과-메소드>배열 타입이 가진 속성과 메소드</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>series</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>series</span><span class=p>.</span><span class=nx>length</span><span class=p>);</span> <span class=c1>// 3
+</span></span></span></code></pre></td></tr></table></div></div><p>유용한 메서드로 <code>forEach()</code>, <code>map()</code>, <code>reduce()</code>, <code>filter()</code> 등이 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>series</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=kd>let</span> <span class=nx>doubleIt</span> <span class=o>=</span> <span class=nx>series</span><span class=p>.</span><span class=nx>map</span><span class=p>(</span><span class=nx>e</span> <span class=o>=&gt;</span> <span class=nx>e</span><span class=o>*</span> <span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>doubleIt</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>[</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span> <span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=여러-타입-섞어-저장하기>여러 타입 섞어 저장하기</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>scores</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Programming&#39;</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=s1>&#39;Software Design&#39;</span><span class=p>,</span> <span class=mi>4</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>scores</span> <span class=o>:</span> <span class=p>(</span><span class=kt>string</span> <span class=o>|</span> <span class=kt>number</span><span class=p>)[];</span>
+</span></span><span class=line><span class=cl><span class=nx>scores</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Programming&#39;</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=s1>&#39;Software Design&#39;</span><span class=p>,</span> <span class=mi>4</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=tuple>Tuple</h2><p>Tuple은 array에 추가 제약사항이 붙은 형태이다.</p><ul><li>내부 요소 갯수 고정</li><li>내부 요소의 타입을 선언할 때 같을 필요는 없음</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>skill</span><span class=o>:</span> <span class=p>[</span><span class=kt>string</span><span class=p>,</span> <span class=kt>number</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>skill</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Programming&#39;</span><span class=p>,</span> <span class=mi>5</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>skill</span><span class=o>:</span> <span class=p>[</span><span class=kt>string</span><span class=p>,</span> <span class=kt>number</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>skill</span> <span class=o>=</span> <span class=p>[</span><span class=mi>5</span><span class=p>,</span> <span class=s1>&#39;Programming&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=c1>// error TS2322: Type &#39;string&#39; is not assignable to type &#39;number&#39;.
+</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>color</span><span class=o>:</span> <span class=p>[</span><span class=kt>number</span><span class=p>,</span> <span class=kt>number</span><span class=p>,</span> <span class=kt>number</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>255</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=optional-tuple-elements>Optional Tuple Elements</h3><p>타입스크립트 3.0부터 선택적으로 사용할 수 있는 요소 선언이 추가되었다.
+선택적으로 사용할 요소 앞에 <code>?</code>를 앞에 붙인다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>let</span> <span class=nx>bgColor</span><span class=p>,</span> <span class=nx>headerColor</span><span class=o>:</span> <span class=p>[</span><span class=kt>number</span><span class=p>,</span> <span class=kt>number</span><span class=p>,</span> <span class=kt>number</span><span class=p>,</span> <span class=kt>number</span><span class=o>?</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>bgColor</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>headerColor</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>255</span><span class=p>,</span> <span class=mi>255</span><span class=p>];</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=enum>Enum</h2><p>Enum은 상수 값들을 그룹으로 묶어 이름 붙인 타입이다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kr>enum</span> <span class=nx>name</span> <span class=p>{</span><span class=nx>constant1</span><span class=p>,</span> <span class=nx>constant2</span><span class=p>,</span> <span class=p>...};</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>constant1</code>, <code>constant2</code>, <code>...</code>는 enum의 멤버가 된다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kr>enum</span> <span class=nx>Month</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Jan</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Feb</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Mar</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Apr</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>May</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Jun</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Jul</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Aug</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Sep</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Oct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Nov</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Dec</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>function</span> <span class=nx>isItSummer</span><span class=p>(</span><span class=nx>month</span>: <span class=kt>Month</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>let</span> <span class=nx>isSummer</span>: <span class=kt>boolean</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>switch</span> <span class=p>(</span><span class=nx>month</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=nx>Month.Jun</span>:
+</span></span><span class=line><span class=cl>        <span class=kt>case</span> <span class=nx>Month.Jul</span>:
+</span></span><span class=line><span class=cl>        <span class=kt>case</span> <span class=nx>Month.Aug</span>:
+</span></span><span class=line><span class=cl>            <span class=kt>isSummer</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=nx>isSummer</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>isSummer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>isItSummer</code>의 인자인 <code>month</code>는 <code>Month</code> enum에 해당하는 값을 받을 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>isItSummer</span><span class=p>(</span><span class=nx>Month</span><span class=p>.</span><span class=nx>Dec</span><span class=p>));</span> <span class=c1>//false
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>isItSummer</span><span class=p>(</span><span class=mi>11</span><span class=p>));</span> <span class=c1>//false
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>isItSummer</span><span class=p>(</span><span class=nx>MonthSecond</span><span class=p>.</span><span class=nx>Dec</span><span class=p>));</span> <span class=c1>//error TS2345: Argument of type &#39;MonthSecond.Dec&#39; is not assignable to parameter of type &#39;Month&#39;.
+</span></span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/typescript/>TypeScript</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://www.typescripttutorial.net/typescript-tutorial target=_blank rel=noopener><div class=article-details><h2 class=article-title>TypeScript Tutorial</h2><footer class=article-time>https://www.typescripttutorial.net/typescript-tutorial</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/typescript_tutorial_1_1_1/><div class=article-image><img src=/post/typescript_tutorial_1_1_1/ts_cover.63bc45893a3cdcad5d89621d5cd04b61_hua836966f7fcda4b3d2856eb0c525b4e2_8490_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post TypeScript Tutorial - 1. Gettig Started(1)" data-key=typescript_tutorial_1_1_1 data-hash="md5-Y7xFiTo83K1diWIdXNBLYQ=="></div><div class=article-details><h2 class=article-title>TypeScript Tutorial - 1. Gettig Started(1)</h2></div></a></article><article class=has-image><a href=/post/typescript_tutorial_1_1_2/><div class=article-image><img src=/post/typescript_tutorial_1_1_2/ts_cover.63bc45893a3cdcad5d89621d5cd04b61_hua836966f7fcda4b3d2856eb0c525b4e2_8490_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post TypeScript Tutorial - 1.2 Why use TypeScript" data-key=typescript_tutorial_1_1_2 data-hash="md5-Y7xFiTo83K1diWIdXNBLYQ=="></div><div class=article-details><h2 class=article-title>TypeScript Tutorial - 1.2 Why use TypeScript</h2></div></a></article><article class=has-image><a href=/post/js_closure/><div class=article-image><img src=/post/js_closure/js_cover.4d656cf2134223b07bb76638b40faed4_huc1c9a52f33db3f5dad8bb16243cf7e4e_11875_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Javascript - Closure" data-key=js_closure data-hash="md5-TWVs8hNCI7B7t2Y4tA+u1A=="></div><div class=article-details><h2 class=article-title>Javascript - Closure</h2></div></a></article><article class=has-image><a href=/post/js_this/><div class=article-image><img src=/post/js_this/js_cover.4d656cf2134223b07bb76638b40faed4_huc1c9a52f33db3f5dad8bb16243cf7e4e_11875_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Javascript - this" data-key=js_this data-hash="md5-TWVs8hNCI7B7t2Y4tA+u1A=="></div><div class=article-details><h2 class=article-title>Javascript - this</h2></div></a></article><article class=has-image><a href=/post/js_hoisting/><div class=article-image><img src=/post/js_hoisting/js_cover.4d656cf2134223b07bb76638b40faed4_huc1c9a52f33db3f5dad8bb16243cf7e4e_11875_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Javascript - Hoisting" data-key=js_hoisting data-hash="md5-TWVs8hNCI7B7t2Y4tA+u1A=="></div><div class=article-details><h2 class=article-title>Javascript - Hoisting</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
