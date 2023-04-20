@@ -206,9 +206,9 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/go_1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_1/</guid><description>&lt;img src="https://codemario318.github.io/post/go_1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h1 id="변수">변수&lt;/h1>
-&lt;h2 id="기본-선언">기본 선언&lt;/h2>
-&lt;p>변수는 Go 키워드 var을 사용하여 선언한다. var 키워드 뒤에 변수명을 적고 변수 타입을 적는다.&lt;/p>
+&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/go_1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_1/</guid><description>&lt;img src="https://codemario318.github.io/post/go_1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h2 id="변수">변수&lt;/h2>
+&lt;h3 id="기본-선언">기본 선언&lt;/h3>
+&lt;p>변수는 Go 키워드 &lt;code>var&lt;/code>을 사용하여 선언한다. &lt;code>var&lt;/code> 키워드 뒤에 변수명을 적고 변수 타입을 적는다.&lt;/p>
 &lt;p>변수를 선언하면서 초기값을 지정하지 않으면, Go는 Zero Value를 기본적으로 할당한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -218,8 +218,8 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="kt">int&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="초기값-지정">초기값 지정&lt;/h2>
-&lt;p>변수 선언문에서 변수 초기값을 할당할 수도 있다. float32 타입 변수 f에 11.0이라는 초기값을 할당하기 위해 아래같이 쓸 수 있다.&lt;/p>
+&lt;/div>&lt;h3 id="초기값-지정">초기값 지정&lt;/h3>
+&lt;p>변수 선언문에서 변수 초기값을 할당할 수도 있다. &lt;code>float32&lt;/code> 타입 변수 &lt;code>f&lt;/code>에 &lt;code>11.0&lt;/code>이라는 초기값을 할당하기 위해 아래같이 쓸 수 있다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -228,7 +228,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">f&lt;/span> &lt;span class="kt">float32&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mf">11.&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="할당">할당&lt;/h2>
+&lt;/div>&lt;h3 id="할당">할당&lt;/h3>
 &lt;p>선언된 변수는 이후 해당 타입 값을 할당할 수 있다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -241,7 +241,7 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>→선언된 변수가 Go 프로그램 내에서 사용되지 않는다면, 에러를 발생시킨다.&lt;/p>
-&lt;h3 id="short-assignment-statement">Short Assignment Statement&lt;/h3>
+&lt;h4 id="short-assignment-statement">Short Assignment Statement&lt;/h4>
 &lt;p>함수 내부라면 Short Assignment Statement를 사용할 수 있다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -253,8 +253,8 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>함수 밖에서 선언시에는 var를 사용해야 한다.&lt;/p>
-&lt;h2 id="여러-개-변수">여러 개 변수&lt;/h2>
+&lt;/div>&lt;p>함수 밖에서 선언시에는 &lt;code>var&lt;/code>를 사용해야 한다.&lt;/p>
+&lt;h3 id="여러-개-변수">여러 개 변수&lt;/h3>
 &lt;p>동일한 타입 변수가 여러개 있으면, 변수들을 나열하고 마지막에 타입을 한번만 지정할 수 있다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -270,7 +270,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">j&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">k&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="타입-추론">타입 추론&lt;/h2>
+&lt;/div>&lt;h3 id="타입-추론">타입 추론&lt;/h3>
 &lt;p>Go 에서는 할당되는 값을 보고 그 타입을 추론하는 기능이 자주 사용된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -282,9 +282,9 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>i는 정수형으로 1이 할당되고, s는 문자열로 Hello가 할당된다.&lt;/p>
-&lt;h1 id="상수">상수&lt;/h1>
-&lt;p>상수는 Go 키워드 const를 사용하여 선언한다. const 키워드 뒤에 상수명을 적고, 그 뒤에 상수 타입, 그리고 상수 값을 할당한다.&lt;/p>
+&lt;/div>&lt;p>i는 정수형으로 1이 할당되고, &lt;code>s&lt;/code>는 문자열로 Hello가 할당된다.&lt;/p>
+&lt;h2 id="상수">상수&lt;/h2>
+&lt;p>상수는 Go 키워드 &lt;code>const&lt;/code>를 사용하여 선언한다. &lt;code>const&lt;/code> 키워드 뒤에 상수명을 적고, 그 뒤에 상수 타입, 그리고 상수 값을 할당한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
