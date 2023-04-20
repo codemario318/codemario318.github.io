@@ -1,4 +1,200 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:05:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/go_3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_3/</guid><description>&lt;img src="https://codemario318.github.io/post/go_3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:10:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/go_4/</link><pubDate>Thu, 20 Apr 2023 12:10:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_4/</guid><description>&lt;img src="https://codemario318.github.io/post/go_4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
+&lt;p>함수 파라미터는 0개 이상 사용할 수 있는데, 각 파라미터는 파라미터명 뒤에 &lt;code>int&lt;/code>, &lt;code>string&lt;/code> 등 파라미터 타입을 정의한다.&lt;/p>
+&lt;p>함수의 반환 타입은 파라미터 괄호 뒤에 적는다.&lt;/p>
+&lt;p>함수는 패키지 안에 정의되며 호출되는 함수가 호출하는 함수의 반드시 앞에 위치해야 할 필요는 없다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">msg&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="pass-by-reference">Pass By Reference&lt;/h2>
+&lt;p>Go에서 파라미터를 전달하는 방식은 크게 Pass By Value와 Pass By Reference로 나뉜다.&lt;/p>
+&lt;h2 id="pass-by-value">Pass By Value&lt;/h2>
+&lt;p>함수를 사용할 때 변수를 그대로 사용하면 함수 인자로 사용된 변수들의 값이 복사되어 함수에게 전달된다.&lt;/p>
+&lt;p>따라서 함수 인자로 받은 값을 함수 내부에서 변경해도 실제 변수값은 영향을 전혀 받지 않는다.&lt;/p>
+&lt;h2 id="pass-by-reference-1">Pass By Reference&lt;/h2>
+&lt;p>변수 앞에 &lt;code>&amp;amp;&lt;/code> 를 붙이면 주소를 표시한다. 흔히 포인터라 부르며, 포인터를 사용하면 함수에서 해당 변수를 사용할 때 복사본이 아닌 실제 메모리에 접근하여 변수를 지정하므로 함수 내에서 변경이 인자에 넘겨진 주소를 가진 변수의 실제 값이 변경된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">msg&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">//변경된 메시지 출력
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Changed&amp;#34;&lt;/span> &lt;span class="c1">//메시지 변경
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>함수에서 파라미터를 선언할 때 &lt;code>*string&lt;/code> 처럼 포인터임을 표시하면 해당 파라미터가 문자열이 아닌 문자열을 저장하고있는 메모리의 주소를 갖는다.&lt;/p>
+&lt;p>함수 내에서 포인터 파라미터의 주소에 저장된 데이터를 변경하려면 &lt;code>*변수명 = 값&lt;/code> 형태로 변수 이름에 역참조 심볼인 &lt;code>*&lt;/code>을 붙여 접근하고 변경할 수 있다.&lt;/p>
+&lt;h2 id="가변인자함수">가변인자함수&lt;/h2>
+&lt;p>함수에 여러개ㅢ 파라미터를 전달하려면 가변 파라미터를 나타내는 &lt;code>...&lt;/code> 을 타입 앞에 붙여 사용한다.&lt;/p>
+&lt;p>가변 파라미터를 갖는 함수를 호출할 때 n개 동일 타입 파라미터를 전달할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;This&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;is&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;a&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;book&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hi&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">msg&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="함수-반환값">함수 반환값&lt;/h2>
+&lt;h3 id="기본형">기본형&lt;/h3>
+&lt;p>함수에서 반환값이 있는 경우 &lt;code>func&lt;/code> 문 마지막에 리턴 타입을 정의한다. 그리고 &lt;code>return&lt;/code> 키워드를 사용해야 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">total&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">total&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="o">**&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="복수-개-반환값">복수 개 반환값&lt;/h3>
+&lt;p>go 언어에서 함수는 반환값이 여러개일 수 있다.&lt;/p>
+&lt;p>여러개 값을 반환하기 위해서는 해당 반환 타입들을 괄호 안에 적어준다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="c1">// 합계
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">count&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="c1">// 요소 갯수
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span>&lt;span class="o">++&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="named-return-parameter">Named Return Parameter&lt;/h3>
+&lt;p>Named Return Parameter라는 기능을 제공하는데, 이는 반환되는 값들을 미리 선언하며, 값들이 여러 개 일때, 코드 가독성을 높힌다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">**&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="nx">total&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">total&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/go_3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_3/</guid><description>&lt;img src="https://codemario318.github.io/post/go_3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
 &lt;p>Go 언어에서 반복문은 &lt;code>for&lt;/code> 하나뿐이다. 다른 언어들과 비슷하게 &lt;code>for 초기값; 조건식; 증감 {...}&lt;/code> 형식을 따른다.&lt;/p>
 &lt;p>초기값, 조건식, 증감식은 경우에 따라 생략할 수 있고, &lt;code>초기값; 조건식; 증감&lt;/code> 을 둘러싸는 괄호를 추가하면 에러가 발생한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -5577,200 +5773,4 @@ data-flex-basis="326px"
 &lt;h1 id="트랜잭션-지원-메타데이터">트랜잭션 지원 메타데이터&lt;/h1>
 &lt;p>데이터베이스 서버에서 테이블의 구조 정보와 스토어드 프로그램 등의 정보를 데이터 딕셔너리 또는 메타데이터라고 하는데, MySQL 서버는 5.7 버전까지 테이블의 구조를 FRM 파일에 저장하고 일부 스토어드 프로그램 또한 파일 기반으로 관리 되었다.&lt;/p>
 &lt;p>이러한 파일 기반의 메타데이터는 생성 및 변경 작업이 트랜잭션을 지원하지 않기 때문에 테이블의 생성 또는 변경 도중에 MySQL 서버가 비정상적으로 종료되면 일관되지 않은 상태로 남게되는 문제가 있었다.&lt;/p>
-&lt;p>이에따라 8버전 부터는 테이블의 구조 정보나 스토어드 프로그램의 코드 관련 정보를 모두 InnoDB의 테이블에 저장하도록 개선되었다.&lt;/p></description></item><item><title>Archives</title><link>https://codemario318.github.io/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/archives/</guid><description/></item><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/go_4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/go_4/</guid><description>&lt;img src="https://codemario318.github.io/post/go_4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
-&lt;p>함수 파라미터는 0개 이상 사용할 수 있는데, 각 파라미터는 파라미터명 뒤에 &lt;code>int&lt;/code>, &lt;code>string&lt;/code> 등 파라미터 타입을 정의한다.&lt;/p>
-&lt;p>함수의 반환 타입은 파라미터 괄호 뒤에 적는다.&lt;/p>
-&lt;p>함수는 패키지 안에 정의되며 호출되는 함수가 호출하는 함수의 반드시 앞에 위치해야 할 필요는 없다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">msg&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 id="pass-by-reference">Pass By Reference&lt;/h2>
-&lt;p>Go에서 파라미터를 전달하는 방식은 크게 Pass By Value와 Pass By Reference로 나뉜다.&lt;/p>
-&lt;h2 id="pass-by-value">Pass By Value&lt;/h2>
-&lt;p>함수를 사용할 때 변수를 그대로 사용하면 함수 인자로 사용된 변수들의 값이 복사되어 함수에게 전달된다.&lt;/p>
-&lt;p>따라서 함수 인자로 받은 값을 함수 내부에서 변경해도 실제 변수값은 영향을 전혀 받지 않는다.&lt;/p>
-&lt;h2 id="pass-by-reference-1">Pass By Reference&lt;/h2>
-&lt;p>변수 앞에 &lt;code>&amp;amp;&lt;/code> 를 붙이면 주소를 표시한다. 흔히 포인터라 부르며, 포인터를 사용하면 함수에서 해당 변수를 사용할 때 복사본이 아닌 실제 메모리에 접근하여 변수를 지정하므로 함수 내에서 변경이 인자에 넘겨진 주소를 가진 변수의 실제 값이 변경된다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">msg&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">//변경된 메시지 출력
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">msg&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Changed&amp;#34;&lt;/span> &lt;span class="c1">//메시지 변경
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>함수에서 파라미터를 선언할 때 &lt;code>*string&lt;/code> 처럼 포인터임을 표시하면 해당 파라미터가 문자열이 아닌 문자열을 저장하고있는 메모리의 주소를 갖는다.&lt;/p>
-&lt;p>함수 내에서 포인터 파라미터의 주소에 저장된 데이터를 변경하려면 &lt;code>*변수명 = 값&lt;/code> 형태로 변수 이름에 역참조 심볼인 &lt;code>*&lt;/code>을 붙여 접근하고 변경할 수 있다.&lt;/p>
-&lt;h2 id="가변인자함수">가변인자함수&lt;/h2>
-&lt;p>함수에 여러개ㅢ 파라미터를 전달하려면 가변 파라미터를 나타내는 &lt;code>...&lt;/code> 을 타입 앞에 붙여 사용한다.&lt;/p>
-&lt;p>가변 파라미터를 갖는 함수를 호출할 때 n개 동일 타입 파라미터를 전달할 수 있다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;This&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;is&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;a&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;book&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hi&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">say&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">msg&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">msg&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 id="함수-반환값">함수 반환값&lt;/h2>
-&lt;h3 id="기본형">기본형&lt;/h3>
-&lt;p>함수에서 반환값이 있는 경우 &lt;code>func&lt;/code> 문 마지막에 리턴 타입을 정의한다. 그리고 &lt;code>return&lt;/code> 키워드를 사용해야 한다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">total&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">total&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="o">**&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 id="복수-개-반환값">복수 개 반환값&lt;/h3>
-&lt;p>go 언어에서 함수는 반환값이 여러개일 수 있다.&lt;/p>
-&lt;p>여러개 값을 반환하기 위해서는 해당 반환 타입들을 괄호 안에 적어준다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">total&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="c1">// 합계
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">count&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="c1">// 요소 갯수
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span>&lt;span class="o">++&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 id="named-return-parameter">Named Return Parameter&lt;/h3>
-&lt;p>Named Return Parameter라는 기능을 제공하는데, 이는 반환되는 값들을 미리 선언하며, 값들이 여러 개 일때, 코드 가독성을 높힌다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">**&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="nx">total&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">n&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">total&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nx">n&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">count&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Search</title><link>https://codemario318.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/search/</guid><description/></item></channel></rss>
+&lt;p>이에따라 8버전 부터는 테이블의 구조 정보나 스토어드 프로그램의 코드 관련 정보를 모두 InnoDB의 테이블에 저장하도록 개선되었다.&lt;/p></description></item><item><title>Archives</title><link>https://codemario318.github.io/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/archives/</guid><description/></item><item><title>Search</title><link>https://codemario318.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/search/</guid><description/></item></channel></rss>
