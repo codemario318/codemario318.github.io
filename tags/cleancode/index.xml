@@ -1,4 +1,690 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 16:22:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean_code_9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 16:30:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
+&lt;h2 id="클래스-체계">클래스 체계&lt;/h2>
+&lt;p>표준 자바 관례에 의하면 아래 순서로 선언하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>public static&lt;/code> 상수&lt;/li>
+&lt;li>&lt;code>private static&lt;/code> 변수&lt;/li>
+&lt;li>비공개 인스턴스 변수
+&lt;ul>
+&lt;li>공개 변수가 필요한 경우는 거의 없다&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>공개 함수&lt;/li>
+&lt;li>비공개 함수
+&lt;ul>
+&lt;li>자신을 호출하는 공개 함수 직후에 넣는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>즉 추상화 단계가 순차적으로 내려간다. 그래서 프로그램은 신문 기사처럼 읽힌다.&lt;/p>
+&lt;h3 id="캡슐화">캡슐화&lt;/h3>
+&lt;p>변수와 유틸리티 함수는 가능한 공개하지 않는 편이 낫지만 반드시 숨겨야한다는 법칙도 없다. 때로는 변수나 유틸리티 함수를 &lt;code>protected&lt;/code>로 선언해 테스트 코드에 접근을 허용하기도 한다.&lt;/p>
+&lt;p>같은 패키지 안에서 테스트 코드가 함수를 호출하거나 변수를 사용해야 한다면 그 함수나 변수를 &lt;code>protected&lt;/code>로 선언하거나 패키지 전체로 공개한다.&lt;/p>
+&lt;p>하지만 그 전에 &lt;strong>비공개 상태를 유지&lt;/strong>할 방법을 강구해야 한다.&lt;/p>
+&lt;blockquote>
+&lt;p>💡 캡슐화를 풀어주는 결정은 언제나 최후의 수단이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="클래스는-작아야-한다">클래스는 작아야 한다.&lt;/h2>
+&lt;p>클래스를 만들 때 첫 번째 규칙은 크기다. 클래스는 작아야 한다. 클래스를 설계할 때도, 함수와 마찬가지로, &lt;strong>작게&lt;/strong>가 기본 규칙이다.&lt;/p>
+&lt;h3 id="얼마나-작아야-할까">얼마나 작아야 할까?&lt;/h3>
+&lt;p>함수는 물리적인 행 수로 크기를 측정했지만 클래스는 &lt;strong>맡은 책임 수&lt;/strong>로 측정한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">SuperDashboard&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">JFrame&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">MetaDataUser&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Component&lt;/span> &lt;span class="nf">getLastFocusedCompnent&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setLastFocused&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Component&lt;/span> &lt;span class="n">lastFocused&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getMajorVersionNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getMinorVersionNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getBuildNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>메서드 개수를 5개 정도로 줄인 클래스이다. 하지만 메서드 수가 적음에도 불구하고 책임이 너무 많다.&lt;/p>
+&lt;h3 id="클래스-이름">클래스 이름&lt;/h3>
+&lt;p>클래스 이름은 해당 클래스 책임을 기술해야 한다. 실제로 &lt;strong>클래스 작명은 크기를 줄이는 첫 번째 관문&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>간결한 이름이 떠오르지 않는다면 대부분 클래스 크기가 너무 커서(책임이 많아서) 그렇다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>예를 들어 클래스 이름에 Processor, Manager, Super 등과 같이 모호한 단어가 있다면 클래스가 여러 책임을 떠안고있다는 뜻이다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="클래스-설명">클래스 설명&lt;/h3>
+&lt;p>클래스 설명은 만일(if), 그리고(and), (하)며(or), 하지만(but)을 사용하지 않고서 25단어 내외로 가능해야 한다.&lt;/p>
+&lt;p>위 &lt;code>SuperDashboard&lt;/code> 의 설명을 만들면&lt;/p>
+&lt;blockquote>
+&lt;p>“마지막으로 포커스를 얻었던 컴포넌트에 접근하는 방법을 제공하며, 버전과 빌드 번호를 추적하는 메커니즘을 제공한다.”&lt;/p>
+&lt;/blockquote>
+&lt;p>인데 “~하며”가 포함되므로 책임이 많다고 생각할 수 있다.&lt;/p>
+&lt;h2 id="단일-책임-원칙---srp-single-responsibility-principle">단일 책임 원칙 - SRP: Single Responsibility Principle&lt;/h2>
+&lt;p>단일 책임 원칙은 클래스나 모듈을 &lt;strong>변경할 이유가 단 하나뿐이어야 한다&lt;/strong>는 원칙이다.&lt;/p>
+&lt;p>SRP는 ‘책임’이라는 개념을 정의하며 적절한 클래스 크기를 제시한다. 클래스는 책임, 즉 변경할 이유가 하나여야 한다는 의미다.&lt;/p>
+&lt;p>겉보기에 작아보이는 위 SuperDashboard는 변경할 이유가 2가지다.&lt;/p>
+&lt;ol>
+&lt;li>소프트웨어 버전 정보를 추적한다.
+&lt;ul>
+&lt;li>버전 정보는 소프트웨어를 출시할 때마다 달라진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>자바 스윙 컴포넌트를 관리한다.
+&lt;ul>
+&lt;li>SuperDashboard는 최상위 GUI 윈도의 스윙 표현인 JFrame에서 파생한 클래스다.
+즉, 스윙 코드를 변경할 때마다 버전 번호가 달라진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>책임(변경할 이유)을 파악하려 애쓰다 보면 코드를 추상화 하기도 쉬워진다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Version&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getMajorVersionNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getMinorVersionNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">getBuildNumber&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>버전 정보를 다루는 메서드 세 개를 따로 빼내 version이라는 독자적인 클래스를 만든다.&lt;/p>
+&lt;blockquote>
+&lt;p>SRP는 객체 지향 설계에서 더욱 중요한 개념이다. 또한 이해하고 지키기 수월한 개념이기도 하다. 하지만 이상하게도 SRP는 클래스 설계자가 가장 무시하는 규칙 중 하나다.&lt;/p>
+&lt;/blockquote>
+&lt;p>소프트웨어를 돌아가게 만드는 활동과 소프트웨어를 깨끗하게 만드는 활동은 완전히 별개다.&lt;/p>
+&lt;p>개발자는 자잘한 책임 클래스가 많아지면 큰 그림을 이해하기 어려워진다고 우려한다. 큰 그림을 이해하려면 이 클래스 저 클래스를 수없이 넘나들어야 한다고 걱정한다.&lt;/p>
+&lt;p>하지만 작은 클래스가 많은 시스템이든 큰 클래스가 몇 개뿐인 시스템이든 익힐 내용은 그 양이 비슷하다.&lt;/p>
+&lt;p>클래스를 작게 유지하는 행위는 코드를 체계적으로 정리하는 과정으로, 단일 책임을 가진 클래스를 만들고 이름을 잘 붙인다면 자연스럽게 코드가 정리된다.&lt;/p>
+&lt;ul>
+&lt;li>책임이 많은 클래스는 큰 공구함에 여러 공구를 마구 때려넣는 행동과 비슷하다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="응집도">응집도&lt;/h2>
+&lt;p>클래스는 인스턴스 변수 수가 적어야 한다. 각 클래스 메서드는 클래스 인스턴스 변수를 하나 이상 사용해야 한다.&lt;/p>
+&lt;p>일반적으로 메서드가 변수를 더 많이 사용할수록 메서드와 클래스는 응집도가 더 높다. 모든 인스턴스 변수를 메서드마다 사용하는 클래스는 응집도가 가장 높다.&lt;/p>
+&lt;ul>
+&lt;li>일반적으로 이처럼 응집도가 가장 높은 클래스는 가능하지도 바람직하지도 않다.&lt;/li>
+&lt;/ul>
+&lt;p>그렇지만 대부분 응집도가 높은 클래스를 선호한다. &lt;strong>응집도가 높다는 말은 클래스에 속한 메서드와 변수가 서로 의존하며 논리적인 단위로 묶인다는 의미다&lt;/strong>.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Stack&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">topOfStack&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">List&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Integer&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">elements&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">LinkedList&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Integer&lt;/span>&lt;span class="o">&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">size&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">topOfStack&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">push&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">topOfStack&lt;/span>&lt;span class="o">++;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">elements&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">add&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">element&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">pop&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">PoppedWhenEmpty&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">topOfStack&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">PoppedWhenEmpty&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">element&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">elements&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">get&lt;/span>&lt;span class="o">(--&lt;/span>&lt;span class="n">topOfStack&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">elements&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">remove&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">topOfStack&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 클래스는 응집도가 아주 높다. &lt;code>size()&lt;/code>를 제외한 다른 두 메서드는 두 변수를 모두 사용한다.&lt;/p>
+&lt;p>함수를 작게, 매개변수 목록을 짧게라는 전략을 따르다 보면 때때로 몇몇 메서드만이 사용하는 인스턴스 변수가 아주 많아진다.&lt;/p>
+&lt;p>응집도가 높아지도록 변수와 메서드를 적절히 분리해 새로운 클래스 두세 개로 쪼개준다.&lt;/p>
+&lt;h3 id="응집도를-유지하면-작은-클래스-여럿이-나온다">응집도를 유지하면 작은 클래스 여럿이 나온다.&lt;/h3>
+&lt;p>큰 함수를 작은 함수 여럿으로 나누기만 해도 클래스 수가 많아진다.&lt;/p>
+&lt;p>예를 들어 변수가 아주 많은 큰 함수 하나가 있다. 큰 함수 일부를 작은 함수 하나로 빼내고 싶은데, 빼내려는 코드가 큰 함수에 정의된 변수 넷을 사용한다. 그렇다면 변수 네 개를 새 함수에 인수로 넘겨야 옳은가?&lt;/p>
+&lt;p>전혀 아니다. 만약 네 변수를 &lt;strong>클래스 인스턴스 변수&lt;/strong>로 승격한다면 새 &lt;strong>함수는 인수가 필요없다.&lt;/strong> 그만큼 함수를 쪼개기 쉬워진다.&lt;/p>
+&lt;p>이렇게 하면 클래스가 응집력을 잃는다. 몇몇 함수만 사용하는 인스턴스 변수가 점점 더 늘어나기 때문이다.&lt;/p>
+&lt;blockquote>
+&lt;p>몇몇 함수가 몇몇 변수만 사용한다면 독자적인 클래스로 분리하면 된다. &lt;strong>응집력을 잃는다면 쪼개라&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nn">literatePrimes&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PrintPrimes&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">M&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1000&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">RR&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">CC&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">WW&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">ORDMAX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">30&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">M&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">PAGENUMBER&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">PAGEOFFSET&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">ROWOFFSET&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">K&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">boolean&lt;/span> &lt;span class="n">JPRIME&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">ORD&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">SQUARE&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">MULT&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">ORDMAX&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">J&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">K&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ORD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SQUARE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">K&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">M&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">J&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">J&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">SQUARE&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ORD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ORD&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SQUARE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">ORD&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">ORD&lt;/span>&lt;span class="o">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">MULT&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">ORD&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">JPRIME&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">N&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">ORD&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">JPRIME&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">MULT&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">MULT&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">MULT&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">MULT&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">JPRIME&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">N&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="o">(!&lt;/span>&lt;span class="n">JPRIME&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">K&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">K&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">K&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">J&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PAGENUMBER&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PAGEOFFSET&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">PAGEOFFSET&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">M&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;The First &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">M&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34; Prime Numbers --- Page &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">PAGENUMBER&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">ROWOFFSET&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">PAGEOFFSET&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">ROWOFFSET&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">PAGEOFFSET&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">RR&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">ROWOFFSET&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">C&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">C&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">CC&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">ROWOFFSET&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">C&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RR&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">M&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;%10d&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="n">ROWOFFSET&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">C&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RR&lt;/span>&lt;span class="o">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;\f&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PAGENUMBER&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">PAGENUMBER&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PAGEOFFSET&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">PAGEOFFSET&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">RR&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">CC&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>함수가 하나뿐인 위 프로그램은 엉망이다.&lt;/p>
+&lt;ul>
+&lt;li>들여쓰기 심함&lt;/li>
+&lt;li>이해하기 힘든 변수 이름&lt;/li>
+&lt;li>구조가 빽빽함&lt;/li>
+&lt;/ul>
+&lt;p>→ 여러함수로 나눠야한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nn">literatePrimes&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PrimePrinter&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">NUMBER_OF_PRIMES&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1000&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">primes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">PrimeGenerator&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">generate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">NUMBER_OF_PRIMES&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">ROWS_PER_PAGE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">final&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">COLUMNS_PER_PAGE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RowColumnPagePrinter&lt;/span> &lt;span class="n">tablePrinter&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="n">RowColumnPagePrinter&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ROWS_PER_PAGE&lt;/span>&lt;span class="o">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">COLUMNS_PER_PAGE&lt;/span>&lt;span class="o">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;The First &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">NUMBER_OF_PRIMES&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34; Prime Numbers&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tablePrinter&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">print&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">primes&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>가장 먼저 눈에 띄는 변화가 프로그램이 길어졌다. 길이가 늘어난 이유는 여러가지다.&lt;/p>
+&lt;ol>
+&lt;li>리팩터링한 프로그램은 좀 더 길고 서술적인 변수 이름을 사용한다.&lt;/li>
+&lt;li>리팩터링한 프로그램은 코드에 주석을 추가하는 수단으로 함수 선언과 클래스 선언을 활용한다.&lt;/li>
+&lt;li>가독성을 높이고자 공백을 추가하고 형식을 맞추었다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;code>PrimePrinter&lt;/code> 클래스는 &lt;code>main&lt;/code> 함수 하나만 포함하며 실행 환경을 책임진다. 호출 방식이 달라지면 클래스도 바뀐다. 예를들어 SOAP 서비스로 바꾸려면 &lt;code>PrimePrinter&lt;/code> 클래스를 고친다.&lt;/p>
+&lt;p>&lt;code>PrimeGenerator&lt;/code> 클래스는 소수 목록을 생성하는 방법을 안다. 코드를 살펴보면 알겠지만, 객체로 인스턴스화하는 클래스가 아니다. 단순히 변수를 선언하고 감추려고 사용하는 유용한 공간일 뿐이다.&lt;/p>
+&lt;ul>
+&lt;li>소수를 계산하는 알고리즘이 바뀐다면 PrimeGenerator 클래스를 고친다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="변경하기-쉬운-클래스">변경하기 쉬운 클래스&lt;/h2>
+&lt;blockquote>
+&lt;p>대다수 시스템은 지속적인 변경이 가해진다. 그리고 뭔가 변경할 때마다 시스템이 의도대로 동작하지 않을 위험이 따른다. &lt;strong>깨끗한 시스템은 클래스를 체계적으로 정리해 변경에 수반하는 위험을 낮춘다.&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Sql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">create&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">insert&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Object&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">fields&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">selectAll&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">findByKey&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">keyColumn&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">keyValue&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">select&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Column&lt;/span> &lt;span class="n">column&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">pattern&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">select&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Criteria&lt;/span> &lt;span class="n">criteria&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">preparedInsert&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">columnList&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">valuesList&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Object&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">fields&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">selectWithCriteria&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">criteria&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">placeholderList&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>update를 아직 지원하지 않는 코드다. 지원할 시점이 오면 클래스에 손대어 코쳐야 한다. 문제는 코드에 손대면 위험이 생긴다는 사실이다. 어떤 변경이든 클래스에 손대면 다른 코드를 망가뜨릴 잠정적인 위험이 존재한다.&lt;/p>
+&lt;ul>
+&lt;li>새로운 SQL문을 지원하려면 반드시 &lt;code>Sql&lt;/code> 클래스에 손대야 한다.&lt;/li>
+&lt;li>또한 기존 SQL문 하나를 수정할 때도 반드시 &lt;code>Sql&lt;/code> 클래스에 손대야 한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>이렇듯 변경할 이유가 두 가지이므로 &lt;code>Sql&lt;/code> 클래스는 SRP를 위반한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>단순히 구조적인 관점에서도 &lt;code>Sql&lt;/code>은 SRP를 위반한다. &lt;code>selectWithCriteria&lt;/code>라는 비공개 메서드가 있는데, 이 메서드는 select문을 처리할 때만 사용한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">abstract&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Sql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">CreateSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">CreateSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">SelectSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">SelectSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">InsertSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">InsertSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">SelectWithCriteraSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">SelectWithCriteraSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">SelectWithMatchSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">SelectWithMatchSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Criteria&lt;/span> &lt;span class="n">criteria&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">FindByKeySql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">FindByKeySql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span> &lt;span class="n">column&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">pattern&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">CreateSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">CreateSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">keyColumn&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">keyValue&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PreparedInsertSql&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">PreparedInsertSql&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">table&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">placeholderList&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Where&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Where&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">criteria&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ColumnList&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Sql&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">ColumnList&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Column&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">columns&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">generate&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>공개 인터페이스를 각각 &lt;code>Sql&lt;/code>클래스에서 파생하는 클래스로 만들었다. &lt;code>valueList&lt;/code>와 같은 비공개 메서드는 해당하는 파생 클래스로 옮겼다. 모든 파생 클래스가 공통으로 사용하는 비공개 메서드는 &lt;code>Where&lt;/code>와 &lt;code>ColumnList&lt;/code>라는 두 유틸리티 클래스에 넣었다.&lt;/p>
+&lt;ul>
+&lt;li>클래스를 서로 분리하여 각 클래스는 극도로 단순하며 이해하기 쉽다. 함수 하나를 수정했다고 다른 함수가 망가질 위험도 사실상 없다. 테스트 관점에서 모든 논리를 구석구석 증명하기도 쉬워졌다.&lt;/li>
+&lt;/ul>
+&lt;p>새로운 sql을 넣을때도 기존 클래스를 변경할 필요가 전혀 없다.&lt;/p>
+&lt;ul>
+&lt;li>새 기능을 수정하거나 기존 기능을 변경할 때 건드릴 코드가 최소인 시스템 구조가 바람직하다.&lt;/li>
+&lt;li>이상적인 시스템이라면 새 기능을 추가할 때 시스템을 확장할 뿐 기존 코드를 변경하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="변경으로부터-격리">변경으로부터 격리&lt;/h3>
+&lt;p>요구사항은 변하기 마련이다. 따라서 코드도 변하기 마련이다.&lt;/p>
+&lt;p>상세한 구현에 의존하는 코드는 테스트가 어렵다. 예를들어 &lt;code>Portfolio&lt;/code> 클래스를 만든다고 가정하자.&lt;/p>
+&lt;p>&lt;code>Portfolio&lt;/code> 클래스는 외부 &lt;code>TokyoStockExchange&lt;/code> API를 이용해 포트폴리오 값을 계삲나다. 따라서 테스트 코드는 시세 변화에 영향을 받게 된다.&lt;/p>
+&lt;p>5분마다 값이 달라지는 API로 테스트 코드를 짜기는 어렵다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">StorckExchange&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Money&lt;/span> &lt;span class="nf">CurrentPrice&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">symbol&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Portfolio&lt;/code>에서 &lt;code>TokyoStockExchange&lt;/code> API를 직접 호출하는 대신 &lt;code>StockExchange&lt;/code>라는 인터페이스를 생성한 후 메서드 하나를 선언했다.&lt;/p>
+&lt;p>다음으로 &lt;code>StockExchange&lt;/code> 인터페이스를 구현하는 &lt;code>TokyoStockExchange&lt;/code> 클래스를 구현한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">Portfolio&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">StockExchange&lt;/span> &lt;span class="n">exchange&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Portfolio&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">StockExchange&lt;/span> &lt;span class="n">exchange&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">exchange&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">exchange&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Portfolio&lt;/code>를 수정해 &lt;code>StockExchange&lt;/code> 참조자를 인수로 받는다.&lt;/p>
+&lt;p>이를 통해 &lt;code>TokyoStockExchange&lt;/code> 클래스를 흉내내는 테스트용 클래스를 만들 수 있게 되었다.&lt;/p>
+&lt;p>테스트용 클래스는 &lt;code>StockExchange&lt;/code> 인터페이스를 구현하며 고정된 주가를 반환한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PortfolioTest&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">FixedStockExchangeStub&lt;/span> &lt;span class="n">exchange&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">Portfolio&lt;/span> &lt;span class="n">portfolio&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Before&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setUp&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">Exception&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exchange&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">FixedStockExchangeStub&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exchange&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">fix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;MSFT&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">protfolio&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">Portfolio&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">exchange&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Test&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">GivenFiveMSFTTotalShouldBe500&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">Exception&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">portfolio&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">add&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="s">&amp;#34;MSFT&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">assertEquals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">500&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">portfolio&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">value&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 테스트가 가능할 정도로 시스템의 결함도를 낮추면 유연성과 재사용성도 더욱 높아진다.&lt;/p>
+&lt;ul>
+&lt;li>결합도가 낮다는 소리는 각 시스템 요소가 다른 요소로부터 그리고 변경으로부터 잘 격리되어 있다는 의미다.&lt;/li>
+&lt;li>시스템 요소가 서로 잘 결리되어 있으면 각 요소를 이해하기도 더 쉬워진다.&lt;/li>
+&lt;/ul>
+&lt;p>이렇게 결합도를 최소로 줄이면 자연스럽게 또 다른 클래스 설계 원칙인 DIP(Dependency Inversion Principle)를 따르는 클래스가 나온다.&lt;/p>
+&lt;p>본질적으로 DIP는 클래스가 상세한 구현이 아니라 추상화에 의존해야 한다는 원칙이다.&lt;/p>
+&lt;h1 id="결론">결론&lt;/h1>
+&lt;ul>
+&lt;li>공개가 필요할땐 최대한 캡슐화를 유지하는 방식을 강구해야 한다.&lt;/li>
+&lt;li>클래스도 작게 유지해야 한다.
+&lt;ul>
+&lt;li>클래스의 크기는 책임 수로 측정한다.&lt;/li>
+&lt;li>책임이 많은 클래스는 이름과 설명에 모호한 표현이 섞이게 된다.&lt;/li>
+&lt;li>응집도를 유지하면 자연스럽게 클래스가 작아진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>변경은 여러 문제들을 수반한다. 따라서 기존 코드 변경이 없는것이 좋다.
+&lt;ul>
+&lt;li>그대로 변경은 항상 필요할 수 있으므로 변경하기 쉽게 만들어야 한다.&lt;/li>
+&lt;li>클래스를 깨끗하게 정리하면 변경하기 쉽다.&lt;/li>
+&lt;li>클래스를 작게 만들면 자연스럽게 정리된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>결합도를 최대한 낮추면 변경으로 부터 격리할 수 있다.&lt;/li>
+&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean_code_9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
 &lt;p>테스트를 급하게 서두르는 와중에 많은 개발자들이 제대로 된 테스트 케이스를 작성해야한다는 중요한 사실을 놓친다.&lt;/p>
 &lt;h2 id="tdd-법칙-세-가지">TDD 법칙 세 가지&lt;/h2>
 &lt;ol>
