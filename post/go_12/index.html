@@ -1,0 +1,219 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 g"><title>Golang: 12. Go 루틴</title><link rel=canonical href=https://codemario318.github.io/post/go_12/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="Golang: 12. Go 루틴"><meta property="og:description" content="Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 g"><meta property="og:url" content="https://codemario318.github.io/post/go_12/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:published_time" content="2023-04-20T13:28:40+09:00"><meta property="article:modified_time" content="2023-04-20T13:28:40+09:00"><meta property="og:image" content="https://codemario318.github.io/post/go_12/go_cover.webp"><meta name=twitter:title content="Golang: 12. Go 루틴"><meta name=twitter:description content="Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 g"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/go_12/go_cover.webp"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description>주니어 개발자 이동현입니다.</h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>BackEnd</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>16</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>6</span></a></li><li><a href=/categories/frontend/><span>FrontEnd</span>
+<span class=content-count>10</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#익명함수-go루틴>익명함수 Go루틴</a></li><li><a href=#다중-cpu-처리>다중 CPU 처리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/go_12/><img src=/post/go_12/go_cover_huf88b72bb4a5683fe0689ce424afc49ae_12554_800x0_resize_q75_h2_box_2.webp srcset="/post/go_12/go_cover_huf88b72bb4a5683fe0689ce424afc49ae_12554_800x0_resize_q75_h2_box_2.webp 800w, /post/go_12/go_cover_huf88b72bb4a5683fe0689ce424afc49ae_12554_1600x0_resize_q75_h2_box_2.webp 1600w" width=800 height=336 loading=lazy alt="Featured image of post Golang: 12. Go 루틴"></a></div><div class=article-details><header class=article-category><a href=/categories/common/ style=background-color:#2a9d8f;color:#fff>Common</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/go_12/>Golang: 12. Go 루틴</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/04/20</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>3 minute read</time></div></footer></div></header><section class=article-content><p>Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 <code>goroutine</code>을 실행한다.</p><p>고루틴은 비동기적으로 함수루틴을 실행하므로, 여러 코드를 동시에 실행하는데 사용된다.</p><p>고루틴은 OS 쓰레드보다 훨씬 가볍게 비동기 Concurrent(동시성) 처리를 구현하기 위하여 만든것으로, 기본적으로 Go 런타임이 자체 관리한다.</p><ul><li>Go 런타임 상에서 관리되는 작업단위인 여러 고루틴들을 하나의 OS 쓰레드 1개로도 실행되곤 한다.<ul><li>고루틴들은 OS 쓰레드와 1대1로 대응되지 않고, Multiplexing(다중화)으로 훨씬 적은 OS 쓰레드를 사용한다.</li></ul></li><li>메모리 측면에서도 OS쓰레드가 1MB 스택을 갖는 반면, 고루틴은 이보다 훨씬 작은 몇 KB 스택을 갖는다(필요시 동적으로 증가함).</li></ul><p>Go 런타임은 Go루틴을 관리하면서 Go 채널을 통해 Go 루틴간의 통신을 쉽게 할 수 있도록 했다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>say</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=mi>10</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>s</span><span class=p>,</span> <span class=s>&#34;***&#34;</span><span class=p>,</span> <span class=nx>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 함수를 동기적으로 실행
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>say</span><span class=p>(</span><span class=s>&#34;Sync&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1>// 함수를 비동기적으로 실행
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>go</span> <span class=nf>say</span><span class=p>(</span><span class=s>&#34;Async1&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>go</span> <span class=nf>say</span><span class=p>(</span><span class=s>&#34;Async2&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>go</span> <span class=nf>say</span><span class=p>(</span><span class=s>&#34;Async3&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1>// 3초 대기
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span> <span class=o>*</span> <span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>main 함수를 보면, 먼저 <code>say()</code> 함수를 동기적으로 호출하고, 다음으로 동일한 <code>say()</code> 함수를 비동기적으로 3번 호출하고 있다. 첫번째 동기적 호출은 <code>say()</code> 함수가 완전히 끝났을 때 다음 문장으로 이동하고, 다음 3개의 <code>go say()</code> 비동기 호출은 별도 고루틴들에서 동작하면서, 메인루틴은 계속 다음 문장을 실행한다. 고루틴들은 비동기이므로 처리 순서가 일정하지 않으므로 프로그램 실행시 마다 다른 출력 결과를 나타낼 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Sync *** <span class=m>0</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>1</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>2</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>3</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>4</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>5</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>6</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>7</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>8</span>
+</span></span><span class=line><span class=cl>Sync *** <span class=m>9</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>0</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>1</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>2</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>3</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>4</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>5</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>6</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>7</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>8</span>
+</span></span><span class=line><span class=cl>Async3 *** <span class=m>9</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>0</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>1</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>2</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>3</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>4</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>0</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>1</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>2</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>3</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>4</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>5</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>6</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>7</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>8</span>
+</span></span><span class=line><span class=cl>Async1 *** <span class=m>9</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>5</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>6</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>7</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>8</span>
+</span></span><span class=line><span class=cl>Async2 *** <span class=m>9</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=익명함수-go루틴>익명함수 Go루틴</h2><p>고루틴은 익명함수에 대해 사용할 수도 있다. 즉, go 키워드 뒤에 익명함수를 바로 정의하는 것으로, 익명함수를 비동기로 실행하게 된다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;sync&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// WaitGroup 생성. 2개의 Go루틴을 기다림.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>wait</span> <span class=nx>sync</span><span class=p>.</span><span class=nx>WaitGroup</span>
+</span></span><span class=line><span class=cl>    <span class=nx>wait</span><span class=p>.</span><span class=nf>Add</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1>// 익명함수를 사용한 goroutine
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>defer</span> <span class=nx>wait</span><span class=p>.</span><span class=nf>Done</span><span class=p>()</span> <span class=c1>//끝나면 .Done() 호출
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Hello&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}()</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1>// 익명함수에 파라미터 전달
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>go</span> <span class=kd>func</span><span class=p>(</span><span class=nx>msg</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>defer</span> <span class=nx>wait</span><span class=p>.</span><span class=nf>Done</span><span class=p>()</span> <span class=c1>//끝나면 .Done() 호출
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}(</span><span class=s>&#34;Hi&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=nx>wait</span><span class=p>.</span><span class=nf>Wait</span><span class=p>()</span> <span class=c1>//Go루틴 모두 끝날 때까지 대기
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>첫번째 익명함수는 간단히 Hello를 출력하는데, 이를 고루틴으로 실행하면 비동기적으로 그 익명함수를 실행하게 된다. 두번째 익명함수는 파라미터를 전달하는 예제로 익명함수에 파라미터가 있는 경우, go 익명함수 바로 뒤에 파라미터를 함께 전달하게 된다.</p><p>여기서 sync.WaitGroup을 사용하고 있는데, 이는 기본적으로 여러 고루틴들이 끝날 때까지 기다리는 역할을 한다. WaitGroup을 사용하기 위해서는 먼저 <code>Add()</code> 메소드에 몇 개의 Go루틴을 기다릴 것인지 지정하고, 각 고루틴에서 <code>Done()</code> 메서드를 호출한다.(여기서는 <code>defer</code> 사용)</p><p>그리고 메인루틴에서는 <code>Wait()</code> 메서드를 호출하여, Go루틴들이 모두 끝나기를 기다린다.</p><h2 id=다중-cpu-처리>다중 CPU 처리</h2><p>go는 디폴트로 CPU 1개를 사용한다. 여러 개 고루틴을 만들더라도, CPU 1개에서 작업을 시분할하여 처리한다. 만약 머신이 CPU 여러개를 가진 경우, Go 프로그램을 다중 CPU에서 병렬처리(Perallel)하게 할 수 있는데, 병렬처리를 위해서는 아래와 같이 <code>runtime.GOMAXPROCS(CPU수)</code> 함수를 호출하여야 한다.</p><ul><li>CPU 수는 Logical CPU 수를 가리킨다.</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;runtime&#34;</span>  
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 4개의 CPU 사용
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>runtime</span><span class=p>.</span><span class=nf>GOMAXPROCS</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1>//...
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>동시성과 병렬성은 비슷하게 들리지만 전혀 다른 개념이다.</p></section><footer class=article-footer><section class=article-tags><a href=/tags/golang/>Golang</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/go_11/><div class=article-image><img src=/post/go_11/go_cover.9c61644fd9cbebc03f57da67d1c42b72_huf88b72bb4a5683fe0689ce424afc49ae_12554_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post Golang: 11. defer와 panic" data-key=go_11 data-hash="md5-nGFkT9nL68A/V9pn0cQrcg=="></div><div class=article-details><h2 class=article-title>Golang: 11. defer와 panic</h2></div></a></article><article class=has-image><a href=/post/go_10/><div class=article-image><img src=/post/go_10/go_cover.9c61644fd9cbebc03f57da67d1c42b72_huf88b72bb4a5683fe0689ce424afc49ae_12554_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post Golang: 10. 에러" data-key=go_10 data-hash="md5-nGFkT9nL68A/V9pn0cQrcg=="></div><div class=article-details><h2 class=article-title>Golang: 10. 에러</h2></div></a></article><article class=has-image><a href=/post/go_9/><div class=article-image><img src=/post/go_9/go_cover.9c61644fd9cbebc03f57da67d1c42b72_huf88b72bb4a5683fe0689ce424afc49ae_12554_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post Golang: 9. 인터페이스" data-key=go_9 data-hash="md5-nGFkT9nL68A/V9pn0cQrcg=="></div><div class=article-details><h2 class=article-title>Golang: 9. 인터페이스</h2></div></a></article><article class=has-image><a href=/post/go_8/><div class=article-image><img src=/post/go_8/go_cover.9c61644fd9cbebc03f57da67d1c42b72_huf88b72bb4a5683fe0689ce424afc49ae_12554_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post Golang: 8. 메서드" data-key=go_8 data-hash="md5-nGFkT9nL68A/V9pn0cQrcg=="></div><div class=article-details><h2 class=article-title>Golang: 8. 메서드</h2></div></a></article><article class=has-image><a href=/post/go_7/><div class=article-image><img src=/post/go_7/go_cover.9c61644fd9cbebc03f57da67d1c42b72_huf88b72bb4a5683fe0689ce424afc49ae_12554_250x150_fill_q75_h2_box_smart1_2.webp width=250 height=150 loading=lazy alt="Featured image of post Golang: 7. 구조체" data-key=go_7 data-hash="md5-nGFkT9nL68A/V9pn0cQrcg=="></div><div class=article-details><h2 class=article-title>Golang: 7. 구조체</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
