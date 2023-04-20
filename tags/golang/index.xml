@@ -1,4 +1,179 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Golang on Mario Blog</title><link>https://codemario318.github.io/tags/golang/</link><description>Recent content in Golang on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:17:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/go_5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_5/</guid><description>&lt;img src="https://codemario318.github.io/post/go_5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Golang on Mario Blog</title><link>https://codemario318.github.io/tags/golang/</link><description>Recent content in Golang on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:28:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/go_6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_6/</guid><description>&lt;img src="https://codemario318.github.io/post/go_6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
+&lt;p>Go는 실제 프로그램 개발에 필요한 많음 패키지들을 표준 라이브러리로 제공한다. 이러한 표준 라이브러리 패키지들을 &lt;code>GOROOT/pkg&lt;/code> 안에 존재한다. &lt;code>GOROOT&lt;/code> 환경변수는 Go 설치 디렉토리를 가르키는데, 보통 Go 설치시 자동으로 추가된다.&lt;/p>
+&lt;p>Go에 사용하는 표준 패키지들은 &lt;a class="link" href="https://golang.org/pkg" target="_blank" rel="noopener"
+>https://golang.org/pkg&lt;/a> 에 자세히 설명되어 있다.&lt;/p>
+&lt;h2 id="main-패키지">Main 패키지&lt;/h2>
+&lt;p>일반적으로 패키지는 라이브러리로서 사용되지만, main이라고 명명된 패키지는 Go Compiler에 의해 특별하게 인식된다. 패키지명이 main인 경우, 컴파일러는 해당 패키지를 공유 라이브러리가 아닌 실행 프로그램으로 만든다. 그리고 이 main 패키지 안의 &lt;code>main()&lt;/code> 함수가 프로그램의 시작점, 즉 Entry Point가 된다. 패키지를 공유 라이브러리로 만들 때에는, main패키지나 main 함수를 사용해서는 안된다.&lt;/p>
+&lt;h2 id="패키지-import">패키지 Import&lt;/h2>
+&lt;p>다른 패키지를 프로그램에서 사용하기 위해서는 import 키워드를 사용하여 패키지를 포함시킨다.&lt;/p>
+&lt;p>예를 들어 Go 표준 라이브러리인 fmt 패키지를 사용하기 위해 &lt;code>import “fmt”&lt;/code>와 같이 해당 패키지를 포함시킬 것을 선언해 준다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>패키지를 &lt;code>import&lt;/code> 할 때, Go 컴파일러는 GOROOT 혹은 GOPATH 환경 변수를 검색하는데, 표준 패키지는 &lt;code>GOROOT/pkg&lt;/code> 에서 사용자 패키지나 3rd party 패키지의 경우 &lt;code>GOPATH/pkg&lt;/code>에서 패키지를 찾는다.&lt;/p>
+&lt;p>GOROOT 환경변수는 Go 설치시 자동으로 시스템에 설정되지만, GOPATH는 사용자가 지어해 주어야 한다. GOPATH 환경변수는 3rd party 패키지를 갖는 라이브러리 디렉토리나 사용자 패키지가 있는 작업 디렉토리를 지정하게 되는데, 복수 개일 경우 세미콜론을 사용하여 연결한다.&lt;/p>
+&lt;h2 id="패키지-scope">패키지 scope&lt;/h2>
+&lt;p>패키지 내에는 함수, 구조체, 인터페이스, 메서드 등이 존재하는데, 이름의 첫 문자를 대문자로 시작하면 public으로 사용할 수 있다. 패키지 외부에서 이들을 호출하거나 사용할 수 있게 된다.&lt;/p>
+&lt;p>반면 , 이름이 소문자로 시작하면 이는 non-public으로 패키지 내부에서만 사용될 수 있다.&lt;/p>
+&lt;h2 id="패키지-init-함수와-alias">패키지 init 함수와 alias&lt;/h2>
+&lt;p>개발자가 패키지를 작성할 때, 패키지 실행시 처음으로 호출되는 &lt;code>init()&lt;/code> 함수를 작성할 수 있다. init 함수는 패키지가 로드되면서 실행되는 함수로 별도의 호출 없이 자동으로 호출된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">testlib&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">pop&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">init&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 패키지 로드시 map 초기화
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">pop&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>패키지를 import 하면서 그 패키지 안의 &lt;code>init()&lt;/code> 만 호출하길 원한다면, &lt;code>import&lt;/code> 시 &lt;code>_&lt;/code> 라는 alias를 지정한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="s">&amp;#34;other/xlib&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>패키지 이름이 동일하지만, 서로 다른 버전 혹은 서로 다른 위치에서 로딩하고자 할 때는 패키지 alias를 사용하여 구분할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">mongo&lt;/span> &lt;span class="s">&amp;#34;other/mongo/db&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">mysql&lt;/span> &lt;span class="s">&amp;#34;other/mysql/db&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">mondb&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mongo&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">mydb&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">mysql&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">//...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="사용자-정의-패키지-생성">사용자 정의 패키지 생성&lt;/h2>
+&lt;p>사용자 정의 패키지를 만들어 재사용 가능한 컴포넌트를 만들어 사용할 수 있다. 사용자 정의 라이브러리 패키지는 일반적으로 폴더를 하나 만들고 그 폴더 안에 &lt;code>.go&lt;/code> 파일들을 만들어 구성한다.&lt;/p>
+&lt;p>하나의 서브 폴더안데 있는 &lt;code>.go&lt;/code> 파일들은 동일한 패키지명을 가지며, 패키지명은 해당 폴더의 이름과 같게 한다. 해당 폴더에 있는 여러 &lt;code>.go&lt;/code> 파일들은 하나의 패키지로 묶인다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">testlib&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">pop&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">init&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">pop&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">pop&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">&amp;#34;Adele&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">pop&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">&amp;#34;Alicia Keys&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Fallin&amp;#39;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">pop&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">&amp;#34;John Legend&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;All of Me&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// GetMusic : Popular music by singer (외부에서 호출 가능)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">GetMusic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">singer&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">pop&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">singer&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">getKeys&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 내부에서만 호출 가능
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">kv&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">pop&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">kv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>패키지명은 폴더명과 동일하게 정해야 한다. 패키지 폴더 안에 여러 파일들이 있을 경우에도, 동일한게 폴더 이름을 패키지 이름으로 사용한다.&lt;/p>
+&lt;blockquote>
+&lt;p>💡 사이즈가 큰 목잡한 라이브러리 같은 경우, &lt;code>go install&lt;/code> 명령을 사용하여 라이브러리를 컴파일 하여 cache 할 수 있는데, 다음 빌드시 빌드 타임을 크게 줄일 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> &lt;span class="o">{{&lt;/span>package_dir&lt;span class="o">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">go install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>패키지를 찾기 위해 GOROOT와 GOPATH를 사용하는데, GOROOT와 GOPATH에 있는 각 루트폴더의 해당 패키지를 찾게 된다.&lt;/p>
+&lt;p>GOPATH가 C:\GoApp;C:\GoSrc라면 지정된 라이브러리를 찾기 위해 폴더를 순차적으로 검색하게 된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">C:&lt;span class="se">\G&lt;/span>o&lt;span class="se">\s&lt;/span>rc&lt;span class="se">\t&lt;/span>estlib &lt;span class="o">(&lt;/span>from &lt;span class="nv">$GOROOT&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">C:&lt;span class="se">\G&lt;/span>oApp&lt;span class="se">\s&lt;/span>rc&lt;span class="se">\t&lt;/span>estlib &lt;span class="o">(&lt;/span>from &lt;span class="nv">$GOPATH&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">C:&lt;span class="se">\G&lt;/span>oSrc&lt;span class="se">\s&lt;/span>rc&lt;span class="se">\t&lt;/span>estlib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/go_5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_5/</guid><description>&lt;img src="https://codemario318.github.io/post/go_5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
 &lt;p>배열은 연속적인 메모리 공간에 동일한 타입의 데이터를 순차적으로 저장하는 자료구조이다.&lt;/p>
 &lt;p>배열의 선언은 &lt;code>var 변수명 [배열크기] 데이터타입&lt;/code> 과 같이 한다. Go에서 배열크기는 Type을 구성하는 한 요소이다. 따라서, [3]int와 [5]int는 서로 다른 타입으로 인식된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
