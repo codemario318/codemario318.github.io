@@ -1,4 +1,163 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:28:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/go_6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_6/</guid><description>&lt;img src="https://codemario318.github.io/post/go_6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 12:30:40 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang: 7. 구조체</title><link>https://codemario318.github.io/post/go_7/</link><pubDate>Thu, 20 Apr 2023 12:30:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_7/</guid><description>&lt;img src="https://codemario318.github.io/post/go_7/go_cover.webp" alt="Featured image of post Golang: 7. 구조체" />&lt;p>Go 언어는 객체지향 프로그래밍을 고유의 방식으로 지원한다.&lt;/p>
+&lt;ul>
+&lt;li>클래스, 객체, 상속 개념이 없다.&lt;/li>
+&lt;/ul>
+&lt;p>전통적인 OOP의 클래스는 Go 언어에서 Custom Type을 정의하는 &lt;code>struct&lt;/code>(구조체)로 표현한다.&lt;/p>
+&lt;h2 id="struct">Struct&lt;/h2>
+&lt;p>Go에서 &lt;code>struct&lt;/code>는 Custom Data Type을 표현하는데 사용된다(C 처럼)&lt;/p>
+&lt;ul>
+&lt;li>필드들의 집합체이며 필드들의 컨테이너이다.&lt;/li>
+&lt;li>struct는 필드 데이터만을 가지며(자료 구조 역할), 메서드는 표현하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>메서드는 별도로 분리하여 정의한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="struct-선언">Struct 선언&lt;/h2>
+&lt;p>구조체를 정의하기 위해서 Custom Type을 정의하는데 사용하는 &lt;code>type&lt;/code> 문을 사용한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// struct 정의
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">type&lt;/span> &lt;span class="nx">person&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span> &lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">age&lt;/span> &lt;span class="kt">int&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// person 객체 생성
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">person&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 필드값 설정
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">name&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Lee&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">age&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">p&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>person 구조체를 패키지 외부에서 사용할 수 있게 하려면 struct명을 &lt;code>Person&lt;/code>으로 변경하면 된다.&lt;/p>
+&lt;h2 id="struct-객체-생성">struct 객체 생성&lt;/h2>
+&lt;p>선언된 struct 타입으로부터 객체를 생성하는 방법은 몇 가지 방법들이 있다.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>빈 객체를 먼저 할당하고, 나중에 그 필드값을 채워넣는 방법&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">person&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">name&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Lee&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">age&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>초기값을 함께 할당하는 방법&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">p1&lt;/span> &lt;span class="nx">person&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p1&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">person&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;Bob&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">20&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p2&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">person&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;Sean&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">age&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>초기화가 생략된 필드들은 Zero value (정수인 경우 0, float인 경우 0.0, string인 경우 &amp;ldquo;&amp;rdquo;, 포인터인 경우 nil 등)를 갖는다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>new 내장함수 사용&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">new&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">person&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">name&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;Lee&amp;#34;&lt;/span> &lt;span class="c1">// p가 포인터라도 . 을 사용한다
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>new()를 사용하면 모든 필드를 Zero value로 초기화하고 person 객체의 포인터를 반환한다.&lt;/p>
+&lt;p>객체 포인터인 경우에도 필드 엑세스시 &lt;code>.&lt;/code> 을 사용하는데 이 때 포인터는 자동으로 역참조된다. (c에서 → 과 동일한 동작)&lt;/p>
+&lt;p>Go에서 struct는 기본적으로 mutable 개체로서 필드값이 변화할 경우 해당 개체 메모리에서 직접 변경된다. 하지만 struct 개체를 다른 함수의 파라미터로 넘기면, Pass by Value에 따라 객체를 복사해서 전달한다. 따라서 &lt;strong>struct 개체의 값을 변경하려면 포인터를 전달해야 한다&lt;/strong>.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="생성자-함수">생성자 함수&lt;/h2>
+&lt;p>구조체 필드가 사용 전에 초기화되어야 하는 경우가 있다. 예를 들어 &lt;code>struct&lt;/code> 필드가 &lt;code>map&lt;/code> 타입인 경우 구조체 할당 후 &lt;code>map&lt;/code>을 다시 할당받고 초기화 해야한다.&lt;/p>
+&lt;p>이럴 때 &lt;code>map&lt;/code>을 사전에 미리 초기화 하면, 외부에서 구조체를 사용할 때 별도로 초기화하는 번거로움을 줄일 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">dict&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">data&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//생성자 함수 정의
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">func&lt;/span> &lt;span class="nf">newDict&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">dict&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">d&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">dict&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">d&lt;/span> &lt;span class="c1">//포인터 전달
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">dic&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">newDict&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// 생성자 호출
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">dic&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;A&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>생성자 함수인 &lt;code>newDict()&lt;/code>는 &lt;code>dict&lt;/code>라는 구조체의 &lt;code>map&lt;/code> 필드를 초기화한 후 구조체 포인터를 반호나한다. &lt;code>main&lt;/code> 함수에서 구조체 개체를 만들 때 &lt;code>dict&lt;/code>를 직접 생성하지 않고 대신 생성자 함수를 통해 이미 초기환 된 &lt;code>data&lt;/code> 맵 필드를 사용할 수 있다.&lt;/p></description></item><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/go_6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_6/</guid><description>&lt;img src="https://codemario318.github.io/post/go_6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
 &lt;p>Go는 실제 프로그램 개발에 필요한 많음 패키지들을 표준 라이브러리로 제공한다. 이러한 표준 라이브러리 패키지들을 &lt;code>GOROOT/pkg&lt;/code> 안에 존재한다. &lt;code>GOROOT&lt;/code> 환경변수는 Go 설치 디렉토리를 가르키는데, 보통 Go 설치시 자동으로 추가된다.&lt;/p>
 &lt;p>Go에 사용하는 표준 패키지들은 &lt;a class="link" href="https://golang.org/pkg" target="_blank" rel="noopener"
 >https://golang.org/pkg&lt;/a> 에 자세히 설명되어 있다.&lt;/p>
