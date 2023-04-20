@@ -1,4 +1,507 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 15:48:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean_code_3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 15:53:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean_code_6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h1 id="자료-추상화">자료 추상화&lt;/h1>
+&lt;blockquote>
+&lt;p>사용자가 구현을 모른 채 자료의 핵심을 조작할 수 있어야 진정한 의미의 클래스다.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Point&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Point&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getX&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getY&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setCartesian&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getR&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getTheta&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setPolar&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">r&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">theta&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>두 클래스 모두 2차원 점을 표현하지만 6-1은구현을 외부로 노출하고, 6-2는 구현을 완전히 숨긴다.&lt;/p>
+&lt;blockquote>
+&lt;p>6-1은 변수를 &lt;code>private&lt;/code> 으로 선언하더라도 각 값마다 getter, setter를 제공한다면 외부로 노출하는 것이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>변수 사이에 함수라는 계층을 넣는다고 구현이 저절로 감춰지지는 않는다. 구현을 감추려면 어느정도의 추상화가 필요하다.&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>
+&lt;p>예시 1&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Vehicle&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getFuelTankCapacityInGallons&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getGallonsOfGasoline&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>예시 2&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Vehicle&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="nf">getPercentFuelRemaining&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;p>예시 1은 연료탱크의 용량과 휘발유의 양을 받아올 수 있고, 예시 2는 백분율로 얼마나 더 남았는가를 받아올 수 있다.&lt;/p>
+&lt;p>둘 중 예시 2가 더 추상적이지만, 백분율의 기준값을 알 수 없으므로 정확한 정보를 표현하지 못한다.&lt;/p>
+&lt;blockquote>
+&lt;p>인터페이스나 조회/설정 함수만으로는 추상화가 이뤄지지 않는다.
+개발자는 객체가 포함하는 자료를 표현 할 가장 좋은 방법을 심각하게 고민해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="자료객체-비대칭">자료/객체 비대칭&lt;/h2>
+&lt;ul>
+&lt;li>객체: 추상화 두로 자료를 숨긴 채 자료를 다루는 함수만 공개한다.&lt;/li>
+&lt;li>자료구조: 자료를 그대로 공개하며 별다른 함수는 제공하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="절차적인-구현">절차적인 구현&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Square&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">topLeft&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Rectangle&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">topLeft&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">height&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Circle&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">center&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Geometry&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.141592653589793&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">area&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Object&lt;/span> &lt;span class="n">shape&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">NoSuchShapeExetion&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">shape&lt;/span> &lt;span class="k">instanceof&lt;/span> &lt;span class="n">Square&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Square&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Square&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">side&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">shape&lt;/span> &lt;span class="k">instanceof&lt;/span> &lt;span class="n">Rectangle&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Rectangle&lt;/span> &lt;span class="n">r&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Rectangle&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">r&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">height&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">r&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">width&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">shape&lt;/span> &lt;span class="k">instanceof&lt;/span> &lt;span class="n">Circle&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Circle&lt;/span> &lt;span class="n">c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Circle&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">radious&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">radious&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">NoSuchShapeExcption&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>위 예시에서 만약 Geometry 클래스에 새로운 기능들을 추가해도 도형 클래스들은 영향을 받지 않는다.&lt;/li>
+&lt;li>위 예시에서 새 도형을 추가하고 싶다면 Geometry의 속한 기능들에 새로운 도형을 위한 코드를 추가해야 한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="객체-지향적인-도형-클래스">객체 지향적인 도형 클래스&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Square&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">topLeft&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">area&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">side&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Rectangle&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">topLeft&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">height&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">area&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">height&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Circle&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="n">center&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">area&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">radius&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>위 예시에서 만약 Shape에 새로운 기능들을 추가하면 상속받은 모든 클래스에 변경이 필요하다.&lt;/li>
+&lt;li>위 예시에서 Shape를 상속받은 다른 도형을 추가하고 싶다면 하나 새로 만들면 된다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>목록 절차적인 구현과 객체 지향적인 구현은 근본적으로 반대이며 상호 보완적인 특성을 가진다. 그래서 객체와 자료 구조는 근본적으로 양분된다.&lt;/p>
+&lt;blockquote>
+&lt;p>💡 객체 지향 코드에서 어려운 변경은 절차적인 코드에서 쉬우며, 절차적인 코드에서 어려운 변경은 객체지향 코드에서 쉬운 경우가 많다.
+따라서, 때로는 단순한 자료 구조와 절차적인 코드가 가장 적합한 상황도 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="디미터-법칙">디미터 법칙&lt;/h2>
+&lt;blockquote>
+&lt;p>디미터의 법칙은 잘 알려진 휴리스틱으로, &lt;strong>모듈은 자신이 조작하는 객체의 속사정을 몰라야 한다&lt;/strong>는 법칙이다.&lt;br>
+&lt;a class="link" href="https://tecoble.techcourse.co.kr/post/2020-06-02-law-of-demeter/" target="_blank" rel="noopener"
+>디미터 법칙(Law of Demeter)&lt;/a>&lt;br>
+이러한 이유로 Don’t Talk to Strangers(낮선 이에게 말하지 마라) 또는 Principle of least Knowledge(최소 지식 원칙)으로도 알려져 있다.&lt;/p>
+&lt;/blockquote>
+&lt;p>객체는 자료를 숨기고 함수를 공개한다.&lt;/p>
+&lt;ul>
+&lt;li>즉, 객체는 조회 함수로 내부 구조를 공개하면 안된다는 의미다.&lt;/li>
+&lt;/ul>
+&lt;p>조금 더 정확하게 표현하자면, 디미터 법칙은 “클래스 C의 메서드 f는 다음과 같은 객체의 메서드만 호출해야 한다”고 주장한다.&lt;/p>
+&lt;ul>
+&lt;li>클래스 C&lt;/li>
+&lt;li>f가 생성한 객체&lt;/li>
+&lt;li>f 인수로 넘어온 객체&lt;/li>
+&lt;li>C 인스턴스 변수에 저장된 객체&lt;/li>
+&lt;/ul>
+&lt;p>위 객체에서 허용된 메서드가 반환하는 객체의 메서드는 호출하면 안된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">ouputDir&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getOptions&lt;/span>&lt;span class="o">().&lt;/span>&lt;span class="na">getScratchDir&lt;/span>&lt;span class="o">().&lt;/span>&lt;span class="na">getAbsolutePath&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>getOptions()&lt;/code> 함수가 반환하는 객체의 &lt;code>getScratchDir()&lt;/code> 함수를 호출한 후 &lt;code>getScratchDir()&lt;/code> 함수가 반환하는 객체의 &lt;code>getAbsolutePath()&lt;/code> 함수를 호출하기 때문이다 디미터의 법칙을 위반했다.
+&lt;ul>
+&lt;li>클래스 C의 메서드가 지정된 메서드만을 호출하지 않고 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="기차-충돌">기차 충돌&lt;/h3>
+&lt;p>메서드를 연속적으로 호출하여 코드가 여러 객차가 한 줄로 이어진 기차처럼 보이기 때문에 기차 충돌이라 부른다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Options&lt;/span> &lt;span class="n">opts&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getOptions&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">File&lt;/span> &lt;span class="n">scratchDir&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">opts&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getScratchDir&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">outputDir&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">scratchDir&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getAbsolutePath&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같이 기차 충돌을 제거했을 경우 연속적으로 호출되었을 때는 반환되는 객체를 정확히 파악할 수 없었는데 나눠놓으니 더 쉽게 파악할 수 있다.&lt;/p>
+&lt;p>하지만 위 구조도 아래와 같은 전제를 이미 알고 있어야 하므로 디미터 법칙을 만족한다고 볼 수 없다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>ctxt&lt;/code> 객체가 &lt;code>Options&lt;/code>를 포함한다.&lt;/li>
+&lt;li>&lt;code>Options&lt;/code>가 &lt;code>ScratchDir&lt;/code>을 포함한다.&lt;/li>
+&lt;li>&lt;code>ScratchDir&lt;/code>이 &lt;code>AbsolutePath&lt;/code>를 포함한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>위 코드를 사용하는 함수는 많은 객체에 대한 정보를 알고 있기 때문에 최소 지식 원칙을 만족한다고 볼 수 없다.&lt;/p>
+&lt;/blockquote>
+&lt;p>디미터 법칙을 위반하는지는 호출된 &lt;code>ctxt&lt;/code>, &lt;code>Options&lt;/code>, &lt;code>ScratchDir&lt;/code>이 객체인지 자료 구조 인지에 달렸다.&lt;/p>
+&lt;ul>
+&lt;li>객체라면 내부 구조를 숨겨야 하므로 디미터 법칙을 위반한다.&lt;/li>
+&lt;li>자료 구조라면 내부 구조를 노출하기 때문에 디미터 법칙 대상이 아니다.&lt;/li>
+&lt;/ul>
+&lt;p>위 예제는 조회 함수를 사용하는 바람에 혼란을 일으키게 되는데, 코드를 다음과 같이 구현했다면 디미터 법칙을 거론할 필요가 없어진다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">ouputDir&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">options&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">scratchDir&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">absolutePath&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>자료구조를 이용하게 되어 다른 클래스의 내부 구조에 대해 알 수 없게 되므로 디미터의 법칙 대상이 아니게 된다.&lt;br>
+자료 구조는 무조건 함수 없이 공개 변수만 포함하고 객체는 비공개 변수와 공개 함수를 포함한다면, 문제는 훨씬 간단해진다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="잡종-구조">잡종 구조&lt;/h3>
+&lt;p>하지만 단순한 자료 구조에도 조회 함수와 설정 함수를 정의하라 요구하는 프레임워크와 표준(ex. &lt;code>bean&lt;/code>)이 존재하고 있다. 이런 혼란 때문에 절반은 객체, 절반은 자료 구조인 잡종 구조가 나온다.&lt;/p>
+&lt;blockquote>
+&lt;p>잡종 구조는 중요한 기능을 수행하는 함수도 있고, 공개 변수나 공개 조회/설정 함수도 있다.&lt;/p>
+&lt;/blockquote>
+&lt;p>공개/조회 함수는 비공개 변수를 그대로 노출하게 되며, 이 때문에 다른 함수가 절차적인 프로그래밍의 자료 구조 접근 방식처럼 비공개 변수를 사용하게 유혹한다.&lt;/p>
+&lt;blockquote>
+&lt;p>위처럼 만들어진 잡종 구조는 새로운 함수는 물론이고 새로운 자료 구조도 추가하기 어렵다.
+그러므로 이러한 구조는 되도록 피하는 편이 좋다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="구조체-감추기">구조체 감추기&lt;/h3>
+&lt;p>&lt;code>ctxt&lt;/code>, &lt;code>options&lt;/code>, &lt;code>scratchDir&lt;/code>이 진짜 객체라면 앞에서 본 예제처럼 기차 충돌을 만들면 안된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getAbsolutePathOfScratchDirectoryOption&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>ctxt&lt;/code> 객체가 여러 메서드를 조작해야 하므로 공개해야 하는 메서드가 너무 많아진다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getScratchDiretoryOption&lt;/span>&lt;span class="o">().&lt;/span>&lt;span class="na">getAQbsolutePath&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>객체가 아니라 자료 구조를 반환한다고 가정한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>ctxt&lt;/code>가 객체라면 뭔가를 하라고 말해야지 속으로 드러내라고 말하면 안된다.&lt;/p>
+&lt;blockquote>
+&lt;p>고칠때는 무슨 목적으로 만들어진 기능인지 살피면 더 좋은 코드로 바꿀 수 있다.
+위 기능에서 절대 경로를 얻으려는 이유는 임시 파일을 생성하기 위해서였다.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">String&lt;/span> &lt;span class="n">outFile&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">outputDir&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;/&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">className&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">replace&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="sc">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="sc">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;.class&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">FileOutputStream&lt;/span> &lt;span class="n">fout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">FileOutputStream&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">outFile&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BufferedOutputStream&lt;/span> &lt;span class="n">bos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">BufferedOutputStream&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fout&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이러한 경우 &lt;code>ctxt&lt;/code>객체에 임시 파일을 생성하는 기능을 만드는 것이 더 좋아보인다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">BufferedOutputStream&lt;/span> &lt;span class="n">bos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ctxt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">createScratchFileStream&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">classFileName&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 코드로 변경하여 ctxt는 내부 구조를 드러내지 않으며, 모듈에서 해당 함수는 자신이 몰라야 하는 여러 객체를 탐색할 필요가 없어졌다.&lt;/p>
+&lt;blockquote>
+&lt;p>❓ 메서드 체인으로 만들었던 &lt;code>outputDir&lt;/code> 은 결국 &lt;code>className&lt;/code>을 함께 이용하여 파일 경로를 만들어 주게 되므로 별도로 분리하는 것이 아니라 묶어서 감추는 것이 더 좋다는 의미인가?&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="자료-전달-객체-dto">자료 전달 객체 DTO&lt;/h2>
+&lt;blockquote>
+&lt;p>자료 구조체의 전형적인 형태는 공개 변수만 있고 함수가 없는 클래스다. 이런 자료 구조체를 때로는 자료 전달 객체(Data Transfer Object, DTO)라 한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>DTO는 데이터베이스와 통신하거나 소켓에서 받은 메시지의 구문을 분석할 때 유용하다.&lt;/p>
+&lt;p>흔히 DTO는 데이터 베이스에 저장된 가공되지 않은 정보를 애플리케이션 코드에서 사용할 객체로 변환하는 단계에서 가장 처음으로 사용하는 구조체다.&lt;/p>
+&lt;p>DTO의 좀 더 일반적인 형태는 ‘빈(bean)’구조다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Address&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">street&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">streetExtra&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">city&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">state&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Address&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">street&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">streetExtra&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">city&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">state&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">street&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">street&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">streetExtra&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">streetExtra&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">city&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">city&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">state&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">state&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">zip&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getStreet&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">street&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getStreetExtra&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">streetExtra&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getCity&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">city&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getState&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">state&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getZip&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>빈은 비공개 변수를 조회/설정 함수로 조작한다. 일종의 사이비 캡슐화로, 별 다른 이익을 제공하지는 않는다.&lt;/p>
+&lt;h3 id="활성-레코드">활성 레코드&lt;/h3>
+&lt;blockquote>
+&lt;p>활성 레코드는 데이터베이스 테이블이나 다른 소스에서 자료를 직접 변환한 결과로 DTO의 특수한 형태다. 공개 변수가 있거나 비공개 변수에 조회/설정 함수가 있는 자료 구조지만, 대개 &lt;code>save&lt;/code>나 &lt;code>find&lt;/code>와 같은 탐색 함수도 제공한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>활성 레코드를 사용할 때 비즈니스 로직을 추가해 이런 자료 구조를 객체로 취급하는 개발자가 많은데, 이러한 방식은 결국 잡종 구조를 만들게 된다.&lt;/p>
+&lt;blockquote>
+&lt;p>활성 레코드는 자료 구조로 취급하여, 비즈니스 규칙을 담으면서 내부 자료를 숨기는 객체를 따로 생성해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;ul>
+&lt;li>객체는 동작을 공개하고 자료를 숨긴다.
+&lt;ul>
+&lt;li>그래서 기존 동작을 변경하지 않으면서 새 객체 타입을 추가는 쉽다.&lt;/li>
+&lt;li>하지만 기존 객체에 새 동작을 추가하는 것은 어렵다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>자료구조는 별다른 동작 없이 자료를 노출한다.
+&lt;ul>
+&lt;li>그래서 기존 자료 구조에 새 동작을 추가는 쉽다.&lt;/li>
+&lt;li>기존 함수에 새 자료 구조를 추가하기는 어렵다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>구현할 때, 새로운 자료 타입을 추가하는 유연성이 필요하면 객체가 더 적합하다.
+다른 경우로 새로운 동작을 추가하는 유연성이 필요하면 자료 구조와 절차적인 코드가 더 적합하다.&lt;/p>
+&lt;p>💡 우수한 개발자는 편견 없이 이 사실을 이해해 직면한 문제에 최적인 해결책을 선택해야 한다.&lt;/p>
+&lt;h2 id="읽고-싶은-책">읽고 싶은 책&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a class="link" href="http://www.yes24.com/Product/Goods/96193044" target="_blank" rel="noopener"
+>엘레강트 오브젝트&lt;/a>
+&lt;ul>
+&lt;li>객체지향을 조금 다른 관점에서 접근하여 깨끗한 코드를 만드는 방법을 추천하는 책&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean_code_3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
 &lt;ul>
 &lt;li>어떻게 해야 읽기 쉽고 이해하기 쉬운 함수를 만들 수 있을까&lt;/li>
 &lt;li>의도를 분명히 표현하는 함수를 어떻게 구현할수 있을까&lt;/li>
