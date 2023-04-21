@@ -1,4 +1,85 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 13:19:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes_1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 13:42:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes_2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_2_1.svg"
+loading="lazy"
+>&lt;/p>
+&lt;p>컨테이너화 된 애프릴케이션을 실행하는 노드라고 하는 워커 머신의 집합으로, 모든 클러스터는 최소 한 개의 워커 노드를 가진다.&lt;/p>
+&lt;p>워커 노드는 애플리케이션의 구성요소인 파드를 호스트하며, 컨트롤 플레인은 워커 노드와 클러스터 내 파드를 관리한다.&lt;/p>
+&lt;p>프로덕션 환경에서는 일반적으로 컨트롤 플레인이 여러 컴퓨터에 걸쳐 실행되고, 클러스터는 일반적으로 여러 노드를 실행하므로 내결함성과 고가용성이 제공된다.&lt;/p>
+&lt;h2 id="컨트롤-플레인-컴포넌트">컨트롤 플레인 컴포넌트&lt;/h2>
+&lt;p>컨트롤 플레인 컴포넌트는 클러스터에 관한 전반적인 결정 (스케줄링 등)을 수행하고 클러스터 이벤트를 감지하고 반응한다.&lt;/p>
+&lt;p>컨트롤 플레인 컴포넌트는 클러스터 내 어떠한 머신에서도 동작할 수 있으나, 간결성 유지를 위해 &lt;strong>구성 스크립트는 보통 동일 머신 상에 모든 컨트롤 플레인 컴포넌트를 구동&lt;/strong>시키고, 사용자 컨테이너는 해당 머신 상에 동작시키지 않는다.&lt;/p>
+&lt;h3 id="kube-apiserver">kube-apiserver&lt;/h3>
+&lt;blockquote>
+&lt;p>API 서버는 쿠버네티스 API를 노출하는 쿠버네티스 컨트롤 플레인 컴포넌트이다. API 서버는 쿠버네티스 컨트롤 플레인의 프론트 엔드이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;a class="link" href="https://coffeewhale.com/apiserver" target="_blank" rel="noopener"
+>쿠버네티스 API서버는 정말 그냥 API서버라구욧&lt;/a>&lt;/p>
+&lt;p>kube-apiserver는 마스터 노드의 중심에서 모든 클라이언트, 컴포넌트로 부터 오는 요청들을 받는 REST API 서버이다.&lt;/p>
+&lt;p>&lt;code>kubectl&lt;/code>와 &lt;code>Kubernetes SDK&lt;/code>를 이용할 수 있지만, 직접 REST API 호출로 쿠버네티스와 통신할 수 있다.&lt;/p>
+&lt;p>쿠버네티스 API를 사용하여 애플리케이션을 작성하는 경우 클라이언트 라이브러리 중 하나를 사용하는 것이 좋다.
+&lt;a class="link" href="https://kubernetes.io/ko/docs/reference/using-api/client-libraries/" target="_blank" rel="noopener"
+>https://kubernetes.io/ko/docs/reference/using-api/client-libraries/&lt;/a>&lt;/p>
+&lt;h3 id="etcd">etcd&lt;/h3>
+&lt;blockquote>
+&lt;p>모든 클러스터 데이터를 담는 쿠버네티스 뒷단의 저장소로 사용되는 일관성 및 고가용성 키-값 저장소.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;a class="link" href="https://tech.kakao.com/2021/12/20/kubernetes-etcd/" target="_blank" rel="noopener"
+>Kubernetes 운영을 위한 etcd 기본 동작 원리의 이해&lt;/a>&lt;/p>
+&lt;p>kubernetes는 기반 스토리지(backing storage)로 etcd를 사용하고 있고, 모든 데이터가 etcd에 보관된다(클러스터에 어떤 노드가 몇 개나 있고 어떤 파드가 어떤 노드에서 동작하고 있는지등 ). 동작중인 클러스터의 etcd 데이터베이스가 유실된다면 컨테이너 뿐만 아니라 클러스터가 사용하는 모든 리소스는 미아가 된다.&lt;/p>
+&lt;blockquote>
+&lt;p>따라서 쿠버네티스 클러스터에서 etcd를 뒷단 저정소로 사용한다면, 이 데이터를 백업하는 계획을 필수적으로 갖추어야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="kube-scheduler">kube-scheduler&lt;/h3>
+&lt;blockquote>
+&lt;p>노드가 배정되지 않은 새로 생성된 파드를 감지하고, 실행할 노드를 선택하는 컨트롤 플레인 컴포넌트.&lt;/p>
+&lt;/blockquote>
+&lt;p>아래 항목들에 대해 고려하여 스케줄링이 이루어진다.&lt;/p>
+&lt;ul>
+&lt;li>리소스에 대한 개별 및 총체적 요구 사항&lt;/li>
+&lt;li>하드웨어/소프트웨어/정책적 제약&lt;/li>
+&lt;li>어피니티(affinity) 및 안티-어피니티(anti-affinity) 명세&lt;/li>
+&lt;li>데이터 지역성&lt;/li>
+&lt;li>워크로드간 간섭&lt;/li>
+&lt;li>데드라인&lt;/li>
+&lt;/ul>
+&lt;h3 id="kube-controller-manager">kube-controller-manager&lt;/h3>
+&lt;p>컨트롤러 프로세스를 실행하는 컨트롤 플레인 컴포넌트.&lt;/p>
+&lt;p>각 컨트롤러는 논리적으로 분리된 프로세스이지만, 복잡성을 낮추기 위해 모두 단일 바이너리로 컴파일되고 단일 프로세스 내에서 실행된다.&lt;/p>
+&lt;ul>
+&lt;li>노드 컨트롤러: 노드가 다운되었을 때 통지와 대응에 관한 책임을 가진다.&lt;/li>
+&lt;li>잡 컨트롤러: 일회성 작업을 나타내는 잡 오브젝트를 감시한 다음, 해당 작업을 완료할 때까지 동작하는 파드를 생성한다.&lt;/li>
+&lt;li>엔드포인트 컨트롤러: 엔드포인트 오브젝트를 채운다.(서비스와 파드를 연결시킨다.)&lt;/li>
+&lt;li>서비스 어카운트 &amp;amp; 토큰 컨트롤러: 새로운 네임스페이스에 대한 기본 계정과 API 접근 토큰을 생성한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="cloud-controller-manager">cloud-controller-manager&lt;/h3>
+&lt;blockquote>
+&lt;p>클라우드 별 컨트롤 로직을 포함하는 쿠버네티스 컨트롤 플레인 컴포넌트이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>클라우드 컨트롤러 매니저를 통해 클러스터를 클라우드 공급자의 API에 연결하고, 해당 클라우드 플랫폼과 상호 작용하는 컴포넌트와 클러스터와만 상호 작용하는 컴포넌트를 구분할 수 있게 해준다.&lt;/p>
+&lt;p>클라우드 제공자 전용 컨트롤러만 실행한다. 자신의 사내 또는 PC 내부의 학습 환경에서 쿠버네티스를 실행 중인 경우 클러스터에는 클라우드 컨트롤러 매니저가 없다.&lt;/p>
+&lt;p>kube-controller-manager와 마찬가지로 cloud-controller-manager는 논리적으로 독립적인 여러 컨트롤 루프를 단일 프로세스로 실행하는 단일 바이너리로 결합한다. 수평으로 확장(두 개 이상의 복제 실행)해서 성능을 향상시키거나 장애를 견딜 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>노드 컨트롤러: 노드가 응답을 멈춘 후 클라우드 상에서 삭제되었는지 판별하기 위해 클라우드 제공 사업자에게 확인하는 것&lt;/li>
+&lt;li>라우트 컨트롤러: 기본 클라우드 인프라에 경로를 구성하는 것&lt;/li>
+&lt;li>서비스 컨트롤러: 클라우드 제공 사업자 로드밸런서를 생성, 업데이트 그리고 삭제하는 것&lt;/li>
+&lt;/ul>
+&lt;h2 id="노드-컴포넌트">노드 컴포넌트&lt;/h2>
+&lt;p>노드 컴포넌트는 동작 중인 파드를 유지시키고 쿠버네티스 런타임 환경을 제공하며, 모든 노드 상에서 동작한다.&lt;/p>
+&lt;h3 id="kubelet">kubelet&lt;/h3>
+&lt;p>클러스터의 각 노드에서 실행되는 에이전트. &lt;code>kubelet&lt;/code>은 파드에서 컨테이너가 확실하게 동작하도록 관리한다.&lt;/p>
+&lt;p>다양한 메커니즘을 통해 제공된 파드 스펙(PodSpec)의 집합을 받아 컨테이너가 해당 파드 스펙에 따라 건강하게 동작하는 것을 확실히 한다.&lt;/p>
+&lt;p>kubelet은 쿠버네티스를 통해 생성되지 않는 컨테이너는 관리하지 않는다.&lt;/p>
+&lt;h3 id="kube-proxy">kube-proxy&lt;/h3>
+&lt;p>클러스터의 각 노드에서 실행되는 네트워크 프록시로, 크버네티스의 서비스 개념 구현부이다.&lt;/p>
+&lt;p>노드의 네트워크 규칙을 관리한다. 네트워크 규칙이 내부 네트워크 세션이나 클러스터 바깥에서 파드로 네트워크 통신을 하도록 해준다.&lt;/p>
+&lt;p>운영체제에 가용한 패킷 필터링 계층이 있는 경우, 이를 사용한다. 그렇지 않으면, kube-proxy는 트래픽 자체를 포워드한다.&lt;/p>
+&lt;h3 id="컨테이너-런타임">컨테이너 런타임&lt;/h3>
+&lt;p>컨테이너 런타임은 컨테이너 실행을 담당하는 소프트웨어이다.&lt;/p>
+&lt;p>쿠버네티스는 containerd, CRI-O와 같은 컨테이너 런타임 및 모든 Kubernetes CRI(컨테이너 런타임 인터페이스) 구현체를 지원한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>CRI란?&lt;/strong>&lt;br>
+클러스터 컴포넌트를 다시 컴파일하지 않아도 Kubelet이 다양한 컨테이너 런타임을 사용할 수 있도록 하는 플러그인 인터페이스이다.&lt;/p>
+&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes_1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장 가능한 오픈소스 플랫폼이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있다.&lt;/li>
