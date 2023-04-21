@@ -1,1 +1,53 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 13:19:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes_1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
+&lt;p>쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장 가능한 오픈소스 플랫폼이다.&lt;/p>
+&lt;ul>
+&lt;li>컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있다.&lt;/li>
+&lt;li>확장가능한 오픈소스 플랫폼이다.&lt;/li>
+&lt;li>선언적 구성과 자동화를 모두 용이하게 해준다.&lt;/li>
+&lt;li>크고 빠르게 성장하는 생태계를 가지고 있다.&lt;/li>
+&lt;li>쿠버네티스 서비서, 기술 지원 및 도구는 어디서나 쉽게 이용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>컨테이너 장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>기민한 애플리케이션 생성과 배포&lt;/strong>&lt;br>
+VM 이미지를 사용하는 것에 비해 컨테이너 이미지 생성이 보다 쉽고 효율적임.&lt;/li>
+&lt;li>&lt;strong>지속적인 개발, 통합 및 배포&lt;/strong>&lt;br>
+안정적이고 주기적으로 컨테이너 이미지를 빌드해서 배포할 수 있고 (이미지의 불변성 덕에) 빠르고 효율적으로 롤백할 수 있다.&lt;/li>
+&lt;li>&lt;strong>개발과 운영의 관심사 분리&lt;/strong>&lt;br>
+배포 시점이 아닌 빌드/릴리스 시점에 애플리케이션 컨테이너 이미지를 만들기 때문에, 애플리케이션이 인프라스트럭처에서 분리된다.&lt;/li>
+&lt;li>&lt;strong>가시성(observability)&lt;/strong>&lt;br>
+OS 수준의 정보와 메트릭에 머무르지 않고, 애플리케이션의 헬스와 그 밖의 시그널을 볼 수 있다.&lt;/li>
+&lt;li>&lt;strong>개발, 테스팅 및 운영 환경에 걸친 일관성&lt;/strong>&lt;br>
+랩탑에서도 클라우드에서와 동일하게 구동된다.&lt;/li>
+&lt;li>&lt;strong>클라우드 및 OS 배포판 간 이식성&lt;/strong>&lt;br>
+Ubuntu, RHEL, CoreOS, 온-프레미스, 주요 퍼블릭 클라우드와 어디에서든 구동된다.&lt;/li>
+&lt;li>&lt;strong>애플리케이션 중심 관리&lt;/strong>&lt;br>
+가상 하드웨어 상에서 OS를 실행하는 수준에서 논리적인 리소스를 사용하는 OS 상에서 애플리케이션을 실행하는 수준으로 추상화 수준이 높아진다.&lt;/li>
+&lt;li>&lt;strong>느슨하게 커플되고, 분산되고, 유연하며, 자유로운 마이크로서비스&lt;/strong>
+애플리케이션은 단일 목적의 머신에서 모놀리식 스택으로 구동되지 않고 보다 작고 독립적인 단위로 쪼개져서 동적으로 배포되고 관리될 수 있다.&lt;/li>
+&lt;li>&lt;strong>리소스 격리&lt;/strong>&lt;br>
+애플리케이션 성능을 예측할 수 있다.&lt;/li>
+&lt;li>&lt;strong>리소스 사용량&lt;/strong>&lt;br>
+고효율 고집적.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="쿠버네티스가-왜-필요하고-무엇을-할-수-있나">쿠버네티스가 왜 필요하고 무엇을 할 수 있나&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_1_1.svg"
+loading="lazy"
+>&lt;/p>
+&lt;p>기존 &amp;ldquo;전통적인 배포&amp;rdquo;, &amp;ldquo;가상화된 배포&amp;quot;를 거치며 &amp;ldquo;컨테이너를 통한 배포&amp;rdquo; 까지 발전해왔다.&lt;/p>
+&lt;p>컨테이너를 통한 개발 환경은 애플리케이션을 포장하고 실행하는 좋은 방법이지만, 프로덕션 환경에서는 애플리케이션을 실행하는 컨테이너를 관리하고 가동 중지 시간이 없는지 확인해야 하는 등 여러 작업이 필요하게 된다.&lt;/p>
+&lt;p>쿠버네티스는 분산 시스템을 탄력적으로 실행하기 위한 프레임 워크를 제공한다. 애플리케이션의 확장과 장애 조치를 처리하고, 배포 패턴 등을 제공한다. 예를 들어, 쿠버네티스는 시스템의 카나리아 배포를 쉽게 관리 할 수 있다.&lt;/p>
+&lt;h3 id="서비스-디스커버리와-로드-밸런싱">서비스 디스커버리와 로드 밸런싱 &lt;/h3>
+&lt;p>쿠버네티스는 DNS 이름을 사용하거나 자체 IP 주소를 사용하여 컨테이너를 노출할 수 있다. 컨테이너에 대한 트래픽이 많으면, 쿠버네티스는 네트워크 트래픽을 로드밸런싱하고 배포하여 배포가 안정적으로 이루어질 수 있다.&lt;/p>
+&lt;h3 id="스토리지-오케스트레이션">스토리지 오케스트레이션&lt;/h3>
+&lt;p>쿠버네티스를 사용하면 로컬 저장소, 공용 클라우드 공급자 등과 같이 원하는 저장소 시스템을 자동으로 탑재 할 수 있다.&lt;/p>
+&lt;h3 id="자동화된-롤아웃과-롤백">자동화된 롤아웃과 롤백 &lt;/h3>
+&lt;p>쿠버네티스를 사용하여 배포된 컨테이너의 원하는 상태를 서술할 수 있으며 현재 상태를 원하는 상태로 설정한 속도에 따라 변경할 수 있다. 예를 들어 쿠버네티스를 자동화해서 배포용 새 컨테이너를 만들고, 기존 컨테이너를 제거하고, 모든 리소스를 새 컨테이너에 적용할 수 있다.&lt;/p>
+&lt;h3 id="자동화된-빈-패킹bin-packing">자동화된 빈 패킹(bin packing)&lt;/h3>
+&lt;p>컨테이너화된 작업을 실행하는데 사용할 수 있는 쿠버네티스 클러스터 노드를 제공한다. 각 컨테이너가 필요로 하는 CPU와 메모리(RAM)를 쿠버네티스에게 지시한다. 쿠버네티스는 컨테이너를 노드에 맞추어서 리소스를 가장 잘 사용할 수 있도록 해준다.&lt;/p>
+&lt;h3 id="자동화된-복구self-healing">자동화된 복구(self-healing)&lt;/h3>
+&lt;p>쿠버네티스는 실패한 컨테이너를 다시 시작하고, 컨테이너를 교체하며, &amp;lsquo;사용자 정의 상태 검사&amp;rsquo;에 응답하지 않는 컨테이너를 죽이고, 서비스 준비가 끝날 때까지 그러한 과정을 클라이언트에 보여주지 않는다.&lt;/p>
+&lt;h3 id="시크릿과-구성-관리">시크릿과 구성 관리 &lt;/h3>
+&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item></channel></rss>
