@@ -1,4 +1,956 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:00:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean_code_14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:11:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean_code_15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
+&lt;ul>
+&lt;li>생성자 두 번째 인수와 세 번째 인수를 비교한다.&lt;/li>
+&lt;li>comapct 함수에 문자열을 넣으면 결과 메시지 앞에 문자열이 추가된다.&lt;/li>
+&lt;li>비교 후 다른 문자열을 “[]”를 써서 강조한다.&lt;/li>
+&lt;li>첫 번째 인수는 다른 문자열을 출력할 때 “[]” 앞 뒤로 출력할 문자열 개수이다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nn">junit.framework&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ComparisonCompactor&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;...&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">DELTA_END&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;]&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">DELTA_START&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;[&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">fContextLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">fPrefix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">fSuffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">ComparisonCompactor&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fContextLength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">fActual&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">areStringsEqual&lt;/span>&lt;span class="o">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fActual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">DELTA_START&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fPrefix&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fSuffix&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">+&lt;/span> &lt;span class="n">DELTA_END&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fPrefix&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">computeCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fSuffix&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">computeCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fPrefix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">(),&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">fPrefix&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">fPrefix&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fPrefix&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fPrefix&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">fPrefix&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">fPrefix&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">--,&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">--)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">fActual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">computeCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">fPrefix&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">fContextLength&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">max&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">fPrefix&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">fContextLength&lt;/span>&lt;span class="o">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fPrefix&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">computeCommonSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">fSuffix&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">fContextLength&lt;/span>&lt;span class="o">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">fSuffix&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">(&lt;/span>&lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">fSuffix&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fContextLength&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">areStringsEqual&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">fExpected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">fActual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="멤버-변수-앞에-붙인-접두어">멤버 변수 앞에 붙인 접두어&lt;/h2>
+&lt;p>오늘날 사용하는 개발 환경에서는 변수 이름에 범위를 명시할 필요가 없다.&lt;/p>
+&lt;p>접두어 &lt;code>f&lt;/code>는 중복되는 정보다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">prefix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">suffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="캡슐화되지-않은-조건문">캡슐화되지 않은 조건문&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">areStringsEqual&lt;/span>&lt;span class="o">())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>의도를 명확히 표현하려면 조건문을 캡슐화 하는것이 좋다. 조건문을 메서드로 뽑아내 적절한 이름을 붙인다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(**&lt;/span>&lt;span class="n">shouldNotCompact&lt;/span>&lt;span class="o">**())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">shouldNotCompact&lt;/span>&lt;span class="o">**()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">areStringsEqual&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="중복되는-변수-이름">중복되는 변수 이름&lt;/h2>
+&lt;p>&lt;code>compact&lt;/code> 함수에서 사용하는 &lt;code>this.expected&lt;/code>와 &lt;code>this.acutal&lt;/code>같은 경우 기존 함수에 &lt;code>expected&lt;/code>, &lt;code>actual&lt;/code> 이라는 지역 변수가 있었는데, 클래스 변수 &lt;code>fExpected&lt;/code>, &lt;code>fAcutal&lt;/code>에서 &lt;code>f&lt;/code>를 제거하여 같은 이름을 사용하게 되었다.&lt;/p>
+&lt;p>함수에서 멤버 변수와 이름이 같은 변수를 사용하는 이유를 파악하고 더 서술적(구체적)인 이름으로 바꾼다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">String&lt;/span> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">String&lt;/span> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="조건문의-부정문-사용">조건문의 부정문 사용&lt;/h2>
+&lt;p>부정문은 긍정문보다 이해하기 약간 더 어렵다. 첫 문장 &lt;code>if&lt;/code>를 긍정으로 만들어 조건문을 반전한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(**&lt;/span>&lt;span class="n">canBeCompacted&lt;/span>&lt;span class="o">**())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">canBeCompacted&lt;/span>&lt;span class="o">**()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">**!=**&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">actual&lt;/span> &lt;span class="o">**!=**&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="o">**!**&lt;/span>&lt;span class="n">areStringsEqual&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="동작-의미를-잘-표현할-수-있는-이름을-사용">동작, 의미를 잘 표현할 수 있는 이름을 사용&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>compact&lt;/code> 함수는 문자열을 앞축하라는 의미가 강하지만 실제로 &lt;code>canBeCompacted&lt;/code>가 &lt;code>false&lt;/code>면 압축하지 않는다.
+&lt;ul>
+&lt;li>&lt;code>compact&lt;/code>라는 이름을 붙이면 오류 점검이라는 부가 단계(기능)이 숨겨진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>함수는 단순히 압축된 문자열이 아니라 형식이 갖춰진 문자열을 반환한다.&lt;/li>
+&lt;/ul>
+&lt;p>실제로는 &lt;code>formatCompatedComparison&lt;/code>이라는 이름이 적합하다.&lt;/p>
+&lt;p>새 이름에 인수를 고려하면 가독성이 훨신 좋아진다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">formatCompactedComparison&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="함수가-한-가지-책임만-가지게">함수가 한 가지 책임만 가지게&lt;/h2>
+&lt;p>if 문 안에서는 예상 문자열과 실제 문자열을 진짜로 압축한다. 이 부분을 빼내 &lt;code>compactExpectedAndActual&lt;/code>이라는 메서드로 만든다.&lt;/p>
+&lt;p>형식을 맞추는 작업은 &lt;code>formatCompactedComparison&lt;/code>에게 전적으로 맡긴다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">compactExpected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">compactActual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">formatCompactedComparison&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">canBeCompacted&lt;/span>&lt;span class="o">())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">**&lt;/span>&lt;span class="n">compactExpectedAndActual&lt;/span>&lt;span class="o">**();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">compactExpected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">compactActual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">compactExpectedAndActual&lt;/span>&lt;span class="o">**()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>compactExpected, compactActual를 멤버 변수로 승격했다.&lt;/p>
+&lt;h2 id="사용-방식-일관성">사용 방식 일관성&lt;/h2>
+&lt;p>새 함수&lt;code>compactExpectedAndActual&lt;/code>에서 마지막 두 줄은 변수를 반환하지만 첫째 줄과 둘째줄은 반환값이 없다. 멤버변수 함수 사용방식이 일관적이지 못하다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>findCommonPrefix&lt;/code>, &lt;code>findCommonSuffix&lt;/code>는 함수 내부에서 멤버변수 prefix, suffix에 값을 할당하지만, &lt;code>compactString&lt;/code>은 반환값을 만들게 되고, 멤버 변수에 반환값을 할당한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>findCommonPrefix&lt;/code>, &lt;code>findCommonSuffix&lt;/code> 를 변경하여 접두어 값과 접미어 값의 위치를 반환하게 바꾼다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">compactExpectedAndActual&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">suffixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">findCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">(),&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">findCommonSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">--,&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">--)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="숨겨진-시간적인-결합을-노출">숨겨진 시간적인 결합을 노출&lt;/h2>
+&lt;p>&lt;code>findCommonSuffix&lt;/code> 를 주의 깊게 살펴보면 숨겨진 시간적인 결함이 존재한다. &lt;code>findCommonSuffix&lt;/code>는 &lt;code>findCommonPrefix&lt;/code>가 &lt;code>prefixIndex&lt;/code>를 계산한다는 사실에 의존하게 된다.&lt;/p>
+&lt;p>만약 &lt;code>findCommonPrefix&lt;/code>와 &lt;code>findCommonSuffix&lt;/code>를 잘못된 순서로 호출하면 문제를 찾기 어렵다.&lt;/p>
+&lt;p>따라서 시간 결함을 외부에 노출하고자 &lt;code>findCommonSuffix&lt;/code>를 고쳐 &lt;code>prefixIndex&lt;/code>를 인수로 넘겼다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">compactExpectedAndActual&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">suffixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">findCommonSuffix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="nf">findCommonSuffix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">--,&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">--)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>prefixIndex&lt;/code>를 인수로 전달하는 방식은 함수 호출 순서를 확실히 명시할 수 있지만, &lt;code>prefixIndex&lt;/code>가 필요한 이유를 명확히 설명하지 못한다.&lt;/p>
+&lt;p>필요한 이유가 분명히 드러나지 않으므로 다른 개발자가 원래대로 되돌려놓을지도 모른다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">compactExpectedAndActual&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">**&lt;/span>&lt;span class="n">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">**();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">**()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">**&lt;/span>&lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">**();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">actualSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">expectedSuffix&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">--,&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">--)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actualSuffix&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">suffixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">expectedSuffix&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">(),&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">prefixIndex&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">++)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixIndex&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>findCommonPrefix&lt;/code>와 &lt;code>findCommonSuffix&lt;/code>를 되돌리고, &lt;code>findCommonSuffix&lt;/code>라는 이름을 &lt;code>findCommonPrefixAndSuffix&lt;/code>로 바꾼 후 &lt;code>findCommonPrefixAndSuffix&lt;/code>에서 가장 먼저 &lt;code>findComonPrefix&lt;/code>를 호출한다.&lt;/p>
+&lt;p>두 함수를 호출하는 순서가 앞서 고친 코드보다 훨씬 더 분명해진다.&lt;/p>
+&lt;p>그리고 &lt;code>PrefixAndSuffix&lt;/code>함수를 정리한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">suffixOverlapsPrefix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">);&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">suffixIndex&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="nf">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">suffixOverlapsPrefix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">||&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="적절한-이름으로-바꾸기">적절한 이름으로 바꾸기&lt;/h2>
+&lt;p>코드를 정리하니 &lt;code>suffixIndex&lt;/code>가 &lt;code>index&lt;/code>가 아닌 실제로는 접미어 길이(length)를 의미한다. 이름이 적절치 않다. &lt;code>prefixIndex&lt;/code>도 마찬가지이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ComparisonCompactor&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">suffixOverlapsPrefix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">);&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="nf">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">suffixOverlapsPrefix&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">||&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">DELTA_START&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixLength&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DELTA_END&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">prefixLength&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">computeCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">computeCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">computeCommonSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**,&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">suffixLength&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">contextLength&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>computeCommonSuffix&lt;/code>에서 &lt;code>+1&lt;/code>을 없애고 &lt;code>charFromEnd&lt;/code>에 -1을 추가하고 &lt;code>suffixOverlapsPrefix&lt;/code>에 &lt;code>≤&lt;/code> 를 사용했다. 그 후 &lt;code>suffixLength&lt;/code>로 바꿔 가독성을 크게 높힐 수 있었다.&lt;/p>
+&lt;h2 id="불필요한-코드-제거">불필요한 코드 제거&lt;/h2>
+&lt;p>+1를 제거하던 중 &lt;code>compactString&lt;/code>에서 다음 행을 발견했다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">suffixlength&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>suffixLength&lt;/code>가 1씩 감소했으므로 당연히 연산자를 ≥로 고쳐야 하지만 지금 상황에서는 ≥는 나올 수 없다.&lt;/p>
+&lt;p>코드를 좀 더 분석해보면 if 문은 길이가 0인 접미어를 걸러내어 &lt;code>suffixIndex&lt;/code>가 언제나 1 이상이므로 if 문 자체가 필요 없다.&lt;/p>
+&lt;p>&lt;code>compactString&lt;/code>에 있는 if문이 모두 필요 없어 보여 제거후 테스트를 하니 모두 통과했다. 불필요한 if문을 제거하여 더 깔끔하게 만든다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compactString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">computeCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DELTA_START&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixLength&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DELTA_END&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">computeCommonSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="최종-코드">최종 코드&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nn">junit.framework&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ComparisonCompactor&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;...&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">DELTA_END&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;]&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kd">final&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">DELTA_START&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;[&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">ComparisonCompactor&lt;/span>&lt;span class="o">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">contextLength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">expected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">actual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">formatCompactedComparison&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">shouldBeCompacted&lt;/span>&lt;span class="o">())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactExpected&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compactActual&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">Assert&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">message&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">compactExpected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">compactActual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">shouldBeCompacted&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">shouldNotBeCompacted&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">shouldNotBeCompacted&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">actual&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span> &lt;span class="o">||&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonPrefixAndSuffix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">findCommonPrefix&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">suffixOverlapsPrefix&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">++)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">actual&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="nf">charFromEnd&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">suffixOverlapsPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">||&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">findCommonPrefix&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">(),&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(;&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">end&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">++)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixLength&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">actual&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">charAt&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">prefixLength&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">compact&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">StringBuilder&lt;/span>&lt;span class="o">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">startingEllipsis&lt;/span>&lt;span class="o">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">startingContext&lt;/span>&lt;span class="o">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">DELTA_START&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">delta&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">DELTA_END&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">endingContext&lt;/span>&lt;span class="o">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">append&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">endingEllipsis&lt;/span>&lt;span class="o">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="na">toString&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">startingEllipsis&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">contextLength&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">startingContext&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextStart&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">max&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">prefixLength&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextEnd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">contextStart&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">contextEnd&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">delta&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">deltaStart&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">prefixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">deltaEnd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">deltaStart&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">deltaEnd&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">endingContext&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextStart&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">suffixLength&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">contextEnd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">min&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">contextStart&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">contextLength&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">length&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">substring&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">contextStart&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">contextEnd&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">endingEllipsis&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">suffixLength&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">contextLength&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="n">ELLIPSIS&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>코드를 살펴보면 초반에 내렸던 결정 일부를 번복했다.&lt;/p>
+&lt;ul>
+&lt;li>처음 추출했던 메서드 몇 개를 &lt;code>formatCompactedComparison&lt;/code>에다 도로 집어넣었다.&lt;/li>
+&lt;li>&lt;code>shouldNotBeCompacted&lt;/code> 조건을 되돌렸다.&lt;/li>
+&lt;/ul>
+&lt;p>코드를 리펙터링 하다보면 원래 했던 변경을 되돌리는 경우가 흔하다.&lt;/p>
+&lt;blockquote>
+&lt;p>리펙터링은 코드가 어느 수준에 이를때까지 수많은 시행착오를 반복하는 작업이다.&lt;/p>
+&lt;/blockquote></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean_code_14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
 &lt;p>프로그래밍은 과학보다 공예에 가깝다. 깨끗한 코드를 짜려면 먼저 지저분한 코드를 짠 뒤에 정리해야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="args-구현">Args 구현&lt;/h2>
