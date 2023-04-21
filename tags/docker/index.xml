@@ -1,4 +1,377 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 13:57:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes_4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 14:00:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes_5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
+&lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
+&lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
+&lt;p>노드의 컴포넌트에는 &lt;code>kubelet&lt;/code>, 컨테이너 런타임 그리고 &lt;code>kube-proxy&lt;/code>가 포함된다.&lt;/p>
+&lt;h3 id="관리">관리&lt;/h3>
+&lt;p>API 서버에 노드를 추가하는 두가지 주요 방법이 있다.&lt;/p>
+&lt;ol>
+&lt;li>노드의 &lt;code>kubelet&lt;/code>으로 컨트롤 플레인에 자체 등록&lt;/li>
+&lt;li>사용자(또는 다른 사용자)가 노드 오브젝트를 수동으로 추가&lt;/li>
+&lt;/ol>
+&lt;p>노드 오브젝트 또는 노드의 &lt;code>kubelt&lt;/code>으로 자체 등록한 후 컨트롤 플레인은 새 노드 오브젝트가 유효한지 확인한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;kind&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Node&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiVersion&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;v1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;metadata&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;10.240.79.157&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;labels&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;my-first-k8s-node&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>쿠버네티스는 내부적으로 노드 오브젝트를 생성(표시)한다. 쿠버네티스는 &lt;code>kubelet&lt;/code>이 노드의 &lt;code>metadata&lt;/code>,&lt;code>name&lt;/code>필드와 일치하는 API 서버에 등록이 되어있는지 확인한다. 노드가 정상이면(필요한 모든 서비스가 실행중인 경우) 파드를 실행할 수 있게 된다. 그렇지 않으면, 해당 노드는 정상이 될때까지 모든 클러스터 활동에 대해 무시된다.&lt;/p>
+&lt;blockquote>
+&lt;p>💡 쿠버네티스는 유효하지 않은 노드 오브젝트를 유지하고, 노드가 정상적인지 확인한다. 상태 확인을 중지하려면 사용자 또는 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/controller/" target="_blank" rel="noopener"
+>컨트롤러&lt;/a>에서 노드 오브젝트를 명시적으로 삭제해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>노드 오브젝트의 이름은 유효한 DNS 서브 도메인 이름이어야 한다.&lt;/p>
+&lt;h2 id="노드-이름-고유성">노드 이름 고유성&lt;/h2>
+&lt;p>이름은 노드를 식별한다. 두 노드는 동시에 같은 이름을 가질 수 없다. 쿠버네티스는 또한 같은 이름의 리소스가 동일한 객체라고 가정한다. 노드의 경우, 동일한 이름을 사용하는 인스턴스가 동일한 상태와 노드 레이블과 같은 동일한 속성을 갖는다고 암시적으로 가정한다. 인스턴스가 이름을 변경하지 않고 수정된 경우 이로 인해 불일치가 발생할 수 있다. 노드를 대폭 교체하거나 업데이트 해야 하는 경우, 기존 노드 오브젝트를 먼저 API 서버에서 제거하고 업데이트 후 다시 추가해야 한다.&lt;/p>
+&lt;h3 id="노드-상태">노드 상태&lt;/h3>
+&lt;p>kubectl을 사용해서 노드 상태와 기타 세부 정보를 볼수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="err">kubectl&lt;/span> &lt;span class="err">describe&lt;/span> &lt;span class="err">node&lt;/span> &lt;span class="err">&amp;lt;insert-node-name-here&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="주소">주소&lt;/h3>
+&lt;p>주소 필드는 클라우드 제공 사업자 또는 베어메탈 구성에 따라 다양하게 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>HostName&lt;/code>: 노드의 커널에 의해 알려진 호스트명이다. &lt;code>-hostname-override&lt;/code> 파라미터를 통해 치환될 수 있다.&lt;/li>
+&lt;li>&lt;code>ExternalIP&lt;/code>: 일반적으로 노드의 IP 주소는 외부로 라우트 가능 (클러스터 외부에서 이용 가능) 하다 .&lt;/li>
+&lt;li>&lt;code>InternalIP&lt;/code>: 일반적으로 노드의 IP 주소는 클러스터 내에서만 라우트 가능하다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="컨디션">컨디션&lt;/h3>
+&lt;p>conditions필드는 모든 Running 노드의 상태를 기술한다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>노드 컨디션&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Ready&lt;/td>
+&lt;td>노드가 상태 양호하며 파드를 수용할 준비가 되어 있는 경우 True, 노드의 상태가 불량하여 파드를 수용하지 못할 경우 False, 그리고 노드 컨트롤러가 마지막 node-monitor-grace-period (기본값 40 기간 동안 노드로부터 응답을 받지 못한 경우) Unknown&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DiskPressure&lt;/td>
+&lt;td>디스크 사이즈 상에 압박이 있는 경우, 즉 디스크 용량이 넉넉치 않은 경우 True, 반대의 경우 False&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>MemoryPressure&lt;/td>
+&lt;td>노드 메모리 상에 압박이 있는 경우, 즉 노드 메모리가 넉넉치 않은 경우 True, 반대의 경우 False&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PIDPressure&lt;/td>
+&lt;td>프로세스 상에 압박이 있는 경우, 즉 노드 상에 많은 프로세스들이 존재하는 경우 True, 반대의 경우 False&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NetworkUnavailable&lt;/td>
+&lt;td>노드에 대해 네트워크가 올바르게 구성되지 않은 경우 True, 반대의 경우 False&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="용량과-할당가능">용량과 할당가능&lt;/h3>
+&lt;p>노드 상에 사용 가능한 리소스를 나타낸다.&lt;/p>
+&lt;ul>
+&lt;li>CPU&lt;/li>
+&lt;li>메모리&lt;/li>
+&lt;li>스케줄 되어질 수 있는 최대 파드 수 등&lt;/li>
+&lt;/ul>
+&lt;p>용량 블록 필드는 노드에 있는 리소스의 총량을 나타낸다. 할당가능 블록은 일반 파드에서 사용할 수 있는 노드의 리소스 양을 나타낸다.&lt;/p>
+&lt;h3 id="정보">정보&lt;/h3>
+&lt;p>노드에 대한 일반적은 정보가 기술된다. kubelet이 노드에서 수집하여 쿠버네티스 API 로 전송한다.&lt;/p>
+&lt;ul>
+&lt;li>커널 버전&lt;/li>
+&lt;li>쿠버네티스 버전&lt;/li>
+&lt;li>컨테이너 런타임 상세 정보 등&lt;/li>
+&lt;/ul>
+&lt;h2 id="하트비트">하트비트&lt;/h2>
+&lt;p>쿠버네티스 노드가 보내는 하트비느느 ㄴ클러스터가 개별 노드가 가용한지를 판단할 수 있도록 도움을 주고, 장애가 발견된 경우 조치를 할 수 있게 한다.&lt;/p>
+&lt;ul>
+&lt;li>노드의 .status 에 대한 업데이트&lt;/li>
+&lt;li>kube=-node-lease 네임 스페이스 내의 Lease오브젝트&lt;/li>
+&lt;/ul>
+&lt;p>노드의 &lt;code>.status&lt;/code>에 비하면, 리스는 경량의 리소스이다. 큰 규모의 클러스터에서는 리스를 하트비트에 사용하여 업데이트로 인한 성능 영향을 줄일 수 있다.&lt;/p>
+&lt;p>kubelet은 노드의 &lt;code>.status&lt;/code> 생성과 업데이트 및 관련된 리스의 업데이트를 담당한다.&lt;/p>
+&lt;ul>
+&lt;li>kubelet은 상태가 변경되거나 설정된 인터벌보다 오래 업데이트가 없는 경우 노드의 &lt;code>.status&lt;/code>를 업데이트한다. 노드의 &lt;code>.status&lt;/code> 업데이트에 대한 기본 인터벌은 접근이 불가능한 노드에 대한 타임아웃인 40초 보다 훨씬 긴 5분이다.&lt;/li>
+&lt;li>kubelet은 리스 오브젝트를 (기본 업데이트 인터벌인) 매 10초마다 생성하고 업데이트한다. 리스 업데이트는 노드의 &lt;code>.status&lt;/code> 업데이트와는 독립적이다. 만약 리스 업데이트가 실패하면, kubelet은 200밀리초에서 시작하고 7초의 상한을 갖는 지수적 백오프를 사용해서 재시도한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="노드-컨트롤러">&lt;strong>노드 컨트롤러&lt;/strong>&lt;/h3>
+&lt;p>노드 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/controller/" target="_blank" rel="noopener"
+>컨트롤러&lt;/a>는 노드의 다양한 측면을 관리하는 쿠버네티스 컨트롤 플레인 컴포넌트이다.&lt;/p>
+&lt;p>노드 컨트롤러는 노드가 생성되어 유지되는 동안 다양한 역할을 한다.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>등록 시점에 (CIDR 할당이 사용토록 설정된 경우) 노드에 CIDR 블럭을 할당하는 것이다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>노드 컨트롤러의 내부 노드 리스트를 클라우드 제공사업자의 사용 가능한 머신 리스트 정보를 근거로 최신상태로 유지하는 것이다.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>클라우드 환경에서 동작 중일 경우, 노드상태가 불량할 때마다, 노드 컨트롤러는 해당 노드용 VM이 여전히 사용 가능한지에 대해 클라우드 제공사업자에게 묻는다.&lt;/li>
+&lt;li>사용 가능하지 않을 경우, 노드 컨트롤러는 노드 리스트로부터 그 노드를 삭제한다.&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>노드의 동작 상태를 모니터링하는 것이다.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>노드가 접근 불가능(unreachable) 상태가 되는 경우, 노드의 &lt;code>.status&lt;/code> 필드의 &lt;code>Ready&lt;/code> 컨디션을 업데이트한다. 이 경우에는 노드 컨트롤러가 &lt;code>Ready&lt;/code> 컨디션을 &lt;code>Unknown&lt;/code>으로 설정한다.&lt;/li>
+&lt;li>노드가 계속 접근 불가능 상태로 남아있는 경우, 해당 노드의 모든 파드에 대해서 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/api-eviction/" target="_blank" rel="noopener"
+>API를 이용한 축출&lt;/a>을 트리거한다. 기본적으로, 노드 컨트롤러는 노드를 &lt;code>Unknown&lt;/code>으로 마킹한 뒤 5분을 기다렸다가 최초의 축출 요청을 시작한다.&lt;/li>
+&lt;/ul>
+&lt;p>기본적으로, 노드 컨트롤러는 5 초마다 각 노드의 상태를 체크한다. 체크 주기는 &lt;code>kube-controller-manager&lt;/code> 구성 요소의 &lt;code>--node-monitor-period&lt;/code> 플래그를 이용하여 설정할 수 있다.&lt;/p>
+&lt;h3 id="축출-빈도-제한">&lt;strong>축출 빈도 제한&lt;/strong>&lt;/h3>
+&lt;p>대부분의 경우, 노드 컨트롤러는 초당 &lt;code>--node-eviction-rate&lt;/code>(기본값 0.1)로 축출 속도를 제한한다. 이 말은 10초당 1개의 노드를 초과하여 파드 축출을 하지 않는다는 의미가 된다.&lt;/p>
+&lt;p>노드 축출 행위는 주어진 가용성 영역 내 하나의 노드가 상태가 불량할 경우 변화한다. 노드 컨트롤러는 영역 내 동시에 상태가 불량한 노드의 퍼센티지가 얼마나 되는지 체크한다(&lt;code>Ready&lt;/code> 컨디션은 &lt;code>Unknown&lt;/code> 또는 &lt;code>False&lt;/code> 값을 가진다).&lt;/p>
+&lt;ul>
+&lt;li>상태가 불량한 노드의 비율이 최소 &lt;code>-unhealthy-zone-threshold&lt;/code> (기본값 0.55)가 되면 축출 속도가 감소한다.&lt;/li>
+&lt;li>클러스터가 작으면 (즉 &lt;code>-large-cluster-size-threshold&lt;/code> 노드 이하면 - 기본값 50) 축출이 중지된다.&lt;/li>
+&lt;li>이외의 경우, 축출 속도는 초당 &lt;code>-secondary-node-eviction-rate&lt;/code>(기본값 0.01)로 감소된다.&lt;/li>
+&lt;/ul>
+&lt;p>이 정책들이 가용성 영역 단위로 실행되어지는 이유는 나머지가 연결되어 있는 동안 &lt;strong>하나의 가용성 영역이 컨트롤 플레인으로부터 분할되어 질 수도 있기 때문&lt;/strong>이다. 만약 클러스터가 여러 클라우드 제공사업자의 가용성 영역에 걸쳐 있지 않는 이상, 축출 매커니즘은 영역 별 가용성을 고려하지 않는다.&lt;/p>
+&lt;p>노드가 가용성 영역들에 걸쳐 퍼져 있는 주된 이유는 &lt;strong>하나의 전체 영역이 장애가 발생할 경우 워크로드가 상태 양호한 영역으로 이전될 수 있도록 하기 위해서&lt;/strong>이다. 그러므로, 하나의 영역 내 모든 노드들이 상태가 불량하면 노드 컨트롤러는 &lt;code>--node-eviction-rate&lt;/code> 의 정상 속도로 축출한다.&lt;/p>
+&lt;p>모든 영역이 완전히 상태불량(클러스터 내 양호한 노드가 없는 경우)한 경우이다. 이러한 경우, 노드 컨트롤러는 컨트롤 플레인과 노드 간 연결에 문제가 있는 것으로 간주하고 축출을 실행하지 않는다. (중단 이후 일부 노드가 다시 보이는 경우 노드 컨트롤러는 상태가 양호하지 않거나 접근이 불가능한 나머지 노드에서 파드를 축출한다.)&lt;/p>
+&lt;p>또한, 노드 컨트롤러는 파드가 테인트를 허용하지 않을 때 &lt;code>NoExecute&lt;/code> 테인트 상태의 노드에서 동작하는 파드에 대한 축출 책임을 가지고 있다. 추가로, 노드 컨틀로러는 연결할 수 없거나, 준비되지 않은 노드와 같은 노드 문제에 상응하는 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/taint-and-toleration/" target="_blank" rel="noopener"
+>테인트&lt;/a>를 추가한다. 이는 스케줄러가 비정상적인 노드에 파드를 배치하지 않게 된다.&lt;/p>
+&lt;h2 id="리소스-용량-추적">&lt;strong>리소스 용량 추적&lt;/strong>&lt;/h2>
+&lt;p>노드 오브젝트는 노드 리소스 용량에 대한 정보: 예를 들어, 사용 가능한 메모리의 양과 CPU의 수를 추적한다. 노드의 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#%EB%85%B8%EB%93%9C%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9E%90%EC%B2%B4-%EB%93%B1%EB%A1%9D" target="_blank" rel="noopener"
+>자체 등록&lt;/a>은 등록하는 중에 용량을 보고한다. &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#%EC%88%98%EB%8F%99-%EB%85%B8%EB%93%9C-%EA%B4%80%EB%A6%AC" target="_blank" rel="noopener"
+>수동&lt;/a>으로 노드를 추가하는 경우 추가할 때 노드의 용량 정보를 설정해야 한다.&lt;/p>
+&lt;p>쿠버네티스 &lt;a class="link" href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/" target="_blank" rel="noopener"
+>스케줄러&lt;/a>는 노드 상에 모든 노드에 대해 충분한 리소스가 존재하도록 보장한다. 스케줄러는 노드 상에 컨테이너에 대한 요청의 합이 노드 용량보다 더 크지 않도록 체크한다. 요청의 합은 kubelet에서 관리하는 모든 컨테이너를 포함하지만, 컨테이너 런타임에 의해 직접적으로 시작된 컨 테이너는 제외되고 kubelet의 컨트롤 범위 밖에서 실행되는 모든 프로세스도 제외된다.&lt;/p>
+&lt;p>&lt;strong>참고: 파드 형태가 아닌 프로세스에 대해 명시적으로 리소스를 확보하려면, &lt;a class="link" href="https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#system-reserved" target="_blank" rel="noopener"
+>시스템 데몬에 사용할 리소스 예약하기&lt;/a>을 본다.&lt;/strong>&lt;/p>
+&lt;h2 id="노드-토폴로지">&lt;strong>노드 토폴로지&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.18 [beta]&lt;/code>&lt;/p>
+&lt;p>&lt;code>TopologyManager&lt;/code> &lt;a class="link" href="https://kubernetes.io/ko/docs/reference/command-line-tools-reference/feature-gates/" target="_blank" rel="noopener"
+>기능 게이트(feature gate)&lt;/a>를 활성화 시켜두면, kubelet이 리소스 할당 결정을 할 때 토폴로지 힌트를 사용할 수 있다. 자세한 내용은 &lt;a class="link" href="https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/" target="_blank" rel="noopener"
+>노드의 컨트롤 토폴로지 관리 정책&lt;/a>을 본다.&lt;/p>
+&lt;h2 id="그레이스풀graceful-노드-셧다운shutdown">&lt;strong>그레이스풀(Graceful) 노드 셧다운(shutdown)&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.21 [beta]&lt;/code>&lt;/p>
+&lt;p>kubelet은 노드 시스템 셧다운을 감지하고 노드에서 실행 중인 파드를 종료하려고 시도한다.&lt;/p>
+&lt;p>Kubelet은 노드가 종료되는 동안 파드가 일반 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination" target="_blank" rel="noopener"
+>파드 종료 프로세스&lt;/a>를 따르도록 한다.&lt;/p>
+&lt;p>그레이스풀 노드 셧다운 기능은 &lt;a class="link" href="https://www.freedesktop.org/wiki/Software/systemd/inhibit/" target="_blank" rel="noopener"
+>systemd inhibitor locks&lt;/a>를 사용하여 주어진 기간 동안 노드 종료를 지연시키므로 systemd에 의존한다.&lt;/p>
+&lt;p>그레이스풀 노드 셧다운은 1.21에서 기본적으로 활성화된 &lt;code>GracefulNodeShutdown&lt;/code> &lt;a class="link" href="https://kubernetes.io/ko/docs/reference/command-line-tools-reference/feature-gates/" target="_blank" rel="noopener"
+>기능 게이트&lt;/a>로 제어된다.&lt;/p>
+&lt;p>기본적으로, 아래 설명된 두 구성 옵션, &lt;code>shutdownGracePeriod&lt;/code> 및 &lt;code>shutdownGracePeriodCriticalPods&lt;/code> 는 모두 0으로 설정되어 있으므로, 그레이스풀 노드 셧다운 기능이 활성화되지 않는다. 기능을 활성화하려면, 두 개의 kubelet 구성 설정을 적절하게 구성하고 0이 아닌 값으로 설정해야 한다.&lt;/p>
+&lt;p>그레이스풀 셧다운 중에 kubelet은 다음의 두 단계로 파드를 종료한다.&lt;/p>
+&lt;ol>
+&lt;li>노드에서 실행 중인 일반 파드를 종료시킨다.&lt;/li>
+&lt;li>노드에서 실행 중인 &lt;a class="link" href="https://kubernetes.io/ko/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#%ED%8C%8C%EB%93%9C%EB%A5%BC-%EC%A4%91%EC%9A%94-critical-%EB%A1%9C-%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0" target="_blank" rel="noopener"
+>중요(critical) 파드&lt;/a>를 종료시킨다.&lt;/li>
+&lt;/ol>
+&lt;p>그레이스풀 노드 셧다운 기능은 두 개의 &lt;code>[KubeletConfiguration](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/)&lt;/code> 옵션으로 구성된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>shutdownGracePeriod&lt;/code>:
+&lt;ul>
+&lt;li>노드가 종료를 지연해야 하는 총 기간을 지정한다. 이것은 모든 일반 및 &lt;a class="link" href="https://kubernetes.io/ko/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#%ED%8C%8C%EB%93%9C%EB%A5%BC-%EC%A4%91%EC%9A%94-critical-%EB%A1%9C-%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0" target="_blank" rel="noopener"
+>중요 파드&lt;/a>의 파드 종료에 필요한 총 유예 기간에 해당한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>shutdownGracePeriodCriticalPods&lt;/code>:
+&lt;ul>
+&lt;li>노드 종료 중에 &lt;a class="link" href="https://kubernetes.io/ko/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#%ED%8C%8C%EB%93%9C%EB%A5%BC-%EC%A4%91%EC%9A%94-critical-%EB%A1%9C-%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0" target="_blank" rel="noopener"
+>중요 파드&lt;/a>를 종료하는 데 사용되는 기간을 지정한다. 이 값은 &lt;code>shutdownGracePeriod&lt;/code> 보다 작아야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>예를 들어, &lt;code>shutdownGracePeriod=30s&lt;/code>, &lt;code>shutdownGracePeriodCriticalPods=10s&lt;/code> 인 경우, kubelet은 노드 종료를 30초까지 지연시킨다. 종료하는 동안 처음 20(30-10)초는 일반 파드의 유예 종료에 할당되고, 마지막 10초는 &lt;a class="link" href="https://kubernetes.io/ko/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#%ED%8C%8C%EB%93%9C%EB%A5%BC-%EC%A4%91%EC%9A%94-critical-%EB%A1%9C-%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0" target="_blank" rel="noopener"
+>중요 파드&lt;/a>의 종료에 할당된다.&lt;/p>
+&lt;p>**참고:
+그레이스풀 노드 셧다운 과정에서 축출된 파드는 셧다운(shutdown)된 것으로 표시된다. &lt;code>kubectl get pods&lt;/code> 명령을 실행하면 축출된 파드의 상태가 &lt;code>Terminated&lt;/code>으로 표시된다. 그리고 &lt;code>kubectl describe pod&lt;/code> 명령을 실행하면 노드 셧다운으로 인해 파드가 축출되었음을 알 수 있다.&lt;/p>
+&lt;p>&lt;code>Reason: Terminated Message: Pod was terminated in response to imminent node shutdown.&lt;/code>**&lt;/p>
+&lt;h2 id="논-그레이스풀-노드-셧다운">&lt;strong>논 그레이스풀 노드 셧다운&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.24 [alpha]&lt;/code>&lt;/p>
+&lt;p>전달한 명령이 kubelet에서 사용하는 금지 잠금 메커니즘(inhibitor locks mechanism)을 트리거하지 않거나, 또는 사용자 오류(예: ShutdownGracePeriod 및 ShutdownGracePeriodCriticalPods가 제대로 설정되지 않음)로 인해 kubelet의 노드 셧다운 관리자(Node Shutdown Mananger)가 노드 셧다운 액션을 감지하지 못할 수 있다. 자세한 내용은 위의 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#graceful-node-shutdown" target="_blank" rel="noopener"
+>그레이스풀 노드 셧다운&lt;/a> 섹션을 참조한다.&lt;/p>
+&lt;p>노드가 셧다운되었지만 kubelet의 노드 셧다운 관리자가 이를 감지하지 못하면, 스테이트풀셋에 속한 파드는 셧다운된 노드에 &amp;lsquo;종료 중(terminating)&amp;rsquo; 상태로 고착되어 다른 동작 중인 노드로 이전될 수 없다. 이는 셧다운된 노드의 kubelet이 파드를 지울 수 없어서 결국 스테이트풀셋이 동일한 이름으로 새 파드를 만들 수 없기 때문이다. 만약 파드가 사용하던 볼륨이 있다면, 볼륨어태치먼트(VolumeAttachment)도 기존의 셧다운된 노드에서 삭제되지 않아 결국 파드가 사용하던 볼륨이 다른 동작 중인 노드에 연결(attach)될 수 없다. 결과적으로, 스테이트풀셋에서 실행되는 애플리케이션이 제대로 작동하지 않는다. 기존의 셧다운된 노드가 정상으로 돌아오지 못하면, 이러한 파드는 셧다운된 노드에 &amp;lsquo;종료 중(terminating)&amp;rsquo; 상태로 영원히 고착될 것이다.&lt;/p>
+&lt;p>위와 같은 상황을 완화하기 위해, 사용자가 &lt;code>node.kubernetes.io/out-of-service&lt;/code> 테인트를 &lt;code>NoExecute&lt;/code> 또는 &lt;code>NoSchedule&lt;/code> 값으로 추가하여 노드를 서비스 불가(out-of-service) 상태로 표시할 수 있다. &lt;code>kube-controller-manager&lt;/code>에 &lt;code>NodeOutOfServiceVolumeDetach&lt;/code>&lt;a class="link" href="https://kubernetes.io/ko/docs/reference/command-line-tools-reference/feature-gates/" target="_blank" rel="noopener"
+>기능 게이트&lt;/a> 가 활성화되어 있고, 노드가 이 테인트에 의해 서비스 불가 상태로 표시되어 있는 경우, 노드에 매치되는 톨러레이션이 없다면 노드 상의 파드는 강제로 삭제될 것이고, 노드 상에서 종료되는 파드에 대한 볼륨 해제(detach) 작업은 즉시 수행될 것이다. 이를 통해 서비스 불가 상태 노드의 파드가 빠르게 다른 노드에서 복구될 수 있다.&lt;/p>
+&lt;p>논 그레이스풀 셧다운 과정 동안, 파드는 다음의 두 단계로 종료된다.&lt;/p>
+&lt;ol>
+&lt;li>매치되는 &lt;code>out-of-service&lt;/code> 톨러레이션이 없는 파드를 강제로 삭제한다.&lt;/li>
+&lt;li>이러한 파드에 대한 볼륨 해제 작업을 즉시 수행한다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>참고:
+• &lt;code>node.kubernetes.io/out-of-service&lt;/code> 테인트를 추가하기 전에, 노드가 완전한 셧다운 또는 전원 꺼짐 상태에 있는지 (재시작 중인 것은 아닌지) 확인한다.
+• 사용자가 서비스 불가 상태 테인트를 직접 추가한 것이기 때문에, 파드가 다른 노드로 옮겨졌고 셧다운 상태였던 노드가 복구된 것을 확인했다면 사용자가 서비스 불가 상태 테인트를 수동으로 제거해야 한다.&lt;/strong>&lt;/p>
+&lt;h3 id="파드-우선순위-기반-그레이스풀-노드-셧다운">&lt;strong>파드 우선순위 기반 그레이스풀 노드 셧다운&lt;/strong>&lt;/h3>
+&lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.23 [alpha]&lt;/code>&lt;/p>
+&lt;p>그레이스풀 노드 셧다운 시 파드 셧다운 순서에 더 많은 유연성을 제공할 수 있도록, 클러스터에 프라이어리티클래스(PriorityClass) 기능이 활성화되어 있으면 그레이스풀 노드 셧다운 과정에서 파드의 프라이어리티클래스가 고려된다. 이 기능으로 그레이스풀 노드 셧다운 시 파드가 종료되는 순서를 클러스터 관리자가 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/pod-priority-preemption/#%ED%94%84%EB%9D%BC%EC%9D%B4%EC%96%B4%EB%A6%AC%ED%8B%B0%ED%81%B4%EB%9E%98%EC%8A%A4" target="_blank" rel="noopener"
+>프라이어리티 클래스&lt;/a> 기반으로 명시적으로 정할 수 있다.&lt;/p>
+&lt;p>위에서 기술된 것처럼, &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#graceful-node-shutdown" target="_blank" rel="noopener"
+>그레이스풀 노드 셧다운&lt;/a> 기능은 파드를 중요하지 않은(non-critical) 파드와 중요한(critical) 파드 2단계(phase)로 구분하여 종료시킨다. 셧다운 시 파드가 종료되는 순서를 명시적으로 더 상세하게 정해야 한다면, 파드 우선순위 기반 그레이스풀 노드 셧다운을 사용할 수 있다.&lt;/p>
+&lt;p>그레이스풀 노드 셧다운 과정에서 파드 우선순위가 고려되기 때문에, 그레이스풀 노드 셧다운이 여러 단계로 일어날 수 있으며, 각 단계에서 특정 프라이어리티 클래스의 파드를 종료시킨다. 정확한 단계와 단계별 셧다운 시간은 kubelet에 설정할 수 있다.&lt;/p>
+&lt;p>다음과 같이 클러스터에 커스텀 파드 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/pod-priority-preemption/#%ED%94%84%EB%9D%BC%EC%9D%B4%EC%96%B4%EB%A6%AC%ED%8B%B0%ED%81%B4%EB%9E%98%EC%8A%A4" target="_blank" rel="noopener"
+>프라이어리티 클래스&lt;/a>가 있다고 가정하자.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>파드 프라이어리티 클래스 이름&lt;/th>
+&lt;th>파드 프라이어리티 클래스 값&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>custom-class-a&lt;/td>
+&lt;td>100000&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>custom-class-b&lt;/td>
+&lt;td>10000&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>custom-class-c&lt;/td>
+&lt;td>1000&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>regular/unset&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;a class="link" href="https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration" target="_blank" rel="noopener"
+>kubelet 환경 설정&lt;/a> 안의 &lt;code>shutdownGracePeriodByPodPriority&lt;/code> 설정은 다음과 같을 수 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>파드 프라이어리티 클래스 값&lt;/th>
+&lt;th>종료 대기 시간&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>100000&lt;/td>
+&lt;td>10 seconds&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10000&lt;/td>
+&lt;td>180 seconds&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1000&lt;/td>
+&lt;td>120 seconds&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>60 seconds&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>이를 나타내는 kubelet 환경 설정 YAML은 다음과 같다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="err">**shutdownGracePeriodByPodPriority**:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">-&lt;/span> &lt;span class="err">**priority**:&lt;/span> &lt;span class="mi">100000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">**shutdownGracePeriodSeconds**:&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">-&lt;/span> &lt;span class="err">**priority**:&lt;/span> &lt;span class="mi">10000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">**shutdownGracePeriodSeconds**:&lt;/span> &lt;span class="mi">180&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">-&lt;/span> &lt;span class="err">**priority**:&lt;/span> &lt;span class="mi">1000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">**shutdownGracePeriodSeconds**:&lt;/span> &lt;span class="mi">120&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">-&lt;/span> &lt;span class="err">**priority**:&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">**shutdownGracePeriodSeconds**:&lt;/span> &lt;span class="mi">60&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위의 표에 의하면 &lt;code>priority&lt;/code> 값이 100000 이상인 파드는 종료까지 10초만 주어지며, 10000 이상 ~ 100000 미만이면 180초, 1000 이상 ~ 10000 미만이면 120초가 주어진다. 마지막으로, 다른 모든 파드는 종료까지 60초가 주어질 것이다.&lt;/p>
+&lt;p>모든 클래스에 대해 값을 명시할 필요는 없다. 예를 들어, 대신 다음과 같은 구성을 사용할 수도 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>파드 프라이어리티 클래스 값&lt;/th>
+&lt;th>종료 대기 시간&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>100000&lt;/td>
+&lt;td>300 seconds&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1000&lt;/td>
+&lt;td>120 seconds&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>60 seconds&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위의 경우, &lt;code>custom-class-b&lt;/code>에 속하는 파드와 &lt;code>custom-class-c&lt;/code>에 속하는 파드는 동일한 종료 대기 시간을 갖게 될 것이다.&lt;/p>
+&lt;p>특정 범위에 해당되는 파드가 없으면, kubelet은 해당 범위에 해당되는 파드를 위해 기다려 주지 않는다. 대신, kubelet은 즉시 다음 프라이어리티 클래스 값 범위로 넘어간다.&lt;/p>
+&lt;p>기능이 활성화되어 있지만 환경 설정이 되어 있지 않으면, 순서 지정 동작이 수행되지 않을 것이다.&lt;/p>
+&lt;p>이 기능을 사용하려면 &lt;code>GracefulNodeShutdownBasedOnPodPriority&lt;/code> &lt;a class="link" href="https://kubernetes.io/ko/docs/reference/command-line-tools-reference/feature-gates/" target="_blank" rel="noopener"
+>기능 게이트&lt;/a>를 활성화해야 하고, &lt;a class="link" href="https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/" target="_blank" rel="noopener"
+>kubelet config&lt;/a>의 &lt;code>ShutdownGracePeriodByPodPriority&lt;/code>를 파드 프라이어리티 클래스 값과 각 값에 대한 종료 대기 시간을 명시하여 지정해야 한다.&lt;/p>
+&lt;p>&lt;strong>참고: 그레이스풀 노드 셧다운 과정에서 파드 프라이어리티를 고려하는 기능은 쿠버네티스 v1.23에서 알파 기능으로 도입되었다. 쿠버네티스 1.26에서 이 기능은 베타 상태이며 기본적으로 활성화되어 있다.&lt;/strong>&lt;/p>
+&lt;p>&lt;code>graceful_shutdown_start_time_seconds&lt;/code> 및 &lt;code>graceful_shutdown_end_time_seconds&lt;/code> 메트릭은 노드 셧다운을 모니터링하기 위해 kubelet 서브시스템에서 방출된다.&lt;/p>
+&lt;h2 id="스왑swap-메모리-관리">&lt;strong>스왑(swap) 메모리 관리&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.22 [alpha]&lt;/code>&lt;/p>
+&lt;p>쿠버네티스 1.22 이전에는 노드가 스왑 메모리를 지원하지 않았다. 그리고 kubelet은 노드에서 스왑을 발견하지 못한 경우 시작과 동시에 실패하도록 되어 있었다. 1.22부터는 스왑 메모리 지원을 노드 단위로 활성화할 수 있다.&lt;/p>
+&lt;p>노드에서 스왑을 활성화하려면, &lt;code>NodeSwap&lt;/code> 기능 게이트가 kubelet에서 활성화되어야 하며, 명령줄 플래그 &lt;code>--fail-swap-on&lt;/code> 또는 &lt;a class="link" href="https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration" target="_blank" rel="noopener"
+>구성 설정&lt;/a>에서 &lt;code>failSwapOn&lt;/code>가 false로 지정되어야 한다.&lt;/p>
+&lt;p>&lt;strong>경고: 메모리 스왑 기능이 활성화되면, 시크릿 오브젝트의 내용과 같은 tmpfs에 기록되었던 쿠버네티스 데이터가 디스크에 스왑될 수 있다.&lt;/strong>&lt;/p>
+&lt;p>사용자는 또한 선택적으로 &lt;code>memorySwap.swapBehavior&lt;/code>를 구성할 수 있으며, 이를 통해 노드가 스왑 메모리를 사용하는 방식을 명시한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">memorySwap&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">swapBehavior&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">LimitedSwap`&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>swapBehavior&lt;/code>에 가용한 구성 옵션은 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>LimitedSwap&lt;/code>: 쿠버네티스 워크로드는 스왑을 사용할 수 있는 만큼으로 제한된다. 쿠버네티스에 의해 관리되지 않는 노드의 워크로드는 여전히 스왑될 수 있다.&lt;/li>
+&lt;li>&lt;code>UnlimitedSwap&lt;/code>: 쿠버네티스 워크로드는 요청한 만큼 스왑 메모리를 사용할 수 있으며, 시스템의 최대치까지 사용 가능하다.&lt;/li>
+&lt;/ul>
+&lt;p>만약 &lt;code>memorySwap&lt;/code> 구성이 명시되지 않았고 기능 게이트가 활성화되어 있다면, kubelet은 &lt;code>LimitedSwap&lt;/code> 설정과 같은 행동을 기본적으로 적용한다.&lt;/p>
+&lt;p>&lt;code>LimitedSwap&lt;/code> 설정에 대한 행동은 노드가 (&amp;ldquo;cgroups&amp;quot;으로 알려진) 제어 그룹이 v1 또는 v2 중에서 무엇으로 동작하는가에 따라서 결정된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>cgroupsv1:&lt;/strong> 쿠버네티스 워크로드는 메모리와 스왑의 조합을 사용할 수 있다. 파드의 메모리 제한이 설정되어 있다면 가용 상한이 된다.&lt;/li>
+&lt;li>&lt;strong>cgroupsv2:&lt;/strong> 쿠버네티스 워크로드는 스왑 메모리를 사용할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>테스트를 지원하고 피드벡을 제공하기 위한 정보는 &lt;a class="link" href="https://github.com/kubernetes/enhancements/issues/2400" target="_blank" rel="noopener"
+>KEP-2400&lt;/a> 및 &lt;a class="link" href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md" target="_blank" rel="noopener"
+>디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes_4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
 &lt;blockquote>
 &lt;p>⛔ 쿠버네티스 오브젝트는 하나의 기법만 사용하여 관리해야 한다. 동일한 오브젝트에 대해 여러 기법을 혼용하면 오동작이 발생할 수 있다.&lt;/p>
 &lt;/blockquote>
