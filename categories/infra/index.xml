@@ -643,4 +643,207 @@ loading="lazy"
 &lt;h3 id="자동화된-복구self-healing">자동화된 복구(self-healing)&lt;/h3>
 &lt;p>쿠버네티스는 실패한 컨테이너를 다시 시작하고, 컨테이너를 교체하며, &amp;lsquo;사용자 정의 상태 검사&amp;rsquo;에 응답하지 않는 컨테이너를 죽이고, 서비스 준비가 끝날 때까지 그러한 과정을 클라이언트에 보여주지 않는다.&lt;/p>
 &lt;h3 id="시크릿과-구성-관리">시크릿과 구성 관리 &lt;/h3>
-&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item></channel></rss>
+&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_2/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_2/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
+&lt;ul>
+&lt;li>컨테이너화를 통해 더욱 신속하게 작업을 진행할 수 있다.&lt;/li>
+&lt;li>효율적으로 소프트웨어를 배포할 수 있다.&lt;/li>
+&lt;li>매우 높은 수준의 확장성을 확보할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>서버 가상화&lt;/strong>
+컴퓨터의 성능을 효율적으로 사용하기 위해 가상화 기술이 등장하였다.
+서버 관리자 입장에서 리소스 사용률이 적은 서버들은 낭비라고 생각할 수 있다. 그렇다고 모든 서비스를 한 서버 안에 올린다면 안정성에 문제가 생길 수 있다. 이에 따라 안정성을 높이며 리소스를 최대한 활용할 수 있는 방법으로 고안된 방법이 서버 가상화이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="컨테이너-정의">컨테이너 정의&lt;/h2>
+&lt;p>컨테이너는 소프트웨어 서비스를 실행하는 데 필요한 특정 버전의 프로그래밍 언어 런타임 및 라이브러리와 같은 종속 항목과 애플리케이션 코드를 함께 포함하는 경량 패키지이다.&lt;/p>
+&lt;p>컨테이너는 운영체제 수준에서 CPU, 메모리, 스토리지, 네트워크 리소스를 쉽게 공유할 수 있게 해주며 컨테이너가 실제로 실행되는 환경에서 애플리케이션을 추상화 할 수 있는 논리 패키징 매커니즘을 제공한다.&lt;/p>
+&lt;h2 id="컨테이너의-이점">컨테이너의 이점&lt;/h2>
+&lt;h3 id="책임-분리">책임 분리&lt;/h3>
+&lt;p>컨테이너화를 통해 책임을 깔끔하게 분리할 수 있다.&lt;/p>
+&lt;p>개발자는 애플리케이션의 로직과 종속 항목에 집중하고, IT 운영팀은 특정 소프트웨어 버전 및 구성과 같은 애플리케이션의 세부 요소 대신 배포 및 관리에 집중할 수 있다.&lt;/p>
+&lt;h3 id="워크로드-이동성">워크로드 이동성&lt;/h3>
+&lt;p>컨테이너는 Linux, Windows, Mac 등 운영체제를 가리지 않고, 가상머신 물리적 서버, 개발자 컴퓨터, 데이터 센터, 온프레미스 환경, 퍼블릭 클라우드 등 사실상 어느 환경에서나 구동되므로 개발 및 배포가 크게 쉬워진다.&lt;/p>
+&lt;h3 id="애플리케이션-격리">애플리케이션 격리&lt;/h3>
+&lt;p>컨테이너는 운영체제 수준에서 CPU, 메모리, 스토리지, 네트워크 리소스를 가상화 하므로 개발자에게 다른 애플리케이션으로부터 논리적으로 격리된 OS 환경을 제공한다.&lt;/p>
+&lt;h2 id="컨테이너와-vm의-차이">컨테이너와 VM의 차이&lt;/h2>
+&lt;p>VM은 기본 하드웨어에 대한 엑세스 권한을 갖는 호스트 운영체제 위에서 Linux또는 Windows 같은 게스트 운영체제를 실행하기 때문에 컨테이너와 비교되는 경우가 많다.&lt;/p>
+&lt;p>컨테이너는 가상 머신과 마찬가지로 애필리케이션을 관련 라이브러리 및 종속 항목과 함께 패키지로 묶어 소프트웨어 서비스 구동을 위한 격리 환경을 마련해준다. 그러나 컨테이너를 사용하면 훨씬 작은 단위로 업무를 수행할 수 있어 이점이 훨씬 많다.&lt;/p>
+&lt;ul>
+&lt;li>VM 보다 훨씬 더 가볍다.&lt;/li>
+&lt;li>OS 수준에서 가상화되고, VM은 하드웨어 수준에서 가상화된다.&lt;/li>
+&lt;li>OS 커널을 공유하며 VM에서 필요한 것 보다 훨씬 적은 메모리를 사용한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="컨테이너의-용도">컨테이너의 용도&lt;/h2>
+&lt;p>애플리케이션을 실제 구동 환경으로부터 추상화할 수 있는 논리 패키징 메커니즘을 제공함. 이러한 분리를 통해 어떤 환경에서도 컨테이너 기반 애플리케이션을 쉽게 지속적으로 배포할 수 있음.&lt;/p>
+&lt;h3 id="민첩한-개발">민첩한 개발&lt;/h3>
+&lt;p>컨테이너를 사용하면 개발자가 종속 항목과 환경에 미치는 영향을 신경쓰지 않고 훨씬 더 빠르게 개발을 진행할 수 있다.&lt;/p>
+&lt;h3 id="효율적인-운영">효율적인 운영&lt;/h3>
+&lt;p>컨테이너는 경량이며 필요한 컴퓨팅 리소스만 사용하면 된다. 따라서 애플리케이션을 효율적으로 구동할 수 있다.&lt;/p>
+&lt;h3 id="폭넓은-구동-환경">폭넓은 구동 환경&lt;/h3>
+&lt;p>컨테이너는 거의 모든 곳에서 구동할 수 있어 환경에 영향 없이 사용할 수 있다.&lt;/p>
+&lt;hr>
+&lt;h2 id="컨테이너-기술">컨테이너 기술&lt;/h2>
+&lt;h3 id="namespaces">Namespaces&lt;/h3>
+&lt;p>VM에서는 각 게스트 머신별로 독립적인 공간을 제공하고 서로가 충돌하지 않도록 하는 기능을 갖추고 있다.&lt;/p>
+&lt;p>리눅스에서는 이와 동일한 역할을 하는 namespaces 기능을 커널에 내장하고 있다.&lt;/p>
+&lt;ul>
+&lt;li>mnt(파일시스템 마운트): 호스트 파일 시스템에 구애받지 않고 독립적으로 파일 시스템을 마운트하거나 언마운트 가능&lt;/li>
+&lt;li>pid(프로세스): 독립적은 프로세스 공간을 할당&lt;/li>
+&lt;li>net(네트워크): namespace간 network 충돌 방지(중복 포트 바인딩 등)&lt;/li>
+&lt;li>ipc(SystemV IPC): 프로세스간의 독립적인 통신통로 할당&lt;/li>
+&lt;li>uts(hostname): 독립적인 hostname 할당&lt;/li>
+&lt;li>user(UID): 독립적인 사용자 할당&lt;/li>
+&lt;/ul>
+&lt;p>namespaces를 지원하는 리눅스 커널을 사용하고 있다면 다음 명령어를 통해 바로 namespace를 만들어 실행할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">$ sudo unshare --fork --pid --mount-proc bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ps aux&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root &lt;span class="m">1&lt;/span> 4.0 0.0 &lt;span class="m">17656&lt;/span> &lt;span class="m">6924&lt;/span> pts/9 S 22:06 0:00 bash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root &lt;span class="m">2&lt;/span> 0.0 0.0 &lt;span class="m">30408&lt;/span> &lt;span class="m">1504&lt;/span> pts/9 R+ 22:06 0:00 ps aux
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>PID namespace에 실행한 bash가 PID 1로 할당되어 있고, 바로 다음 실행한 ps aux 명령어가 PID 2를 배정 받았다.&lt;/p>
+&lt;h3 id="cgroups---control-groups">cgroups - Control Groups&lt;/h3>
+&lt;p>cgrups는 자원(resources)에 대한 제어를 가능하게 해주는 리눅스 커널 기능으로 아래와 같은 자원들을 제어할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>메모리&lt;/li>
+&lt;li>CPU&lt;/li>
+&lt;li>I/O&lt;/li>
+&lt;li>네트워크&lt;/li>
+&lt;li>device 노드 (&lt;code>/dev/&lt;/code>)&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">// &lt;span class="s2">&amp;#34;dhlee&amp;#34;&lt;/span> 유저가 소유하하며,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// 메모리를 제어할 그룹 &lt;span class="s2">&amp;#34;testgrp&amp;#34;&lt;/span> 생성
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ sudo cgcreate -a dhlee -g memory:testgrp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">$ ls -alh /sys/fs/cgroup/memory/testgrp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">합계 &lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">2&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">dr-xr-xr-x &lt;span class="m">8&lt;/span> root root &lt;span class="m">0&lt;/span> 7월 &lt;span class="m">7&lt;/span> 15:30 ..
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 cgroup.clone_children
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--w--w--w- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 cgroup.event_control
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 cgroup.procs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.failcnt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--w------- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.force_empty
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.failcnt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.limit_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.max_usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.slabinfo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.tcp.failcnt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.tcp.limit_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.tcp.max_usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.tcp.usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.kmem.usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.limit_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.max_usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.move_charge_at_immigrate
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.numa_stat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.oom_control
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---------- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.pressure_level
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.soft_limit_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.stat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.swappiness
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-r--r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.usage_in_bytes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 memory.use_hierarchy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> ssut root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 notify_on_release
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> root root &lt;span class="m">0&lt;/span> 8월 &lt;span class="m">8&lt;/span> 23:19 tasks
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;code>/sys/fs/cgroup/*/groupname&lt;/code> 경로에 있는 파일을 통해 그룹의 여러 옵션들을 변경 가능&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">// testgrp 최대 메모리 사용량을 2MB로 제한
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ &lt;span class="nb">echo&lt;/span> &lt;span class="m">2000000&lt;/span> &amp;gt; /sys/fs/cgroup/memory/testgrp/memory.kmem.limit_in_bytes
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="정리">정리&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_2/docker_0.png"
+width="1024"
+height="768"
+srcset="https://codemario318.github.io/post/docker_2/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_2/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>&lt;code>LXC&lt;/code>, &lt;code>LibContainer&lt;/code>, &lt;code>runC&lt;/code> 등은 위에서 설명한 &lt;code>cgrups&lt;/code>, &lt;code>namespaces&lt;/code>를 표준으로 정의해둔 &lt;strong>OCI(Open Container Initative&lt;/strong>) 스펙을 구현한 컨테이너 기술의 구현체이다.&lt;/p>
+&lt;p>LXC는 캐노니컬(Canonical)이 지원하고 있는 리눅스 컨테이너 프로젝트로 Docker의 경우 1.8 이전 버전까지 LXC를 이용해 구현해서 사용되었다.&lt;/p>
+&lt;p>이후 Docker는 libcontainer → runC(libcontainer의 리팩토링 구현체)로 자체 구현체를 갖게 되었다.&lt;/p>
+&lt;h2 id="docker">Docker&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_2/docker_1.png"
+width="639"
+height="285"
+srcset="https://codemario318.github.io/post/docker_2/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_2/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="224"
+data-flex-basis="538px"
+>&lt;/p>
+&lt;p>도커는 1.11버전부터 위와 같은 구조로 작동한다.&lt;/p>
+&lt;p>containerd는 OCI 구현체(주로 runC)를 이용해 container를 관리해주는 deamon이다.&lt;/p>
+&lt;p>도커 엔진 자체는 이미지, 네트워크, 디스크 등의 리소스 관리 역할을 수행하며, 여기서 도커 엔진과 containerd 각각이 완전히 분리되어 도커 엔진을 재시작 해도, 컨테이너 재시작 없이 사용할 수 있다.&lt;/p>
+&lt;p>위와 같이 각각 역할이 분리됨에 따라 도커는 4개의 독립적인 프로세스로 작동하고 있다. (&lt;code>docker&lt;/code>, &lt;code>docker-containerd&lt;/code>, &lt;code>docker-containerd-shim&lt;/code>, &lt;code>docker-runc&lt;/code>)&lt;/p></description></item></channel></rss>
