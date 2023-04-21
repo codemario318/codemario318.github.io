@@ -1,4 +1,369 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 20 Apr 2023 16:30:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 10:52:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean_code_12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
+&lt;p>창발성: 떠오름 현상, 創發性, emergent property, emergence&lt;/p>
+&lt;ol>
+&lt;li>하위 계층에서 없는 특성이나 행동이 상위 계층에서 자발적으로 돌연히 출현하는 현상, 불시에 솟아나는 특성(wikipedia)&lt;/li>
+&lt;li>남이 모르거나 하지 아니한 것을 처음으로 또는 새롭게 밝혀내거나 이루어 내는 성질(naver dict)&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h2 id="창발적-설계로-깔끔한-코드를-구현하자">창발적 설계로 깔끔한 코드를 구현하자&lt;/h2>
+&lt;p>간단한 기본 규칙들(하위 계층)을 지키게 되면 자연스럽게 좋은 코드(상위 계층)가 만들어진다(발생한다).&lt;/p>
+&lt;h3 id="단순한-설계-규칙">단순한 설계 규칙&lt;/h3>
+&lt;ol>
+&lt;li>모든 테스트를 실행한다.&lt;/li>
+&lt;li>중복을 없앤다.&lt;/li>
+&lt;li>프로그래머의 의도를 표현한다.&lt;/li>
+&lt;li>크래스와 메서드 수를 최소로 줄인다.&lt;/li>
+&lt;/ol>
+&lt;p>위 4가지 규칙을 지키면 자연스럽게 깨끗한 코드가 만들어 진다.&lt;/p>
+&lt;ul>
+&lt;li>코드 구조와 설계를 파악하기 쉬워짐&lt;/li>
+&lt;li>이에 따라 SRP, DIP 같은 원칙을 적용하기 쉬워짐&lt;/li>
+&lt;/ul>
+&lt;h2 id="모든-테스트를-실행하라">모든 테스트를 실행하라&lt;/h2>
+&lt;p>설계는 의도한 대로 돌아가는 시스템을 내놓아야 한다.
+완벽한 설계를 따라 시스템을 만들었다고 하더라도 검증이 불가능하다면 완벽한 설계라고 확언할 수 없다.&lt;/p>
+&lt;p>이러한 의도한 대로 돌아가는 시스템을 검증하는 방법은 테스트이며, 의도한 대로 돌아가는 시스템은 모든 테스트 케이스를 통과하는 시스템이다.&lt;/p>
+&lt;p>따라서 테스트가 불가능한 시스템은 검증이 불가능한 시스템이고, 검증이 불가능하다면 어디서 문제가 발생할 지 예측할 수 없다.&lt;/p>
+&lt;p>테스트가 가능한 시스템을 만들려고 애쓰면 설계 품질이 더불어 높아진다.&lt;/p>
+&lt;h3 id="크기가-작고-목적-하나만-수행하는-클래스가-나온다">&lt;strong>크기가 작고 목적 하나만 수행하는 클래스가 나온다.&lt;/strong>&lt;/h3>
+&lt;p>SRP를 준수하는 클래스는 테스트가 훨씬 더 쉽다.&lt;/p>
+&lt;p>테스트 케이스가 많을수록 개발자는 테스트가 용이하게 코드를 작성하게 된다. 따라서 철저한 테스트가 가능한 시스템을 만들면 더 나은 설계가 얻어진다&lt;/p>
+&lt;h3 id="결합도가-높으면-테스트-케이스를-작성하기-어렵다">&lt;strong>결합도가 높으면 테스트 케이스를 작성하기 어렵다.&lt;/strong>&lt;/h3>
+&lt;p>테스트 케이스를 많이 작성할수록 개발자는 DIP와 같은 원칙을 적용하고, 의존성 주입, 인터페이스, 추상화 등과 같은 도구를 사용해 결합도를 낮춘다.&lt;/p>
+&lt;p>“&lt;strong>테스트 케이스를 만들고 계속 돌려라&lt;/strong>&amp;ldquo;라는 간단하고 단순한 규칙을 따르면 시스템은 &lt;strong>낮은 결합도와 높은 응집력&lt;/strong>이라는, 객체 지향 방법론이 지향하는 목표를 저절로 달성한다.&lt;/p>
+&lt;h2 id="24-리펙터링">2~4. 리펙터링&lt;/h2>
+&lt;blockquote>
+&lt;p>테스트 케이스를 모두 작업했다면 코드와 클래스를 정리해도 괜찮다. 코드를 점직적으로 리팩터링 해나간다.&lt;/p>
+&lt;/blockquote>
+&lt;p>테스트 케이스로 인해 코드를 정리하면서 시스템이 깨질까 걱정할 필요가 없다.&lt;/p>
+&lt;p>리팩터링 단계에서는 소프트웨어 설계 품질을 높이는 기법이라면 무엇이든 적용해도 괜찮다.&lt;/p>
+&lt;ul>
+&lt;li>응집도를 높이기&lt;/li>
+&lt;li>결합도를 낮추기&lt;/li>
+&lt;li>관심사를 분리하기&lt;/li>
+&lt;li>시스템 관심사를 모듈로 나누기&lt;/li>
+&lt;li>함수와 클래스 크기를 줄이기&lt;/li>
+&lt;li>더 나은 이름을 선택하기&lt;/li>
+&lt;/ul>
+&lt;p>다양한 기법을 동원한다.&lt;/p>
+&lt;p>이 단계는 단순한 설계 규칙 중 나머지 3개를 적용해 중복을 제거하고, 프로그래머의 의도를 표현하고, 클래스와 메서드 수를 최소로 줄이는 단계이다.&lt;/p>
+&lt;h2 id="중복을-없애라">중복을 없애라&lt;/h2>
+&lt;p>중복은 추가 작업, 추가 위험, 불필요한 복잡도를 뜻한다. 따라서 우수한 설계에서 중복은 커다란 적이다.&lt;/p>
+&lt;ul>
+&lt;li>똑같은 코드&lt;/li>
+&lt;li>비슷한 코드&lt;/li>
+&lt;li>구현 중복&lt;/li>
+&lt;/ul>
+&lt;p>비슷한 코드는 더 비슷하게 고쳐주면 리팩터링이 쉬워진다. 구현 중복도 중복의 한 형태이다.&lt;/p>
+&lt;h3 id="set-클래스-예시-구현-중복">&lt;code>Set&lt;/code> 클래스 예시: 구현 중복&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">size&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">boolean&lt;/span> &lt;span class="nf">isEmpty&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Set 클래스에서 위와 같은 메서드가 있다고 가정할 때, 각 메서드를 따로 구현하는 방법도 있다.
+&lt;code>isEmpty&lt;/code>는 부울 값을 반환하고, &lt;code>size&lt;/code>는 개수를 반환한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">boolean&lt;/span> &lt;span class="nf">isEmpty&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>여기서 &lt;code>isEmpty&lt;/code>를 별도로 구현하지 않고, &lt;code>size&lt;/code>를 이용하면 코드를 중복해서 구현할 필요가 없어진다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">scaleToOneDimension&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">float&lt;/span> &lt;span class="n">desiredDimension&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">abs&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">desiredDimension&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">errorThreshold&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">desiredDimension&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="kt">float&lt;/span>&lt;span class="o">)(&lt;/span>&lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">floor&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.01f&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RenderedOp&lt;/span> &lt;span class="n">newImage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ImageUtilities&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getScaledImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">scalingFactor&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">scalingFactor&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">dispose&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">gc&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newImage&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">synchronized&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">rotate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">degrees&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RenderedOp&lt;/span> &lt;span class="n">newImage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ImageUtilities&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getRotatedImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">degrees&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">dispose&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">gc&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newImage&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>scaleToOneDimension&lt;/code> 메서드와 &lt;code>rotate&lt;/code> 메서드를 살펴보면 일부 코드가 동일하다. 다음과 같이 코드를 정리해 중복을 제거한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">scaleToOneDimension&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">float&lt;/span> &lt;span class="n">desiredDimension&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">abs&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">desiredDimension&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">errorThreshold&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">desiredDimension&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">imageDimension&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="kt">float&lt;/span>&lt;span class="o">)(&lt;/span>&lt;span class="n">Math&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">floor&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">scalingFactor&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.01f&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">replaceImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ImageUtilities&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getScaledImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">scalingFactor&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">scalingFactor&lt;/span>&lt;span class="o">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">synchronized&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">rotate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">degrees&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">replaceImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ImageUtilities&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getrotatedImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">degrees&lt;/span>&lt;span class="o">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">replaceImage&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">RenderedOp&lt;/span> &lt;span class="n">newImage&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">dispose&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">gc&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newImage&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>코드 3줄을 공통 &lt;code>replaceImage&lt;/code> 메서드로 뽑아서 중복을 제거했다. 새 메서드로 뽑아내니 기존 클래스가 SRP를 위반하므로, &lt;code>replaceImage&lt;/code>를 적합한 다른 클래스로 옮기면 된다.&lt;/p>
+&lt;p>이러한 공통 코드 분리를 통해 메서드의 가시성이 높아졌다. 따라서 다른 팀원이 새 메서드를 좀 더 추상화해 다른 맥락에서 재사용할 기회를 포착할지도 모른다.&lt;/p>
+&lt;p>이러한 소규모 재사용은 시스템 복잡도를 극적으로 줄여준다. 소규모 재사용을 제대로 익혀야 대규모 재사용이 가능하다.&lt;/p>
+&lt;h3 id="template-method-패턴">TEMPLATE METHOD 패턴&lt;/h3>
+&lt;p>&lt;a class="link" href="https://gmlwjd9405.github.io/2018/07/13/template-method-pattern.html" target="_blank" rel="noopener"
+>[Design Pattern] 템플릿 메서드 패턴이란 - Heee&amp;rsquo;s Development Blog&lt;/a>&lt;/p>
+&lt;p>고차원 중복을 제거할 목적으로 자주 사용하는 기법으로 어떤 작업을 처리하는 일부분을 &lt;strong>서브 클래스로 캡슐화&lt;/strong>하여 &lt;strong>전체 일을 수행하는 구조는 바꾸지 않으면서 특정 단계에서 수행하는 내역을 바꾸는 패턴&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>전체적으로 동일하면서 부분적으로는 다른 구문으로 구성된 메서드의 코드 중복을 최소화 할때 유용함&lt;/li>
+&lt;li>동일한 기능을 상위 클래스에서 정의하면서 확장/변화가 필요한 부분만 서브 클래스에서 구현할 수 있도록 한다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">VacationPolicy&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accrueUSDivisionVacation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 지금까지 근무한 시간을 바탕으로 휴가 일수를 계산하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 휴가 일수가 미국 최소 법정 일수를 만족하는지 확인하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 휴가 일수를 급여 대장에 적용하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accfrueEUDivisionVacation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 지금까지 근무한 시간을 바탕으로 휴가 일수를 계산하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 휴가 일수가 유럽연합 최소 법정 일수를 만족하는지 확인하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 휴가 일수를 급여 대장에 적용하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 코드에서 최소 법정 일수를 계산하는 코드만 제외하면 두 메서드는 거의 동일하다. 최소 법정 일수를 계산하는 알고리즘은 직원 유형에 따라 조금 변한다.&lt;/p>
+&lt;p>이러한 구조에서 Template Method 패턴을 적용해 중복을 제거한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">abstract&lt;/span> &lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Vacation&lt;/span> &lt;span class="n">Policy&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accrueVacation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">calculateBaseVacationHours&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alterForLegalMinimums&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">applyToPayroll&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">calculateBaseVacationHours&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 지금까지 근무한 시간을 바탕으로 휴가 일수를 계산하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">protected&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">alterForLegalMinimums&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">applyToPayroll&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 휴가 일수를 급여 대장에 적용하는 코드
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">USVacationPolicy&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">VacationPolicy&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">alterForLegalMinimums&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 미국 최소 법정 일수 사용;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">EUVacationPolicy&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">VacationPolicy&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">alterForLegalMinimums&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 유럽연합 최소 법정 일수 사용;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>하위 클래스는 중복되지 않는 정보만 제공해 &lt;code>accrueVacation&lt;/code> 알고리즘에서 빠진 구멍(&lt;code>alterForLegalMinimums&lt;/code>)을 메운다.&lt;/p>
+&lt;h2 id="표현하라">표현하라&lt;/h2>
+&lt;p>코드르 짜는동안 문제에 푹 빠져 코드를 구석구석 이해하게 되어, 자신만 이해하는 코드를 짜기가 쉽다.
+이런 코드는 이후 유지보수할 사람이 코드를 짜는 사람만큼이나 문제를 깊이 이해할 가능성은 희박하다.&lt;/p>
+&lt;p>소프트웨어 프로젝트 비용 중 대다수는 장기적인 유지보수에 들어가게 되는데, 코드를 변경하면서 버그 여지를 주지 않으려면 유지보수 개발자가 시스템을 제대로 이해해야 한다.&lt;/p>
+&lt;p>하지만 시스템이 점차 복잡해지면서 유지보수 개발자가 시스템을 이해하느라 보내는 시간은 점점 늘어나고 동시에 코드를 오해할 가능성도 점점 커진다.&lt;/p>
+&lt;blockquote>
+&lt;p>따라서 이해하기 쉬운 코드를 짜야하고, 코드에서 개발자의 의도를 분명히 표현하고 명백하게 짤수록 다른 사람이 코드르 이해하기 쉬워진다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="표현력을-높이는-방법">표현력을 높이는 방법&lt;/h3>
+&lt;ol>
+&lt;li>좋은 이름을 선택한다.
+&lt;ul>
+&lt;li>이름과 기능이 완전히 딴판인 클래스나 함수로 혼란을 주면 안된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>함수와 클래스 크기를 가능한 줄인다.
+&lt;ul>
+&lt;li>작은 클래스와 작은 함수는 이름 짓기도 쉽고, 구현하기도 쉽고, 이해하기도 쉽다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>표준 명칭을 사용한다.
+&lt;ul>
+&lt;li>디자인 패턴은 의사소통과 표현력 강화가 주요 목적이다. 클래스가 COMMAND나 VISITOR와 같은 표준 패턴을 사용한다면 클래스 이름에 패턴 이름을 넣어준다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단위 테스트 케이스를 꼼꼼히 작성한다.
+&lt;ul>
+&lt;li>테스트 케이스는 소위 ‘예제로 보여주는 문서’다. 잘 만든 테스트 케이스를 읽어보면 클래스 기능이 한눈에 들어온다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;em>&lt;strong>표현력을 높이는 방법은 노력이다.&lt;/strong>&lt;/em>
+함수와 클래스에 조금 더 시간을 투자하자. 더 나은 이름을 선택하고, 큰 함수를 작은 함수 여럿으로 나누고, 자신의 작품에 조금만 더 주의를 기울이자!&lt;/p>
+&lt;p>나중에 코드를 읽을 사람은 &lt;strong>바로 자신&lt;/strong>일 가능성이 높다.&lt;/p>
+&lt;h2 id="클래스와-메소드-수를-최소로-줄여라">클래스와 메소드 수를 최소로 줄여라&lt;/h2>
+&lt;p>중복을 제거하고, 의도를 표현하고, SRP를 준수한다는 기본적인 개념도 극단으로 치달으면 득보다 실이 많아진다.&lt;/p>
+&lt;p>클래스와 메서드 크기를 줄이자고 조그만 클래스와 메서드를 수없이 만드는 사례도 없지 않다. 그래서 이 규칙은 함수와 클래스 수를 가능한 줄이라고 제안한다.&lt;/p>
+&lt;p>때로는 무의미하고 독단적인 전책 탓에 클래스 수와 메서드 수가 늘어나기도 한다.&lt;/p>
+&lt;ul>
+&lt;li>클래스마다 무조건 인터페이스를 생성하라고 요구하는 구현 표준&lt;/li>
+&lt;li>자료 클래스와 동작 클래스는 무조건 분리해야 한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>가능한 독단적인 견해는 멀리하고 실용적인 방식을 택한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>목표는 함수와 &lt;strong>클래스 크기를 작게 유지하면서 시스템 크기도 작게 유지하는 데 있다.&lt;/strong>&lt;/p>
+&lt;p>이 규칙은 간단한 설계 규칙 네 개중 가장 우선순위가 낮다. 즉, 틀래스와 함수 수를 줄이는 작업도 중요하지만, 테스트 케이스를 만들고 중복을 제거하고 의도를 표현하는 작업이 더 중요하다는 뜻이다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>경험을 대신할 단순한 개발 기법은 없다. 하지만 소개하는 기법은 저자들이 수십 년 동안 쌓은 경험의 정수다.&lt;/p>
+&lt;blockquote>
+&lt;p>💡 단순한 설계 규칙을 따른다면 우수한 기법과 원칙을 단번에 활용할 수 있다.&lt;/p>
+&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
 &lt;h2 id="클래스-체계">클래스 체계&lt;/h2>
 &lt;p>표준 자바 관례에 의하면 아래 순서로 선언하게 된다.&lt;/p>
 &lt;ul>
