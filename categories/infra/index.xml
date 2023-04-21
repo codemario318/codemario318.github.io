@@ -119,7 +119,7 @@
 &lt;li>kubelet은 상태가 변경되거나 설정된 인터벌보다 오래 업데이트가 없는 경우 노드의 &lt;code>.status&lt;/code>를 업데이트한다. 노드의 &lt;code>.status&lt;/code> 업데이트에 대한 기본 인터벌은 접근이 불가능한 노드에 대한 타임아웃인 40초 보다 훨씬 긴 5분이다.&lt;/li>
 &lt;li>kubelet은 리스 오브젝트를 (기본 업데이트 인터벌인) 매 10초마다 생성하고 업데이트한다. 리스 업데이트는 노드의 &lt;code>.status&lt;/code> 업데이트와는 독립적이다. 만약 리스 업데이트가 실패하면, kubelet은 200밀리초에서 시작하고 7초의 상한을 갖는 지수적 백오프를 사용해서 재시도한다.&lt;/li>
 &lt;/ul>
-&lt;h3 id="노드-컨트롤러">&lt;strong>노드 컨트롤러&lt;/strong>&lt;/h3>
+&lt;h3 id="노드-컨트롤러">노드 컨트롤러&lt;/h3>
 &lt;p>노드 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/controller/" target="_blank" rel="noopener"
 >컨트롤러&lt;/a>는 노드의 다양한 측면을 관리하는 쿠버네티스 컨트롤 플레인 컴포넌트이다.&lt;/p>
 &lt;p>노드 컨트롤러는 노드가 생성되어 유지되는 동안 다양한 역할을 한다.&lt;/p>
@@ -144,7 +144,7 @@
 >API를 이용한 축출&lt;/a>을 트리거한다. 기본적으로, 노드 컨트롤러는 노드를 &lt;code>Unknown&lt;/code>으로 마킹한 뒤 5분을 기다렸다가 최초의 축출 요청을 시작한다.&lt;/li>
 &lt;/ul>
 &lt;p>기본적으로, 노드 컨트롤러는 5 초마다 각 노드의 상태를 체크한다. 체크 주기는 &lt;code>kube-controller-manager&lt;/code> 구성 요소의 &lt;code>--node-monitor-period&lt;/code> 플래그를 이용하여 설정할 수 있다.&lt;/p>
-&lt;h3 id="축출-빈도-제한">&lt;strong>축출 빈도 제한&lt;/strong>&lt;/h3>
+&lt;h3 id="축출-빈도-제한">축출 빈도 제한&lt;/h3>
 &lt;p>대부분의 경우, 노드 컨트롤러는 초당 &lt;code>--node-eviction-rate&lt;/code>(기본값 0.1)로 축출 속도를 제한한다. 이 말은 10초당 1개의 노드를 초과하여 파드 축출을 하지 않는다는 의미가 된다.&lt;/p>
 &lt;p>노드 축출 행위는 주어진 가용성 영역 내 하나의 노드가 상태가 불량할 경우 변화한다. 노드 컨트롤러는 영역 내 동시에 상태가 불량한 노드의 퍼센티지가 얼마나 되는지 체크한다(&lt;code>Ready&lt;/code> 컨디션은 &lt;code>Unknown&lt;/code> 또는 &lt;code>False&lt;/code> 값을 가진다).&lt;/p>
 &lt;ul>
@@ -157,7 +157,7 @@
 &lt;p>모든 영역이 완전히 상태불량(클러스터 내 양호한 노드가 없는 경우)한 경우이다. 이러한 경우, 노드 컨트롤러는 컨트롤 플레인과 노드 간 연결에 문제가 있는 것으로 간주하고 축출을 실행하지 않는다. (중단 이후 일부 노드가 다시 보이는 경우 노드 컨트롤러는 상태가 양호하지 않거나 접근이 불가능한 나머지 노드에서 파드를 축출한다.)&lt;/p>
 &lt;p>또한, 노드 컨트롤러는 파드가 테인트를 허용하지 않을 때 &lt;code>NoExecute&lt;/code> 테인트 상태의 노드에서 동작하는 파드에 대한 축출 책임을 가지고 있다. 추가로, 노드 컨틀로러는 연결할 수 없거나, 준비되지 않은 노드와 같은 노드 문제에 상응하는 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/taint-and-toleration/" target="_blank" rel="noopener"
 >테인트&lt;/a>를 추가한다. 이는 스케줄러가 비정상적인 노드에 파드를 배치하지 않게 된다.&lt;/p>
-&lt;h2 id="리소스-용량-추적">&lt;strong>리소스 용량 추적&lt;/strong>&lt;/h2>
+&lt;h2 id="리소스-용량-추적">리소스 용량 추적&lt;/h2>
 &lt;p>노드 오브젝트는 노드 리소스 용량에 대한 정보: 예를 들어, 사용 가능한 메모리의 양과 CPU의 수를 추적한다. 노드의 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#%EB%85%B8%EB%93%9C%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9E%90%EC%B2%B4-%EB%93%B1%EB%A1%9D" target="_blank" rel="noopener"
 >자체 등록&lt;/a>은 등록하는 중에 용량을 보고한다. &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#%EC%88%98%EB%8F%99-%EB%85%B8%EB%93%9C-%EA%B4%80%EB%A6%AC" target="_blank" rel="noopener"
 >수동&lt;/a>으로 노드를 추가하는 경우 추가할 때 노드의 용량 정보를 설정해야 한다.&lt;/p>
@@ -165,12 +165,12 @@
 >스케줄러&lt;/a>는 노드 상에 모든 노드에 대해 충분한 리소스가 존재하도록 보장한다. 스케줄러는 노드 상에 컨테이너에 대한 요청의 합이 노드 용량보다 더 크지 않도록 체크한다. 요청의 합은 kubelet에서 관리하는 모든 컨테이너를 포함하지만, 컨테이너 런타임에 의해 직접적으로 시작된 컨 테이너는 제외되고 kubelet의 컨트롤 범위 밖에서 실행되는 모든 프로세스도 제외된다.&lt;/p>
 &lt;p>&lt;strong>참고: 파드 형태가 아닌 프로세스에 대해 명시적으로 리소스를 확보하려면, &lt;a class="link" href="https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#system-reserved" target="_blank" rel="noopener"
 >시스템 데몬에 사용할 리소스 예약하기&lt;/a>을 본다.&lt;/strong>&lt;/p>
-&lt;h2 id="노드-토폴로지">&lt;strong>노드 토폴로지&lt;/strong>&lt;/h2>
+&lt;h2 id="노드-토폴로지">노드 토폴로지&lt;/h2>
 &lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.18 [beta]&lt;/code>&lt;/p>
 &lt;p>&lt;code>TopologyManager&lt;/code> &lt;a class="link" href="https://kubernetes.io/ko/docs/reference/command-line-tools-reference/feature-gates/" target="_blank" rel="noopener"
 >기능 게이트(feature gate)&lt;/a>를 활성화 시켜두면, kubelet이 리소스 할당 결정을 할 때 토폴로지 힌트를 사용할 수 있다. 자세한 내용은 &lt;a class="link" href="https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/" target="_blank" rel="noopener"
 >노드의 컨트롤 토폴로지 관리 정책&lt;/a>을 본다.&lt;/p>
-&lt;h2 id="그레이스풀graceful-노드-셧다운shutdown">&lt;strong>그레이스풀(Graceful) 노드 셧다운(shutdown)&lt;/strong>&lt;/h2>
+&lt;h2 id="그레이스풀graceful-노드-셧다운shutdown">그레이스풀(Graceful) 노드 셧다운(shutdown)&lt;/h2>
 &lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.21 [beta]&lt;/code>&lt;/p>
 &lt;p>kubelet은 노드 시스템 셧다운을 감지하고 노드에서 실행 중인 파드를 종료하려고 시도한다.&lt;/p>
 &lt;p>Kubelet은 노드가 종료되는 동안 파드가 일반 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination" target="_blank" rel="noopener"
@@ -206,7 +206,7 @@
 &lt;p>**참고:
 그레이스풀 노드 셧다운 과정에서 축출된 파드는 셧다운(shutdown)된 것으로 표시된다. &lt;code>kubectl get pods&lt;/code> 명령을 실행하면 축출된 파드의 상태가 &lt;code>Terminated&lt;/code>으로 표시된다. 그리고 &lt;code>kubectl describe pod&lt;/code> 명령을 실행하면 노드 셧다운으로 인해 파드가 축출되었음을 알 수 있다.&lt;/p>
 &lt;p>&lt;code>Reason: Terminated Message: Pod was terminated in response to imminent node shutdown.&lt;/code>**&lt;/p>
-&lt;h2 id="논-그레이스풀-노드-셧다운">&lt;strong>논 그레이스풀 노드 셧다운&lt;/strong>&lt;/h2>
+&lt;h2 id="논-그레이스풀-노드-셧다운">논 그레이스풀 노드 셧다운&lt;/h2>
 &lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.24 [alpha]&lt;/code>&lt;/p>
 &lt;p>전달한 명령이 kubelet에서 사용하는 금지 잠금 메커니즘(inhibitor locks mechanism)을 트리거하지 않거나, 또는 사용자 오류(예: ShutdownGracePeriod 및 ShutdownGracePeriodCriticalPods가 제대로 설정되지 않음)로 인해 kubelet의 노드 셧다운 관리자(Node Shutdown Mananger)가 노드 셧다운 액션을 감지하지 못할 수 있다. 자세한 내용은 위의 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/architecture/nodes/#graceful-node-shutdown" target="_blank" rel="noopener"
 >그레이스풀 노드 셧다운&lt;/a> 섹션을 참조한다.&lt;/p>
@@ -221,7 +221,7 @@
 &lt;p>&lt;strong>참고:
 • &lt;code>node.kubernetes.io/out-of-service&lt;/code> 테인트를 추가하기 전에, 노드가 완전한 셧다운 또는 전원 꺼짐 상태에 있는지 (재시작 중인 것은 아닌지) 확인한다.
 • 사용자가 서비스 불가 상태 테인트를 직접 추가한 것이기 때문에, 파드가 다른 노드로 옮겨졌고 셧다운 상태였던 노드가 복구된 것을 확인했다면 사용자가 서비스 불가 상태 테인트를 수동으로 제거해야 한다.&lt;/strong>&lt;/p>
-&lt;h3 id="파드-우선순위-기반-그레이스풀-노드-셧다운">&lt;strong>파드 우선순위 기반 그레이스풀 노드 셧다운&lt;/strong>&lt;/h3>
+&lt;h3 id="파드-우선순위-기반-그레이스풀-노드-셧다운">파드 우선순위 기반 그레이스풀 노드 셧다운&lt;/h3>
 &lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.23 [alpha]&lt;/code>&lt;/p>
 &lt;p>그레이스풀 노드 셧다운 시 파드 셧다운 순서에 더 많은 유연성을 제공할 수 있도록, 클러스터에 프라이어리티클래스(PriorityClass) 기능이 활성화되어 있으면 그레이스풀 노드 셧다운 과정에서 파드의 프라이어리티클래스가 고려된다. 이 기능으로 그레이스풀 노드 셧다운 시 파드가 종료되는 순서를 클러스터 관리자가 &lt;a class="link" href="https://kubernetes.io/ko/docs/concepts/scheduling-eviction/pod-priority-preemption/#%ED%94%84%EB%9D%BC%EC%9D%B4%EC%96%B4%EB%A6%AC%ED%8B%B0%ED%81%B4%EB%9E%98%EC%8A%A4" target="_blank" rel="noopener"
 >프라이어리티 클래스&lt;/a> 기반으로 명시적으로 정할 수 있다.&lt;/p>
@@ -341,7 +341,7 @@
 >kubelet config&lt;/a>의 &lt;code>ShutdownGracePeriodByPodPriority&lt;/code>를 파드 프라이어리티 클래스 값과 각 값에 대한 종료 대기 시간을 명시하여 지정해야 한다.&lt;/p>
 &lt;p>&lt;strong>참고: 그레이스풀 노드 셧다운 과정에서 파드 프라이어리티를 고려하는 기능은 쿠버네티스 v1.23에서 알파 기능으로 도입되었다. 쿠버네티스 1.26에서 이 기능은 베타 상태이며 기본적으로 활성화되어 있다.&lt;/strong>&lt;/p>
 &lt;p>&lt;code>graceful_shutdown_start_time_seconds&lt;/code> 및 &lt;code>graceful_shutdown_end_time_seconds&lt;/code> 메트릭은 노드 셧다운을 모니터링하기 위해 kubelet 서브시스템에서 방출된다.&lt;/p>
-&lt;h2 id="스왑swap-메모리-관리">&lt;strong>스왑(swap) 메모리 관리&lt;/strong>&lt;/h2>
+&lt;h2 id="스왑swap-메모리-관리">스왑(swap) 메모리 관리&lt;/h2>
 &lt;p>&lt;strong>기능 상태:&lt;/strong> &lt;code>Kubernetes v1.22 [alpha]&lt;/code>&lt;/p>
 &lt;p>쿠버네티스 1.22 이전에는 노드가 스왑 메모리를 지원하지 않았다. 그리고 kubelet은 노드에서 스왑을 발견하지 못한 경우 시작과 동시에 실패하도록 되어 있었다. 1.22부터는 스왑 메모리 지원을 노드 단위로 활성화할 수 있다.&lt;/p>
 &lt;p>노드에서 스왑을 활성화하려면, &lt;code>NodeSwap&lt;/code> 기능 게이트가 kubelet에서 활성화되어야 하며, 명령줄 플래그 &lt;code>--fail-swap-on&lt;/code> 또는 &lt;a class="link" href="https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration" target="_blank" rel="noopener"
