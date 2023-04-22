@@ -14212,7 +14212,7 @@ Load Balancing을 위해 Web Server를 사용 가능하다&lt;/p>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_2/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_2/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
+&lt;/div></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화를 통해 더욱 신속하게 작업을 진행할 수 있다.&lt;/li>
 &lt;li>효율적으로 소프트웨어를 배포할 수 있다.&lt;/li>
@@ -14390,10 +14390,10 @@ Load Balancing을 위해 Web Server를 사용 가능하다&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="정리">정리&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_2/docker_0.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_0.png"
 width="1024"
 height="768"
-srcset="https://codemario318.github.io/post/docker_2/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_2/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="133"
@@ -14403,10 +14403,10 @@ data-flex-basis="320px"
 &lt;p>LXC는 캐노니컬(Canonical)이 지원하고 있는 리눅스 컨테이너 프로젝트로 Docker의 경우 1.8 이전 버전까지 LXC를 이용해 구현해서 사용되었다.&lt;/p>
 &lt;p>이후 Docker는 libcontainer → runC(libcontainer의 리팩토링 구현체)로 자체 구현체를 갖게 되었다.&lt;/p>
 &lt;h2 id="docker">Docker&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_2/docker_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_1.png"
 width="639"
 height="285"
-srcset="https://codemario318.github.io/post/docker_2/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_2/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="224"
