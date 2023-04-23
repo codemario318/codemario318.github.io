@@ -7,7 +7,7 @@
 &lt;li>&lt;code>SERIALIZABLE&lt;/code>&lt;br>
 동시성이 중요한 데이터베이스에서는 거의 사용되지 않는다.&lt;/li>
 &lt;/ol>
-&lt;p>4개의 격리 수준에서 뒤로 갈수록 각 트랜잭션 간의 데이터 고립 정도가 높아지며, 동시 처리 성능도 떨어지는게 일반적이라고 생각하지만, 격리 수준이 높아질수록 MySQL 서버의 처리 성능이 많이 떨어질 것으로 생각하지만, &lt;code>SERIALIZABLE&lt;/code> 격리 수준이 아니라면 크게 성능의 개선이나 저하는 발생하지 않는다.&lt;/p>
+&lt;p>4개의 격리 수준에서 뒤로 갈수록 각 트랜잭션 간의 데이터 고립 정도가 높아진다. 격리 수준이 높아질수록 MySQL 서버의 처리 성능이 많이 떨어질 것으로 생각하지만, &lt;code>SERIALIZABLE&lt;/code> 격리 수준이 아니라면 크게 성능의 개선이나 저하는 발생하지 않는다.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -44,7 +44,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>SQL-92, SQL-99 표준에 따르면 REPEATABLE READ 격리 수준에서는 PHANTOM READ가 발생할 수 있지만, InnoDB에서는 독특한 특성으로 인해 발생하지 않는다.&lt;/p>
+&lt;p>SQL-92, SQL-99 표준에 따르면 &lt;code>REPEATABLE READ&lt;/code> 격리 수준에서는 &lt;code>PHANTOM READ&lt;/code>가 발생할 수 있지만, InnoDB에서는 독특한 특성으로 인해 발생하지 않는다.&lt;/p>
 &lt;p>일반적인 온라인 서비스 용도의 데이터베이스는 &lt;code>READ COMMITED&lt;/code>와 &lt;code>REPEATABLE READ&lt;/code> 중 하나를 사용한다.&lt;/p>
 &lt;ul>
 &lt;li>오라클: &lt;code>READ COMMITED&lt;/code>&lt;/li>
@@ -76,10 +76,10 @@ class="gallery-image"
 data-flex-grow="114"
 data-flex-basis="275px"
 >&lt;/p>
-&lt;p>사용자 A가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 &amp;ldquo;Lara&amp;quot;에서 &amp;ldquo;Toto&amp;quot;로 변경했는데, 이때 새로운 값인 &amp;ldquo;Toto&amp;quot;는 &lt;code>employees&lt;/code> 테이블에 즉시 기록되고 이전 값인 &amp;ldquo;Lara&amp;quot;는 언두 영역으로 백업된다.&lt;/p>
-&lt;p>COMMIT이 완료 되기 전 B가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 조회하면, 언두 영역에 백업된 레코드에서 가져온 &amp;ldquo;Lara&amp;quot;를 조회하게 된다.&lt;/p>
+&lt;p>A가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 &amp;ldquo;Lara&amp;quot;에서 &amp;ldquo;Toto&amp;quot;로 변경했는데, 이때 새로운 값인 &amp;ldquo;Toto&amp;quot;는 &lt;code>employees&lt;/code> 테이블에 즉시 기록되고 이전 값인 &amp;ldquo;Lara&amp;quot;는 언두 영역으로 백업된다.&lt;/p>
+&lt;p>&lt;code>COMMIT&lt;/code>이 완료 되기 전 B가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 조회하면, 언두 영역에 백업된 레코드에서 가져온 &amp;ldquo;Lara&amp;quot;를 조회하게 된다.&lt;/p>
 &lt;h3 id="non-repeatable-read">NON-REPEATABLE READ&lt;/h3>
-&lt;p>READ COMMITTED 격리 수준에서도 NON-REPEATABLE READ라는 부정합 문제가 있다.&lt;/p>
+&lt;p>&lt;code>READ COMMITTED&lt;/code> 격리 수준에서도 &lt;code>NON-REPEATABLE READ&lt;/code>라는 부정합 문제가 있다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3.png"
 width="480"
 height="461"
@@ -99,11 +99,11 @@ data-flex-basis="249px"
 &lt;/blockquote>
 &lt;h2 id="repeatable-read">REPEATABLE READ&lt;/h2>
 &lt;p>MySQL의 InnoDB 스토리지 엔진에서 기본으로 사용되는 격리 수준이다. 바이너리 로그를 가진 MySQL 서버에서는 최소 &lt;code>REPEATABLE READ&lt;/code> 격리 수준 이상을 사용해야 한다.&lt;/p>
-&lt;p>InnoDB 스토리지 엔진의 &lt;code>REPEATABLE READ&lt;/code> 격리수준에서는 트랜잭션이 ROLLBACK될 가능성에 대비해 변경되기 전 레코드를 언두 공간에 백업해두고 실제 레코드 값을 변경하고(MVCC) 백업된 이전 데이터를 이용해 동일 트랜잭션 내에서는 동일한 결과를 보여줄 수 있도록 보장하므로 &lt;code>NON-REPEATABLE READ&lt;/code> 부정합이 발생하지 않는다.&lt;/p>
+&lt;p>InnoDB 스토리지 엔진의 &lt;code>REPEATABLE READ&lt;/code> 격리수준에서는 트랜잭션이 &lt;code>ROLLBACK&lt;/code>될 가능성에 대비해 변경되기 전 레코드를 언두 공간에 백업해두고 실제 레코드 값을 변경하고(MVCC) 백업된 이전 데이터를 이용해 동일 트랜잭션 내에서는 동일한 결과를 보여줄 수 있도록 보장하므로 &lt;code>NON-REPEATABLE READ&lt;/code> 부정합이 발생하지 않는다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code>와 &lt;code>READ COMMITTED&lt;/code>의 차이는 언두 영역에 백업된 레코드의 여러 버전 가운데 몇 번째 이전 버전까지 찾아 들어가야 하느냐에 있다.&lt;/p>
 &lt;/blockquote>
-&lt;p>InnoDB의 모든 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는 값)를 가지며, 언두 영역에 백업된 모든 레코드에는 변경을 발생시킨 트랜잭션 번호가 포함되어 있다. 언두 영영의 백업된 데이터는 InnoDB 스토리지 엔진이 불필요하다고 판단하는 시점에 주기적으로 삭제한다.&lt;/p>
+&lt;p>InnoDB의 모든 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는 값)를 가지며, 언두 영역에 백업된 모든 레코드에는 변경을 발생시킨 트랜잭션 번호가 포함되어 있다. 언두 영역에 백업된 데이터는 InnoDB 스토리지 엔진이 불필요하다고 판단하는 시점에 주기적으로 삭제한다.&lt;/p>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서는 MVCC를 보장하기 위해 실행중인 트랜잭션 가운데 가장 오래된 트랜잭션 번호보다 트랜잭션 번호가 앞선 언두 영역의 데이터는 삭제할 수가 없다. 그렇다고 가장 오래된 트랜잭션 번호 이전의 트랜잭션에 의해 변경된 모든 언두 데이터가 필요한 것은 아니며, 특정 트랜잭션 번호의 구간 내에서 백업된 언두 데이터가 보존 돼야 한다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4.png"
 width="537"
@@ -118,8 +118,8 @@ data-flex-basis="210px"
 &lt;blockquote>
 &lt;p>트랜잭션을 시작하고 장시간 종료하지 않으면 언두 영역이 백업된 데이터로 무한정 커질 수도 있으며, 이로 인해 백업된 레코드가 많아지면 MySQL 서버의 처리 성능이 떨어질 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;h3 id="부정합">부정합&lt;/h3>
-&lt;p>REPEATABLE READ 격리 수준에서도 부정합이 발생 가능하다.&lt;/p>
+&lt;h3 id="phantom-read">PHANTOM READ&lt;/h3>
+&lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서도 부정합이 발생 가능하다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5.png"
 width="566"
 height="592"
@@ -352,7 +352,7 @@ MyISAM뿐 아니라 InnoDB 스토리지 엔진을 사용하는 테이블도 동�
 &lt;ul>
 &lt;li>&lt;code>lock_monitor&lt;/code>
 &lt;ul>
-&lt;li>innod_lock_monitor라는 이름의 InnoDB 테이블을 생성하여 잠금 정보를 덤프하는 방법&lt;/li>
+&lt;li>&lt;code>innodb_lock_monitor&lt;/code>라는 이름의 InnoDB 테이블을 생성하여 잠금 정보를 덤프하는 방법&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;code>SHOW ENGINE INNODB STATUAS&lt;/code>&lt;/li>
@@ -426,7 +426,7 @@ MySQL 5.0 이하 버전에서는 AUTO_INCREMENT 락을 명시적으로 획득하
 &lt;li>개선된 래치는 자동 증가 락과 달리 아주 짧은 시간 동안만 잠금을 걸고 필요한 자동 증가 값을 가져오면 즉시 잠금이 해제된다.&lt;/li>
 &lt;li>건수를 예측할 수 없을때는 이전 같이 자동 증가 락을 사용한다.&lt;/li>
 &lt;li>한번에 할당 받은 자동 증가 값이 남아서 사용되지 못하면 폐기하므로 레코드 자동 증가 값은 연속되지 않고 누락된 값이 발생할 수 있다.&lt;/li>
-&lt;li>하나의 INSERT 문장으로 INSERT 되는 레코드는 연속된 자동 증가 값을 가지게 된다.&lt;/li>
+&lt;li>하나의 &lt;code>INSERT&lt;/code> 문장으로 &lt;code>INSERT&lt;/code> 되는 레코드는 연속된 자동 증가 값을 가지게 된다.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
@@ -451,7 +451,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 래치는 주로 인덱스 구조나 버퍼풀 등에서 사용되며, 동시성을 높이기 위해 적극적으로 활용된다. 그러나 래치를 과도하게 사용하거나 사용 방법이 부적절할 경우 데드락(deadlock) 등의 문제가 발생할 수 있으므로 주의해서 사용해야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="인덱스와-잠금">인덱스와 잠금&lt;/h3>
-&lt;p>InnoDB의 잠금은 레코드르 ㄹ잠그는 것이 아니라 인덱스를 잠그는 방식으로 처리된다. 즉 변경해야 할 레코드를 찾기 위해 검색한 인덱스의 레코드를 모두 락을 걸어야 한다.&lt;/p>
+&lt;p>InnoDB의 잠금은 레코드를 잠그는 것이 아니라 인덱스를 잠그는 방식으로 처리된다. 즉 변경해야 할 레코드를 찾기 위해 검색한 인덱스의 레코드를 모두 락을 걸어야 한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -515,14 +515,14 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>UPDATE&lt;/code> 쿼리가 실행되면 1건의 레코드가 업데이트 되지만, &lt;code>UPDATE&lt;/code> 문장의 조건에서 인덱스를 이용할 수 있는 조건은 &lt;code>first_name&lt;/code>뿐이며, &lt;code>last_name&lt;/code> 컬럼은 인덱스가 없기 때문에 &lt;code>first_name='Georgi'&lt;/code>인 레코드 253건의 레코드가 모두 잠긴다.&lt;/p>
-&lt;p>UPDATE 문장을 위해 적절히 인덱스가 준비돼 있지 않다면 각 클라이언트 간의 동시성이 상당히 떨어져서 한 세션에서 UPDATE 작업을 하는 중에는 다른 클라이언트는 테이블을 업데이트하지 못하고 기다려야 하는 상황이 발생한다.&lt;/p>
+&lt;p>&lt;code>UPDATE&lt;/code> 문장을 위해 적절히 인덱스가 준비돼 있지 않다면 각 클라이언트 간의 동시성이 상당히 떨어져서 한 세션에서 &lt;code>UPDATE&lt;/code> 작업을 하는 중에는 다른 클라이언트는 테이블을 업데이트하지 못하고 기다려야 하는 상황이 발생한다.&lt;/p>
 &lt;p>만약 &lt;code>employees&lt;/code> 테이블에 인덱스가 하나도 없다면, 테이블을 풀스캔 하면서 &lt;code>UPDATE&lt;/code>를 수행하기 때문에 테이블에 있는 모든 레코드를 잠그게 된다.&lt;/p>
 &lt;h3 id="레코드-수준의-잠금-확인-및-해제">레코드 수준의 잠금 확인 및 해제&lt;/h3>
 &lt;p>InnoDB 스토리지 엔진을 사용하는 테이블의 레코드 수준 잠금은 테이블 수준의 잠금보다는 조금 더 복잡하다.&lt;/p>
 &lt;p>테이블 잠금에서는 잠금의 대상이 테이블 자체이므로 쉽게 문제의 원인이 발견되고 해결될 수 있으나, 레코드 수준의 잠금은 테이블의 레코드 각각에 잠금이 걸리므로 그 레코드가 자주 사용되지 않는다면 오랜 시간 동안 잠겨진 상태로 남아 있어도 잘 발견되지 않는다.&lt;/p>
 &lt;p>예전 버전의 MySQL 서버에서는 레코드 잠금에 대한 메타 정보를 제공하지 않았기 때문에 어려웠지만, 5.1 버전부터는 레코드 잠금과 잠금 대기에 대한 조회가 가능하므로 쿼리 하나만 실행하면 잠금과 잠금 대기 상태를 바로 확인할 수 있다.&lt;/p>
 &lt;ul>
-&lt;li>&lt;strong>MySQL 5.1&lt;/strong>&lt;br>
+&lt;li>&lt;strong>MySQL 5.1 +&lt;/strong>&lt;br>
 &lt;code>information_schema&lt;/code>라는 DB에 &lt;code>INNODB_TRX&lt;/code>, &lt;code>INNODB_LOCKS&lt;/code>, &lt;code>INNODB_LOCK_WAITS&lt;/code> 라는 테이블을 통해 확인&lt;/li>
 &lt;li>&lt;strong>MySQL 8.0 +&lt;/strong>&lt;br>
 &lt;code>information_schema&lt;/code>의 정보들은 조금씩 제거되고 있다.
