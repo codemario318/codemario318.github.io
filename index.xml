@@ -1,4 +1,253 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 22 Apr 2023 15:31:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real_mysql_5_3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 09:50:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker_3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Docker ID&lt;/strong>&lt;br>
+Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker Hub는 세계에서 가장 큰 라이브러리, 커뮤니티로 무료로 Docker ID를 만들어 사용할 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="repo-만들기">repo 만들기&lt;/h2>
+&lt;p>Docker Hub에 이미지를 push하려면 먼저 Docker Hub에 Repository를 생성해야 한다.&lt;/p>
+&lt;ol>
+&lt;li>&lt;a class="link" href="https://hub.docker.com/" target="_blank" rel="noopener"
+>Docker Hub&lt;/a> 회원가입 및 로그인&lt;/li>
+&lt;li>&amp;ldquo;Create Repository&amp;rdquo; 버튼 클릭&lt;/li>
+&lt;li>repo 이름 설정 및 public 설정 선택&lt;/li>
+&lt;li>Create 버튼 클릭&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_1.png"
+width="1253"
+height="205"
+srcset="https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="611"
+data-flex-basis="1466px"
+>&lt;/p>
+&lt;h2 id="이미지-푸시하기">이미지 푸시하기&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker push codemario318/getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Using default tag: latest&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># The push refers to repository [docker.io/codemario318/getting-started]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># An image does not exist locally with the tag: codemario318/getting-started&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이미지를 &lt;code>docker push&lt;/code> 명령으로 로컬에 존재하는 이미지를 푸시하기 위해서 &lt;code>tag&lt;/code>이 필요하다. &lt;code>tag&lt;/code>가 존재하지 않는다면 명령을 실행해도 이미지를 찾을 수 없기 때문에 오류가 발생하며, 빌드된 이미지에 다른 이름을 지정해여 태그를 붙여야 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker login -u YOUR-USER-NAME
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker image ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># REPOSITORY TAG IMAGE ID CREATED SIZE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># codemario318/getting-started latest 8b52580feb5e 2 days ago 262MB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># getting-started latest 8b52580feb5e 2 days ago 262MB&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker push codemario318/getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Using default tag: latest&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># The push refers to repository [docker.io/codemario318/getting-started]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 90b7c400bc47: Pushed &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 0cf2f64e7aa4: Pushed &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 9e6afbbf5565: Pushed &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># d9f41532a73b: Mounted from library/node &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 6c0a2592426a: Mounted from library/node &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 1984e605c08a: Mounted from library/node &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 26cbea5cba74: Mounted from library/node &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># latest: digest: sha256:c11adf2600f6c2da46bfb1a8f74664a766bb69f11badcd3ed16a2de75a464c1a size: 1788&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Docker Hub에서 값을 복사하고 있다면, 이미지 이름 부분에서 &lt;code>tagname&lt;/code>을 추가하지 않아도 된다. 태그를 지정하지 않으면 Docker는 latest라는 이름의 태그를 사용한다.&lt;/p>
+&lt;h2 id="새-인스턴스에서-이미지-실행하기">새 인스턴스에서 이미지 실행하기&lt;/h2>
+&lt;p>이미지가 빌드되고 레지스트리에 푸시되었으므로, 컨테이너 이미지를 보유하지 않은 새 인스턴스에서 앱을 실행해도 같은 결과가 나온다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Play with Docker 사용시 주의사항&lt;/strong>&lt;br>
+Play with Docker는 amd64 플랫폼을 사용하므로, Apple silicon 기반의 ARM 기반 Mac을 사용하는 경우 이미지를 Play with Docker와 호환되도록 다시 빌드하고 새 이미지를 레포지토리에 푸시해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker build --platform linux/amd64 -t YOUR-USER-NAME/getting-started .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker image ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># REPOSITORY TAG IMAGE ID CREATED SIZE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># codemario318/getting-started latest 769987ace2c3 About a minute ago 265MB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># getting-started latest 8b52580feb5e 2 days ago 262MB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># codemario318/getting-started &amp;lt;none&amp;gt; 8b52580feb5e 2 days ago 262MB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker push codemario/getting-started
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>Play with Docker에서 새 인스턴스를 추가한 후 명령을 실행한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_2.png"
+width="1392"
+height="1423"
+srcset="https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="97"
+data-flex-basis="234px"
+>
+&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_3.png"
+width="1392"
+height="1423"
+srcset="https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="97"
+data-flex-basis="234px"
+>&lt;/p>
+&lt;p>정상적으로 동작하는 것을 확인할 수 있다.&lt;/p></description></item><item><title>2. Update the application</title><link>https://codemario318.github.io/post/docker_2/</link><pubDate>Mon, 24 Apr 2023 09:19:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_2/docker_cover.png" alt="Featured image of post 2. Update the application" />&lt;p>애플리케이션과 컨테이너 이미지를 업데이트 및 삭제할 수 있다.&lt;/p>
+&lt;h2 id="소스-코드-업데이트-하기">소스 코드 업데이트 하기&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-jsx" data-lang="jsx">&lt;span class="line">&lt;span class="cl">&lt;span class="p">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span> &lt;span class="na">className&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;text-center&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">No&lt;/span> &lt;span class="nx">items&lt;/span> &lt;span class="nx">yet&lt;/span>&lt;span class="o">!&lt;/span> &lt;span class="nx">Add&lt;/span> &lt;span class="nx">one&lt;/span> &lt;span class="nx">above&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">+&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span> &lt;span class="na">className&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;text-center&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">You&lt;/span> &lt;span class="nx">have&lt;/span> &lt;span class="nx">no&lt;/span> &lt;span class="nx">todo&lt;/span> &lt;span class="nx">items&lt;/span> &lt;span class="nx">yet&lt;/span>&lt;span class="o">!&lt;/span> &lt;span class="nx">Add&lt;/span> &lt;span class="nx">one&lt;/span> &lt;span class="nx">above&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker build -t getting-started .
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -dp 3000:3000 getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker: Error response from daemon: driver failed programming external connectivity on endpoint laughing_burnell
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">(&lt;/span>2b5285b3ebfa65b51a44116c620e56b96b787874c71b25c8643b6a9ee137cb49&lt;span class="o">)&lt;/span>: Bind &lt;span class="k">for&lt;/span> 0.0.0.0:3000 failed: port is already allocated.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>src/static/js/app.js&lt;/code>의 56 라인의 소스 코드를 수정한다.&lt;/p>
+&lt;p>이전과 마찬가지로 &lt;code>build&lt;/code> 후 &lt;code>run&lt;/code> 명령을 실행하면 기존 컨테이너가 이미 호스트의 포트 3000을 사용하고 있어 오류가 발생한다. 이 문제를 해결하려면 이전 컨테이너를 제거해야 한다.&lt;/p>
+&lt;h2 id="이전-컨테이너-지우기">이전 컨테이너 지우기&lt;/h2>
+&lt;p>컨테이너를 제거하려면 먼저 중지되어야 한다. 그 후 CLI 또는 Docker Desktop을 사용하여 제거할 수 있다.&lt;br>
+CLI를 통해 컨테이너를 중지하고, 삭제하기 위해서 컨테이너 ID가 필요한데 &lt;code>docker ps&lt;/code> 명령을 통해 확인할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker ps
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">35&lt;/span> minutes ago Up &lt;span class="m">35&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker stop &amp;lt;the-container-id&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker rm &amp;lt;the-container-id&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;code>force&lt;/code> 플래그를 &lt;code>docker rm&lt;/code> 명령에 추가하여 컨테이너를 중지하고 제거할 수도 있다.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker rm -f &amp;lt;the-container-id&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="업데이트된-앱-컨테이너-실행하기">업데이트된 앱 컨테이너 실행하기&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -dp 3000:3000 getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9732df7c2474fea5223bcd682bbd1a3b7f18cc1f965330bd666478d10a7a73cb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이전과 같은 &lt;code>docker run&lt;/code> 명령으로 업데이트된 애플리케이션이 실행된 것을 확인할 수 있다.&lt;/p></description></item><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real_mysql_5_3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>READ UNCOMMITTED&lt;/code>&lt;br>
 &lt;code>DIRTY READ&lt;/code>라고도 하며 일반적인 데이터베이스에서는 거의 사용하지 않는다.&lt;/li>
@@ -880,8 +1129,14 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">3&lt;/span> minutes ago Up &lt;span class="m">3&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/docker_1_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker_1/docker_1_1.png"
+width="3024"
+height="1964"
+srcset="https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
 loading="lazy"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="369px"
 >&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes_5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
 &lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
