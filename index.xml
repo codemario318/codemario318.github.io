@@ -856,7 +856,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -dp 3000:3000 getting-started
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 2b5285b3ebfa65b51a44116c620e56b96b787874c71b25c8643b6a9ee137cb49&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa65b51a44116c620e56b96b787874c71b25c8643b6a9ee137cb49
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;ul>
@@ -880,14 +880,8 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">3&lt;/span> minutes ago Up &lt;span class="m">3&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker_1/docker_1_1.png"
-width="3024"
-height="1964"
-srcset="https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/docker_1_1.png"
 loading="lazy"
-class="gallery-image"
-data-flex-grow="153"
-data-flex-basis="369px"
 >&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes_5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
 &lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
