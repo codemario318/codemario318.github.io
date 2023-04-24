@@ -1,4 +1,200 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/tags/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 15 Apr 2023 16:30:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/tags/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 16:08:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>1. Containerize an application</title><link>https://codemario318.github.io/post/docker_1/</link><pubDate>Fri, 21 Apr 2023 16:08:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_1/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_1/docker_cover.png" alt="Featured image of post 1. Containerize an application" />&lt;h2 id="get-the-app">Get the app&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git clone https://github.com/docker/getting-started.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="build-the-apps-container-image">Build the app’s container image&lt;/h2>
+&lt;p>컨테이너 이미지를 빌드하려면 Dockerfile을 사용해야한다.&lt;/p>
+&lt;h3 id="dockerfile">Dockerfile?&lt;/h3>
+&lt;p>Dockerfile은 파일 확장자가 없는 간단한 텍스트 기반 파일로서 도커 이미지를 만들기 위한 빌드 스크립트로 활용된다. 도커 이미지는 컨테이너를 생성하는 데 사용되며, Dockerfile은 이러한 이미지를 구성하는 데 필요한 모든 정보를 제공한다.&lt;/p>
+&lt;p>Dockerfile은 도커 이미지를 생성하는 데 필요한 기본 운영 체제 이미지, 필요한 응용 프로그램, 설정 파일 및 다른 종속성 등 모든 구성 요소를 명시하며, 일반적으로 다음과 같은 명령어로 구성된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>FROM&lt;/code>: 기본이 되는 이미지&lt;/li>
+&lt;li>&lt;code>RUN&lt;/code>: 새로운 레이어에서 실행될 명령어&lt;/li>
+&lt;li>&lt;code>COPY&lt;/code>: 호스트 파일 시스템에서 파일이나 디렉토리를 이미지로 복사&lt;/li>
+&lt;li>&lt;code>ADD&lt;/code>: &lt;code>COPY&lt;/code> 명령과 유사하지만, URL에서 파일을 다운로드하거나 tar 파일에서 파일을 추출하는 등의 작업을 수행할 수 있음&lt;/li>
+&lt;li>&lt;code>WORKDIR&lt;/code>: 명령어가 실행될 작업 디렉토리를 설정&lt;/li>
+&lt;li>&lt;code>ENV&lt;/code>: 환경 변수를 설정&lt;/li>
+&lt;li>&lt;code>EXPOSE&lt;/code>: 컨테이너가 사용하는 포트&lt;/li>
+&lt;li>&lt;code>CMD&lt;/code>: 컨테이너가 시작될 때 실행할 명령어를 설정&lt;/li>
+&lt;/ul>
+&lt;p>Dockerfile에 정의된 모든 명령어는 도커 이미지의 각 레이어로 구성된다. 각 레이어는 독립적으로 캐싱되고 이미지를 다시 빌드할 때 이전에 캐싱된 레이어를 재사용하여 빌드 속도를 향상시켜 도커 이미지를 효율적이고 일관적인 방식으로 생성할 수 있다.&lt;/p>
+&lt;h3 id="dockerfile-생성">Dockerfile 생성&lt;/h3>
+&lt;p>빌드할 어플리케이션이 있는 디렉터리(&lt;code>/getting-started/app&lt;/code>)로 이동하여 Dockerfile 생성 후 필요한 내용을 채운다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> getting-started/app
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">touch Dockerfile
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-dockerfile" data-lang="dockerfile">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># syntax=docker/dockerfile:1&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="s"> node:18-alpine&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">WORKDIR&lt;/span>&lt;span class="s"> /app&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">COPY&lt;/span> . .&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> yarn install --production&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">CMD&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;node&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;src/index.js&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">EXPOSE&lt;/span>&lt;span class="s"> 3000&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="빌드">빌드&lt;/h3>
+&lt;p>컨테이너 이미지를 빌드한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker build -t getting-started .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>+&lt;span class="o">]&lt;/span> Building 26.1s &lt;span class="o">(&lt;/span>13/13&lt;span class="o">)&lt;/span> &lt;span class="nv">FINISHED&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load build definition from Dockerfile 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; transferring dockerfile: 186B 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load .dockerignore 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; transferring context: 2B 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; resolve image config &lt;span class="k">for&lt;/span> docker.io/docker/dockerfile:1 2.4s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; docker-image://docker.io/docker/dockerfile:1@sha256:39b85bbfa7536a5feceb7372a0817649ecb2724562a38 3.4s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; resolve docker.io/docker/dockerfile:1@sha256:39b85bbfa7536a5feceb7372a0817649ecb2724562a38360f 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:9d0cd65540a143ce38aa0be7c5e9efeed30d3580d03667f107cd76354f2bee65 10.82MB / 10.82MB 3.2s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:39b85bbfa7536a5feceb7372a0817649ecb2724562a38360f4d6a7782a409b14 8.40kB / 8.40kB 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:7f44e51970d0422c2cbff3b20b6b5ef861f6244c396a06e1a96f7aa4fa83a4e6 482B / 482B 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:a28edb2041b8f23c38382d8be273f0239f51ff1f510f98bccc8d0e7f42249e97 2.90kB / 2.90kB 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; extracting sha256:9d0cd65540a143ce38aa0be7c5e9efeed30d3580d03667f107cd76354f2bee65 0.2s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load .dockerignore 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load build definition from Dockerfile 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load metadata &lt;span class="k">for&lt;/span> docker.io/library/node:18-alpine 2.3s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>internal&lt;span class="o">]&lt;/span> load build context 0.1s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; transferring context: 4.59MB 0.1s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>1/4&lt;span class="o">]&lt;/span> FROM docker.io/library/node:18-alpine@sha256:ca5d399560a9d239cbfa28eec00417f1505e5e108f3ec6 8.3s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; resolve docker.io/library/node:18-alpine@sha256:ca5d399560a9d239cbfa28eec00417f1505e5e108f3ec6 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:fefc7d195eee885e1f309ca2b5eff078b537b766f6bd949f8eb69fe895088821 2.41MB / 2.41MB 1.8s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:ca5d399560a9d239cbfa28eec00417f1505e5e108f3ec6938d230767eaa81f61 1.43kB / 1.43kB 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:46f34dda633f5708462f6d6ee7ef829535bd0ee04b82cbe28dcccb5df74b3eb1 1.16kB / 1.16kB 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:a966e12937d2cdbf1cf501f972673875426566c53820a3fe54c2a15b0ad93639 6.50kB / 6.50kB 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:c41833b44d910632b415cd89a9cdaa4d62c9725dc56c99a7ddadafd6719960f9 3.26MB / 3.26MB 0.6s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:762c2470eea4dfd0e37925b903f27172a7b89fd8b11bb8cf61554941c3293636 47.28MB / 47.28MB 6.7s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; extracting sha256:c41833b44d910632b415cd89a9cdaa4d62c9725dc56c99a7ddadafd6719960f9 0.1s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; sha256:06fc22ed341f1d0c400e6972828f8731f3544007cda80ea1d333fe15acf0a28b 448B / 448B 1.2s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; extracting sha256:762c2470eea4dfd0e37925b903f27172a7b89fd8b11bb8cf61554941c3293636 1.4s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; extracting sha256:fefc7d195eee885e1f309ca2b5eff078b537b766f6bd949f8eb69fe895088821 0.1s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; extracting sha256:06fc22ed341f1d0c400e6972828f8731f3544007cda80ea1d333fe15acf0a28b 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>2/4&lt;span class="o">]&lt;/span> WORKDIR /app 0.1s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>3/4&lt;span class="o">]&lt;/span> COPY . . 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">[&lt;/span>4/4&lt;span class="o">]&lt;/span> RUN yarn install --production 8.6s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; exporting to image 0.7s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; exporting layers 0.7s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; writing image sha256:8b52580feb5e556abf813797e2003cbb30d53dfeee0f865fde0f16de6354c6a1 0.0s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">=&lt;/span>&amp;gt; &lt;span class="o">=&lt;/span>&amp;gt; naming to docker.io/library/getting-started
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>docker build&lt;/code> 명령은 &lt;code>Dockerfile&lt;/code>을 사용하여 새 컨테이너 이미지를 빌드한다.&lt;/p>
+&lt;p>명령 실행 후 많은 레이어들을 다운로드 하게 되었는데, 이는 도커 파일 작성시 기본이 되는 이미지를 &lt;code>FROM&lt;/code>으로 명시했기 때문이다. 하지만 해당 이미지가 존재하지 않았기 때문에 다운로드 하게 된다.&lt;/p>
+&lt;p>도커가 이미지를 다운로드한 후에는 &lt;code>Dockerfile&lt;/code>에서 지시한대로 애플리케이션을 복사하고 &lt;code>yarn&lt;/code>을 사용하여 애플리케이션의 종속성을 설치한다. &lt;code>CMD&lt;/code>로 이미지에서 컨테이너를 시작할 때 실행할 기본 명령을 지정할 수 있다.&lt;/p>
+&lt;p>명령에 사용된 &lt;code>-t&lt;/code> 옵션을 명시하면 이미지에 태그를 설정할 수 있으며, 입력된 &lt;code>getting-started&lt;/code>로 이름을 지정하여 컨테이너를 실행할 때 해당 이미지를 참조할 수 있게 된다.&lt;/p>
+&lt;p>명령의 마지막에 있는 &lt;code>.&lt;/code>는 도커가 현재 디렉토리에서 Dockerfile을 찾아야 한다는 것을 알린다.&lt;/p>
+&lt;h2 id="start-an-app-container">Start an app container&lt;/h2>
+&lt;p>이미지가 있다면 &lt;code>docker run&lt;/code>명령을 통해 컨테이너에서 애플리케이션을 실행할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -dp 3000:3000 getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 2b5285b3ebfa65b51a44116c620e56b96b787874c71b25c8643b6a9ee137cb49&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>-d&lt;/code>: 새 컨테이너를 백그라운드 모드로 실행한다.&lt;/li>
+&lt;li>&lt;code>-p&lt;/code> 호스트의 포트와 컨테이너의 포트간 매핑을 생성한다. 포트 매핑이 없다면 애플리케이션에 접근할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>명령이 정상적으로 수행되었다면 &lt;a class="link" href="http://localhost:3000" target="_blank" rel="noopener"
+>http://localhost:3000&lt;/a> 링크를 통해 애플리케이션에 접근할 수 있다.&lt;/p>
+&lt;p>컨테이너를 간단히 확인해 보면, &lt;code>getting-started&lt;/code> 이미지를 사용하고 있으며 포트 3000으로 실행 중인 컨테이너가 적어도 하나 있어야 하고, 컨테이너를 확인하려면 CLI 또는 Docker Desktop의 그래픽 인터페이스를 사용할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker ps
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">3&lt;/span> minutes ago Up &lt;span class="m">3&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker_1/docker_1_1.png"
+width="3024"
+height="1964"
+srcset="https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="369px"
+>&lt;/p></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화를 통해 더욱 신속하게 작업을 진행할 수 있다.&lt;/li>
 &lt;li>효율적으로 소프트웨어를 배포할 수 있다.&lt;/li>
