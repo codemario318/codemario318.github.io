@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 09:50:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker_3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 14:45:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker_4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
+&lt;p>컨테이너가 실행되면, 파일시스템은 여러 레이어들을 사용한다. 각각의 컨테이너는 파일을 생성, 업데이트, 삭제하기 위한 자신만의 &amp;ldquo;스크래치 공간&amp;quot;을 가지는데, 다른 컨테이너에서 같은 이미지를 사용한다고 해도 어떤 변경 사항에 대해서도 다른 컨테이너에서 활용할 수 없다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Scratch image?&lt;/strong>&lt;br>
+빈 베이스 이미지로, 최소한의 컨테이너 이미지를 만들기 위해 사용된다. &lt;code>scratch&lt;/code>를 기본 이미지로 사용하면 컨테이너에는 파일 시스템 내용이 없으므로 앱이 필요로 하는 모든 파일을 이미지의 일부로 포함해야 한다.&lt;br>
+&lt;code>scratch space&lt;/code>는 사용 중인 이미지에 기반하여 각 컨테이너마다 생성되는 파일 시스템이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="컨테이너-볼륨">컨테이너 볼륨&lt;/h2>
+&lt;p>컨테이너는 파일을 생성, 업데이트 및 삭제할 수 있지만 컨테이너를 제거하면 해당 변경 사항이 모두 손실되며 Docker는 해당 컨테이너의 모든 변경 사항을 격리한다. 이때, 볼륨을 사용하면 모든 변경 사항을 반영할 수 있다.&lt;/p>
+&lt;p>볼륨은 컨테이너의 특정 파일 시스템 경로를 호스트 머신과 연결하는 기능을 제공한다. 컨테이너에서 디렉토리를 마운트하면 해당 디렉토리의 변경 사항을 호스트 머신에서도 볼 수 있다. 컨테이너 재시작에서 동일한 디렉토리를 마운트하면 동일한 파일을 확인할 수 있다.&lt;/p>
+&lt;h2 id="예제-todo-앱-데이터-유지하기">예제 Todo 앱 데이터 유지하기&lt;/h2>
+&lt;p>todo앱은 컨테이너 파일 시스템에 위치한 &lt;code>/etc/todos/todo.db&lt;/code> 파일에 데이터를 저장한다(SQLite).&lt;/p>
+&lt;p>데이터베이스 관련 파일을 호스트에 지속적으로 유지하고 다음 컨테이너에서 사용할 수 있도록 만들 수 있어야한다. 볼륨을 생성하고 데이터가 저장된 디렉토리에 연결(마운트)하여 컨테이너가 &lt;code>todo.db&lt;/code> 파일에 쓰기를 수행하면 데이터는 볼륨에서 호스트로 유지된다.&lt;/p>
+&lt;blockquote>
+&lt;p>볼륨 마운트는 일종의 불투명한 데이터 버킷이며, Docker는 디스크 상의 저장 위치를 포함하여 볼륨 전체를 관리한다.&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>볼륨 생성
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker volume create todo-db
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># todo-db&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>기존 컨테이너 중지 및 삭제: 볼륨을 사용하지 않은 상태에서 실행된 컨테이너 이므로&amp;hellip;
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker rm -f &amp;lt;id&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;code>--mount&lt;/code> 옵션을 추가하여 볼륨 마운트를 지정하여 앱 컨테이너 실행
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -dp 3000:3000 --mount &lt;span class="nv">type&lt;/span>&lt;span class="o">=&lt;/span>volume,src&lt;span class="o">=&lt;/span>todo-db,target&lt;span class="o">=&lt;/span>/etc/todos getting-started
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ba3740f92525240162cff2cd3dac9420c048bff2087482cc30bd8411ce9ba198&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>앱을 열고 데이터 todo 리스트 추가
+&lt;img src="https://codemario318.github.io/post/docker_4/docker_4_1.png"
+width="597"
+height="424"
+srcset="https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/li>
+&lt;li>컨테이너 삭제 후 3번 명령어 실행 후 데이터 확인&lt;/li>
+&lt;/ol>
+&lt;h2 id="dive-into-the-volume">Dive into the volume&lt;/h2>
+&lt;p>&lt;code>docker volume inspect&lt;/code> 명령을 사용하면 Docker가 볼륨을 사용할 때 데이터를 어디에 저장하고 있는지 등 여러 정보들을 확인할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker volume inspect todo-db
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;CreatedAt&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;2023-04-24T07:37:34Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Driver&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;local&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Labels&amp;#34;&lt;/span>: &lt;span class="o">{}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Mountpoint&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;/var/lib/docker/volumes/todo-db/_data&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Name&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;todo-db&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Options&amp;#34;&lt;/span>: &lt;span class="o">{}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Scope&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Mountpoint&lt;/code>가 디스크상의 실제 위치를 의미하며, 대부분의 컴퓨터에서 호스트가 이 디렉토리에 접근하기 위해 root 권한이 필요하다.&lt;/p></description></item><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker_3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Docker ID&lt;/strong>&lt;br>
 Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker Hub는 세계에서 가장 큰 라이브러리, 커뮤니티로 무료로 Docker ID를 만들어 사용할 수 있다.&lt;/p>
