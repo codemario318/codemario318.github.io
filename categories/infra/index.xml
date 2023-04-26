@@ -1,4 +1,38 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 14:45:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker_4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 16:46:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker_5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
+&lt;p>바인드 마운트는 호스트 파일 시스템에서 디렉토리를 컨테이너로 공유하는 다른 유형의 마운트이다. 어플리케이션을 개발할 때 바인드 마운트를 사용하여 소스 코드를 컨테이너로 마운트 할 수 있다. 파일 시스템 변경 사항을 감시하고 그에 따라 대응하는 프로세스를 컨테이너에서 실행할 수 있기 때문에, 컨테이너는 파일을 저장할 때마다 즉시 코드 변경 사항을 인식한다.&lt;/p>
+&lt;p>따라서 바인드 마운트와 파일 변경 상항을 감지하고 이에 따라 원하는 동작을 수행할 수 있으며, 이번 장에서는 자동으로 애플리케이션을 다시 시작하는 도구인 nodemon을 활용해본다.&lt;/p>
+&lt;h2 id="quick-volume-type-comparisons">Quick volume type comparisons&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>Named volumes&lt;/th>
+&lt;th>Bind mounts&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>호스트 위치&lt;/td>
+&lt;td>도커가 선택함&lt;/td>
+&lt;td>사용자가 결정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>마운트 예시(&amp;ndash;mount)&lt;/td>
+&lt;td>&lt;code>type=volume,src=my-volume,target=/usr/local/data&lt;/code>&lt;/td>
+&lt;td>&lt;code>type=bind,src=https://codemario318.github.io/path/to/data,target=/usr/local/data&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Populates new volume with container contents&lt;/td>
+&lt;td>Yes&lt;/td>
+&lt;td>No&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Supports Volume Drivers&lt;/td>
+&lt;td>Yes&lt;/td>
+&lt;td>No&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker_4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
 &lt;p>컨테이너가 실행되면, 파일시스템은 여러 레이어들을 사용한다. 각각의 컨테이너는 파일을 생성, 업데이트, 삭제하기 위한 자신만의 &amp;ldquo;스크래치 공간&amp;quot;을 가지는데, 다른 컨테이너에서 같은 이미지를 사용한다고 해도 어떤 변경 사항에 대해서도 다른 컨테이너에서 활용할 수 없다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Scratch image?&lt;/strong>&lt;br>
