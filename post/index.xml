@@ -198,7 +198,8 @@
 &lt;h2 id="끝으로">끝으로&lt;/h2>
 &lt;p>요구사항만 만족하도록 구현했다면 구조가 훨씬 단순해졌을텐데, 구현하다보니 욕심이 생겨 일을 크게 만들어 버렸네요.&lt;/p>
 &lt;p>하지만 입력되는 날짜 형식이 변경된다던가, 월 외에도 년, 일에 대해 날짜를 계산해야하는 처리가 추가되었다던가, 날짜 제한이 바뀌어 계산 처리가 바뀌어야 한다던가, 시간, 분, 초 처럼 처리되어야 하는 다른 단위가 추가된다던가 등 여러 변경사항이 있더라도 조금 더 대응하기 쉬워졌지 않았을까 생각해봅니다.&lt;/p>
-&lt;p>도움이 되었기를 바라며, 끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
+&lt;p>다 만들고 마무리 하다보니 년, 월, 일도 인스턴스 변수로 처리하면 더 좋았겠다는 생각도 드네요.&lt;br>
+아무튼 도움이 되었기를 바라며, 끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
 &lt;p>일반적인 인덱스는 컬럼의 값 일부(걸럽의 값 앞부분) 또는 전체에 대해서만 인덱스 생성이 허용되지만, 컬럼의 값을 변형해서 만들어진 값에 대해 인덱스를 구축해야 하는 경우도 있는데, 이러한 경우 함수 기반 인덱스를 활용할 수 있다.&lt;/p>
 &lt;p>MySQL 서버의 함수 기반 인덱스는 인덱싱할 값을 계산하는 과정의 차이만 있을 뿐, 실제 인덱스의 내부적인 구조 및 유지 관리 방법은 B-Tree 인덱스와 동일하다.&lt;/p>
 &lt;h3 id="가상-컬럼을-이용한-인덱스">가상 컬럼을 이용한 인덱스&lt;/h3>

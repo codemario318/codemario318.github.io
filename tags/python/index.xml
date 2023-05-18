@@ -198,7 +198,8 @@
 &lt;h2 id="끝으로">끝으로&lt;/h2>
 &lt;p>요구사항만 만족하도록 구현했다면 구조가 훨씬 단순해졌을텐데, 구현하다보니 욕심이 생겨 일을 크게 만들어 버렸네요.&lt;/p>
 &lt;p>하지만 입력되는 날짜 형식이 변경된다던가, 월 외에도 년, 일에 대해 날짜를 계산해야하는 처리가 추가되었다던가, 날짜 제한이 바뀌어 계산 처리가 바뀌어야 한다던가, 시간, 분, 초 처럼 처리되어야 하는 다른 단위가 추가된다던가 등 여러 변경사항이 있더라도 조금 더 대응하기 쉬워졌지 않았을까 생각해봅니다.&lt;/p>
-&lt;p>도움이 되었기를 바라며, 끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>Python - Generator</title><link>https://codemario318.github.io/post/python_cover/</link><pubDate>Tue, 18 Apr 2023 14:31:00 +0900</pubDate><guid>https://codemario318.github.io/post/python_cover/</guid><description>&lt;img src="https://codemario318.github.io/post/python_cover/python_cover.png" alt="Featured image of post Python - Generator" />&lt;p>제너레이터는 제너레이터 함수가 호출될 때 반환되는 이터러블 객체이다. 제네레이터 함수는 일반적인 함수와 비슷하게 생겼지만 &lt;code>yield&lt;/code> 구문을 사용해 데이터를 원하는 시점에 반환하고 처리를 다시 시작할 수 있다. 일반적인 함수는 진입점이 하나라면 제네레이터는 진입점이 여러개라고 생각할 수 있다. 이러한 특성때문에 제네레이터를 사용하면 원하는 시점에 원하는 데이터를 받을 수 있게된다.&lt;/p>
+&lt;p>다 만들고 마무리 하다보니 년, 월, 일도 인스턴스 변수로 처리하면 더 좋았겠다는 생각도 드네요.&lt;br>
+아무튼 도움이 되었기를 바라며, 끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>Python - Generator</title><link>https://codemario318.github.io/post/python_cover/</link><pubDate>Tue, 18 Apr 2023 14:31:00 +0900</pubDate><guid>https://codemario318.github.io/post/python_cover/</guid><description>&lt;img src="https://codemario318.github.io/post/python_cover/python_cover.png" alt="Featured image of post Python - Generator" />&lt;p>제너레이터는 제너레이터 함수가 호출될 때 반환되는 이터러블 객체이다. 제네레이터 함수는 일반적인 함수와 비슷하게 생겼지만 &lt;code>yield&lt;/code> 구문을 사용해 데이터를 원하는 시점에 반환하고 처리를 다시 시작할 수 있다. 일반적인 함수는 진입점이 하나라면 제네레이터는 진입점이 여러개라고 생각할 수 있다. 이러한 특성때문에 제네레이터를 사용하면 원하는 시점에 원하는 데이터를 받을 수 있게된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
