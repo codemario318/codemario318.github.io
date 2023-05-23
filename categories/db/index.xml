@@ -1,4 +1,461 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 14 May 2023 19:24:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 23 May 2023 12:40:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real_mysql_9_2/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>장점&lt;/th>
+&lt;th>단점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>인덱스 이용&lt;/td>
+&lt;td>&lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 쿼리가 실행될 때 이미 인덱스가 정렬 돼 있어서 순서대로 읽기만 하면 되므로 매우 빠르다.&lt;/td>
+&lt;td>&lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 작업 시 부가적인 인덱스 추가/삭제 작업으로 인해 디스크 공간이 더 많이 필요하다. 인덱스의 개수가 늘어날수록 InnoDB 버퍼풀을 위한 메모리가 많이 필요하다.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Filesort 이용&lt;/td>
+&lt;td>인덱스를 생성하지 않아도 되므로 인덱스를 이용할 때의 단점이 장점으로 바뀐다. 정렬해야 할 레코드가 많지 않으면 메모리에서 Filesort가 처리되므로 충분히 빠르다.&lt;/td>
+&lt;td>정렬 작업이 쿼리 실행 시 처리되므로 레코드 대상 건수가 많아질수록 쿼리의 응답 속도가 느리다.&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>레코드를 정렬하기 위해 항상 &lt;strong>Filesort&lt;/strong> 정렬 작업을 거쳐야 하는 것은 아니나, 모든 정렬을 인덱스를 이용하도록 튜닝하는 것은 거의 불가능하다.&lt;/p>
+&lt;ul>
+&lt;li>정렬 기준이 너무 많아 요건별로 모두 인덱스를 생성하는 것이 불가능한 경우&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code>의 결과 또는 &lt;code>DISTINT&lt;/code>같은 처리의 겨로가를 정렬해야 하는 경우&lt;/li>
+&lt;li>&lt;code>UNION&lt;/code>의 결과와 같이 임시 테이블의 결과를 다시 정렬해야 하는 경우&lt;/li>
+&lt;li>랜덤하게 결과 레코드를 가져와야 하는 경우&lt;/li>
+&lt;/ul>
+&lt;p>MySQL 서버에서 인덱스를 이용하지 않고 별도의 정렬 처리를 수행했는지는 실행 계획의 &lt;strong>Extra&lt;/strong>컬럼에 &lt;strong>Using filesort&lt;/strong> 메시지가 표시되는지 여부로 판단할 수 있다.&lt;/p>
+&lt;p>MySQL의 정렬 특성을 이해하면 쿼리를 튜닝할 때 어떠헥 하면 조금이라도 더 빠른 쿼리가 될지 쉽게 판단할 수 있을것이다.&lt;/p>
+&lt;h2 id="소트-버퍼">소트 버퍼&lt;/h2>
+&lt;p>MySQL은 정렬을 수행하기 위해 별도의 메모리 공간을 할당받아 사용하는데, 이 메모리 공간을 소트 버퍼라고 한다. 소트 버퍼는 정렬이 필요한 경우에만 할당되며, 버퍼의 크기는 정렬해야 할 레코드의 크기에 다라 가변적으로 증가하지만 최대 사용 가능한 소트 버퍼의 공간은 &lt;code>sort_buffer_size&lt;/code> 시스템 변수로 설정할 수 있다. 소트 버퍼를 위한 메모리 공간은 쿼리의 실행이 완료되면 즉시 스스템으로 반납된다.&lt;/p>
+&lt;p>정렬해야할 레코드가 적어 메모리에 할당된 소트 버퍼만으로 정렬할 수 있다면 빠르게 정렬이 처리되지만, 레코드 건수가 소트 버퍼로 할당된 공간보다 크면 정렬해야 할 레코드를 여러 조각으로 나누어 처리하게된다. 이 과정에서 메모리의 소트 버퍼에서 정렬을 수행하고 그 결과를 임시로 디스크에 기록하는 과정을 반복한다. 이처럼 각 버퍼 크기만큼 정렬된 레코드를 다시 병합하면서 정렬을 수행해야 하며(멀티 머지, Multi-merge) 수행된 멸티 머지 횟수는 &lt;code>Sort_merge_passes&lt;/code>라는 상태 변수에 누적해서 집계된다. 이러한 작업들이 모두 디스크의 쓰기와 읽기를 유발하게 되어 레코드 건수가 많을수록 반복 작업 횟수도 많아진다.&lt;/p>
+&lt;p>소트 버퍼를 크게 설정하면 디스크를 사용하지 않아 더 빨라질 것으로 생각할 수 있지만, 실제 벤치마크 결과로는 큰 차이를 보이지 않는다. 그리고 리눅스 계열의 운영체제에서는 너무 큰 소트 버퍼 크기를 사용하는 경우, 큰 메모리 공간 할당 때문에 성능이 훨씬 떨어질 수 있다.&lt;/p>
+&lt;p>또한 소트 버퍼는 세션 메모리 영역을 사용하여 여러 클라이언트가 공유해서 사용할 수 없다. 커넥션이 많을수록, 정렬 작업이 많을수록 소트 버퍼로 소비되는 메모리 공간이 커져 운영체제에서 메모리 부족 현상이 발생할 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>소트 버퍼를 설정해서 빠른 성능을 얻을 수는 없지만 디스크의 읽기와 쓰기 사용량은 줄일 수 있다. 따라서 MySQL 서버의 데이터가 많거나 디스크 I/O 성능이 낮은 장비라면 소트 버퍼의 크기를 더 크게 설정하는 것이 도움이 될 수도 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="정렬-알고리즘">정렬 알고리즘&lt;/h2>
+&lt;p>레코드를 정렬할 때 레코드 전체를 소트 버퍼에 담을지 또는 정렬 기준 컬럼만 소트 버퍼에 담을지에 따라 &lt;strong>싱글 패스, Single-pass&lt;/strong>와 &lt;strong>투 패스, Two-pass&lt;/strong> 2가지 정렬 모드로 나눌 수 있다.&lt;/p>
+&lt;p>정렬을 수행하는 쿼리가 어떤 정렬 모드를 사용하는지는 다음과 같이 옵티마이저 트레이스 기능으로 확인할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">OPTIMIZER_TRACE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;enabled=on&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">END_MARKERS_IN_JSON&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">on&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">OPTIMIZER_TRACE_MAX_MEM_SIZE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1000000&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100000&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">INFORMATION_SCHEMA&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">OPTIMIZER_TRACE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="k">G&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>마지막 쿼리 실행 후 출력된 내용에서 &amp;ldquo;filesort_summary&amp;rdquo; 섹션의 &amp;ldquo;sort_algorithm&amp;rdquo; 필드에 정렬 알고리즘이 표시되고, &amp;ldquo;sort_mode&amp;rdquo; 필드에는 3가지 정렬 방식중 하나가 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>&amp;lt;sort_key, rowid&amp;gt;&lt;/code>: 정렬 키와 레코드의 로우 아이드만 가져와서 정렬하는 방식&lt;/li>
+&lt;li>&lt;code>&amp;lt;sort_key, additional_fields&amp;gt;&lt;/code>: 정렬 키와 레코드 전체를 가져와서 정렬하는 방식으로, 레코드의 컬럼들은 고정 사이즈로 메모리에 저장&lt;/li>
+&lt;li>&lt;code>&amp;lt;sort_key, packed_additional_fields&amp;gt;&lt;/code>: 정렬 키와 레코드 전체를 가져와서 정렬하는 방식으로, 레코드의 컬럼들은 가변 사이즈로 메모리 저장&lt;/li>
+&lt;/ul>
+&lt;p>여기서는 첫 번째 방식을 &lt;strong>투 패스&lt;/strong>정렬 방식이라 명명하고, 나머지 방식을 &lt;strong>싱글 패스&lt;/strong>정렬 방식이라고 명명하겠다. 세 번째 방식은 MySQL 5.7 버전부터 도입됐는데, 이는 정렬을 위한 메모리 공간의 효율적인 사용을 위해 추가 도입된 방식이다.&lt;/p>
+&lt;h3 id="싱글-패스-정렬-방식">싱글 패스 정렬 방식&lt;/h3>
+&lt;p>소트 버퍼에 정렬 기준 컬럼을 포함해 &lt;code>SELECT&lt;/code> 대상이 되는 컬럼 전부를 담아 정렬을 수행하는 방식이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img.png"
+width="776"
+height="462"
+srcset="https://codemario318.github.io/post/real_mysql_9_2/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="167"
+data-flex-basis="403px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 쿼리와 같이 &lt;code>first_name&lt;/code>으로 정렬해서 &lt;code>emp_no&lt;/code>, &lt;code>first_name&lt;/code>, &lt;code>last_name&lt;/code>을 &lt;code>SELECT&lt;/code>하는 쿼리를 싱글 패스 정렬 방식으로 처리하게 되면, 처음 employees 테이블을 읽을 때 정렬에 필요하지 않는 &lt;code>last_name&lt;/code> 컬럼까지 전부 읽어 소트 버퍼에 담고 정렬을 수행한다. 그리고 정렬이 완료되면 정렬 버퍼의 내용을 그대로 클라이언트로 넘겨준다.&lt;/p>
+&lt;h3 id="투-패스-정렬-방식">투 패스 정렬 방식&lt;/h3>
+&lt;p>정렬 대상 컬럼과 프라이머리 키 값만 소트 버퍼에 담아서 정렬을 수행하고, 정렬된 순서대로 다시 프라이머리 키로 테이블을 읽어서 &lt;code>SELECT&lt;/code>할 컬럼을 가져오는 정렬 방식으로, 싱글 패스 정렬 방식이 도입되기 이전부터 사용하던 방식이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_1.png"
+width="787"
+height="555"
+srcset="https://codemario318.github.io/post/real_mysql_9_2/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;p>처음 &lt;code>employees&lt;/code> 테이블을 읽을 때는 정렬에 필요한 &lt;code>first_name&lt;/code>컬럼과 프라이머리 키인 &lt;code>emp_no&lt;/code>만 읽어서 정렬을 수행한다. 이 정렬이 완료되면 그 결과 순서대로 &lt;code>employees&lt;/code> 테이블을 한번 더 읽어서 &lt;code>last_name&lt;/code>을 가져오고, 최종적으로 그 결과를 클라이언트 쪽으로 넘기는 과정을 확인할 수 있다.&lt;/p>
+&lt;h3 id="정리">정리&lt;/h3>
+&lt;p>MySQL 예전 정렬 방식인 투 패스 방식은 테이블을 두 번 읽어야 하기 때문에 상당히 불합히하지만, 새로운 정렬 방식인 싱글 패스는 이러한 불합리가 없다. 하지만 싱글 패스 정렬 방식은 더 많은 소트 버퍼 공간이 필요하다.&lt;/p>
+&lt;p>최신 버전에서는 일반적으로 싱글 패스 정렬 방식을 주로 사용하지만 경우에 따라 투 패스 정렬 방식을 이용할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>레코드의 크기가 &lt;code>max_length_for_sort_data&lt;/code> 시스템 변수에 설정된 값보다 클 때&lt;/li>
+&lt;li>BLOB이나 TEXT 타입의 컬럼이 &lt;code>SELECT&lt;/code> 대상에 포함할 때&lt;/li>
+&lt;/ul>
+&lt;p>싱글 패스 방식은 정렬 대상 레코드의 크기나 건수가 작은 경우 빠른 성능을 보이며, 투 패스 방식은 정렬 대상 레코드의 크기나 건수가 상당히 많은 경우 효율적이라고 볼 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>SELECT&lt;/code> 쿼리에서 꼭 필요한 컬럼만 조회하지 않고, 모든 컬럼을 가져오도록 개발하는 경우가 많은데, ㅇ리는 정렬 버퍼를 몇 배에서 몇십 배 까지 비효율 적으로 사용할 가능성이 크므로 정렬이 필요한 &lt;code>SELECT&lt;/code>는 불필요한 컬럼을 포함하지 않게 쿼리를 작성하는 것이 효율적이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="정렬-처리-방법">정렬 처리 방법&lt;/h2>
+&lt;p>쿼리에 &lt;code>ORDER BY&lt;/code>가 사용되면 반드시 다음 3가지 처리 방법 중 하나로 정렬이 처리된다. 일반적으로 아래쪽에 있는 정렬 방법으로 갈수록 처리 속도는 떨어진다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>정렬 처리 방법&lt;/th>
+&lt;th>실행 계획 Extra 컬럼 내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>인덱스를 사용한 정렬&lt;/td>
+&lt;td>별도 표기 없음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조인에서 드라이빙 테이블만 정렬&lt;/td>
+&lt;td>&amp;ldquo;Using filesort&amp;rdquo;&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조인에서 조인 결과를 임시 테이블로 저장 후 정렬&lt;/td>
+&lt;td>&amp;ldquo;Using temporary; Using filesort&amp;rdquo;&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>옵티마이저는 정렬 처리를 위해 인덱스를 이용할 수 있을지 검토하는데, 사용할 수 있다면 &amp;ldquo;filesort&amp;rdquo; 과정 없이 인덱스를 순서대로 읽어 반환한다. 하지만 인덱스를 사용할 수 없다면 &lt;code>WHERE&lt;/code> 조건에 일치하는 레코드를 검색해 정렬 버퍼에 저장하면서 정렬을 처리한다.&lt;/p>
+&lt;p>이때 MySQL 옵티마이저는 정렬 대상 레코드를 최소화 하기 위해 다음 2가지 방법 중 하나를 선택한다.&lt;/p>
+&lt;ul>
+&lt;li>조인의 드라이빙 테이블만 정렬한 다음 조인을 수행&lt;/li>
+&lt;li>조인이 끝나고 일치하는 레코드를 모두 가져온 후 정렬을 수행&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로 조인이 수행되면서 레코드 건수와 레코드의 크기는 거의 배수로 불어나기 때문에 가능하다면 드라이빙 테이블만 정렬한 다음 조인을 수행하는 방법이 효율적이다. 그래서 두 번째 방법보다는 첫 번째 방버버이 더 효율적으로 처리된다.&lt;/p>
+&lt;h3 id="인덱스를-이용한-정렬">인덱스를 이용한 정렬&lt;/h3>
+&lt;ul>
+&lt;li>인덱스를 이용한 정렬을 위해서는 반드시 &lt;code>ORDER BY&lt;/code>에 명시된 컬럼이 제일 먼저 읽는 테이블(조인이 사용된 경우 드라이빙 테이블)에 속하고, &lt;code>ORDER BY&lt;/code>의 순서대로 생성된 인덱스가 있어야 한다.&lt;/li>
+&lt;li>&lt;code>WHERE&lt;/code>절에 첫 번째로 읽는 테이블의 컬럼에 대한 조건이 있다면 그 조건과 &lt;code>ORDER BY&lt;/code>는 같은 인덱스를 사용할 수 있어야 한다.&lt;/li>
+&lt;li>B-Tree 계열의 인덱스가 아닌 해시 인덱스나 전문 검색 인덱스 등에서는 인덱스를 이용한 정렬을 사용할 수 없다. (R-Tree 인덱스 불가)&lt;/li>
+&lt;li>여러 테이블이 조인되는 경우에는 네스티드-루프(Nested-loop) 방식의 조인에서만 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>인덱스를 이용해 정렬이 처리되는 경우에는 실제 인덱스의 값이 정렬돼 있기 때문에 인덱스의 순서대로 읽기만 하면 되어 MySQL 엔진에서 별도의 정렬을 위한 추가 작업을 수행하지는 않는다.&lt;/p>
+&lt;p>하지만 조인이 사용된 쿼리의 실행 계획에 조인 버퍼가 사용되면 순서가 흐트러 질 수 있으므로 주의해야 한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>ORDER BY&lt;/code> 절을 넣지 않아도 자동으로 정렬되므로 &lt;code>ORDER BY&lt;/code> 자체를 쿼리에서 제거하기도 하지만, MySQL 서버는 정렬을 인덱스로 처리할 수 있는 경우 부가적으로 불필요한 정렬 작업을 수행하지 않기 때문에 &lt;code>ORDER BY&lt;/code>가 쿼리에 명시된다고 해서 작업량이 늘지는 않는다. 그리고 알 수 없는 이유로 실행 계획이 조금 변경된다면, 기대했던 순서대로 결과를 가져오지 못해 버그로 연결될 수 있으므로 &lt;code>ORDER BY&lt;/code> 절을 명시하는 것이 좋다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="조인의-드라이빙-테이블만-정렬">조인의 드라이빙 테이블만 정렬&lt;/h3>
+&lt;p>일반적으로 조인이 수행되면 결과 레코드의 건수가 몇 배로 불어나고, 레코드 하나의 크기도 늘어나기 때문에 조인을 실행하기 전 첫 번째 테이블의 레코드를 먼저 정렬한 다음 조인을 실행하는 것이 정렬의 차선책이다. 이러한 방법으로 정렬이 처리되려면 조인에서 첫 번째로 읽히는 테이블(드라이빙 테이블)의 컬럼만으로 &lt;code>ORDER BY&lt;/code> 절을 작성해야 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100002&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100010&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>WHERE&lt;/code> 절의 조건으로 인해 옵티마이저는 &lt;code>employees&lt;/code> 테이블을 드라이빙 테이블로 선택한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>WHERE&lt;/code> 절의 검색조건 &lt;code>emp_no&lt;/code>는 &lt;code>employees&lt;/code> 테이블의 파리이머리 키를 이용해 검색하면 작업량을 줄일 수 있다.&lt;/li>
+&lt;li>드리븐 테이블의 조인 컬럼인 &lt;code>emp_no&lt;/code> 컬럼에 인덱스가 있다.&lt;/li>
+&lt;/ul>
+&lt;p>검색은 인덱스 레인지 스캔으로 처리할 수 있지만 &lt;code>ORDER BY&lt;/code> 절에 명시된 컬럼은 &lt;code>employees&lt;/code> 테이블의 프라이머리 키와 전혀 연관이 없으므로 인덱스를 이용한 정렬은 불가능하지만, 정렬 기준 컬럼이 드라이빙 테이블에 포함된 컬럼이므로 옵티마이저는 드라이빙 테이블만 검색해서 정렬을 먼저 수행하고, 그 결과와 &lt;code>salaries&lt;/code> 테이블을 조인하는 방식을 선택한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_2.png"
+width="742"
+height="597"
+srcset="https://codemario318.github.io/post/real_mysql_9_2/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="124"
+data-flex-basis="298px"
+>&lt;/p>
+&lt;ol>
+&lt;li>인덱스를 이용해 &lt;code>BETWEEN&lt;/code> 조건을 만족하는 데이터 검색&lt;/li>
+&lt;li>검색 결과를 &lt;code>last_name&lt;/code> 컬럼으로 정렬을 수행(Filesort)&lt;/li>
+&lt;li>정렬된 결과를 순서대로 읽으며 &lt;code>sqlaries&lt;/code> 테입르과 조인을 수행해 최종 결과를 가져옴&lt;/li>
+&lt;/ol>
+&lt;h3 id="임시-테이블을-이용한-정렬">임시 테이블을 이용한 정렬&lt;/h3>
+&lt;p>쿼리가 여러 테이블을 조인하지 않고, 하나의 테이블로 부터 &lt;code>SELECT&lt;/code>해서 정렬하는 경우라면 임시 테이블이 필요하지 않지만, 2개 이상의 테이블을 조인해서 그 결과를 정렬해야 한다면 임시 테이블이 필요할 수 있다.&lt;/p>
+&lt;p>&amp;ldquo;조인 드라이빙 테이블만 정렬&amp;quot;하는 경우라면 2개 이상의 테이블이 조인되면서 정렬이 실행되지만 임시 테이블을 사용하지 않는다. 하지만 그 외 패턴의 쿼리에서는 항상 조인의 결과를 임시 테이블에 저장하고, 그 결과를 다시 정렬하는 과정을 거친다. 따라서 이 방법은 정렬 3가지 방식 중 정렬해야 할 레코드 건수가 가장 많기 때문에 가장 느리다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100002&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100010&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>e&lt;/td>
+&lt;td>range&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>Using where; Using temporary; Using filesort&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>s&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>쿼리 실행 계획 &amp;ldquo;Extra&amp;quot;컬럼에 &amp;ldquo;Using where; Using temporary; Using filesort&amp;quot;코멘트가 표시되는데, 이는 조인의 결과를 임시 테이블에 저장하고, 그 결과를 다시 정렬 처리했음을 의미한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_3.png"
+width="706"
+height="708"
+srcset="https://codemario318.github.io/post/real_mysql_9_2/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="99"
+data-flex-basis="239px"
+>&lt;/p>
+&lt;h3 id="정렬-처리-방법의-성능-비교">정렬 처리 방법의 성능 비교&lt;/h3>
+&lt;p>주로 웹 서비스용 쿼리에서는 &lt;code>ORDER BY&lt;/code>와 함께 &lt;code>LIMIT&lt;/code>이 거의 필수로 사용되는 경우가 많은데, 일반적으로 &lt;code>LIMIT&lt;/code>은 테이블이나 처리 결과의 일부만 가져오기 때문에 MySQL 서버가 처리해야 할 작업량을 줄이는 역할을 한다.&lt;/p>
+&lt;p>하지만 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 같은 작업은 &lt;code>WHERE&lt;/code> 족너을 만족하는 레코드를 &lt;code>LIMIT&lt;/code> 건수 만큼만 가져와서는 처리할 수 없고, 우선 조건을 만족하는 레코드를 모두 가져와서 정렬을 수행하거나 그루핑 작업을 실행해야만 처리할 수 있다. 이로 인해 &lt;code>WHERE&lt;/code> 조건이 아무리 인덱스를 잘 활용하도록 튜닝해도 잘못된 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 때문에 쿼리가 느려지는 경우가 많이 발생한다.&lt;/p>
+&lt;h4 id="스트리밍-방식">스트리밍 방식&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_4.png"
+width="587"
+height="342"
+srcset="https://codemario318.github.io/post/real_mysql_9_2/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;p>서버 쪽에서 처리할 데이터가 얼마인지에 관계 없이 조건에 일치하는 레코드가 검색될 때마다 바로바로 클라이언트로 전성해주는 방식으로, 클라이언트는 쿼리를 요청하고 곧바로 원했던 첫 번째 레코드를 전달받는다. (마지막 레코드는 언제 받을지 알 수 없다.)&lt;/p>
+&lt;p>쿼리가 스트리빙 방식으로 처리될 수 있다면 클라이언트는 MySQL 서버가 일치하는 레코드를 찾는 즉시 전달받기 때문에 동시에 데이터의 가공 작업을 시작할 수 있다. 웹서비스 같은 OLTP 환경에서는 쿼리의 요청에서 첫 번째 레코드를 전달받게 되기까지의 응답 시간이 중요한 경우가 많은데, 스트리빙 방식으로 처리되는 쿼리는 쿼리가 얼마나 많은 레코드를 조회하느냐에 상관없이 빠른 응답 시간을 보장해준다.&lt;/p>
+&lt;p>또한 스트리밍 방식으로 처리되는 쿼리에서 &lt;code>LIMIT&lt;/code> 처럼 결과 건수를 제한하는 조건들은 풀 테이블 스캔의 결과가 아무런 버퍼링 처리나 필터링 과정 없이 바로 클라이언트로 스트리밍 되기 때문에 쿼리의 전체 실행 시간을 상당히 줄여줄 수 있다.&lt;/p>
+&lt;h4 id="버퍼링-방식">버퍼링 방식&lt;/h4>
+&lt;p>&lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 같은 처리는 &lt;code>WHERE&lt;/code> 조건에 일치하는 모든 레코드를 가져온 후, 정렬하거나 그루핑해서 차례대로 보내야 하므로 쿼리의 결과가 스트리밍되는 것이 불가능하다.&lt;/p>
+&lt;p>또한 버퍼링 방식으로 처리되는 쿼리는 먼저 결과를 모아서 MySQL 서버에서 일괄 가옹해야 하므로 모든 결과를 스토리지 엔진으로부터 가져올 때가지 기다려야 한다. 따라서 &lt;code>LIMIT&lt;/code> 처럼 결과 건수를 제한하는 조건이 있어도 성능 향상에 별로 도움이 되지 않는다.&lt;/p>
+&lt;hr>
+&lt;p>정렬 처리 방버에서 소개한 &lt;code>ORDER BY&lt;/code>의 3가지 처리 방법 가운데 인덱스를 사용한 정렬 방식만 스트리밍 형태의 처리이며, 나머지는 모두 버퍼링된 후에 정렬된다. 즉 인덱스를 사용한 정렬 방식은 &lt;code>LIMIT&lt;/code>로 제한된 건수만큼만 읽으면서 바로 클라이언트로 결과를 전송해 줄 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> tb_test1의 레코드는 100건
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> tb_test2 테이블의 레코드가 1000건
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> (tb_test1의 레코드 1건당 tb_test2의 레코드가 10건씩 존재함)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tb_test1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tb_test2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">t2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">col1&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">t2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">col1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">col2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>tb_test1&lt;/code>가 드라이빙되는 경우&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>정렬 방법&lt;/th>
+&lt;th>읽어야 할 건수&lt;/th>
+&lt;th>조인 횟수&lt;/th>
+&lt;th>정렬해야 할 대상 건수&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>인덱스 사용&lt;/td>
+&lt;td>tb_test1: 1건, tb_test2: 10건&lt;/td>
+&lt;td>1번&lt;/td>
+&lt;td>0건&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조인의 드라이빙 테이블만 정렬&lt;/td>
+&lt;td>tb_test1: 100건, tb_test2: 10건&lt;/td>
+&lt;td>1번&lt;/td>
+&lt;td>100건(tb_test1 테이블의 레코드 건수 만큼 정렬 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>임시 테이블 사용 후 정렬&lt;/td>
+&lt;td>tb_test1: 100건, tb_test2: 1000건&lt;/td>
+&lt;td>100번&lt;/td>
+&lt;td>1000건(조인된 결과 레코드 건수를 모두 정렬해야함)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>&lt;code>tb_test2&lt;/code>가 드라이빙되는 경우&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>정렬 방법&lt;/th>
+&lt;th>읽어야 할 건수&lt;/th>
+&lt;th>조인 횟수&lt;/th>
+&lt;th>정렬해야 할 대상 건수&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>인덱스 사용&lt;/td>
+&lt;td>tb_test2: 10건, tb_test1: 10건&lt;/td>
+&lt;td>10번&lt;/td>
+&lt;td>0건&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조인의 드라이빙 테이블만 정렬&lt;/td>
+&lt;td>tb_test2: 1000건, tb_test1: 1건&lt;/td>
+&lt;td>10번&lt;/td>
+&lt;td>1000건(tb_test2 테이블의 레코드 건수 만큼 정렬 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>임시 테이블 사용 후 정렬&lt;/td>
+&lt;td>tb_test2: 1000건, tb_test2: 100건&lt;/td>
+&lt;td>1000번(tb_test2 테이블의 레코드 건수만큼 조인 발생)&lt;/td>
+&lt;td>1000건(조인된 결과 레코드 건수를 모두 정렬해야함)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>어느 테이블이 먼저 조인되는지도 중요하지만 어떤 정렬 방식으로 처리되는지는 더 큰 성능 차이를 만든다. 가능하다면 인덱스를 사용한 정렬로 유도하고, 그렇지 못하다면 최소한 드라이빙 테입르만 정렬해도 되는 수준으로 유도하는 것도 좋은 튜닝 방법이라고 할 수 있다.&lt;/p>
+&lt;h2 id="정렬-관련-상태-변수">정렬 관련 상태 변수&lt;/h2>
+&lt;p>MySQL 서버는 처리하는 주요 작업에 대해서는 해당 작업의 실행 횟수를 상태 변수로 저장한다. 정려로가 관련해서도 지금까지 몇 건의 레코드나 정렬 처리를 수행했는지, 소트 버퍼 간의 병합 작업(멀티 머지)은 몇 번이나 발생했는지 등을 다음과 같은 명령으로 확인해 볼 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FLUSH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Sort%&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>Sort_merge_passes&lt;/code>: 멀티 머지 처리 횟수&lt;/li>
+&lt;li>&lt;code>Sort_range&lt;/code>: 인덱스 레인지 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
+&lt;li>&lt;code>Sort_rows&lt;/code>: 풀 테이블 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
+&lt;li>&lt;code>Sort_rows&lt;/code>: 지금까지 정렬한 전체 레코드 건수&lt;/li>
+&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(2) - GROUP BY 처리</title><link>https://codemario318.github.io/post/real_mysql_9_2/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2) - GROUP BY 처리" /></description></item><item><title>9. 옵티마이저와 힌트 (1)</title><link>https://codemario318.github.io/post/real_mysql_9_1/</link><pubDate>Mon, 22 May 2023 16:09:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_1/real_mysql.jpeg" alt="Featured image of post 9. 옵티마이저와 힌트 (1)" />&lt;p>MySQL 서버로 요청된 쿼리는 결과는 동일하지만 내부적으로 그 결과를 만들어내는 방법은 매우 다양하며, 어떤 방법이 최적이고 최소의 비용이 소모될지 결정해야 한다. MySQL 옵티마이저는 쿼리를 최적으로 실행하기 위해 각 테이블의 데이터가 어떤 분포로 저장돼 있는지 통계 정보를 참조하며, 그러한 기본 데이터를 비교해 최적의 실행 계획을 수립한다.&lt;/p>
+&lt;h2 id="개요">개요&lt;/h2>
+&lt;p>어떤 DBMS든지 쿼리의 실행 계획을 수립하는 옵티마이저는 가장 복잡한 부분으로 알려져 있으며, 옵티마이저가 만들어 내는 실행 계획을 이해하는 것 또한 상당히 어려운 부분이다. 하지만 실행 계획을 이해할 수 있어야만 실행 계획의 불합리한 부분을 찾아내고, 더 최적화된 방법으로 실행 계획을 수립하도록 유도할 수 있다.&lt;/p>
+&lt;h3 id="실행-절차">실행 절차&lt;/h3>
+&lt;p>MySQL 서버에서 쿼리가 실행되는 과정은 크게 세 단계로 나눌 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>SQL 파싱&lt;/strong>: 사용자로부터 요청된 SQL 문장을 잘게 쪼개어 MySQL 서버가 이해할 수 있는 수준으로 분리(파스 트리)한다.
+&lt;ul>
+&lt;li>&lt;strong>SQL 파서&lt;/strong>라는 모듈로 처리한다. 이때 문법적으로 잘못된다면 걸러진다. 이 단계에서 &lt;strong>SQL 파스 트리&lt;/strong>가 만들어지고, MySQL 서버는 SQL 문장 자체가 아닌 파스 트리를 이용해 쿼리를 실행한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>최적화 및 실행 계획 수립&lt;/strong>: MySQL 옵티마이저에 의해 SQL의 파싱 정보(파스 트리)를 확인하며 어떤 테이블 부터 읽고 어떤 인덱스를 이용해 테이블을 읽을지 선택한다.
+&lt;ul>
+&lt;li>불필요한 조건 제거 및 복잡한 연산 단순화&lt;/li>
+&lt;li>여러 테이블의 조인이 있는 경우 어떤 순서로 테이블을 읽을지 결정&lt;/li>
+&lt;li>각 테이블에 사용된 조건과 인덱스 통계 정보를 이용해 사용할 인덱스를 결정&lt;/li>
+&lt;li>가져온 레코드들을 임시 테이블에 넣고 다시 한번 가공해야 하는지 결정&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>두 번째 단계에서 결정된 테이블의 일기 순서나 선택된 인덱스를 이용해 스토리지 엔진으로부터 데이터를 가져온다.&lt;/li>
+&lt;/ol>
+&lt;p>두 번째 단계가 완료되면 쿼리의 실행 계획이 만들어지며, 세 번째 단계에서 수립된 실행 계획대로 스토리지 엔진에 레코드를 읽어오도록 요청하고, MySQL 엔진에서는 스토리지 엔진으로부터 받은 레코드를 조인하거나 정렬하는 작업을 수행한다.&lt;/p>
+&lt;h3 id="옵티마이저의-종류">옵티마이저의 종류&lt;/h3>
+&lt;p>옵티마이저는 데이터베이스 서버에서 두뇌와 같은 역할을 담당한다. 옵티마이저는 현재 대부분의 DBMS가 선택하고 있는 비용 기반 최적화(Cost-based optimizer, CBO) 방법과 예전 초기 버전의 오라클 DMBS에서 많이 사용했던 규칙 기반 최적화 방법(Rule-based optimizer, RBO)로 나눌 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>RBO: 기본적으로 대상 테이블의 레코드 건수나 선택도 등을 고려하지 않고 옵티마이저에 내장된 우선순위에 따라 실행 계획을 수립하는 방식을 의미한다.
+&lt;ul>
+&lt;li>통계 정보(테이블의 레코드 건수나 컬럼 값의 분포도)를 조사하지 않고 실행 계획이 수립되기 때문에 같은 쿼리에 대해서는 거의 항상 같은 실행 방법을 만들어 낸다.&lt;/li>
+&lt;li>사용자의 데이터는 분포도가 매우 다양하기 때문에 규칙 기반의 최적화는 이미 오래전부터 사용되지 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>CBO: 쿼리를 처리하기 위한 여러 가지 가능한 방법을 만들고, 각 단위 작업의 비용(부하) 정보와 대상 테이블의 예측된 통계 정보를 이용해 실행 계획별 비용을 산출한다.
+&lt;ul>
+&lt;li>산출된 실행 방법별로 비용이 최소로 소요되는 처리 방식을 선택해 최종적으로 쿼리를 실행한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>규칙 기반 최적화는 각 테이블이나 인덱스의 통계 정보가 거의 없고 상대적으로 느린 CPU 연산 탓에 비용 계산 과정이 부담스럽다는 이유로 사용되는 최적화 방법이다. 현재는 MySQL을 포함한 대부분의 RDBMS가 비용 기반의 옵티마이저를 채택하고 있다.&lt;/p>
+&lt;p>MySQL 서버를 포함한 모든 RDBMS는 데이터를 정렬하거나 그루핑하는 등 기본 데이터 가공 기능을 가지고 있다. 하지만 결과물은 동일하더라도 RDBMS 별로 그 결과를 만들어 내는 과정은 천차만별이다.&lt;/p>
+&lt;h2 id="풀-테이블-스캔과-풀-인덱스-스캔">풀 테이블 스캔과 풀 인덱스 스캔&lt;/h2>
+&lt;ul>
+&lt;li>풀 테이블 스캔: 인덱스를 사용하지 않고 테이블의 데이터를 처음부터 끝까지 읽어 요청된 작업을 처리하는 작업을 의미한다.
+&lt;ul>
+&lt;li>테이블의 레코드 건수가 너무 작아서 인덱스를 통해 읽는 것 보다 풀 테이블 스캔을 하는 편이 더 빠른경우(테이블이 페이지 1개로 구성된 경우)&lt;/li>
+&lt;li>&lt;code>WHERE&lt;/code> 절이나 &lt;code>ON&lt;/code> 절에 인덱스를 이용할 수 있는 적절한 조건이 없는 경우&lt;/li>
+&lt;li>인덱스 레인지 스캔을 사용할 수 있는 쿼리라고 하더라도 옵티마이저가 판단한 조건 일치 레코드 건수가 너무 많은 경우(인덱스 B-Tree를 샘플링해서 조사한 통계 정보 기준)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로 테이블의 전체 크기는 인덱스보다 훨씬 크기 때문에 테이블을 처음부터 끝까지 읽는 작업은 상당히 많은 디스크 읽기가 필요하다. 그래서 대부분 DBMS는 풀 테이블 스캔을 실행할 때 한꺼번에 여러개의 블록이나 페이지를 읽어오는 기능을 내장하고 있다.&lt;/p>
+&lt;p>하지만 MySQL에는 풀 테이블 스캔을 실행할 때 한꺼번에 몇 개씩 테이블을 읽어올지 설정하는 시스템 변수는 없다. 그래서 많은 사람들이 MySQL은 풀 테이블 스캔을 실행할 때 디스크로부터 페이지를 하나씩 읽어 오는 것으로 생각하지만 InnoDB 스토리지 엔진은 특정 테이블의 연속된 데이터 페이지가 읽히면 백그라운드 스레드에 의해 리드 어헤드(Read ahead) 작업이 자동으로 시작되며, 이를 통해 요청이 오기 전에 미리 디스크에서 필요할 데이터를 예측하여 읽어 버퍼불에 가저다둔다.&lt;/p>
+&lt;p>즉, 풀 테이블 스캔이 실행되면 처음 몇개의 데이터 페이지는 포그라운드 스레드(Foreground thread, 클라이언트 스레드)가 페이지 읽기를 실행하지만 특정 시점부터는 읽기 작업을 백그라운드 스레드로 넘긴다.&lt;/p>
+&lt;p>백그라운드 스레드가 읽기를 넘겨받는 시점부터는 한번에 4개 또는 8개씩 페이지를 읽그면서 계속 그 수를 증가시키고, 한 번에 최대 64개의 데이터 페이지가지 읽어 버퍼풀에 저장해둔다. 포그라운드 스레드는 미리 버퍼풀에 준비된 데이터를 가져다 사용하기만 하면 되므로 쿼리가 빠르게 처리된다.&lt;/p>
+&lt;p>MySQL 서버에서는 &lt;code>innodb_read_ahead_threshold&lt;/code> 시스템 변수를 이용해 InnoDB 스토리지 엔진이 언제 리드 어헤드를 시작할지 임계값을 설정할 수 있다. 포그라운드 스레드에 의해 시스템 변수에 설정된 개수만큼의 연속된 데이터 페이지가 읽히면 InnoDB 스토리지 엔진은 백그라운드 스레드를 이용해 대량으로 그 다음 페이지들을 읽어서 버퍼풀로 적재한다. 일반적으로 기본 설정으로 충분하지만 데이터 웨어하우스용으로 MySQL을 사용한다면 이 옵션을 더 낮은 값으로 설정하여 더 빨리 리드 어헤드가 시작되게 유도하는 것도 성능을 향상시킬 수 있다.&lt;/p>
+&lt;p>리드 어헤드는 풀 인덱스 스캔에서도 동일하게 사용된다.&lt;/p>
+&lt;h2 id="병렬-처리">병렬 처리&lt;/h2>
+&lt;p>MySQL 8.0 버전부터는 용도가 한정돼 있긴 하지만 쿼리 병렬 처리가 가능해졌다.&lt;/p>
+&lt;blockquote>
+&lt;p>여기서 말하는 병렬 처리는 하나의 쿼리를 여러 스레드가 나누어 동시에 처리한다는 것을 의미한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>innodb_parallel_read_threads&lt;/code> 시스템 변수를 이용해 하나의 쿼리를 최대 몇개의 스레드를 이용해서 처리할지를 변경할 수 있다. 아직 MySQL 서버에서는 쿼리를 여러 개의 스레드를 이용해 병렬로 처리하게 하는 힌트나 옵션은 없으며, 아무런 &lt;code>WHERE&lt;/code>조건 없이 단순히 테이블의 전체 건수를 가져오는 쿼리만 병렬로 처리할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SESSION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">innodb_parallel_read_threads&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>병렬 처리용 스레드 개수가 늘어날수록 쿼리 처리에 걸리는 시간이 대체로 줄어들지만, 서버에 장착된 CPU의 코어 개수를 넘어서는 경우에는 오히려 성능이 떨어질 수도 있으니 주의가 필요하다.&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
 &lt;p>일반적인 인덱스는 컬럼의 값 일부(걸럽의 값 앞부분) 또는 전체에 대해서만 인덱스 생성이 허용되지만, 컬럼의 값을 변형해서 만들어진 값에 대해 인덱스를 구축해야 하는 경우도 있는데, 이러한 경우 함수 기반 인덱스를 활용할 수 있다.&lt;/p>
 &lt;p>MySQL 서버의 함수 기반 인덱스는 인덱싱할 값을 계산하는 과정의 차이만 있을 뿐, 실제 인덱스의 내부적인 구조 및 유지 관리 방법은 B-Tree 인덱스와 동일하다.&lt;/p>
 &lt;h3 id="가상-컬럼을-이용한-인덱스">가상 컬럼을 이용한 인덱스&lt;/h3>
