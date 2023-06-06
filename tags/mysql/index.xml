@@ -1,4 +1,391 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 23 May 2023 12:40:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real_mysql_9_2/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 23 May 2023 15:30:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>9.2 기본 데이터 처리(2)</title><link>https://codemario318.github.io/post/real_mysql_9_2_2/</link><pubDate>Tue, 23 May 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2)" />&lt;h2 id="group-by-처리">&lt;code>GROUP BY&lt;/code> 처리&lt;/h2>
+&lt;p>&lt;code>GROUP BY&lt;/code> 또한 &lt;code>ORDER BY&lt;/code>와 같이 쿼리가 스트리밍된 처리를 할 수 없게 하는 처리 중 하나다. &lt;code>GROUP BY&lt;/code>절 사용시 결과에 대한 필터링 처리를 할 수 있는 &lt;code>HAVING&lt;/code>절을 사용할 수 이쓴느데, &lt;code>GROUP BY&lt;/code> 에서 사용된 조건은 인덱스를 사용해서 처리될 수 없으므로 &lt;code>HAVING&lt;/code>절을 튜닝하려고 인덱스를 생성하거나 다른 방법을 고민할 필요는 없다.&lt;/p>
+&lt;p>&lt;code>GROUP BY&lt;/code> 작업도 인덱스를 사용하는 경우과 그렇지 못한 경우로 나눌 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>인덱스를 이용할 때
+&lt;ul>
+&lt;li>인덱스 스캔: 인덱스를 차례대로 읽는다.&lt;/li>
+&lt;li>루스 인덱스 스캔: 인덱스를 건너뛰면서 읽는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>인덱스를 이용하지 않을 때
+&lt;ul>
+&lt;li>임시 테이블을 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="타이트-인덱스-스캔을-사용하는-group-by">(타이트) 인덱스 스캔을 사용하는 &lt;code>GROUP BY&lt;/code>&lt;/h3>
+&lt;p>&lt;code>ORDER BY&lt;/code>의 경우와 마찬가지로 조인의 드라이빙 테이블에 속한 컬럼만을 이용해 그루핑 할 때 &lt;code>GROUP BY&lt;/code> 컬럼으로 이미 인덱스가 있다면 그 인덱스를 차례대로 읽으며 그루핑 작업을 수행하고 그 결과로 조인을 처리한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>GROUP BY&lt;/code>가 인덱스를 통해 처리된다고 하더라도 그룹 함수 등의 그룹값을 처리로 인해 임시 테이블이 필요할 때도 있다.&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code>가 인덱스를 통해 처리되는 쿼리는 이미 정렬된 인덱스를 읽는 것이므로 쿼리 실행 시점에 추가적인 정렬 작업이나 내부 임시 테이블은 필요하지 않다.&lt;/li>
+&lt;li>이러한 그루핑 방식을 사용하는 쿼리의 실행 계획에서는 Extra 컬럼에 별도로 &amp;ldquo;Using index for group-by&amp;rdquo;, &amp;ldquo;Using temporary, Using filesort&amp;quot;가 표시되지 않는다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="루스-인덱스-스캔을-사용하는-group-by">루스 인덱스 스캔을 사용하는 &lt;code>GROUP BY&lt;/code>&lt;/h3>
+&lt;p>루스 인덱스 스캔 방식은 인덱스의 레코드를 건너 뛰면서 필요한 부분만 읽어서 가져오는 것을 의미하는데, 옵티마이저가 루스 인덱스 스캔을 사용할 때는 실행 계획의 Extra 컬럼에 &amp;ldquo;Using index for group-by&amp;rdquo; 코멘트가 표시된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;1985-03-01&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>salaries&lt;/td>
+&lt;td>range&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>Using where; Using index for group-by&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;code>salaries&lt;/code> 테이블의 인덱스는 (emp_no, from_date)로 생성돼 있으므로 위의 쿼리 문장에서 &lt;code>WHERE&lt;/code> 조건은 인덱스 레인지 스캔 접근 방식으로 이용할 수 없는 쿼리지만, 인덱스 레인지 스캔을 이용했으며, &lt;code>GROUP BY&lt;/code> 처리까지 인덱스르 사용했다.&lt;/p>
+&lt;ol>
+&lt;li>(emp_no, from_date) 인덱스를 차례대로 스캔하면서 emp_no의 첫 번째 유일한 값(그룹 키)를 찾아낸다.&lt;/li>
+&lt;li>(emp_on, from_date) 인덱스에서 emp_no가 &amp;lsquo;10001&amp;rsquo;인 것 중에서 from_date 값이 &amp;lsquo;1985-03-01&amp;rsquo;인 레코드만 가져온다.&lt;/li>
+&lt;li>인덱스에서 emp_no의 그다음 유니크한(그룹 키) 값을 가져온다.&lt;/li>
+&lt;li>3번 단계에서 결과가 더 없으면 처리를 종료하고, 결과가 있다면 2번 과정으로 돌아가서 반복 수행한다.&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;ul>
+&lt;li>MySQL 루스 인덱스 스캔 방식은 단일 테이블에 대해 수행되는 &lt;code>GROUP BY&lt;/code> 처리에만 사용할 수 있다.&lt;/li>
+&lt;li>프리픽스 인덱스(Prefix index, 컬럼의 앞쪽 일부만으로 생성된 인덱스)는 루스 인덱스 스킨을 사용할 수 없다.&lt;/li>
+&lt;li>인덱스 레인지 스캔에서는 유니크한 값의 수가 많을수록 성능이 향상되는 반면 루스 인덱스 스캔에서는 인덱스의 유니크한 값의 수가 적을수록 성능이 향상된다.
+&lt;ul>
+&lt;li>루스 인덱스 스캔은 분포도가 좋지 않은 인덱스일수록 더 빠른 결과를 만들어낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>루스 인덱스 스캔으로 처리되는 쿼리에서는 별도의 임시 테이블이 필요하지 않다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>루스 인덱스 스캔이 사용될 수 있을지 없을지 판단하는 것은 &lt;code>WHERE&lt;/code>절의 조건이나 &lt;code>ORDER BY&lt;/code> 절이 인덱스를 사용할 수 있을지 없을지 판단하는 것보다는 더 어렵다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>MIN&lt;/code>, &lt;code>MAX&lt;/code> 의외의 집합 함수가 사용된 경우 루스 인덱스 스캔 사용 불가&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code>에 사용된 컬럼이 인덱스 구성 컬럼의 왼쪽부터 일치하지 않는 경우 사용 불가&lt;/li>
+&lt;li>&lt;code>SELECT&lt;/code> 절의 컬럼이 &lt;code>GROUP BY&lt;/code>와 일치하지 않는 경우 사용 불가&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>MySQL 8 버전부터는 루스 인덱스 스캔과 동일한 방식으로 작동하는 인덱스 스킵 스캔 최적화도 도입됐다. 이에 따라 옵티마이저가 쿼리에서 필요로 하는 레코드를 검색하는 부분까지 루스 인덱스 스캔 방식으로 최적화가 가능해졌다. 인덱스 스킵 스캔 또한 루스 인덱스 스캔과 마찬가지로 조건이 누락된 인덱스의 선행 컬럼이 유니크한 값을 많이 가질수록 쿼리 처리 성능이 떨어지게 되어 선행 컬럼의 유니크한 값의 개수가 많으면 인덱스 스킵 최적화를 사용하지 않게 된다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="임시-테이블을-사용하는-group-by">임시 테이블을 사용하는 &lt;code>GROUP BY&lt;/code>&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">AVG&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>e&lt;/td>
+&lt;td>ALL&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;td>300584&lt;/td>
+&lt;td>Using temporary&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>s&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>10&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위 쿼리의 실행 계획에서는 Extra 컬럼에 &amp;ldquo;Using temporary&amp;rdquo; 메시지가 표시되었는데, 이는 &lt;code>employees&lt;/code>를 풀 스캔하기 때문이 아니라 인덱스를 전혀 사용할 수 없는 &lt;code>GROUP BY&lt;/code>이기 때문이다.&lt;/p>
+&lt;p>Extra 컬럼에 &amp;ldquo;Using filesort&amp;quot;가 표시되지 않은 이유는 기존에는 &lt;code>GROUP BY&lt;/code>가 사용된 쿼리는 그루핑 되는 컬럼을 기준으로 묵시적인 정렬까지 실행되었으나 MySQL 8 버전으로 업그레이드 되며 묵시적인 정렬을 처리하지 않기 때문이다.&lt;/p>
+&lt;p>MySQL 8에서는 &lt;code>GROUP BY&lt;/code>가 필요한 경우 내부적으로 &lt;code>GROUP BY&lt;/code> 절의 컬럼들로 구성된 유니크 인덱스를 가진 임시 테이블을 만들어 중복 제거와 집합 함수 연산을 수행한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">TEMPORARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">ux_lastname&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>그리고 조인의 결과를 한 건씩 가져와 임시 테이블에서 중복 체크를 하면서 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code>를 실행하여, 별도의 정렬 작업 없이 &lt;code>GROUP BY&lt;/code>가 처리된다.&lt;/p>
+&lt;p>하지만 MySQL 8.0에서도 &lt;code>ORDER BY&lt;/code>가 같이 사용되면 명시적으로 정렬 작업을 실행한다.&lt;/p>
+&lt;h2 id="distinct-처리">&lt;code>DISTINCT&lt;/code> 처리&lt;/h2>
+&lt;p>특정 컬럼의 유니크한 값만 조회하려면 &lt;code>SELECT&lt;/code> 쿼리에 &lt;code>DISTINT&lt;/code>를 사용한다. &lt;code>DISTINT&lt;/code> 같은 경우 집합 함수와 함께 사용되는 경우 키워드가 영향을 미치는 범위가 다르다. 또한 집합 함수와 같이 사용될 때 인덱스를 사용하지 못할 때는 항상 임시 테이블이 필요하지만 Extra 컬럼에 &amp;ldquo;Using temporary&amp;rdquo; 메시지가 출력되지 않는다.&lt;/p>
+&lt;h3 id="select-distinct-">&lt;code>SELECT DISTINCT ...&lt;/code>&lt;/h3>
+&lt;p>단순히 조회되는 레코드 중에서 유니크한 레코드만 가져오고자 하면 &lt;code>SELECT DISTINCT&lt;/code> 형태의 쿼리 문장을 사용한다. 이 경우에는 &lt;code>GROUP BY&lt;/code>와 동일한 방식으로 처리되며 특히 MySQL 8.0 버전부터는 &lt;code>GROUP BY&lt;/code>를 수행하는 쿼리에 &lt;code>ORDER BY&lt;/code>절이 없으면 정렬을 사용하지 않기 때문에 아래 쿼리는 같은 방식으로 처리된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>DISTINT&lt;/code>는 &lt;code>SELECT&lt;/code>하는 레코드(튜플)을 유니크하게 조회하는 것이지, 특정 컬럼만 유니크하게 조회하는 것이 아니다.
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;code>DISTINT&lt;/code>는 함수처럼 동작하지 않는다.
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>실제 처리시 의미 없는 괄호로 판단하여 제거된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>SELECT&lt;/code> 절에 사용된 &lt;code>DISTINCT&lt;/code> 키워드는 조회되는 모든 컬럼에 영향을 미치지만, 집합 함수와 함께 사용된 경우 조금 다르게 처리된다.&lt;/p>
+&lt;h3 id="집합-함수와-함께-사용된-distinct">집합 함수와 함께 사용된 &lt;code>DISTINCT&lt;/code>&lt;/h3>
+&lt;p>&lt;code>COUNT&lt;/code>, &lt;code>MIN&lt;/code>, &lt;code>MAX&lt;/code> 같은 집합 함수 내에서 &lt;code>DISTINCT&lt;/code> 키워드가 사용될 수 있는데, 이 경우에는 일반적으로 다른 형태로 해석된다. 집합 함수가 없는 조회 쿼리에서는 조회하는 모든 컬럼의 조합이 유니크한 것들만 가져오지만, 집합 함수 내에서 사용될 경우 집합 함수의 인자로 전달된 컬럼 값이 유니크한 것들을 가져온다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100001&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100100&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>e&lt;/td>
+&lt;td>range&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>100&lt;/td>
+&lt;td>Using where; Using index&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>s&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>10&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위 쿼리는 내부적으로 &lt;code>COUNT(DISTINCT s.salary)&lt;/code>를 처리하기 위해 임시 테이블을 사용하지만, 실행 계획에서 &amp;ldquo;Using temporary&amp;quot;를 표시하지 않는다.&lt;/p>
+&lt;p>&lt;code>employees&lt;/code> 테이블과 &lt;code>salaries&lt;/code> 테이블을 조인한 결과에서 &lt;code>salary&lt;/code> 컬럼의 값만 저장하기 위한 임시 테이블을 만드렁 사용한다. 이때 임시 테이블의 &lt;code>salary&lt;/code>컬럼에는 유니크 인덱스가 생성되기 때문에 레코드 건수가 많아진다면 상당히 느려질 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">DISTINCT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>dept_emp&lt;/td>
+&lt;td>index&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>331143&lt;/td>
+&lt;td>Using index&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>인덱스된 컬럼에 대해 &lt;code>DISTINCT&lt;/code> 처리를 수행할 때는 인덱스를 풀 스캔하거나 레인지 스캔하면서 임시 테이블 없이 최적화된 처리를 수행할 수 있다.&lt;/p>
+&lt;h2 id="내부-임시-테이블-활용">내부 임시 테이블 활용&lt;/h2>
+&lt;p>MySQL 엔진이 스토리지 엔진으로부터 받아온 레코드를 정렬하거나 그루핑할 때는 내부적인 임시 테이블(Internal temporary table)을 사용한다. 일반적으로 MySQL 엔진이 사용하는 임시 테이블은 처음에는 메모리에 생성됐다가 테이블의 크기가 커지면 디스크로 옮겨진다. 물론 특정 예외 케이스에는 메모리를 거치지 않고 바로 디스크에 임시 테이블이 만들어지기도 한다.&lt;/p>
+&lt;p>MySQL 엔진이 내부적인 가공을 위해 생성하는 임시 테이블은 다른 세션이나 다른 쿼리에서는 볼 수 없으며 사용하는 것도 불가능하다. 사용자가 생성한 임시 테이블과는 달리 내부적인 임시 테이블은 쿼리의 처리가 완료되면 자동으로 삭제된다.&lt;/p>
+&lt;h3 id="메모리-임시-테이블과-디스크-임시-테이블">메모리 임시 테이블과 디스크 임시 테이블&lt;/h3>
+&lt;p>MySQL 8.0 이전 버전까지는 원본 테이블의 스토리지 엔진과 관계없이 임시 테이블이 메모리를 사용할 때는 MEMORY 스토리지 엔진을 사용하며, 디스크에 저장될 때는 MyISAM 스토리지 엔진을 이용했다.&lt;/p>
+&lt;ul>
+&lt;li>MEMORY 스토리지 엔진
+&lt;ul>
+&lt;li>&lt;code>VARBINARY&lt;/code>, &lt;code>VARCHAR&lt;/code> 같은 가변 길이 타일을 지원하지 못하기 때문에 임시 테이블이 메모리에 만들어지게 되면 가변 길이 타입의 경우 최대 길이만큼 메모리를 할당하여 메모리 낭비가 심해지는 문제가 있었다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>MyISAM 스토리지 엔진
+&lt;ul>
+&lt;li>트랜잭션을 지원하지 못한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 문제로 인해 MySQL 8.0 버전 부터는 TempTable 이라는 스토리지 엔진을 사용하고, 디스크에 저장되는 임시 테이블은 InnoDB 스토리지 엔진을 사용하도록 개선되었다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>internal_tmp_mem_storage_engine&lt;/code>: 시스템 변수를 이용해 메모리용 임시 테이블을 MEMORY와 TempTable 중에서 선택할 수 있으며 기본값은 TempTable이다.&lt;/li>
+&lt;li>&lt;code>temptable_max_ram&lt;/code>: TempTable이 최대한 사용 가능한 메모리 공간의 크기를 제어할 수 있으며 기본값은 1GB이다.&lt;/li>
+&lt;li>&lt;code>temptable_usemmap&lt;/code>: 임시 테이블의 크기가 1GB보다 커지는 경우 MySQL 서버는 메모리의 임시 테이블을 디스크로 기록하는데, 2가지 방법 중 하나를 선택하며 기본값은 ON이며 OFF시 InnoDB 테이블로 기록한다.
+&lt;ul>
+&lt;li>MMAP 파일로 디스크에 기록: InnoDB 테이블로 전환하는 것 보다 오버헤드가 적다.&lt;/li>
+&lt;li>InnoDB 테이블로 기록&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>internal_tmp_disk_storage_engine&lt;/code>: 내부 임시 테이블이 메모리에 생성되지 않고 처음부터 디스크 테이블로 생성되는 경우 해당 시스템 변수를 따라 생성되며 기본값은 InnoDB이다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="임시-테이블이-필요한-쿼리">임시 테이블이 필요한 쿼리&lt;/h3>
+&lt;p>다음과 같은 패턴의 쿼리는 MySQL엔진에서 별도의 데이터 가공 작업을 필요로 하므로 대표적으로 내부 임시 테이블을 생성하는 케이스다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>ORDER BY&lt;/code>와 &lt;code>GROUP BY&lt;/code>에 명시된 컬럼이 다른 쿼리&lt;/li>
+&lt;li>&lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code>에 면시된 컬럼이 조인의 순서상 첫 번째 테이블이 아닌 쿼리&lt;/li>
+&lt;li>&lt;code>DISTINCT&lt;/code>와 &lt;code>ORDER BY&lt;/code>가 동시에 쿼리에 존재하는 경우 또는 &lt;code>DISTINCT&lt;/code>가 인덱스로 처리되지 못하는 쿼리&lt;/li>
+&lt;li>&lt;code>UNION&lt;/code>이나 &lt;code>UNION DISTINCT&lt;/code>가 사용된 쿼리(select_type 컬럼이 &lt;code>UNION RESULT&lt;/code>인 경우)&lt;/li>
+&lt;li>쿼리 실행 계획에서 &lt;code>select_type&lt;/code>이 &lt;code>DERIVED&lt;/code>인 쿼리&lt;/li>
+&lt;/ul>
+&lt;p>쿼리의 실행 계획에서 임시 테이블을 사용 여부는 Extra 컬럼에서 &amp;ldquo;Using temporary&amp;quot;라는 메시지가 표시되는지 확인한다. 하지만 메시지가 표시되지 않는 경우에도 임시 테이블을 사용할 수 있으며, 마지막 3개 패턴이 그러한 경우다.&lt;/p>
+&lt;p>첫 번째부터 네 번째까지의 쿼리 패턴은 유니크 인덱스를 가지는 내부 임시 테이블이 만들어지고, 마지막 쿼리 패턴은 유니크 인덱스가 없는 내부 임시 테이블이 생성된다.&lt;/p>
+&lt;p>일반적으로 유니크 인덱스가 있는 내부 임시 테이블은 그렇지 않은 쿼리보다 처리 성능이 상당히 느리다.&lt;/p>
+&lt;h3 id="임시-테이블이-디스크에-생성되는-경우">임시 테이블이 디스크에 생성되는 경우&lt;/h3>
+&lt;p>내부 임시 테이블은 기본적으로는 메모리상에 만들어지지만 다음과 같은 조건을 만족하면 메모리 임시 테이블을 사용할 수 없게 되어 디스크 기반의 임시 테이블을 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>UNION&lt;/code>이나 &lt;code>UNION ALL&lt;/code>에서 &lt;code>SELECT&lt;/code>되는 컬럼 중 길이가 512바이트 이상인 크기의 컬럼이 있는 경우&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code>나 &lt;code>DISTINCT&lt;/code> 컬럼에서 512 바이트 이상인 컬럼이 있는 경우&lt;/li>
+&lt;li>메모리 임시 테이블의 크기가 시스템 변수의 크기보다 큰 경우(&lt;code>tmp_table_size&lt;/code>, &lt;code>max_heap_table_size&lt;/code>, &lt;code>temptable_max_ram&lt;/code>)&lt;/li>
+&lt;/ul>
+&lt;h4 id="임시-테이블-관련-상태-변수">임시 테이블 관련 상태 변수&lt;/h4>
+&lt;p>실행 계획상에서 &amp;ldquo;Using temporary&amp;quot;가 표시되면 임시 테이블을 사용햇다는 사실을 알 수 있지만 임시 테이블이 메모리에서 처리됐는지 디스크에서 처리됐는지는 알 수 없으며, 몇개의 임시 테이블이 사용됐는지도 알 수 없다.&lt;/p>
+&lt;p>임시 테이블의 생성 방식을 확인하려면 MySQL 서버의 상태 변수를 확인해보면 된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FLUSH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">SESSION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Created_tmp%&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>Created_tmp_tables&lt;/code>: 쿼리의 처리를 위해 만들어진 내부 임시 테이블의 개수를 누적하는 상태값이다. 내부 임시 테입르이 메모리에 만들어 졌는지를 구분하지 않고 모두 누적한다.&lt;/li>
+&lt;li>&lt;code>Created_tmp_disk_tables&lt;/code>: 디스크에 내부 임시 테이블이 만들어진 개수만 누적해서 가지고 있는 상태값이다.&lt;/li>
+&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real_mysql_9_2_1/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -70,10 +457,10 @@
 &lt;p>여기서는 첫 번째 방식을 &lt;strong>투 패스&lt;/strong>정렬 방식이라 명명하고, 나머지 방식을 &lt;strong>싱글 패스&lt;/strong>정렬 방식이라고 명명하겠다. 세 번째 방식은 MySQL 5.7 버전부터 도입됐는데, 이는 정렬을 위한 메모리 공간의 효율적인 사용을 위해 추가 도입된 방식이다.&lt;/p>
 &lt;h3 id="싱글-패스-정렬-방식">싱글 패스 정렬 방식&lt;/h3>
 &lt;p>소트 버퍼에 정렬 기준 컬럼을 포함해 &lt;code>SELECT&lt;/code> 대상이 되는 컬럼 전부를 담아 정렬을 수행하는 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img.png"
 width="776"
 height="462"
-srcset="https://codemario318.github.io/post/real_mysql_9_2/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="167"
@@ -94,10 +481,10 @@ data-flex-basis="403px"
 &lt;/div>&lt;p>위 쿼리와 같이 &lt;code>first_name&lt;/code>으로 정렬해서 &lt;code>emp_no&lt;/code>, &lt;code>first_name&lt;/code>, &lt;code>last_name&lt;/code>을 &lt;code>SELECT&lt;/code>하는 쿼리를 싱글 패스 정렬 방식으로 처리하게 되면, 처음 employees 테이블을 읽을 때 정렬에 필요하지 않는 &lt;code>last_name&lt;/code> 컬럼까지 전부 읽어 소트 버퍼에 담고 정렬을 수행한다. 그리고 정렬이 완료되면 정렬 버퍼의 내용을 그대로 클라이언트로 넘겨준다.&lt;/p>
 &lt;h3 id="투-패스-정렬-방식">투 패스 정렬 방식&lt;/h3>
 &lt;p>정렬 대상 컬럼과 프라이머리 키 값만 소트 버퍼에 담아서 정렬을 수행하고, 정렬된 순서대로 다시 프라이머리 키로 테이블을 읽어서 &lt;code>SELECT&lt;/code>할 컬럼을 가져오는 정렬 방식으로, 싱글 패스 정렬 방식이 도입되기 이전부터 사용하던 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_1.png"
 width="787"
 height="555"
-srcset="https://codemario318.github.io/post/real_mysql_9_2/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="141"
@@ -184,10 +571,10 @@ data-flex-basis="340px"
 &lt;li>드리븐 테이블의 조인 컬럼인 &lt;code>emp_no&lt;/code> 컬럼에 인덱스가 있다.&lt;/li>
 &lt;/ul>
 &lt;p>검색은 인덱스 레인지 스캔으로 처리할 수 있지만 &lt;code>ORDER BY&lt;/code> 절에 명시된 컬럼은 &lt;code>employees&lt;/code> 테이블의 프라이머리 키와 전혀 연관이 없으므로 인덱스를 이용한 정렬은 불가능하지만, 정렬 기준 컬럼이 드라이빙 테이블에 포함된 컬럼이므로 옵티마이저는 드라이빙 테이블만 검색해서 정렬을 먼저 수행하고, 그 결과와 &lt;code>salaries&lt;/code> 테이블을 조인하는 방식을 선택한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_2.png"
 width="742"
 height="597"
-srcset="https://codemario318.github.io/post/real_mysql_9_2/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="124"
@@ -247,10 +634,10 @@ data-flex-basis="298px"
 &lt;/tbody>
 &lt;/table>
 &lt;p>쿼리 실행 계획 &amp;ldquo;Extra&amp;quot;컬럼에 &amp;ldquo;Using where; Using temporary; Using filesort&amp;quot;코멘트가 표시되는데, 이는 조인의 결과를 임시 테이블에 저장하고, 그 결과를 다시 정렬 처리했음을 의미한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_3.png"
 width="706"
 height="708"
-srcset="https://codemario318.github.io/post/real_mysql_9_2/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="99"
@@ -260,10 +647,10 @@ data-flex-basis="239px"
 &lt;p>주로 웹 서비스용 쿼리에서는 &lt;code>ORDER BY&lt;/code>와 함께 &lt;code>LIMIT&lt;/code>이 거의 필수로 사용되는 경우가 많은데, 일반적으로 &lt;code>LIMIT&lt;/code>은 테이블이나 처리 결과의 일부만 가져오기 때문에 MySQL 서버가 처리해야 할 작업량을 줄이는 역할을 한다.&lt;/p>
 &lt;p>하지만 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 같은 작업은 &lt;code>WHERE&lt;/code> 족너을 만족하는 레코드를 &lt;code>LIMIT&lt;/code> 건수 만큼만 가져와서는 처리할 수 없고, 우선 조건을 만족하는 레코드를 모두 가져와서 정렬을 수행하거나 그루핑 작업을 실행해야만 처리할 수 있다. 이로 인해 &lt;code>WHERE&lt;/code> 조건이 아무리 인덱스를 잘 활용하도록 튜닝해도 잘못된 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 때문에 쿼리가 느려지는 경우가 많이 발생한다.&lt;/p>
 &lt;h4 id="스트리밍-방식">스트리밍 방식&lt;/h4>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2/img_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_4.png"
 width="587"
 height="342"
-srcset="https://codemario318.github.io/post/real_mysql_9_2/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="171"
