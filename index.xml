@@ -1,4 +1,494 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 08 Jun 2023 11:47:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>9.3.1 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real_mysql_9_3_2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/real_mysql.jpeg" alt="Featured image of post 9.3.1 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 09 Jun 2023 11:42:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못한다. 따라서 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다. 이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>인덱스 힌트
+&lt;ul>
+&lt;li>이전 부터 사용되어오던 &lt;code>USE INDEX&lt;/code> 같은 힌트&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>옵티마이저 힌트
+&lt;ul>
+&lt;li>MySQL 5.6 버전부터 새롭게 시작한 힌트 및 &lt;code>STRAIGHT_JOIN&lt;/code> 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="인덱스-힌트">인덱스 힌트&lt;/h2>
+&lt;p>&lt;code>STRAIGHT_JOIN&lt;/code>, &lt;code>USE_INDEX&lt;/code> 등 을 포함한 인덱스 힌트들은 &lt;code>SELECT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 SQL 문법에 맞게 사용해야 하기 때문에 사용 시 ANSI-SQL 표준 문법을 준수하지 못하게 된다. 따라서 주석 처럼 사용되고, 다른 RDBMS 에서 주석으로 해석하게 되는 옵티마이저 힌트를 사용할 것을 추천한다.&lt;/p>
+&lt;h3 id="straight_join">&lt;code>STRAIGHT_JOIN&lt;/code>&lt;/h3>
+&lt;p>&lt;code>STRAIGHT_JOIN&lt;/code>은 옵티마이저 힌트인 동시에 조인 키워드이기도 하다. &lt;code>STRAIGHT_JOIN&lt;/code>은 &lt;code>SELECT&lt;/code>, &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 쿼리에서 여러개의 테이블이 조인되는 경우 조인 순서를 고정하는 역할을 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>select_type&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>d&lt;/td>
+&lt;td>index&lt;/td>
+&lt;td>ix_deptname&lt;/td>
+&lt;td>9&lt;/td>
+&lt;td>Using index&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>de&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>41392&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>e&lt;/td>
+&lt;td>eq_ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위 쿼리는 3개의 테이블을 조인하지만 옵티마이저의 판단에 의해 조인 순서가 결정된다. 일반적으로 조인을 하기 위한 컬럼들의 인덱스 여부로 조인의 순서가 결정되며, 조인 컬럼의 인덱스에 아무런 문제가 없는 경우에는 (&lt;code>WHERE&lt;/code> 조건이 있는 경우 조건을 만족하는) 레코드가 적은 테이블을 드라이빙 테이블로 선택한다.&lt;/p>
+&lt;p>이러한 쿼리의 조인 순서를 변경하기 위해 &lt;code>STRAIGHT_JOIN&lt;/code> 힌트를 사용할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">STRAIGHT_JOIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="cm">/*! STRAIGHT_JOIN */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>select_type&lt;/th>
+&lt;th>table&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>Extra&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>e&lt;/td>
+&lt;td>ALL&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;td>300473&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>de&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>ix_empno_fromdate&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>Using index&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>d&lt;/td>
+&lt;td>eq_ref&lt;/td>
+&lt;td>PRIMARY&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>NULL&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;code>STRAIGHT_JOIN&lt;/code> 힌트는 옵티마이저가 &lt;code>FROM&lt;/code> 절에 면시된 테이블의 순서대로 조인을 수행하도록 유도한다. 주로 다음 기준에 맞게 조인 순서가 결정되지 않느 ㄴ경우에만 &lt;code>STRAIGHT_JOIN&lt;/code> 힌트로 조인 순서를 조정하는 것이 좋다.&lt;/p>
+&lt;ul>
+&lt;li>임시테이블과 일반 테이블의 조인
+&lt;ul>
+&lt;li>이러한 경우는 일반적으로 임시 테이블을 드라이빙 테이블로 선정하는 것이 좋다.&lt;/li>
+&lt;li>일반 테이블의 조인 컬럼에 인덱스가 없는 경우에는 레코드 건수가 작은 족을 먼저 읽도록 드라이빙으로 선택하는 것이 좋은데, 대부분 옵티마이저가 실행 계획을 제대로 수립하지 못해서 심각한 성능 저하가 있는 경우에는 힌트를 사용하면 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>임시 테이블끼리 조인
+&lt;ul>
+&lt;li>임시 테이블은 항상 인덱스가 없기 때문에 어느 테이블을 먼저 드라이빙으로 읽어도 무관하므로 크기가 작은 테이블을 드라이빙으로 선택해주는 것이 좋다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>일반 테이블끼리 조인
+&lt;ul>
+&lt;li>양쪽 테이블 모두 조인 컬럼에 인덱스가 있거나 양쪽 테이블 모두 조인 컬럼에 인덱스가 없는 경우에는 레코드 건수가 적은 테이블을 드라이빙으로 선택해주는 것이 좋다.&lt;/li>
+&lt;li>그 이외의 경우에는 조인 컬럼에 인덱스가 없는 테이블을 드라이빙으로 선택하는 것이 좋다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>STRAIGHT_JOIN&lt;/code> 힌트와 비슷한 역할을 하는 옵티마이저 힌트로는 다음과 같은 것들이 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>JOIN_FIXED_ORDER&lt;/code>&lt;/li>
+&lt;li>&lt;code>JOIN_ORDER&lt;/code>&lt;/li>
+&lt;li>&lt;code>JOIN_PREFIX&lt;/code>&lt;/li>
+&lt;li>&lt;code>JOIN_SUFFIX&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>STRAIGTH_JOIN&lt;/code>와 &lt;code>JOIN_FIXED_ORDER&lt;/code> 힌트는 한번 사용되면 &lt;code>FROM&lt;/code>절의 모든 테이블에 대해 조인 순서가 결정되며, 나머지 3개는 일부 테이블의 조인 순서에 대해서만 제안하는 힌트이다.&lt;/p>
+&lt;h3 id="use_index-force-idnex-ignore-index">&lt;code>USE_INDEX&lt;/code>, &lt;code>FORCE IDNEX&lt;/code>, &lt;code>IGNORE INDEX&lt;/code>&lt;/h3>
+&lt;p>조인의 순서를 변경하는 것 다음으로 자시 사용되는 것이 인덱스 힌트인데, &lt;code>STRAIGHT_JOIN&lt;/code> 힌트와는 달리 인덱스 힌트는 사용하려는 인덱스를 가지는 테이블 뒤에 힌트를 명시한다.&lt;/p>
+&lt;p>MySQL 옵티마이저는 어떤 인덱스를 사용해야 할지를 무난하게 잘 선택하는 편이지만, 3~4개 이상의 컬럼을 포함하는 비슷한 인덱스가 여러 개 존재하는 경우에는 실수를 하는데, 이런 경우에는 강제로 특정 인덱스를 사용하도록 힌트를 추가한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>USE_INDEX&lt;/code>
+&lt;ul>
+&lt;li>가장 자주 사용되는 힌트로, 옵티마이저에게 특정 테이블의 인덱스를 사용하도록 권장한다.&lt;/li>
+&lt;li>대부분 힌트를 채택하지만, 항상 사용하진 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>FORCE IDNEX&lt;/code>
+&lt;ul>
+&lt;li>&lt;code>USE_INDEX&lt;/code>와 기능적으로는 같지만 조근 더 강한 우선도를 부여한다.&lt;/li>
+&lt;li>&lt;code>USE_INDEX&lt;/code> 힌트도 충분히 우선도가 높고, &lt;code>USE_INDEX&lt;/code>를 사용했음에도 인덱스를 활용하지 않는다면 &lt;code>FORCE IDNEX&lt;/code>를 사용해도 활용하지 않는 경우가 많다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>IGNORE INDEX&lt;/code>
+&lt;ul>
+&lt;li>특정 인덱스를 사용하지 못하기 하는 힌트이다.&lt;/li>
+&lt;li>옵티마이저가 풀 테이블 스캔을 사용하도록 유도하기 위해 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>대체로 &lt;code>GROUP BY&lt;/code>, &lt;code>ORDER BY&lt;/code> 작업에서 인덱스를 사용할 수 있다면 나은 성능을 보장하며, 옵티마이저가 대부분 최적으로 선택하기 때문에 크게 고려하지 않아도 괜찮다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FORCE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">primary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">USE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">primary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IGNORE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">primary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FORCE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ix_firstname&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>1~3 쿼리는 인덱스 힌트가 주어지지 않아도 &lt;code>WHERE&lt;/code> 조건을 통해 프라이머리 키를 이용하여 실행하는 것이 최적임을 옵티마이저가 판단하기 때문에 동일한 실행 계획으로 처리된다.&lt;/p>
+&lt;p>옵티마이저느 ㄴ프라이머리 키나 전문 검색 인덱스와 같은 인덱스에 대해서 선택 시 가중치를 두고 실행 계획을 수립하기 때문에 전문 검색(Full Text search) 인덱스가 있는 경우에는 다른 일반 보조 인덱스를 사용할 수 있는 상황이라고 하더라도 전문 검색 인덱스를 선택하는 경우가 많다.&lt;/p>
+&lt;p>MySQL의 옵티마이저가 쉬운 최적화는 매우 빠르게 처리하기 때문에 인덱스의 사용법이나 좋은 실행 계획이 어떤 것인지 판단하기 힘든 상황이라면 힌트를 사용해 강제로 옵티마이저의 실행 계획에 영향을 미치는 것은 피하는 것이 좋다.&lt;/p>
+&lt;p>최적의 실행 계획은 데이터의 성격에 따라서 시시각각 변하므로, 현재 프라이머리 키를 사용하는 것이 좋은 계획이었다고 하더라도 이후 바뀔 수 있으므로 옵티마이저가 당시 통계 정보를 가지고 선택하게 하는 것이 좋다.&lt;/p>
+&lt;blockquote>
+&lt;p>가장 훌륭한 최적화는 그 쿼리를 서비스에서 없애버리거나 튜닝할 필요가 없게 데이터를 최소화하는 것이며, 그것이 어렵다면 데이터 모델의 단순화를 통해 쿼리를 간결하게 만들고 힌트가 필요하지 않게 만드는 것이다. 어떤 방법도 없다면 그 다음으로 힌트를 선택하는 것인데, 일반적으로 실무에서는 앞쪽의 작업들에 상당한 시간과 작업 능력이 필요하기 때문에 이런 힌트에 의존하는 경우가 많다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="sql_calc_found_rows">&lt;code>SQL_CALC_FOUND_ROWS&lt;/code>&lt;/h3>
+&lt;p>MySQL의 &lt;code>LIMIT&lt;/code>를 사용하는 경우, 조건을 만족하는 레코드가 명시된 수 보다 더 많다고 하더라도 지정한 수 만큼 찾으면 검색 작업을 멈추지만, 사용자에게는 &lt;code>LIMIT&lt;/code>에 제한된 수만큼의 레코드를 반환됨에도 불구하고 끝까지 검색을 수행한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SQL_CALC_FOUND_ROWS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">FOUND_ROWS&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_record_count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>emp_no&lt;/th>
+&lt;th>birth_date&lt;/th>
+&lt;th>first_name&lt;/th>
+&lt;th>last_name&lt;/th>
+&lt;th>gender&lt;/th>
+&lt;th>hire_date&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>10001&lt;/td>
+&lt;td>1953-09-02&lt;/td>
+&lt;td>Georgi&lt;/td>
+&lt;td>Facello&lt;/td>
+&lt;td>M&lt;/td>
+&lt;td>1986-06-26&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>total_record_count&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>300024&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>아마도 이 기능을 웹 프로그램의 페이징 기능에 적용하기 위해 검토했거나 이미 사용하고 있을지 모르지만 이 쿼리 힌트는 사용하지 않는 것이 좋다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SQL_CALC_FOUND_ROWS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Georgi&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">FOUND_ROWS&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_record_count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이 경우에는 한 번의 쿼리 실행으로 필요한 정보 2가지를 모두 가져오는 것 처럼 보이지만 &lt;code>FOUND_ROWS()&lt;/code> 함수의 실행을 위해 또 한번의 쿼리가 필요하기 때문에 쿼리를 2번 실행해야 한다.&lt;/p>
+&lt;p>위 쿼리는 &lt;code>first_name='Georgi'&lt;/code> 조건을 처리하기 위해 &lt;code>employees&lt;/code> 테이블의 &lt;code>ix_firstname&lt;/code> 인덱스를 레인지 스캔으로 실제 값을 읽어온다. &lt;code>LIMIT&lt;/code>를 통해 처음 20건만 가져오도록 했지만 &lt;code>SQL_CALC_FOUND_ROWS&lt;/code> 힌트로 인해 실제 이 조건을 만족하는 레코드는 전체 253건을 전부 읽어야하며, 이로인해 &lt;code>ix_firstname&lt;/code> 인덱스를 통해 실제 데이터 레코드를 찾아가는 작업으로 인해 랜덤 I/O가 253번 발생한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Georgi&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SQL_CALC_FOUND_ROWS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Georgi&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 방법 또한 쿼리를 2번 실행해야 하지만, 실제 레코드 데이터가 필요한 것이 아니라 건수만 가져오면 되는 커버링 인덱스 쿼리 이므로 실제로 데이터 레코드를 찾기 위한 랜덤 I/O는 발생하지 않는다. 두번째 쿼리는 &lt;code>LIMIT&lt;/code> 제한으로 인해 랜덤 I/O가 20번만 발생하게 된다.&lt;/p>
+&lt;p>쿼리가 적절히 튜닝되지 않았거나 &lt;code>WHERE&lt;/code> 조건에 대해서 적절한 인덱스가 준비되지 않았을 경우 &lt;code>SQL_CALC_FOUND_ROWS&lt;/code>로 처리하는 것이 더 빠를 수 있지만 이러한 경우에는 쿼리나 인덱스를 튜닝하여 뒤에 설명한 방식으로 처리하는 것이 대체로 더 빠르다. 인덱스나 쿼리의 튜닝이 제대로 됐다면 뒤에 설명한 방식이 더 빠르게 실행될 것이므로 &lt;code>SQL_CALC_FOUND_ROWS&lt;/code> 힌트는 사용하지 않는 것이 좋다.&lt;/p>
+&lt;p>또한 &lt;code>SELECT&lt;/code> 문장이 &lt;code>UNION&lt;/code>, &lt;code>UNION DISTINT&lt;/code>으로 연결 된 경우에는 &lt;code>SQL_CALC_FOUND_ROWS&lt;/code> 힌트를 사용해도 &lt;code>FOUND_ROWS&lt;/code> 함수로 정확한 레코드 건수를 가져올 수 없다.&lt;/p>
+&lt;h2 id="옵티마이저-힌트">옵티마이저 힌트&lt;/h2>
+&lt;p>MySQL 8.0에서 사용 가능한 힌트는 종류가 매우 다양하고 힌트가 미치는 영향 범위도 매우 다양하다.&lt;/p>
+&lt;h3 id="옵티마이저-힌트-종류">옵티마이저 힌트 종류&lt;/h3>
+&lt;p>옵티마이저 힌트는 영향 범위에 따라 4개 그룹으로 나눌 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>인덱스: 특정 인덱스의 이름을 사용할 수 있는 옵티마이저 힌트&lt;/li>
+&lt;li>테이블: 특정 테이블의 이름을 사용할 수 있는 옵티마이저 힌트&lt;/li>
+&lt;li>쿼리 블록: 특정 쿼리 블록에 사용할 수 있는 옵티마이저 힌트로서, 특정 쿼리 블록의 이름을 명시하는 것이 아닌 힌트가 명시된 쿼리 블록에 대해서만 영향을 미치는 옵티마이저 힌트&lt;/li>
+&lt;li>글로벌(쿼리 전체): 전체 쿼리에 영향을 미치는 힌트&lt;/li>
+&lt;/ul>
+&lt;p>이 구분으로 인해 힌트의 사용 위치가 달라지는 것은 아니며, 힌트에 인덱스 이름이 명시될 수 있는 경우 인덱스 수준의 힌트로 구분하고, 테이블 이름까지만 명시될 수 있는 경우를 테이블 수준의 힌트로 구분한다.&lt;/p>
+&lt;p>또한 특정 힌트는 테이블과 인덱스의 이름을 모두 명시할 수도 있지만 인덱스의 이름을 명시하지 않고 테이블 이름만 명시하는 경우 인덱스와 테이블 수준의 힌트가 된다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>힌트 이름&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;th>영향 범위&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>MAX_EXECUTION_TIME&lt;/code>&lt;/td>
+&lt;td>쿼리의 실행 시간 제한&lt;/td>
+&lt;td>글로벌&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>RESOUREC_GROUP&lt;/code>&lt;/td>
+&lt;td>쿼리 실행의 리소스 그룹 설정&lt;/td>
+&lt;td>글로벌&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>SET_VAR&lt;/code>&lt;/td>
+&lt;td>쿼리 실행을 위한 시스템 변수 제어&lt;/td>
+&lt;td>글로벌&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>SUBQUERY&lt;/code>&lt;/td>
+&lt;td>서브쿼리의 세미 조인 최적화 전략 제어&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>BKA&lt;/code>, &lt;code>NO_BKA&lt;/code>&lt;/td>
+&lt;td>BKA(Batched Key Access) 조인 사용 여부 제어&lt;/td>
+&lt;td>쿼리 블록, 테이블&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>BNL&lt;/code>, &lt;code>NO_BNL&lt;/code>&lt;/td>
+&lt;td>블록 네스티드 루프 조인 사용 여부 제어(MySQL 8.0.20 부터는 해시조인 사용 여부 제어)&lt;/td>
+&lt;td>쿼리 블록, 테이블&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>DERIVED_CONDITION_PUSHDOWN&lt;/code>, &lt;!-- raw HTML omitted -->&lt;code>NO_DERIVED_CONDITION_PUSHDOWN&lt;/code>&lt;/td>
+&lt;td>외부 쿼리의 조건을 서브쿼리로 옮기는 최적화 사용 여부 제어&lt;/td>
+&lt;td>쿼리 블록, 테이블&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>HASH_JOIN&lt;/code>, &lt;code>NO_HASH_JOIN&lt;/code>&lt;/td>
+&lt;td>해시 조인 사용 여부 제어(MySQL 8.0.18 만 사용 가능)&lt;/td>
+&lt;td>쿼리 블록, 테이블&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>JOIN_FIXED_ORDER&lt;/code>&lt;/td>
+&lt;td>&lt;code>FROM&lt;/code> 절에 명시된 테이블 순서대로 조인 실행&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>JOIN_ORDER&lt;/code>&lt;/td>
+&lt;td>힌트에 명시된 테이블 순서대로 조인 실행&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>JOIN_PREFIX&lt;/code>&lt;/td>
+&lt;td>힌트에 명시된 테이블을 조인의 드라이빙 테이블로 조인 실행&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>JOIN_SURFFIX&lt;/code>&lt;/td>
+&lt;td>힌트에 명시된 테이블 드리븐 테이블로 조인 실행&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>QB_NAME&lt;/code>&lt;/td>
+&lt;td>쿼리 블록의 이름 설정을 위한 힌트&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>SEMI_JOIN&lt;/code>, &lt;code>NO_SEMIJOIN&lt;/code>&lt;/td>
+&lt;td>서브쿼리의 세미 조인 최적화 전략 제어&lt;/td>
+&lt;td>쿼리 블록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>MERGE&lt;/code>, &lt;code>NO_MERGE&lt;/code>&lt;/td>
+&lt;td>&lt;code>FROM&lt;/code> 절의 서브쿼리나 뷰를 외부 쿼리 블록으로 병합하는 최적화를 수행할지 여부 제어&lt;/td>
+&lt;td>테이블&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>INDEX_MERGE&lt;/code>, &lt;code>NO_INDEX_MERGE&lt;/code>&lt;/td>
+&lt;td>&lt;code>FROM&lt;/code> 절의 서브쿼리나 뷰를 외부 쿼리 블록으로 병합하는 최적화를 수행할지 여부 제어&lt;/td>
+&lt;td>테이블, 인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>MRR&lt;/code>, &lt;code>NO_MRR&lt;/code>&lt;/td>
+&lt;td>MRR(Multi-Range Read) 사용 여부 제어&lt;/td>
+&lt;td>테이블, 인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>NO_ICP&lt;/code>&lt;/td>
+&lt;td>ICP(인덱스 컨디션 푸시다운) 최적화 전략 사용 여부 제어&lt;/td>
+&lt;td>테이블, 인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>NO_RANGE_OPTIMIZATION&lt;/code>&lt;/td>
+&lt;td>인덱스 레인지 엑세스를 비활성화(특정 인덱스를 사용하지 못하도록 하거나 쿼리를 풀 테이블 스캔 방식으로 처리)&lt;/td>
+&lt;td>테이블, 인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>SKIP_SCAN&lt;/code>, &lt;code>NO_SKIP_SCAN&lt;/code>&lt;/td>
+&lt;td>인ㄷ게스 스킵 스캔 사용 여부 제어&lt;/td>
+&lt;td>테이블, 인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>INDEX&lt;/code>, &lt;code>NO_INDEX&lt;/code>&lt;/td>
+&lt;td>&lt;code>GROUP_BY&lt;/code>, &lt;code>ORDER_BY&lt;/code>, &lt;code>WHERE&lt;/code> 절 처리를 위한 인덱스 사용 여부 제어&lt;/td>
+&lt;td>인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GROUP_INDEX&lt;/code>, &lt;code>NO_GROUP_INDEX&lt;/code>&lt;/td>
+&lt;td>&lt;code>GROUP_BY&lt;/code> 처리를 위한 인덱스 사용 여부 제어&lt;/td>
+&lt;td>인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>JOIN_INDEX&lt;/code>, &lt;code>NO_JOIN_INDEX&lt;/code>&lt;/td>
+&lt;td>&lt;code>WHERE&lt;/code> 처리를 위한 인덱스 사용 여부 제어&lt;/td>
+&lt;td>인덱스&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>ORDER_INDEX&lt;/code>, &lt;code>NO_ORDER_INDEX&lt;/code>&lt;/td>
+&lt;td>&lt;code>ORDER_BY&lt;/code> 처리를 위한 인덱스 사용 여부 제어&lt;/td>
+&lt;td>인덱스&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real_mysql_9_3_2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/real_mysql.jpeg" alt="Featured image of post 9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
 &lt;p>MySQL에는 최적화된 조인 실행 계획 수립을 위한 2가지 알고리즘이 있으며, 4개의 테이블을 조인하는 쿼리가 조인 옵티마이저 알고리즘에 어떻게 처리되는지 살펴볼것이다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
