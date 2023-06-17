@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 09 Jun 2023 11:42:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못한다. 따라서 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다. 이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 09 Jun 2023 11:42:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
+&lt;p>이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
 &lt;ul>
 &lt;li>인덱스 힌트
 &lt;ul>
@@ -260,7 +261,8 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">FOUND_ROWS&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_record_count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;table>
+&lt;/div>&lt;hr>
+&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>emp_no&lt;/th>
@@ -282,6 +284,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;hr>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -721,7 +724,8 @@ MySQL 서버에서 지금까지 지원하던 조인 방식은 드라이빙 테�
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;table>
+&lt;/div>&lt;hr>
+&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>id&lt;/th>
@@ -797,7 +801,8 @@ MySQL 서버에서 지금까지 지원하던 조인 방식은 드라이빙 테�
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;table>
+&lt;/div>&lt;hr>
+&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>id&lt;/th>
