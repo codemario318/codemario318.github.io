@@ -1,4 +1,86 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 27 Jun 2023 11:42:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>10.1 실행 계획 - 통계 정보</title><link>https://codemario318.github.io/post/real_mysql/10/1/</link><pubDate>Tue, 27 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql/10/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql/10/1/real_mysql.jpeg" alt="Featured image of post 10.1 실행 계획 - 통계 정보" />&lt;p>MySQL 서버에서 보여주는 실행 계획을 읽고 이해하려면 MySQL 서버가 데이터를 처리하는 로직을 이해할 필요가 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 29 Jun 2023 11:07:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>10.2 실행 계획 - 실행 계획 확인</title><link>https://codemario318.github.io/post/real_mysql/10/2/</link><pubDate>Thu, 29 Jun 2023 11:07:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql/10/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql/10/2/real_mysql.jpeg" alt="Featured image of post 10.2 실행 계획 - 실행 계획 확인" />&lt;p>MySQL 실행 계획은 &lt;code>DESC&lt;/code> 또는 &lt;code>EXPLAIN&lt;/code> 명령으로 확인할 수 있다. 또한 MySQL 8.0 부터 EXPLAIN 명령에 사용할 수 있는 새로운 옵션이 추가되었다.&lt;/p>
+&lt;h2 id="실행-계획-출력-포맷">실행 계획 출력 포맷&lt;/h2>
+&lt;p>이전 버전에서는 &lt;code>EXPLAIN EXTENDED&lt;/code>, &lt;code>EXPLAIN PARTITIONS&lt;/code> 명령이 구분되어 있었지만 8.0 버전부터는 모든 내용이 통합되어 보이도록 개선되면서 옵션이 문법에서 제거되었다.&lt;/p>
+&lt;p>또한 &lt;code>FORMAT&lt;/code> 옵션을 사용해 실행 계획의 표시 방법을 JSON, TREE, 단순 테이블 형태로 선택할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* 단순 테이블
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* 트리
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FROMAT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">TREE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* JSON
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FORMAT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">JSON&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="쿼리의-실행-시간-확인">쿼리의 실행 시간 확인&lt;/h2>
+&lt;p>MySQL 8.0.18 버전부터는 쿼리의 실행 계획과 단계별 소요된 시간 정보를 확인할 수 있는 &lt;code>EXPLAIN ANALYZE&lt;/code> 기능이 추가되었다.&lt;/p>
+&lt;p>기존 &lt;code>SHOW PROFILE&lt;/code> 명령과 다르게 실행 계획의 단계별로 소요된 시간 정보를 보여주며, 항상 TREE 형식으로만 제공되어 &lt;code>FORMAT&lt;/code> 옵션은 사용할 수 없다.&lt;/p>
+&lt;p>&lt;code>EXPLAIN ANALYZE&lt;/code> 명령의 결과에는 단계별로 실제 소요된 시간과 처리한 레코드 건수, 반복 획수가 표시된다.&lt;/p>
+&lt;p>&lt;code>EXPAIN&lt;/code> 명령과 달리 실행 계획만 추출하는 것이 아니라 실제 쿼리를 실행하고 사용된 실행 계획과 소요된 시간을 보여준다. 그래서 &lt;code>EXPLAIN ANALYZE&lt;/code> 으로 실행하였을 때 실제로 쿼리가 모두 완료 되어야 확인할 수 있으므로, 실행 시간이 아주 많이 걸리는 쿼리라면 &lt;code>EXPLAIN&lt;/code> 명령을 통해 확인한 실행 계획을 바탕으로 1차 튜닝 후에 &lt;code>EXPLAIN ANALYZE&lt;/code> 명령을 실행하는 것이 좋다.&lt;/p></description></item><item><title>10.1 실행 계획 - 통계 정보</title><link>https://codemario318.github.io/post/real_mysql/10/1/</link><pubDate>Tue, 27 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql/10/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql/10/1/real_mysql.jpeg" alt="Featured image of post 10.1 실행 계획 - 통계 정보" />&lt;p>MySQL 서버에서 보여주는 실행 계획을 읽고 이해하려면 MySQL 서버가 데이터를 처리하는 로직을 이해할 필요가 있다.&lt;/p>
 &lt;p>MySQL 서버의 실행 계획에서 통계 정보는 실행 계획에 가장 큰 영향을 미친다.&lt;/p>
 &lt;p>MySQL 5.7 버전까지는 테이블과 인덱스에 대한 개괄적인 정보를 가지고 실행 계획을 수립했으나, 이는 테이블 컬럼의 값들이 실제 어떻게 분포돼 있는지에 대한 정보가 없기 때문에 실행 계획의 정확도가 떨어지는 경우가 많았다.&lt;/p>
 &lt;p>이에 따라 MySQL 8.0 버전부터는 인덱스되지 않은 컬럼들에 대해서도 데이터 분포도를 수집하여 저장하는 히스토그램(Histogram) 정보가 도입되었다.&lt;/p>
@@ -352,91 +434,7 @@
 &lt;/ul>
 &lt;blockquote>
 &lt;p>코스트 모델은 MySQL 서버가 사용하는 하드웨어와 MySQL 서버 내부적인 처리 방식에 대한 깊이 있는 지식을 필요로 한다. MySQL 서버에 적용된 기본 값으로도 20년이 넘는 시간동안 수많은 응용 프로그램에서 잘 사용되어 왔으므로, 이런 부분에 대해 전문적인 지식을 가지고 있지 않다면 서버스에 사용되는 MySQL 서버의 engine_cost 테이블과 server_cost 테이블의 기본값을 함부로 변경하지 않는 게 좋다.&lt;/p>
-&lt;/blockquote>
-&lt;h2 id="실행-계획-확인">실행 계획 확인&lt;/h2>
-&lt;p>MySQL 실행 계획은 &lt;code>DESC&lt;/code> 또는 &lt;code>EXPLAIN&lt;/code> 명령으로 확인할 수 있다. 또한 MySQL 8.0 부터 EXPLAIN 명령에 사용할 수 있는 새로운 옵션이 추가되었다.&lt;/p>
-&lt;h3 id="실행-계획-출력-포맷">실행 계획 출력 포맷&lt;/h3>
-&lt;p>이전 버전에서는 &lt;code>EXPLAIN EXTENDED&lt;/code>, &lt;code>EXPLAIN PARTITIONS&lt;/code> 명령이 구분되어 있었지만 8.0 버전부터는 모든 내용이 통합되어 보이도록 개선되면서 옵션이 문법에서 제거되었다.&lt;/p>
-&lt;p>또한 &lt;code>FORMAT&lt;/code> 옵션을 사용해 실행 계획의 표시 방법을 JSON, TREE, 단순 테이블 형태로 선택할 수 있다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* 단순 테이블
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;hr>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* 트리
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FROMAT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">TREE&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;hr>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">* JSON
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FORMAT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">JSON&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;ABC&amp;#39;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 id="쿼리의-실행-시간-확인">쿼리의 실행 시간 확인&lt;/h2>
-&lt;p>MySQL 8.0.18 버전부터는 쿼리의 실행 계획과 단계별 소요된 시간 정보를 확인할 수 있는 &lt;code>EXPLAIN ANALYZE&lt;/code> 기능이 추가되었다.&lt;/p>
-&lt;p>기존 &lt;code>SHOW PROFILE&lt;/code> 명령과 다르게 실행 계획의 단계별로 소요된 시간 정보를 보여주며, 항상 TREE 형식으로만 제공되어 &lt;code>FORMAT&lt;/code> 옵션은 사용할 수 없다.&lt;/p>
-&lt;p>&lt;code>EXPLAIN ANALYZE&lt;/code> 명령의 결과에는 단계별로 실제 소요된 시간과 처리한 레코드 건수, 반복 획수가 표시된다.&lt;/p>
-&lt;p>&lt;code>EXPAIN&lt;/code> 명령과 달리 실행 계획만 추출하는 것이 아니라 실제 쿼리를 실행하고 사용된 실행 계획과 소요된 시간을 보여준다. 그래서 &lt;code>EXPLAIN ANALYZE&lt;/code> 으로 실행하였을 때 실제로 쿼리가 모두 완료 되어야 확인할 수 있으므로, 실행 시간이 아주 많이 걸리는 쿼리라면 &lt;code>EXPLAIN&lt;/code> 명령을 통해 확인한 실행 계획을 바탕으로 1차 튜닝 후에 &lt;code>EXPLAIN ANALYZE&lt;/code> 명령을 실행하는 것이 좋다.&lt;/p></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
+&lt;/blockquote></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
 &lt;p>이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
 &lt;ul>
 &lt;li>인덱스 힌트
