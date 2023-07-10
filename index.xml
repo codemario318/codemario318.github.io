@@ -434,7 +434,7 @@
 &lt;/ul>
 &lt;blockquote>
 &lt;p>코스트 모델은 MySQL 서버가 사용하는 하드웨어와 MySQL 서버 내부적인 처리 방식에 대한 깊이 있는 지식을 필요로 한다. MySQL 서버에 적용된 기본 값으로도 20년이 넘는 시간동안 수많은 응용 프로그램에서 잘 사용되어 왔으므로, 이런 부분에 대해 전문적인 지식을 가지고 있지 않다면 서버스에 사용되는 MySQL 서버의 engine_cost 테이블과 server_cost 테이블의 기본값을 함부로 변경하지 않는 게 좋다.&lt;/p>
-&lt;/blockquote></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
+&lt;/blockquote></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real-mysql/9/4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
 &lt;p>이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
 &lt;ul>
 &lt;li>인덱스 힌트
@@ -927,7 +927,7 @@
 &lt;td>인덱스&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real_mysql_9_3_2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/real_mysql.jpeg" alt="Featured image of post 9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
+&lt;/table></description></item><item><title>9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real-mysql/9/3/2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/real_mysql.jpeg" alt="Featured image of post 9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
 &lt;p>MySQL에는 최적화된 조인 실행 계획 수립을 위한 2가지 알고리즘이 있으며, 4개의 테이블을 조인하는 쿼리가 조인 옵티마이저 알고리즘에 어떻게 처리되는지 살펴볼것이다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -942,10 +942,10 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="exhaustive-검색-알고리즘-완전-탐색">Exhaustive 검색 알고리즘 (완전 탐색)&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/img.png"
 width="820"
 height="333"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_2/img_hu4f22347e8ea2d11fad300347b825d752_52009_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_2/img_hu4f22347e8ea2d11fad300347b825d752_52009_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/2/img_hu4f22347e8ea2d11fad300347b825d752_52009_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/2/img_hu4f22347e8ea2d11fad300347b825d752_52009_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="246"
@@ -954,10 +954,10 @@ data-flex-basis="590px"
 &lt;p>Exhausitve 검색 알고리즘은 MySQL 5.0 이하 버전에서 사용되던 조인 최적화 기법으로, &lt;code>FROM&lt;/code>절에 명시된 모든 테이블의 조합에 대해 실행 계획의 비용을 계산해서 최적의 조합 1개를 찾는 방법이다.&lt;/p>
 &lt;p>테이블이 20개라면 이 방법으로 처리했을 때 가능한 조인 조합은 모드 20!(3628800)개가 된다.&lt;/p>
 &lt;h2 id="greedy-검색-알고리즘">Greedy 검색 알고리즘&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/img_1.png"
 width="850"
 height="629"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="135"
@@ -991,7 +991,7 @@ data-flex-basis="324px"
 &lt;li>실제 Hueuristic 조인 최적화는 조인 대상 테이블이 몇개 되지 않터라도 상당한 성능 차이를 내므로 0으로 변경하지 않을 것을 권장한다.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)</title><link>https://codemario318.github.io/post/real_mysql_9_3_1/</link><pubDate>Tue, 06 Jun 2023 12:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/real_mysql.jpeg" alt="Featured image of post 9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)" />&lt;p>MySQL 서버의 옵티마이저가 실행 계획을 수립할 때 통계 정보와 옵티마이저 옵션을 결합하여 최적의 실행 계획을 수립하게 된다.&lt;/p>
+&lt;/ul></description></item><item><title>9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)</title><link>https://codemario318.github.io/post/real-mysql/9/3/1/</link><pubDate>Tue, 06 Jun 2023 12:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/3/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/real_mysql.jpeg" alt="Featured image of post 9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)" />&lt;p>MySQL 서버의 옵티마이저가 실행 계획을 수립할 때 통계 정보와 옵티마이저 옵션을 결합하여 최적의 실행 계획을 수립하게 된다.&lt;/p>
 &lt;ul>
 &lt;li>조인 관련 옵티마이저 옵션
 &lt;ul>
@@ -1272,10 +1272,10 @@ MySQL 서버에서 지금까지 지원하던 조인 방식은 드라이빙 테�
 &lt;/tbody>
 &lt;/table>
 &lt;p>위 쿼리의 실행 계획을 살펴보면 다음과 같이 &lt;code>dept_emp&lt;/code>테이블이 드라이빙 테이블이며, employees 테입르을 읽을 때는 조인 버퍼를 이용해 블록 네스티드 루프 조인을 한다는 것을 알 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img.png"
 width="738"
 height="495"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="149"
@@ -1868,10 +1868,10 @@ data-flex-basis="357px"
 &lt;/table>
 &lt;p>실행 계획의 id 컬럼 값이 모두 1로 표시된 것으로 봐서 서브쿼리 패턴이 아닌 조인으로 처리되었음을 알 수 있다.&lt;/p>
 &lt;p>&amp;ldquo;FirstMatch(e)&amp;rdquo; 문구는 &lt;code>employees&lt;/code> 테이블의 레코드에 대해 &lt;code>titles&lt;/code> 테이블에 일치하는 레코드 1건만 찾으면 더이상의 &lt;code>titles&lt;/code> 테이블 검색을 하지 않는다는 것을 의미한다. 실제 의미론적으로 &lt;code>EXISTS (subquery)&lt;/code>와 동일하게 처리된 것이다. 하지만 FirstMatch는 서브쿼라 아니라 조인으로 풀어서 실행하면서 일치하는 첫번째 레코드만 검색하는 최적화를 실행한 것이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_1.png"
 width="724"
 height="289"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="250"
@@ -1948,10 +1948,10 @@ data-flex-basis="601px"
 &lt;/tbody>
 &lt;/table>
 &lt;p>&lt;code>departments&lt;/code> 테이블의 레코드 건수는 9건뿐이지만 &lt;code>dept_emp&lt;/code> 테이블의 레코드 건수는 약 33만건 저장되어있다. 그런데 &lt;code>dept_emp&lt;/code> 테이블에는 &lt;code>(dept_no + emp_no)&lt;/code> 컬럼의 조합으로 프라이머리 키 인덱스가 만들어져 있다. 이 프라이머리 키는 전체 레코드 수는 33만 건 정도 있지만 &lt;code>dept_no&lt;/code> 만으로 그루핑해서 보면 결국 9건 뿐이므로 &lt;code>dept_emp&lt;/code> 테이블의 프라이머리 키를 루스 인덱스 스캔으로 유니카한 &lt;code>dept_no&lt;/code>만 읽으면 효율적으로 서브쿼리 부분을 실행할 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_2.png"
 width="718"
 height="454"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="158"
@@ -2123,10 +2123,10 @@ data-flex-basis="379px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>위와 같은 방식으로 &lt;code>GROUP BY&lt;/code>를 활용하면 세미 조인 서브쿼리와 동일한 결과를 얻을 수 있다. 실제로 Duplicate Weedout 최적화 알고리즘은 원본 쿼리를 위와 같이 &lt;code>INNER JOIN&lt;/code> + &lt;code>GROUP BY&lt;/code> 절로 바꿔 실행하는 것과 동일한 작업으로 쿼리를 처리한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_3.png"
 width="655"
 height="554"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="118"
@@ -2465,10 +2465,10 @@ data-flex-basis="283px"
 &lt;p>첫 번째 쿼리를 실행할 때 옵티마이저는 테이블에 존재하는 모든 &lt;code>gender&lt;/code> 컬럼의 값을 가져와 두 번째 쿼리와 같이 &lt;code>gender&lt;/code> 컬럼의 조건이 있는 것처럼 쿼리를 최적화한다. 따라서 인덱스의 선행 컬럼이 매우 다양한 값을 가지는 경우 인덱스 스킵 스캔 최적화가 비효율적일 수 있게된다. 따라서 인덱스의 선행 컬럼이 소수의 유니크한 값을 가질때만 인덱스 스킵 스캔 최적화를 사용한다.&lt;/p>
 &lt;h2 id="해시-조인">해시 조인&lt;/h2>
 &lt;p>MySQL 8.0.18 버전부터는 해시 조인이 추가로 지원되기 시작했다. 해시 조인 기능은 기존 네스티드 루프 조인보다 해시 조인이 빠르다고 생각하지만 항상 참은 아니다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_4.png"
 width="622"
 height="283"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="219"
@@ -2639,7 +2639,7 @@ data-flex-basis="527px"
 &lt;/ol>
 &lt;p>상황에 따라 다르지만 일반적으로 &lt;code>hire_date&lt;/code> 컬럼의 조건에 부합되는 레코드 건수가 많지 않다면 1번으로 실행될 것 같지만, 실행 계획에서는 체므해야 하는 레코드 건수가 상당히 많음에도 불구하고 PRIMARY 키를 풀 스캔하면서 &lt;code>hire_date&lt;/code> 컬럼을 필터링하도록 쿼리를 처리하고 있다. 이는 정렬된 인덱스를 활용하도록 하기 위해 잘못된 실행계획을 선택했을 확률이 높다.&lt;/p>
 &lt;p>MySQL 8.0.20 버전까지는 이러한 옵티마이저의 실수가 자주 발생하면 &lt;code>IGNORE INDEX&lt;/code> 힌트를 사용하여 &lt;code>ORDER BY&lt;/code>를 위한 특정 인덱스를 사용하지 못하도록 했으나, MySQL 8.0.21 버전부터는 옵티마이저가 &lt;code>ORDER BY&lt;/code>를 위한 인덱스에 너무 가중치를 부여하지 않도록 &lt;code>prefer_ordering_index&lt;/code> 옵티마이저 옵션이 추가되었다.&lt;/p>
-&lt;p>기본값은 ON 이지만 비효율적인 선택을 자주 한다면 OFF로 변경할 수 있다.&lt;/p></description></item><item><title>9.2 기본 데이터 처리(2)</title><link>https://codemario318.github.io/post/real_mysql_9_2_2/</link><pubDate>Tue, 23 May 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2)" />&lt;h2 id="group-by-처리">&lt;code>GROUP BY&lt;/code> 처리&lt;/h2>
+&lt;p>기본값은 ON 이지만 비효율적인 선택을 자주 한다면 OFF로 변경할 수 있다.&lt;/p></description></item><item><title>9.2 기본 데이터 처리(2)</title><link>https://codemario318.github.io/post/real-mysql/9/2/2/</link><pubDate>Tue, 23 May 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/2/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2)" />&lt;h2 id="group-by-처리">&lt;code>GROUP BY&lt;/code> 처리&lt;/h2>
 &lt;p>&lt;code>GROUP BY&lt;/code> 또한 &lt;code>ORDER BY&lt;/code>와 같이 쿼리가 스트리밍된 처리를 할 수 없게 하는 처리 중 하나다. &lt;code>GROUP BY&lt;/code>절 사용시 결과에 대한 필터링 처리를 할 수 있는 &lt;code>HAVING&lt;/code>절을 사용할 수 있느데, &lt;code>GROUP BY&lt;/code> 에서 사용된 조건은 인덱스를 사용해서 처리될 수 없으므로 &lt;code>HAVING&lt;/code>절을 튜닝하려고 인덱스를 생성하거나 다른 방법을 고민할 필요는 없다.&lt;/p>
 &lt;p>&lt;code>GROUP BY&lt;/code> 작업도 인덱스를 사용하는 경우과 그렇지 못한 경우로 나눌 수 있다.&lt;/p>
 &lt;ul>
@@ -3026,7 +3026,7 @@ data-flex-basis="527px"
 &lt;/div>&lt;ul>
 &lt;li>&lt;code>Created_tmp_tables&lt;/code>: 쿼리의 처리를 위해 만들어진 내부 임시 테이블의 개수를 누적하는 상태값이다. 내부 임시 테입르이 메모리에 만들어 졌는지를 구분하지 않고 모두 누적한다.&lt;/li>
 &lt;li>&lt;code>Created_tmp_disk_tables&lt;/code>: 디스크에 내부 임시 테이블이 만들어진 개수만 누적해서 가지고 있는 상태값이다.&lt;/li>
-&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real_mysql_9_2_1/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
+&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real-mysql/9/2/1/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -3098,10 +3098,10 @@ data-flex-basis="527px"
 &lt;p>여기서는 첫 번째 방식을 &lt;strong>투 패스&lt;/strong>정렬 방식이라 명명하고, 나머지 방식을 &lt;strong>싱글 패스&lt;/strong>정렬 방식이라고 명명하겠다. 세 번째 방식은 MySQL 5.7 버전부터 도입됐는데, 이는 정렬을 위한 메모리 공간의 효율적인 사용을 위해 추가 도입된 방식이다.&lt;/p>
 &lt;h3 id="싱글-패스-정렬-방식">싱글 패스 정렬 방식&lt;/h3>
 &lt;p>소트 버퍼에 정렬 기준 컬럼을 포함해 &lt;code>SELECT&lt;/code> 대상이 되는 컬럼 전부를 담아 정렬을 수행하는 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img.png"
 width="776"
 height="462"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="167"
@@ -3122,10 +3122,10 @@ data-flex-basis="403px"
 &lt;/div>&lt;p>위 쿼리와 같이 &lt;code>first_name&lt;/code>으로 정렬해서 &lt;code>emp_no&lt;/code>, &lt;code>first_name&lt;/code>, &lt;code>last_name&lt;/code>을 &lt;code>SELECT&lt;/code>하는 쿼리를 싱글 패스 정렬 방식으로 처리하게 되면, 처음 employees 테이블을 읽을 때 정렬에 필요하지 않는 &lt;code>last_name&lt;/code> 컬럼까지 전부 읽어 소트 버퍼에 담고 정렬을 수행한다. 그리고 정렬이 완료되면 정렬 버퍼의 내용을 그대로 클라이언트로 넘겨준다.&lt;/p>
 &lt;h3 id="투-패스-정렬-방식">투 패스 정렬 방식&lt;/h3>
 &lt;p>정렬 대상 컬럼과 프라이머리 키 값만 소트 버퍼에 담아서 정렬을 수행하고, 정렬된 순서대로 다시 프라이머리 키로 테이블을 읽어서 &lt;code>SELECT&lt;/code>할 컬럼을 가져오는 정렬 방식으로, 싱글 패스 정렬 방식이 도입되기 이전부터 사용하던 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_1.png"
 width="787"
 height="555"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="141"
@@ -3212,10 +3212,10 @@ data-flex-basis="340px"
 &lt;li>드리븐 테이블의 조인 컬럼인 &lt;code>emp_no&lt;/code> 컬럼에 인덱스가 있다.&lt;/li>
 &lt;/ul>
 &lt;p>검색은 인덱스 레인지 스캔으로 처리할 수 있지만 &lt;code>ORDER BY&lt;/code> 절에 명시된 컬럼은 &lt;code>employees&lt;/code> 테이블의 프라이머리 키와 전혀 연관이 없으므로 인덱스를 이용한 정렬은 불가능하지만, 정렬 기준 컬럼이 드라이빙 테이블에 포함된 컬럼이므로 옵티마이저는 드라이빙 테이블만 검색해서 정렬을 먼저 수행하고, 그 결과와 &lt;code>salaries&lt;/code> 테이블을 조인하는 방식을 선택한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_2.png"
 width="742"
 height="597"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="124"
@@ -3275,10 +3275,10 @@ data-flex-basis="298px"
 &lt;/tbody>
 &lt;/table>
 &lt;p>쿼리 실행 계획 &amp;ldquo;Extra&amp;quot;컬럼에 &amp;ldquo;Using where; Using temporary; Using filesort&amp;quot;코멘트가 표시되는데, 이는 조인의 결과를 임시 테이블에 저장하고, 그 결과를 다시 정렬 처리했음을 의미한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_3.png"
 width="706"
 height="708"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="99"
@@ -3288,10 +3288,10 @@ data-flex-basis="239px"
 &lt;p>주로 웹 서비스용 쿼리에서는 &lt;code>ORDER BY&lt;/code>와 함께 &lt;code>LIMIT&lt;/code>이 거의 필수로 사용되는 경우가 많은데, 일반적으로 &lt;code>LIMIT&lt;/code>은 테이블이나 처리 결과의 일부만 가져오기 때문에 MySQL 서버가 처리해야 할 작업량을 줄이는 역할을 한다.&lt;/p>
 &lt;p>하지만 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 같은 작업은 &lt;code>WHERE&lt;/code> 족너을 만족하는 레코드를 &lt;code>LIMIT&lt;/code> 건수 만큼만 가져와서는 처리할 수 없고, 우선 조건을 만족하는 레코드를 모두 가져와서 정렬을 수행하거나 그루핑 작업을 실행해야만 처리할 수 있다. 이로 인해 &lt;code>WHERE&lt;/code> 조건이 아무리 인덱스를 잘 활용하도록 튜닝해도 잘못된 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 때문에 쿼리가 느려지는 경우가 많이 발생한다.&lt;/p>
 &lt;h4 id="스트리밍-방식">스트리밍 방식&lt;/h4>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_4.png"
 width="587"
 height="342"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="171"
@@ -3415,7 +3415,7 @@ data-flex-basis="411px"
 &lt;li>&lt;code>Sort_range&lt;/code>: 인덱스 레인지 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
 &lt;li>&lt;code>Sort_rows&lt;/code>: 풀 테이블 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
 &lt;li>&lt;code>Sort_rows&lt;/code>: 지금까지 정렬한 전체 레코드 건수&lt;/li>
-&lt;/ul></description></item><item><title>9. 옵티마이저와 힌트 (1)</title><link>https://codemario318.github.io/post/real_mysql_9_1/</link><pubDate>Mon, 22 May 2023 16:09:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_1/real_mysql.jpeg" alt="Featured image of post 9. 옵티마이저와 힌트 (1)" />&lt;p>MySQL 서버로 요청된 쿼리는 결과는 동일하지만 내부적으로 그 결과를 만들어내는 방법은 매우 다양하며, 어떤 방법이 최적이고 최소의 비용이 소모될지 결정해야 한다. MySQL 옵티마이저는 쿼리를 최적으로 실행하기 위해 각 테이블의 데이터가 어떤 분포로 저장돼 있는지 통계 정보를 참조하여 기본 데이터를 비교해 최적의 실행 계획을 수립한다.&lt;/p>
+&lt;/ul></description></item><item><title>9. 옵티마이저와 힌트 (1)</title><link>https://codemario318.github.io/post/real-mysql/9/1/</link><pubDate>Mon, 22 May 2023 16:09:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/1/real_mysql.jpeg" alt="Featured image of post 9. 옵티마이저와 힌트 (1)" />&lt;p>MySQL 서버로 요청된 쿼리는 결과는 동일하지만 내부적으로 그 결과를 만들어내는 방법은 매우 다양하며, 어떤 방법이 최적이고 최소의 비용이 소모될지 결정해야 한다. MySQL 옵티마이저는 쿼리를 최적으로 실행하기 위해 각 테이블의 데이터가 어떤 분포로 저장돼 있는지 통계 정보를 참조하여 기본 데이터를 비교해 최적의 실행 계획을 수립한다.&lt;/p>
 &lt;h2 id="개요">개요&lt;/h2>
 &lt;p>어떤 DBMS든지 쿼리의 실행 계획을 수립하는 옵티마이저는 가장 복잡한 부분으로 알려져 있으며, 옵티마이저가 만들어 내는 실행 계획을 이해하는 것 또한 상당히 어려운 부분이다. 하지만 실행 계획을 이해할 수 있어야만 실행 계획의 불합리한 부분을 찾아내고, 더 최적화된 방법으로 실행 계획을 수립하도록 유도할 수 있다.&lt;/p>
 &lt;h3 id="실행-절차">실행 절차&lt;/h3>
@@ -3487,208 +3487,7 @@ data-flex-basis="411px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>병렬 처리용 스레드 개수가 늘어날수록 쿼리 처리에 걸리는 시간이 대체로 줄어들지만, 서버에 장착된 CPU의 코어 개수를 넘어서는 경우에는 오히려 성능이 떨어질 수도 있으니 주의가 필요하다.&lt;/p></description></item><item><title>[2023 카카오 공채 문제 풀이] 1. 개인정보 수집 유효기간</title><link>https://codemario318.github.io/post/ps/1/</link><pubDate>Tue, 16 May 2023 16:51:44 +0900</pubDate><guid>https://codemario318.github.io/post/ps/1/</guid><description>&lt;img src="https://codemario318.github.io/post/ps/1/cover.png" alt="Featured image of post [2023 카카오 공채 문제 풀이] 1. 개인정보 수집 유효기간" />&lt;h2 id="문제-설명">문제 설명&lt;/h2>
-&lt;p>고객의 약관 동의를 얻어서 수집된 &lt;code>1~n&lt;/code>번으로 분류되는 개인정보 &lt;code>n&lt;/code>개가 있습니다. 약관 종류는 여러 가지 있으며 각 약관마다 개인정보 보관 유효기간이 정해져 있습니다. 당신은 각 개인정보가 어떤 약관으로 수집됐는지 알고 있습니다. 수집된 개인정보는 유효기간 전까지만 보관 가능하며, 유효기간이 지났다면 반드시 파기해야 합니다.&lt;/p>
-&lt;p>예를 들어, A라는 약관의 유효기간이 12 달이고, 2021년 1월 5일에 수집된 개인정보가 A약관으로 수집되었다면 해당 개인정보는 2022년 1월 4일까지 보관 가능하며 2022년 1월 5일부터 파기해야 할 개인정보입니다.
-당신은 오늘 날짜로 파기해야 할 개인정보 번호들을 구하려 합니다.&lt;/p>
-&lt;p>모든 달은 28일까지 있다고 가정합니다.&lt;/p>
-&lt;p>오늘 날짜를 의미하는 문자열 &lt;code>today&lt;/code>, 약관의 유효기간을 담은 1차원 문자열 배열 &lt;code>terms&lt;/code>와 수집된 개인정보의 정보를 담은 1차원 문자열 배열 &lt;code>privacies&lt;/code>가 매개변수로 주어집니다. 이때 파기해야 할 개인정보의 번호를 오름차순으로 1차원 정수 배열에 담아 &lt;code>return&lt;/code> 하도록 &lt;code>solution&lt;/code> 함수를 완성해 주세요.&lt;/p>
-&lt;h2 id="제한사항">제한사항&lt;/h2>
-&lt;ul>
-&lt;li>&lt;code>today&lt;/code>는 &lt;code>YYYY.MM.DD&lt;/code> 형태로 오늘 날짜를 나타냅니다.&lt;/li>
-&lt;li>1 ≤ &lt;code>terms의 길이&lt;/code> ≤ 20&lt;/li>
-&lt;li>&lt;code>terms&lt;/code>의 원소는 &amp;ldquo;약관 종류 유효기간&amp;rdquo; 형태의 약관 종류와 유효기간을 공백 하나로 구분한 문자열입니다.&lt;/li>
-&lt;li>약관 종류는 A~Z중 알파벳 대문자 하나이며, &lt;code>terms&lt;/code> 배열에서 약관 종류는 중복되지 않습니다.&lt;/li>
-&lt;li>유효기간은 개인정보를 보관할 수 있는 달 수를 나타내는 정수이며, 1 이상 100 이하입니다.&lt;/li>
-&lt;li>1 ≤ &lt;code>privacies의 길이&lt;/code> ≤ 100&lt;/li>
-&lt;li>&lt;code>privacies[i]&lt;/code>는 &lt;code>i+1&lt;/code>번 개인정보의 수집 일자와 약관 종류를 나타냅니다.&lt;/li>
-&lt;li>&lt;code>privacies&lt;/code>의 원소는 &amp;ldquo;날짜 약관 종류&amp;rdquo; 형태의 날짜와 약관 종류를 공백 하나로 구분한 문자열입니다.&lt;/li>
-&lt;li>날짜는 &lt;code>YYYY.MM.DD&lt;/code> 형태의 개인정보가 수집된 날짜를 나타내며, &lt;code>today&lt;/code> 이전의 날짜만 주어집니다.&lt;/li>
-&lt;li>&lt;code>privacies&lt;/code>의 약관 종류는 항상 &lt;code>terms&lt;/code>에 나타난 약관 종류만 주어집니다.&lt;/li>
-&lt;li>&lt;code>today&lt;/code>와 &lt;code>privacies&lt;/code>에 등장하는 날짜의 &lt;code>YYYY&lt;/code>는 연도, &lt;code>MM&lt;/code>은 월, &lt;code>DD&lt;/code>는 일을 나타내며 점(.) 하나로 구분되어 있습니다.
-&lt;ul>
-&lt;li>2000 ≤ &lt;code>YYYY&lt;/code> ≤ 2022&lt;/li>
-&lt;li>1 ≤ &lt;code>MM&lt;/code> ≤ 12
-&lt;ul>
-&lt;li>&lt;code>MM&lt;/code>이 한 자릿수인 경우 앞에 0이 붙습니다.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>1 ≤ &lt;code>DD&lt;/code> ≤ 28
-&lt;ul>
-&lt;li>&lt;code>DD&lt;/code>가 한 자릿수인 경우 앞에 0이 붙습니다.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>파기해야 할 개인정보가 하나 이상 존재하는 입력만 주어집니다.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="분석">분석&lt;/h2>
-&lt;p>1번 문제는 문자열 처리, 기본 자료구조 등을 활용한 단순 구현 문제였습니다. 대략적인 흐름은 아래와 같습니다.&lt;/p>
-&lt;ol>
-&lt;li>&lt;code>today&lt;/code>를 비교할 수 있는 형태로 변환&lt;/li>
-&lt;li>&lt;code>terms&lt;/code>의 약관에 따라 접근 할 수 있는 자료 구조로 저장&lt;/li>
-&lt;li>&lt;code>privacies&lt;/code>의 원소 별 개인정보 수집 일자를 계산할 수 있는 형태로 변환하고, 약관에 따라 만료일 계산&lt;/li>
-&lt;li>비교할 수 있는 형태로 변환된 &lt;code>today&lt;/code>와 비교하여 만료 여부 확인&lt;/li>
-&lt;/ol>
-&lt;p>&lt;code>today&lt;/code>와 &lt;code>privacies&lt;/code>의 약관에 따라 계산된 개인 정보 수집 일자를 비교하는 처리가 필요했습니다. 따라서, 이 문제의 중요한 포인트는 문자열로 받은 날짜에 대한 처리였습니다.&lt;/p>
-&lt;p>&lt;code>terms&lt;/code>의 유효기간은 &amp;ldquo;월&amp;rdquo; 단위로만 입력을 받기 때문에 언어의 날짜 계산 툴을 활용해도 문제는 없을 것이라 생각되었습니다. 하지만 파이썬은 날짜에 &amp;ldquo;월&amp;quot;을 더하기 위해서 &lt;code>dateutil&lt;/code>을 사용해야 했는데, 이는 기본 라이브러리가 아니기 때문에 활용할 수 없었습니다.&lt;/p>
-&lt;p>다행히도 제한사항에 따라 월별 일수가 28일로 고정되어 있었기 때문에 날짜를 계산 처리는 여렵지 않다고 생각되었고, 필요한 기능을 직접 구현하기로 결정하였습니다.&lt;/p>
-&lt;p>처음에는 년, 월, 일을 가진 클래스를 구상했었는데 일, 월의 경우는 더해질 경우 올림이 발생하므로 처리가 조금 번거로웠습니다. 그리고, 날짜 비교를 위해 년, 월, 일 모두 비교해야 하므로 비교 처리도 비교적 복잡해 보였습니다.&lt;/p>
-&lt;p>문제에서 요구하는 결과는 해당 개인정보의 파기 여부를 확인하는 것 이었기 때문에, 단순 비교를 위해서 타임스탬프를 응용 하기로 했습니다.&lt;/p>
-&lt;h2 id="결과">결과&lt;/h2>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;span class="lnt">30
-&lt;/span>&lt;span class="lnt">31
-&lt;/span>&lt;span class="lnt">32
-&lt;/span>&lt;span class="lnt">33
-&lt;/span>&lt;span class="lnt">34
-&lt;/span>&lt;span class="lnt">35
-&lt;/span>&lt;span class="lnt">36
-&lt;/span>&lt;span class="lnt">37
-&lt;/span>&lt;span class="lnt">38
-&lt;/span>&lt;span class="lnt">39
-&lt;/span>&lt;span class="lnt">40
-&lt;/span>&lt;span class="lnt">41
-&lt;/span>&lt;span class="lnt">42
-&lt;/span>&lt;span class="lnt">43
-&lt;/span>&lt;span class="lnt">44
-&lt;/span>&lt;span class="lnt">45
-&lt;/span>&lt;span class="lnt">46
-&lt;/span>&lt;span class="lnt">47
-&lt;/span>&lt;span class="lnt">48
-&lt;/span>&lt;span class="lnt">49
-&lt;/span>&lt;span class="lnt">50
-&lt;/span>&lt;span class="lnt">51
-&lt;/span>&lt;span class="lnt">52
-&lt;/span>&lt;span class="lnt">53
-&lt;/span>&lt;span class="lnt">54
-&lt;/span>&lt;span class="lnt">55
-&lt;/span>&lt;span class="lnt">56
-&lt;/span>&lt;span class="lnt">57
-&lt;/span>&lt;span class="lnt">58
-&lt;/span>&lt;span class="lnt">59
-&lt;/span>&lt;span class="lnt">60
-&lt;/span>&lt;span class="lnt">61
-&lt;/span>&lt;span class="lnt">62
-&lt;/span>&lt;span class="lnt">63
-&lt;/span>&lt;span class="lnt">64
-&lt;/span>&lt;span class="lnt">65
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">typing&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Tuple&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">datetime&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">datetime&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DATE_FORMAT&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;%Y.%m.&lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">YEAR&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2022&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">MONTH&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">12&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DAY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">28&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">CustomTimeStamp&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="fm">__init__&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">year&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="nb">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="kc">None&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">year&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="fm">__ge__&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">customDate&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">object&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="nb">bool&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">customDate&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="nf">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">year&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="kc">None&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">__addYearToDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">year&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">__addMonthToDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">month&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">__addDay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">day&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="nf">__addYearToDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">year&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="kc">None&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">year&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">MONTH&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">DAY&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="nf">__addMonthToDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="kc">None&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">month&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">DAY&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="nf">__addDay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="bp">self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="kc">None&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">total&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">day&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="nf">strToCustomDate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">date&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">str&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">format&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">DATE_FORMAT&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="nb">object&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">formatDatetime&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">datetime&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">strptime&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">date&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">format&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">year&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">formatDatetime&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">year&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">formatDatetime&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">month&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">formatDatetime&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">day&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">CustomTimeStamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">year&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">month&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">day&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">solution&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">today&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">terms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">privacies&lt;/span>&lt;span class="p">):&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">answer&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[]&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">today&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">CustomTimeStamp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">strToCustomDate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">today&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">terms&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">dict&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">map&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">getTerm&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">terms&lt;/span>&lt;span class="p">))&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">privacy&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">enumerate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">privacies&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">):&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">date&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">termType&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">privacy&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">split&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">month&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">terms&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">termType&lt;/span>&lt;span class="p">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expireDate&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">CustomTimeStamp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">strToCustomDate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">date&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expireDate&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">month&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">month&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">today&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">expireDate&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">answer&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">answer&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">getTerm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">term&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">str&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="n">Tuple&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nb">str&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">]:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">termType&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">strMonth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">term&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">split&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">termType&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">strMonth&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 id="customtimestamp">&lt;code>CustomTimeStamp&lt;/code>&lt;/h3>
-&lt;p>앞서 설명드린 내용 처럼 제약사항에 따른 총 일수를 이용해 비교하는 클래스를 구현하였습니다. 유닉스 타임스탬프와 달리 입력으로 받는 년, 월, 일 만 이용해서 총 일수를 계산하여 비교적 간단히 구현할 수 있었습니다.&lt;/p>
-&lt;h4 id="__ge__">&lt;code>__ge__&lt;/code>&lt;/h4>
-&lt;p>&lt;code>__ge__&lt;/code> 매직 메소드를 이용해 &lt;code>&amp;gt;=&lt;/code> 연산자 오버로딩을 하여 조금 더 깔끔하게 구현될 수 있도록 해봤습니다.&lt;/p>
-&lt;h4 id="add">&lt;code>add&lt;/code>&lt;/h4>
-&lt;p>인스턴스 변수인 &lt;code>total&lt;/code>을 &lt;code>__addYearToDays&lt;/code>, &lt;code>__addMonthToDays&lt;/code>, &lt;code>__addDay&lt;/code> 를 이용하여 일 수를 더합니다. 내외부에서 모두 사용되기 때문에 공통화를 위해 구현하였습니다.&lt;/p>
-&lt;h4 id="__addyeartodays-__addmonthtodays-__addday">&lt;code>__addYearToDays&lt;/code>, &lt;code>__addMonthToDays&lt;/code>, &lt;code>__addDay&lt;/code>&lt;/h4>
-&lt;p>상수를 통해 일수를 계산하여 &lt;code>total&lt;/code>에 저장합니다. 타임스탬프 계산 기준이 바뀔 경우 로직 변경이 필요할 수 있기 때문에 별도로 분리해서 구현해봤습니다.&lt;/p>
-&lt;h4 id="strtocustomdate">&lt;code>strToCustomDate&lt;/code>&lt;/h4>
-&lt;p>입력을 편하게 처리하기 위한 정적 메소드로 &lt;code>datetime&lt;/code> 패키지를 이용하여 문자열로 입력받은 일자를 년, 월, 일로 바꾸어 &lt;code>CustomTimeStamp&lt;/code>의 인스턴스를 반환하는 기능을 구현했습니다.&lt;/p>
-&lt;h3 id="solution">&lt;code>solution&lt;/code>&lt;/h3>
-&lt;p>&lt;code>privacies&lt;/code>를 순회하며 &lt;code>CustomTimeStamp&lt;/code>를 통해 만료일을 계산하고 오늘 날짜와 비교하는 방식으로 구현할 수 있었습니다.&lt;/p>
-&lt;h2 id="끝으로">끝으로&lt;/h2>
-&lt;p>요구사항만 만족하도록 구현했다면 구조가 훨씬 단순해졌을텐데, 구현하다보니 욕심이 생겨 일을 크게 만들어 버렸네요.&lt;/p>
-&lt;p>하지만 입력되는 날짜 형식이 변경된다던가, 월 외에도 년, 일에 대해 날짜를 계산해야하는 처리가 추가되었다던가, 날짜 제한이 바뀌어 계산 처리가 바뀌어야 한다던가, 시간, 분, 초 처럼 처리되어야 하는 다른 단위가 추가된다던가 등 여러 변경사항이 있더라도 조금 더 대응하기 쉬워졌지 않았을까 생각해봅니다.&lt;/p>
-&lt;p>다 만들고 마무리 하다보니 년, 월, 일도 인스턴스 변수로 처리하면 더 좋았겠다는 생각도 드네요.&lt;br>
-아무튼 도움이 되었기를 바라며, 끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
+&lt;/div>&lt;p>병렬 처리용 스레드 개수가 늘어날수록 쿼리 처리에 걸리는 시간이 대체로 줄어들지만, 서버에 장착된 CPU의 코어 개수를 넘어서는 경우에는 오히려 성능이 떨어질 수도 있으니 주의가 필요하다.&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real-mysql/8/4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
 &lt;p>일반적인 인덱스는 컬럼의 값 일부(걸럽의 값 앞부분) 또는 전체에 대해서만 인덱스 생성이 허용되지만, 컬럼의 값을 변형해서 만들어진 값에 대해 인덱스를 구축해야 하는 경우도 있는데, 이러한 경우 함수 기반 인덱스를 활용할 수 있다.&lt;/p>
 &lt;p>MySQL 서버의 함수 기반 인덱스는 인덱싱할 값을 계산하는 과정의 차이만 있을 뿐, 실제 인덱스의 내부적인 구조 및 유지 관리 방법은 B-Tree 인덱스와 동일하다.&lt;/p>
 &lt;h3 id="가상-컬럼을-이용한-인덱스">가상 컬럼을 이용한 인덱스&lt;/h3>
@@ -3809,10 +3608,10 @@ data-flex-basis="411px"
 &lt;p>따라서 프라이머리 키 값에 의해 레코드에 저장 위치가 결정되며, 프라이머리 키 값이 변경된다면 그 레코드의 물리적인 저장 위치가 바뀌어야 한다는 것을 의미한다.&lt;/p>
 &lt;p>프라이머리 키 값으로 클러스터링 된 테이블은 프라이머리 키 값 자체에 대한 의존도가 상당히 크기 때문에 신중히 프라이머리 키를 결정해야한다.&lt;/p>
 &lt;p>클러스터링 인덱스는 프라이커리 키 값에 의해 레코드의 저장 위치가 결정되므로 인덱스 알고리즘이라기 보다는 테이블 레코드의 저장 방식이라고 볼 수 있다, 그래서 클러스터링 인덱스와 클러스터링 테이블은 동의어로 사용되기도 한다. 일반적으로 InnoDB와 같이 항상 클러스터링 인덱스로 저장되는 테이블은 프라이머리 키 기반 검색이 매우 빠르며, 대신 레코드의 저장이나 프라이머리 키의 변경이 상대적으로 느리다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/img.png"
 width="677"
 height="472"
-srcset="https://codemario318.github.io/post/real_mysql_8_4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="143"
@@ -3827,10 +3626,10 @@ data-flex-basis="344px"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tb_test&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10002&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10007&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/img_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/img_1.png"
 width="678"
 height="552"
-srcset="https://codemario318.github.io/post/real_mysql_8_4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="122"
@@ -4052,7 +3851,7 @@ data-flex-basis="294px"
 &lt;p>데이터베이스에서 외래 키를 물리적으로 생성하려면 이러한 현상으로 인한 잠금 경합까지 고려해 모델링을 진행하는 것이 좋다.&lt;br>
 물리적으로 외래키를 생성하면 자식 테이블에 레코드가 추가되는 경우 해당 참조키가 부모 테이블에 있는지 확인하는데, 물리적인 외래키의 고려 사항은 이러한 체크 작업이 아니라 이러한 체크를 위해 연관 테이블에 읽기 잠금을 걸어야 한다는 점이다.&lt;br>
 이렇게 잠금이 다른 테이블로 확장되면 그만큼 전체적으로 쿼리의 동시 처리에 영향을 미친다.&lt;/p>
-&lt;/blockquote></description></item><item><title>8. 인덱스 (3) - 전문 검색 인덱스</title><link>https://codemario318.github.io/post/real_mysql_8_3/</link><pubDate>Sun, 14 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_3/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (3) - 전문 검색 인덱스" />&lt;p>문서의 내용 전체를 인덱스화해서 특정 키워드가 포함된 문서를 검색하는 전문(Full Text) 검색에는 InnoDB나 MyISAM 스토리지 엔진에서 제공하는 일반적인 용도의 B-Tree 인덱스를 사용할 수 없다.&lt;/p>
+&lt;/blockquote></description></item><item><title>8. 인덱스 (3) - 전문 검색 인덱스</title><link>https://codemario318.github.io/post/real-mysql/8/3/</link><pubDate>Sun, 14 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/3/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (3) - 전문 검색 인덱스" />&lt;p>문서의 내용 전체를 인덱스화해서 특정 키워드가 포함된 문서를 검색하는 전문(Full Text) 검색에는 InnoDB나 MyISAM 스토리지 엔진에서 제공하는 일반적인 용도의 B-Tree 인덱스를 사용할 수 없다.&lt;/p>
 &lt;p>문서 전체에 대한 분석과 검색을 위한 인덱싱 알고리즘을 전문 검색(Full Text Search) 인덱스라고 하는데, 전문 검색 인덱스는 일반화된 기능의 명칭으로 알고리즘의 이름을 지칭하는 것은 아니다.&lt;/p>
 &lt;h2 id="인덱스-알고리즘">인덱스 알고리즘&lt;/h2>
 &lt;p>전문 검색에서는 문서 본문의 내용에서 사용자가 검색하게 될 키워드를 분석하고, 빠른 검색용으로 사용할 수 있게 이러한 키워드로 인덱스를 구축한다. 키워드의 분석 및 인덱스 구축에는 여러 가지 방법이 있을 수 있다.&lt;/p>
@@ -4392,14 +4191,14 @@ data-flex-basis="294px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">MATCH&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">doc_body&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">AGAINST&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;애플&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">BOOLEAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">MODE&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>전문 검색 인덱스를 사용하려면 반드시 &lt;code>MATCH ... AGAINST ...&lt;/code>구문으로 검색 쿼리를 작성해야 하며, 인덱스를 구성하는 컬럼들은 &lt;code>MATCH&lt;/code>절의 괄호 안에 모두 명시되어야 한다.&lt;/p></description></item><item><title>8. 인덱스 (2) - B-Tree 인덱스</title><link>https://codemario318.github.io/post/real_mysql_8_2/</link><pubDate>Sun, 07 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (2) - B-Tree 인덱스" />&lt;p>B-Tree는 데이터베이스의 인덱싱 알고리즘 가운데 가장 일반적으로 사용되고, 가장 먼저 도입되었지만 아직까지도 가장 범용적으로 사용되는 인덱스 알고리즘이다.&lt;/p>
+&lt;/div>&lt;p>전문 검색 인덱스를 사용하려면 반드시 &lt;code>MATCH ... AGAINST ...&lt;/code>구문으로 검색 쿼리를 작성해야 하며, 인덱스를 구성하는 컬럼들은 &lt;code>MATCH&lt;/code>절의 괄호 안에 모두 명시되어야 한다.&lt;/p></description></item><item><title>8. 인덱스 (2) - B-Tree 인덱스</title><link>https://codemario318.github.io/post/real-mysql/8/2/</link><pubDate>Sun, 07 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (2) - B-Tree 인덱스" />&lt;p>B-Tree는 데이터베이스의 인덱싱 알고리즘 가운데 가장 일반적으로 사용되고, 가장 먼저 도입되었지만 아직까지도 가장 범용적으로 사용되는 인덱스 알고리즘이다.&lt;/p>
 &lt;p>B-Tree에는 여러 변형된 형대의 알고리즘이 있는데, 일반적으로 DMBS에서는 B+-Tree, B*-Tree가 사용된다.&lt;/p>
 &lt;p>B-Tree는 컬럼의 원래 값을 변형시키지 않고 인덱스 구조체 내에서는 항상 정렬된 상태로 유지한다. 전문 검색같은 특수한 요건이 아닌 경우, 대부분 인덱스는 B-Tree를 사용한다.&lt;/p>
 &lt;h2 id="구조-및-특성">구조 및 특성&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_1.png"
 width="1168"
 height="884"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree 인덱스의 구조"
 class="gallery-image"
@@ -4409,20 +4208,20 @@ data-flex-basis="317px"
 &lt;p>B-Tree는 트리 구조의 최상위에 하나의 루트 노드가 존재하고 그 하위에 자식 노드가 붙어있는 형태이다. 트리 구조의 가장 하위에 있는 노드를 리프 노드라 하고, 트리 구조에서 루트 노드도 아니고 리프 노드도 아닌 중간 노드를 브랜치 노드라고 한다.&lt;/p>
 &lt;p>데이터베이스에서 인덱스와 실제 데이터가 저장된 데이터는 따로 관리되는데, 인덱스의 리프 노드는 항상 실제 데이터 레코드를 찾아가기 위한 주솟값을 가진다.&lt;/p>
 &lt;p>인덱스의 키 값은 모두 정렬돼 있지만, 데이터 파일릐 레코드는 정렬돼 있지 않고 임의의 순서로 저장돼 있다. 레코드가 삭제되어 빈 공간이 생기면 그다음 &lt;code>INSERT&lt;/code>는 가능한 한 삭제된 공간을 재활용 하도록 DBMS가 설계되기 때문에, 항상 &lt;code>INSERT&lt;/code>순서대로 저장되는 것은 아니다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_2.png"
 width="1462"
 height="842"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree의 리프 노드와 테이블 데이터 레코드(MyISAM)"
 class="gallery-image"
 data-flex-grow="173"
 data-flex-basis="416px"
 >
-&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_3.png"
+&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_3.png"
 width="1548"
 height="780"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree의 리프 노드와 테이블 데이터 레코드(InnoDB)"
 class="gallery-image"
@@ -4514,10 +4313,10 @@ data-flex-basis="476px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Ebbe&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Gad&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_4.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_4.png"
 width="582"
 height="558"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="인덱스 레인지 스캔"
 class="gallery-image"
@@ -4526,10 +4325,10 @@ data-flex-basis="250px"
 >&lt;/p>
 &lt;p>인덱스 레인지 스캔은 검색해야 할 인덱스의 범위가 결정됐을 대 사용하는 방식이다. 검색하려는 값의 수나 검색 결과 레코드 건수와 관계 없이 레인지 스캔이라고 표현한다.&lt;/p>
 &lt;p>루트 노드에서부터 비교를 시작해 브랜치 노드를 거치고 최종적으로 리프 노드까지 찾아 들어가야만 비로소 필요한 레코드의 시작 지점을 찾을 수 있다. 이처럼 차례대로 죽 읽는 것을 스캔이라고 표현하며, 스캔하다가 리프 노드의 끝까지 읽으면 리프 노드의 구간은 실제 스캔하는 범위를 표현한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_5.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_5.png"
 width="628"
 height="557"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="112"
@@ -4561,10 +4360,10 @@ data-flex-basis="270px"
 &lt;/ul>
 &lt;h3 id="인덱스-풀-스캔">인덱스 풀 스캔&lt;/h3>
 &lt;p>인덱스 레인지 스캔과는 달리 인덱스의 처음부터 끝까지 모두 읽는 방식이다. 대표적으로 쿼리의 조건절에 사용된 컬럼이 인덱스의 첫 번째 컬럼이 아닌 경우 인덱스 풀 스캔 방식이 사용된다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_6.png"
 width="575"
 height="556"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="103"
@@ -4580,10 +4379,10 @@ data-flex-basis="248px"
 &lt;blockquote>
 &lt;p>인덱스 레인지 스캔과 인덱스 풀 스캔은 루스 인덱스 스캔과는 상반된 의미로 타이트 인덱스 스캔으로 분류한다.&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_7.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_7.png"
 width="602"
 height="730"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="82"
@@ -4705,10 +4504,10 @@ data-flex-basis="197px"
 &lt;/ul>
 &lt;h3 id="다중-컬럼-인덱스">다중 컬럼 인덱스&lt;/h3>
 &lt;p>실제 서비스용 데이터베이스에서는 2개 이상의 컬럼을 포함하는 인덱스가 더 많이 사용된다. 두개 이상의 컬럼으로 구성된 인덱스를 다중 컬럼 인덱스(복합 컬럼 인덱스, Concatenated Index)라고 한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_8.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_8.png"
 width="417"
 height="676"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="61"
@@ -4860,7 +4659,7 @@ data-flex-basis="148px"
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>적업 범위 결정 조건으로 인덱스를 사용하는 쿼리 패턴은 이 밖에도 상당히 많지만, 대표적인 것을 기억해 두면 좀 더 효율적인 쿼리를 쉽게 작성할 수 있다.&lt;/p></description></item><item><title>8. 인덱스 (1)</title><link>https://codemario318.github.io/post/real_mysql_8_1/</link><pubDate>Sun, 07 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_1/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (1)" />&lt;p>인덱스는 데이터베이스 쿼리의 성능을 언급하면서 뻬놓을 수 없는 부분이다. 각 인덱스의 특성과 차이는 상당히 중요하며, 물리 수준의 모델링을 할 때도 중요한 요소가 된다.&lt;/p>
+&lt;p>적업 범위 결정 조건으로 인덱스를 사용하는 쿼리 패턴은 이 밖에도 상당히 많지만, 대표적인 것을 기억해 두면 좀 더 효율적인 쿼리를 쉽게 작성할 수 있다.&lt;/p></description></item><item><title>8. 인덱스 (1)</title><link>https://codemario318.github.io/post/real-mysql/8/1/</link><pubDate>Sun, 07 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/1/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (1)" />&lt;p>인덱스는 데이터베이스 쿼리의 성능을 언급하면서 뻬놓을 수 없는 부분이다. 각 인덱스의 특성과 차이는 상당히 중요하며, 물리 수준의 모델링을 할 때도 중요한 요소가 된다.&lt;/p>
 &lt;p>MySQL 8.0 버전까지 업그레이드되어 오면서 다른 상용 RDBMS에서 제공하는 많은 기능을 지원하게 됐으며, 기존의 MyISAM 스토리지 엔진에서만 제공하던 전문 검색이나 위치 기반 검색 기능도 모두 InnoDB 스토리지 엔진에서 사용할 수 있게 개선되었다.&lt;/p>
 &lt;p>하지만 아무리 MySQL 서버의 옵티마이저가 발전하고 성능이 개선됐다고 해도 여전히 관리자의 역할은 매우 중요하며, 인덱스에 대한 기본 지식은 지금도 앞으로도 개발자나 관리자에게 매우 중요하고 쿼리 튜닝의 기본이 될 것이다.&lt;/p>
 &lt;h2 id="디스크-읽기-방식">디스크 읽기 방식&lt;/h2>
@@ -4941,14 +4740,14 @@ data-flex-basis="148px"
 &lt;/ul>
 &lt;p>&lt;strong>데이터 중복 허용 여부로 분류&lt;/strong>&lt;/p>
 &lt;p>데이터의 중복 허용 여부로 분류하면 유니크 인덱스와 유니크하지 않은 인덱스로 구분할 수 있다.&lt;/p>
-&lt;p>인덱스가 유니크한지 아닌지는 단순히 같은 값이 1개만 존재하는지 1개 이상 존재할 수 있는지를 의미하지만, 실제 DBMS의 쿼리를 실행할 때 유니크 인덱스에 대해 동등 조건으로 검색한다는 것은 1건의 레코드만 찾으면 더 찾지 않아도 된다는 것을 옵티마이저에게 알려주는 효과를 내기 때문에 옵티마이저에게는 상당히 중요하다.&lt;/p></description></item><item><title>7. 데이터 암호화</title><link>https://codemario318.github.io/post/real_mysql_7/</link><pubDate>Mon, 01 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_7/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql.jpeg" alt="Featured image of post 7. 데이터 암호화" />&lt;p>데이터 암호화는 MySQL 5.7 버전부터 지원되기 시작했으며, 처음에는 데이터 파일(테이블스페이스)에서만 암호화 기능이 제공 되었으나 MySQL 8.0으로 업그레이드 리두 로그나 언두 로그, 복제를 위한 바이너리 로그 등도 모두 암호화 기능을 지원하기 시작했다.&lt;/p>
+&lt;p>인덱스가 유니크한지 아닌지는 단순히 같은 값이 1개만 존재하는지 1개 이상 존재할 수 있는지를 의미하지만, 실제 DBMS의 쿼리를 실행할 때 유니크 인덱스에 대해 동등 조건으로 검색한다는 것은 1건의 레코드만 찾으면 더 찾지 않아도 된다는 것을 옵티마이저에게 알려주는 효과를 내기 때문에 옵티마이저에게는 상당히 중요하다.&lt;/p></description></item><item><title>7. 데이터 암호화</title><link>https://codemario318.github.io/post/real-mysql/7/</link><pubDate>Mon, 01 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/7/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql.jpeg" alt="Featured image of post 7. 데이터 암호화" />&lt;p>데이터 암호화는 MySQL 5.7 버전부터 지원되기 시작했으며, 처음에는 데이터 파일(테이블스페이스)에서만 암호화 기능이 제공 되었으나 MySQL 8.0으로 업그레이드 리두 로그나 언두 로그, 복제를 위한 바이너리 로그 등도 모두 암호화 기능을 지원하기 시작했다.&lt;/p>
 &lt;p>데이터 암호화 여부는 보안 감사에서 필수적으로 언급되는 부분이며, 핀테크 서비스처럼 중요한 정보를 저장하는 서비스에서는 응용 프로그램에서 암호화한 데이터를 데이터베이스 서버에서 다시 암호화하는 이중 암호화 방법을 선택하기도 한다.&lt;/p>
 &lt;p>응용 프로그램의 암호화는 주로 중요 정보를 가진 칼럼 단위로 암호화를 수행하며, 데이터베이스 수준에서는 테입르 단위로 암호화를 적용한다.&lt;/p>
 &lt;h2 id="mysql-서버의-데이터-암호화">MySQL 서버의 데이터 암호화&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1.png"
 width="746"
 height="523"
-srcset="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="142"
@@ -4966,10 +4765,10 @@ data-flex-basis="342px"
 &lt;li>&lt;code>keyring_aws&lt;/code> Amazon Web Services keyring 플러그인&lt;/li>
 &lt;/ul>
 &lt;p>MySQL커뮤니티 에디션에서는 &lt;code>keyring_file&lt;/code> 플러그인만 사용 가능하고, 나머지 플러그인은 모두 엔터프라이즈 에디션에서만 사용 가능하다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2.png"
 width="1078"
 height="785"
-srcset="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="137"
@@ -5178,7 +4977,7 @@ Percona Server는 HashiCorp Vault를 연동하는 키 관리 플러그인을 오
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">mysqlbinlog --read-from-remote-server -uroot -p -vvv mysql-bin.000011
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>6. 데이터 압축</title><link>https://codemario318.github.io/post/real_mysql_6/</link><pubDate>Mon, 01 May 2023 14:12:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_6/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql.jpeg" alt="Featured image of post 6. 데이터 압축" />&lt;p>MySQL 서버에서 디스크에 저장된 데이터 파일의 크기는 일반저긍로 쿼리의 처리 성능과도 직결되지만 백업 및 복구 시간과도 밀접하게 연결된다.&lt;/p>
+&lt;/div></description></item><item><title>6. 데이터 압축</title><link>https://codemario318.github.io/post/real-mysql/6/</link><pubDate>Mon, 01 May 2023 14:12:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/6/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql.jpeg" alt="Featured image of post 6. 데이터 압축" />&lt;p>MySQL 서버에서 디스크에 저장된 데이터 파일의 크기는 일반저긍로 쿼리의 처리 성능과도 직결되지만 백업 및 복구 시간과도 밀접하게 연결된다.&lt;/p>
 &lt;ul>
 &lt;li>디스크의 데이터 파일이 크면 클수록 쿼리를 처리하기 위해서 더 많은 데이터 페이지를 InnoDB 버퍼풀로 읽어야 할 수 있다.&lt;/li>
 &lt;li>새로운 페이지가 버퍼풀로 적재되기 때문에 그만큼 더티 페이지가 더 자주 디스크로 기록돼야 한다.&lt;/li>
@@ -5198,10 +4997,10 @@ Percona Server는 HashiCorp Vault를 연동하는 키 관리 플러그인을 오
 이전에는 파일 전체를 복사하고 일부분을 수정하는 드으이 방법으로 파일을 수정해야 했으나 시간과 디스크 공간을 많이 소모하게 되어 펀치홀이 개발되었다.&lt;br>
 펀치홀은 일부 운영체제에서만 지원되는 기능이며(리눅스), 대용량 파일 시스템에 사용되어 성능을 향상시키는데 도움을 준다.&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1.png"
 width="634"
 height="323"
-srcset="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="196"
@@ -5305,10 +5104,10 @@ data-flex-basis="471px"
 &lt;p>&lt;code>innodb_file_per_table&lt;/code> 시스템 변수가 0 인 상태에서 제너럴 테이블스페이스(General Tablespace)에 생성되는 테이블도 테이블 압축을 사용할 수 있으나, 제너럴 테이블스페이스의 FILE_BLOCK_SIZE에 의해 압축을 사용하지 못할 수 있다.&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="테이블-압축-동작-방식">테이블 압축 동작 방식&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2.png"
 width="667"
 height="564"
-srcset="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="118"
@@ -5490,7 +5289,7 @@ MySQL 서버가 비정상적으로 종료됐다가 다시 시작되는 경우 �
 &lt;li>기본값은 ON, 가능하면 기본값 상태를 유지하자.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker_5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
+&lt;/ul></description></item><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker/5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
 &lt;p>바인드 마운트는 호스트 파일 시스템에서 디렉토리를 컨테이너로 공유하는 다른 유형의 마운트이다. 어플리케이션을 개발할 때 바인드 마운트를 사용하여 소스 코드를 컨테이너로 마운트 할 수 있다. 파일 시스템 변경 사항을 감시하고 그에 따라 대응하는 프로세스를 컨테이너에서 실행할 수 있기 때문에, 컨테이너는 파일을 저장할 때마다 즉시 코드 변경 사항을 인식한다.&lt;/p>
 &lt;p>따라서 바인드 마운트와 파일 변경 상항을 감지하고 이에 따라 원하는 동작을 수행할 수 있으며, 이번 장에서는 자동으로 애플리케이션을 다시 시작하는 도구인 nodemon을 활용해본다.&lt;/p>
 &lt;h2 id="quick-volume-type-comparisons">Quick volume type comparisons&lt;/h2>
@@ -5524,7 +5323,7 @@ MySQL 서버가 비정상적으로 종료됐다가 다시 시작되는 경우 �
 &lt;td>No&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker_4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
+&lt;/table></description></item><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker/4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
 &lt;p>컨테이너가 실행되면, 파일시스템은 여러 레이어들을 사용한다. 각각의 컨테이너는 파일을 생성, 업데이트, 삭제하기 위한 자신만의 &amp;ldquo;스크래치 공간&amp;quot;을 가지는데, 다른 컨테이너에서 같은 이미지를 사용한다고 해도 어떤 변경 사항에 대해서도 다른 컨테이너에서 활용할 수 없다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Scratch image?&lt;/strong>&lt;br>
@@ -5580,10 +5379,10 @@ MySQL 서버가 비정상적으로 종료됐다가 다시 시작되는 경우 �
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;li>앱을 열고 데이터 todo 리스트 추가
-&lt;img src="https://codemario318.github.io/post/docker_4/docker_4_1.png"
+&lt;img src="https://codemario318.github.io/post/docker/4/docker_4_1.png"
 width="597"
 height="424"
-srcset="https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="140"
@@ -5625,7 +5424,7 @@ data-flex-basis="337px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">]&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;code>Mountpoint&lt;/code>가 디스크상의 실제 위치를 의미하며, 대부분의 컴퓨터에서 호스트가 이 디렉토리에 접근하기 위해 root 권한이 필요하다.&lt;/p></description></item><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker_3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
+&lt;/div>&lt;p>&lt;code>Mountpoint&lt;/code>가 디스크상의 실제 위치를 의미하며, 대부분의 컴퓨터에서 호스트가 이 디렉토리에 접근하기 위해 root 권한이 필요하다.&lt;/p></description></item><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker/3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Docker ID&lt;/strong>&lt;br>
 Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker Hub는 세계에서 가장 큰 라이브러리, 커뮤니티로 무료로 Docker ID를 만들어 사용할 수 있다.&lt;/p>
@@ -5639,10 +5438,10 @@ Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker H
 &lt;li>repo 이름 설정 및 public 설정 선택&lt;/li>
 &lt;li>Create 버튼 클릭&lt;/li>
 &lt;/ol>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_1.png"
 width="1253"
 height="205"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="611"
@@ -5757,25 +5556,25 @@ Play with Docker는 amd64 플랫폼을 사용하므로, Apple silicon 기반의 
 &lt;/div>
 &lt;/div>&lt;hr>
 &lt;p>Play with Docker에서 새 인스턴스를 추가한 후 명령을 실행한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_2.png"
 width="1392"
 height="1423"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="97"
 data-flex-basis="234px"
 >
-&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_3.png"
+&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_3.png"
 width="1392"
 height="1423"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="97"
 data-flex-basis="234px"
 >&lt;/p>
-&lt;p>정상적으로 동작하는 것을 확인할 수 있다.&lt;/p></description></item><item><title>2. Update the application</title><link>https://codemario318.github.io/post/docker_2/</link><pubDate>Mon, 24 Apr 2023 09:19:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_2/docker_cover.png" alt="Featured image of post 2. Update the application" />&lt;p>애플리케이션과 컨테이너 이미지를 업데이트 및 삭제할 수 있다.&lt;/p>
+&lt;p>정상적으로 동작하는 것을 확인할 수 있다.&lt;/p></description></item><item><title>2. Update the application</title><link>https://codemario318.github.io/post/docker/2/</link><pubDate>Mon, 24 Apr 2023 09:19:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/2/docker_cover.png" alt="Featured image of post 2. Update the application" />&lt;p>애플리케이션과 컨테이너 이미지를 업데이트 및 삭제할 수 있다.&lt;/p>
 &lt;h2 id="소스-코드-업데이트-하기">소스 코드 업데이트 하기&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -5874,7 +5673,7 @@ CLI를 통해 컨테이너를 중지하고, 삭제하기 위해서 컨테이너 
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9732df7c2474fea5223bcd682bbd1a3b7f18cc1f965330bd666478d10a7a73cb
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>이전과 같은 &lt;code>docker run&lt;/code> 명령으로 업데이트된 애플리케이션이 실행된 것을 확인할 수 있다.&lt;/p></description></item><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real_mysql_5_3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
+&lt;/div>&lt;p>이전과 같은 &lt;code>docker run&lt;/code> 명령으로 업데이트된 애플리케이션이 실행된 것을 확인할 수 있다.&lt;/p></description></item><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real-mysql/5/3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>READ UNCOMMITTED&lt;/code>&lt;br>
 &lt;code>DIRTY READ&lt;/code>라고도 하며 일반적인 데이터베이스에서는 거의 사용하지 않는다.&lt;/li>
@@ -5928,10 +5727,10 @@ CLI를 통해 컨테이너를 중지하고, 삭제하기 위해서 컨테이너 
 &lt;/ul>
 &lt;h2 id="read-uncommitted">READ UNCOMMITTED&lt;/h2>
 &lt;p>&lt;code>READ UNCOMMITTED&lt;/code> 격리 수준에서는 각 트랜잭션에서 변경 내용이 &lt;code>COMMIT&lt;/code>, &lt;code>ROLLBACK&lt;/code> 여부에 상관 없이 다른 트랜잭션에서 보인다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1.png"
 width="483"
 height="440"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="109"
@@ -5943,10 +5742,10 @@ data-flex-basis="263px"
 &lt;p>더티 리드 현상은 데이터가 나타났다 사라지는 현상을 초래하므로 개발자와 사용자를 혼란스럽게 만들 수 있다. 더티 리드를 유발하는 &lt;code>READ UNCOMMITTED&lt;/code>는 &lt;code>RDBMS&lt;/code> 표준에서는 트랜잭션의 격리 수준으로 인정하지 않을 정도로 정합성에 문제가 많으므로 &lt;code>READ COMMITTED&lt;/code> 이상의 격리 수준을 사용할 것을 권장한다.&lt;/p>
 &lt;h2 id="read-committed">READ COMMITTED&lt;/h2>
 &lt;p>오라클 DBMS에서 기본으로 사용되는 격리 수준이며, 온라인 서비스에서 가장 많이 선택되는 격리 수준이다. 어떤 트랜잭션에서 데이터를 변경했더라도 &lt;code>COMMIT&lt;/code>이 완료된 데이터만 다른 트랜잭션에서 조회할 수 있기 때문에 더티 리드 현상은 발생하지 않는다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2.png"
 width="507"
 height="441"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="114"
@@ -5956,10 +5755,10 @@ data-flex-basis="275px"
 &lt;p>&lt;code>COMMIT&lt;/code>이 완료 되기 전 B가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 조회하면, 언두 영역에 백업된 레코드에서 가져온 &amp;ldquo;Lara&amp;quot;를 조회하게 된다.&lt;/p>
 &lt;h3 id="non-repeatable-read">NON-REPEATABLE READ&lt;/h3>
 &lt;p>&lt;code>READ COMMITTED&lt;/code> 격리 수준에서도 &lt;code>NON-REPEATABLE READ&lt;/code>라는 부정합 문제가 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3.png"
 width="480"
 height="461"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="104"
@@ -5981,10 +5780,10 @@ data-flex-basis="249px"
 &lt;/blockquote>
 &lt;p>InnoDB의 모든 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는 값)를 가지며, 언두 영역에 백업된 모든 레코드에는 변경을 발생시킨 트랜잭션 번호가 포함되어 있다. 언두 영역에 백업된 데이터는 InnoDB 스토리지 엔진이 불필요하다고 판단하는 시점에 주기적으로 삭제한다.&lt;/p>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서는 MVCC를 보장하기 위해 실행중인 트랜잭션 가운데 가장 오래된 트랜잭션 번호보다 트랜잭션 번호가 앞선 언두 영역의 데이터는 삭제할 수가 없다. 그렇다고 가장 오래된 트랜잭션 번호 이전의 트랜잭션에 의해 변경된 모든 언두 데이터가 필요한 것은 아니며, 특정 트랜잭션 번호의 구간 내에서 백업된 언두 데이터가 보존 돼야 한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4.png"
 width="537"
 height="612"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="87"
@@ -5996,10 +5795,10 @@ data-flex-basis="210px"
 &lt;/blockquote>
 &lt;h3 id="phantom-read">PHANTOM READ&lt;/h3>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서도 부정합이 발생 가능하다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5.png"
 width="566"
 height="592"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="95"
@@ -6015,7 +5814,7 @@ data-flex-basis="229px"
 &lt;blockquote>
 &lt;p>엄밀하게는 &lt;code>SELECT ... FOR UPDATE&lt;/code>, &lt;code>SELECT ... FOR SHARE&lt;/code> 쿼리의 경우 &lt;code>REPEATABLE READ&lt;/code> 격리수준에서 &lt;code>PHANTOM READ&lt;/code> 현상이 발생할 수 있다.&lt;br>
 하지만 레코드의 변경 이력(언두 레코드)에 잠금을 걸 수는 없기 때문에, 이러한 잠금을 동반한 &lt;code>SELECT&lt;/code> 쿼리는 예외적인 상황으로 볼 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real_mysql_5_2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
+&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real-mysql/5/2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
 &lt;ul>
 &lt;li>
 &lt;p>MySQL 엔진 레벨&lt;br>
@@ -6247,10 +6046,10 @@ MyISAM뿐 아니라 InnoDB 스토리지 엔진을 사용하는 테이블도 동�
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="innodb-스토리지-엔진의-잠금">InnoDB 스토리지 엔진의 잠금&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1.png"
 width="568"
 height="391"
-srcset="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="145"
@@ -6406,7 +6205,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;li>&lt;code>performance_schema&lt;/code>의 &lt;code>data_locks&lt;/code>, &lt;code>data_lock_waits&lt;/code>로 확인&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>5.1 트랜잭션</title><link>https://codemario318.github.io/post/real_mysql_5_1/</link><pubDate>Sat, 22 Apr 2023 15:29:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_1/real_mysql.jpeg" alt="Featured image of post 5.1 트랜잭션" />&lt;p>트랜잭션은 작업의 완전성을 보장해 주는 것이다.&lt;br>
+&lt;/ul></description></item><item><title>5.1 트랜잭션</title><link>https://codemario318.github.io/post/real-mysql/5/1/</link><pubDate>Sat, 22 Apr 2023 15:29:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/1/real_mysql.jpeg" alt="Featured image of post 5.1 트랜잭션" />&lt;p>트랜잭션은 작업의 완전성을 보장해 주는 것이다.&lt;br>
 논리적이 작업 셋을 모두 완벽하게 처리하거나, 처리하지 못할 경우에는 원 상태로 복구해서 작업의 일부만 적용되는 현상(Partial update)이 발생하지 않게 만들어주는 기능이다.&lt;/p>
 &lt;p>트랜잭션은 꼭 여러 개의 변경 작업을 수행하는 쿼리가 조합됐을 때만 의미있는 개념은 아니다. 트랜잭션은 하나의 논리적인 작업 셋이 100% 적용되거나(&lt;code>COMMIT&lt;/code>) 아무것도 적용되지 않아야(&lt;code>ROLLBACK&lt;/code>)함을 보장해 주는 것이다.&lt;/p>
 &lt;h2 id="mysql에서의-트랜잭션">MySQL에서의 트랜잭션&lt;/h2>
@@ -6568,7 +6367,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;li>처리완료&lt;/li>
 &lt;/ol>
 &lt;hr>
-&lt;p>위와 같은 방식으로 개선 될 수 있다.&lt;/p></description></item><item><title>1. Containerize an application</title><link>https://codemario318.github.io/post/docker_1/</link><pubDate>Fri, 21 Apr 2023 16:08:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_1/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_1/docker_cover.png" alt="Featured image of post 1. Containerize an application" />&lt;h2 id="get-the-app">Get the app&lt;/h2>
+&lt;p>위와 같은 방식으로 개선 될 수 있다.&lt;/p></description></item><item><title>1. Containerize an application</title><link>https://codemario318.github.io/post/docker/1/</link><pubDate>Fri, 21 Apr 2023 16:08:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/1/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/1/docker_cover.png" alt="Featured image of post 1. Containerize an application" />&lt;h2 id="get-the-app">Get the app&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -6756,15 +6555,15 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">3&lt;/span> minutes ago Up &lt;span class="m">3&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker_1/docker_1_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker/1/docker_1_1.png"
 width="3024"
 height="1964"
-srcset="https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="153"
 data-flex-basis="369px"
->&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes_5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
+>&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes/5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
 &lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
 &lt;p>노드의 컴포넌트에는 &lt;code>kubelet&lt;/code>, 컨테이너 런타임 그리고 &lt;code>kube-proxy&lt;/code>가 포함된다.&lt;/p>
@@ -7137,7 +6936,7 @@ data-flex-basis="369px"
 &lt;/ul>
 &lt;p>테스트를 지원하고 피드벡을 제공하기 위한 정보는 &lt;a class="link" href="https://github.com/kubernetes/enhancements/issues/2400" target="_blank" rel="noopener"
 >KEP-2400&lt;/a> 및 &lt;a class="link" href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md" target="_blank" rel="noopener"
->디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes_4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
+>디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes/4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
 &lt;blockquote>
 &lt;p>⛔ 쿠버네티스 오브젝트는 하나의 기법만 사용하여 관리해야 한다. 동일한 오브젝트에 대해 여러 기법을 혼용하면 오동작이 발생할 수 있다.&lt;/p>
 &lt;/blockquote>
@@ -7199,7 +6998,7 @@ data-flex-basis="369px"
 &lt;li>새로운 오브젝트 생성을 위한 템플릿을 제공하지 않는다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="명령형-오브젝트-구성">명령형 오브젝트 구성&lt;/h2>
-&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/kubernetes_3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_3/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
+&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/kubernetes/3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/3/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
 &lt;p>쿠버네티스 오브젝트는 &lt;strong>하나의 의도를 담은 레코드&lt;/strong>이다.&lt;/p>
 &lt;/blockquote>
 &lt;p>쿠버네티스 오브젝트는 쿠버네티스 시스템에서 영속성을 가지는 오브젝트이다. 쿠버네티스는 클러스터의 상태를 나타내기 위해 &lt;code>.yaml&lt;/code>로 작성된 오브젝트에 상세 내용을 기술한다.&lt;/p>
@@ -7276,8 +7075,8 @@ data-flex-basis="369px"
 &lt;/ul>
 &lt;p>spec에 대한 정확한 포맷은 모든 쿠버네티스 오브젝트마다다르고, 그 오브젝트 특유의 중첩된 필드를 포함한다.&lt;/p>
 &lt;p>&lt;a class="link" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/" target="_blank" rel="noopener"
->https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes_2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_2_1.svg"
+>https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes/2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_2_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>컨테이너화 된 애프릴케이션을 실행하는 노드라고 하는 워커 머신의 집합으로, 모든 클러스터는 최소 한 개의 워커 노드를 가진다.&lt;/p>
@@ -7357,7 +7156,7 @@ loading="lazy"
 &lt;blockquote>
 &lt;p>&lt;strong>CRI란?&lt;/strong>&lt;br>
 클러스터 컴포넌트를 다시 컴파일하지 않아도 Kubelet이 다양한 컨테이너 런타임을 사용할 수 있도록 하는 플러그인 인터페이스이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes_1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
+&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes/1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장 가능한 오픈소스 플랫폼이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있다.&lt;/li>
@@ -7392,7 +7191,7 @@ Ubuntu, RHEL, CoreOS, 온-프레미스, 주요 퍼블릭 클라우드와 어디�
 &lt;/ul>
 &lt;/blockquote>
 &lt;h2 id="쿠버네티스가-왜-필요하고-무엇을-할-수-있나">쿠버네티스가 왜 필요하고 무엇을 할 수 있나&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_1_1.svg"
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_1_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>기존 &amp;ldquo;전통적인 배포&amp;rdquo;, &amp;ldquo;가상화된 배포&amp;quot;를 거치며 &amp;ldquo;컨테이너를 통한 배포&amp;rdquo; 까지 발전해왔다.&lt;/p>
@@ -7409,7 +7208,7 @@ loading="lazy"
 &lt;h3 id="자동화된-복구self-healing">자동화된 복구(self-healing)&lt;/h3>
 &lt;p>쿠버네티스는 실패한 컨테이너를 다시 시작하고, 컨테이너를 교체하며, &amp;lsquo;사용자 정의 상태 검사&amp;rsquo;에 응답하지 않는 컨테이너를 죽이고, 서비스 준비가 끝날 때까지 그러한 과정을 클라이언트에 보여주지 않는다.&lt;/p>
 &lt;h3 id="시크릿과-구성-관리">시크릿과 구성 관리 &lt;/h3>
-&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean_code_15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
+&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean-code/15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
 &lt;ul>
 &lt;li>생성자 두 번째 인수와 세 번째 인수를 비교한다.&lt;/li>
 &lt;li>comapct 함수에 문자열을 넣으면 결과 메시지 앞에 문자열이 추가된다.&lt;/li>
@@ -8361,7 +8160,7 @@ loading="lazy"
 &lt;p>코드를 리펙터링 하다보면 원래 했던 변경을 되돌리는 경우가 흔하다.&lt;/p>
 &lt;blockquote>
 &lt;p>리펙터링은 코드가 어느 수준에 이를때까지 수많은 시행착오를 반복하는 작업이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean_code_17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
+&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean-code/17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
 &lt;p>Heruistics(발견법): 경험, 학습 등으로 습득한 직감을 이용해 현실적으로 만족할 만한 수준의 해답을 찾는 것&lt;/p>
 &lt;/blockquote>
 &lt;p>리펙토링(마틴 파울러)에서 언급된 내용과 저자의 경험을 합쳐 깨끗하지 못한 코드를 발견하는 방법에 대하여 설명했다.&lt;/p>
@@ -8896,7 +8695,7 @@ loading="lazy"
 &lt;h3 id="t9-테스트는-빨라야한다">T9: 테스트는 빨라야한다&lt;/h3>
 &lt;p>느린 테스트 케이스는 실행하지 않게 된다. 일정이 촉박하면 느린 테스트 케이스를 제일 먼저 건너 뛴다.&lt;/p>
 &lt;h2 id="결론">결론&lt;/h2>
-&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean_code_14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
+&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean-code/14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
 &lt;p>프로그래밍은 과학보다 공예에 가깝다. 깨끗한 코드를 짜려면 먼저 지저분한 코드를 짠 뒤에 정리해야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="args-구현">Args 구현&lt;/h2>
@@ -11710,7 +11509,7 @@ loading="lazy"
 &lt;li>규모가 있는 코드를 한번에 변경하는 것은 매우 어렵다.&lt;/li>
 &lt;li>따라서 테스트를 기반으로 조금씩 변경하는 과정을 거쳤다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean_code_12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
+&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean-code/12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
 &lt;p>창발성: 떠오름 현상, 創發性, emergent property, emergence&lt;/p>
 &lt;ol>
 &lt;li>하위 계층에서 없는 특성이나 행동이 상위 계층에서 자발적으로 돌연히 출현하는 현상, 불시에 솟아나는 특성(wikipedia)&lt;/li>
@@ -12075,7 +11874,7 @@ loading="lazy"
 &lt;p>경험을 대신할 단순한 개발 기법은 없다. 하지만 소개하는 기법은 저자들이 수십 년 동안 쌓은 경험의 정수다.&lt;/p>
 &lt;blockquote>
 &lt;p>💡 단순한 설계 규칙을 따른다면 우수한 기법과 원칙을 단번에 활용할 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
+&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean-code/10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
 &lt;h2 id="클래스-체계">클래스 체계&lt;/h2>
 &lt;p>표준 자바 관례에 의하면 아래 순서로 선언하게 된다.&lt;/p>
 &lt;ul>
@@ -12761,7 +12560,7 @@ loading="lazy"
 &lt;/ul>
 &lt;/li>
 &lt;li>결합도를 최대한 낮추면 변경으로 부터 격리할 수 있다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean_code_9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean-code/9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
 &lt;p>테스트를 급하게 서두르는 와중에 많은 개발자들이 제대로 된 테스트 케이스를 작성해야한다는 중요한 사실을 놓친다.&lt;/p>
 &lt;h2 id="tdd-법칙-세-가지">TDD 법칙 세 가지&lt;/h2>
 &lt;ol>
@@ -13073,7 +12872,7 @@ loading="lazy"
 &lt;/ul>
 &lt;/li>
 &lt;li>테스트 코드를 먼저 만드는 이유는 테스트에 적합한 실제 코드를 만드는데 도움이 되기 때문이다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean_code_7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
+&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean-code/7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
 &lt;p>뭔가 잘못되면 바로잡을 책임은 바로 우리 프로그래머에게 있다.&lt;/p>
 &lt;/blockquote>
 &lt;p>깨끗한 코드와 오류처리는 연관이 있다. 상당수 코드들은 전적으로 오류 처리 코드에 좌우된다. 여기저기 흩어진 오류 처리 코드 때문에 실제 코드가 하는 일을 파악하기가 거의 불가능하다는 의미다.&lt;/p>
@@ -13695,7 +13494,7 @@ loading="lazy"
 &lt;/ul>
 &lt;/li>
 &lt;li>null은 사용자의 실수를 유발하므로 되도록 자제해야 한다.&lt;/li>
-&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean_code_6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
+&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean-code/6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
 &lt;blockquote>
 &lt;p>사용자가 구현을 모른 채 자료의 핵심을 조작할 수 있어야 진정한 의미의 클래스다.&lt;/p>
 &lt;/blockquote>
@@ -14198,7 +13997,7 @@ loading="lazy"
 &lt;li>객체지향을 조금 다른 관점에서 접근하여 깨끗한 코드를 만드는 방법을 추천하는 책&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean_code_3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean-code/3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
 &lt;ul>
 &lt;li>어떻게 해야 읽기 쉽고 이해하기 쉬운 함수를 만들 수 있을까&lt;/li>
 &lt;li>의도를 분명히 표현하는 함수를 어떻게 구현할수 있을까&lt;/li>
@@ -14240,7 +14039,7 @@ loading="lazy"
 &lt;p>Switch문은 본질적으로 switch 문은 N 가지를 처리하기 때문에 작게, 한 가지 작업만 수행하게 만들기 어렵다.&lt;/p>
 &lt;blockquote>
 &lt;p>완전히 사용하지 않을 방법은 없기 때문에 다형성을 사용하여 저차원 클래스에 숨기고 반복하지 않게 만들어야 한다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean_code_1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
+&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean-code/1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
 &lt;li>코드는 요구사항을 표현하는 도구이다.
 &lt;ul>
 &lt;li>고도로 추상화된 언어나 특정 응용 분야 언어로 기술하는 명세 역시 코드이다.&lt;/li>
@@ -14319,11 +14118,11 @@ loading="lazy"
 &lt;li>결코 설계자의 의도를 숨기지 않는다.&lt;/li>
 &lt;li>명쾌한 추상화와 단순한 제어문으로 가득하다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;strong>가독성을 강조하고 있다.&lt;/strong>&lt;/p></description></item><item><title>Golang: 13. Go 채널</title><link>https://codemario318.github.io/post/go_13/</link><pubDate>Thu, 20 Apr 2023 13:38:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_13/</guid><description>&lt;img src="https://codemario318.github.io/post/go_13/go_cover.webp" alt="Featured image of post Golang: 13. Go 채널" />&lt;p>Go 언어에서 채널은 고루틴을 연결해주는 통로(파이프)다. 기본적으로 채널은 양방향이고 고루틴이 아래 이미지와 같이 동일한 채널을 통해 데이터를 보내거나 받을 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/go_13/go_13_1.png"
+&lt;p>&lt;strong>가독성을 강조하고 있다.&lt;/strong>&lt;/p></description></item><item><title>Golang: 13. Go 채널</title><link>https://codemario318.github.io/post/golang/13/</link><pubDate>Thu, 20 Apr 2023 13:38:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/13/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/13/go_cover.webp" alt="Featured image of post Golang: 13. Go 채널" />&lt;p>Go 언어에서 채널은 고루틴을 연결해주는 통로(파이프)다. 기본적으로 채널은 양방향이고 고루틴이 아래 이미지와 같이 동일한 채널을 통해 데이터를 보내거나 받을 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/golang/13/go_13_1.png"
 width="725"
 height="235"
-srcset="https://codemario318.github.io/post/go_13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/go_13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/golang/13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/golang/13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="308"
@@ -14750,7 +14549,7 @@ data-flex-basis="740px"
 &lt;/div>&lt;p>채널 range문은 range 키워드 다음에 명시한 채널로부터 데이터를 계속 수신하다가 채널이 닫힌 것을 감지하면 for 루프를 종료한다.&lt;/p>
 &lt;h2 id="채널-select-문">채널 select 문&lt;/h2>
 &lt;p>select문은 복수 채널들을 기다리면서 준비된 채널을 실행하는 기능을 제공한다.&lt;/p>
-&lt;p>select문은 여러개의 case문에서 각각 다른 채널을 기다리다가 준비가 된 채널 case를 실행한다. select문은 case 채널들이 준비되지 않으면 계속 대기하게 되고, 가장 먼저 도착한 채널의 case를 실행한다. 만약 복수 채널에 신호가 오면, Go 런타임이 랜덤하게 그중 한 개를 선택하게 된다. select문에 default문이 있으면, case문 채널이 준비되지 않더라도 계속 대기하지 않고 바로 default문을 실행한다.&lt;/p></description></item><item><title>Golang: 12. Go 루틴</title><link>https://codemario318.github.io/post/go_12/</link><pubDate>Thu, 20 Apr 2023 13:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_12/</guid><description>&lt;img src="https://codemario318.github.io/post/go_12/go_cover.webp" alt="Featured image of post Golang: 12. Go 루틴" />&lt;p>Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 &lt;code>goroutine&lt;/code>을 실행한다.&lt;/p>
+&lt;p>select문은 여러개의 case문에서 각각 다른 채널을 기다리다가 준비가 된 채널 case를 실행한다. select문은 case 채널들이 준비되지 않으면 계속 대기하게 되고, 가장 먼저 도착한 채널의 case를 실행한다. 만약 복수 채널에 신호가 오면, Go 런타임이 랜덤하게 그중 한 개를 선택하게 된다. select문에 default문이 있으면, case문 채널이 준비되지 않더라도 계속 대기하지 않고 바로 default문을 실행한다.&lt;/p></description></item><item><title>Golang: 12. Go 루틴</title><link>https://codemario318.github.io/post/golang/12/</link><pubDate>Thu, 20 Apr 2023 13:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/12/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/12/go_cover.webp" alt="Featured image of post Golang: 12. Go 루틴" />&lt;p>Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 &lt;code>goroutine&lt;/code>을 실행한다.&lt;/p>
 &lt;p>고루틴은 비동기적으로 함수루틴을 실행하므로, 여러 코드를 동시에 실행하는데 사용된다.&lt;/p>
 &lt;p>고루틴은 OS 쓰레드보다 훨씬 가볍게 비동기 Concurrent(동시성) 처리를 구현하기 위하여 만든것으로, 기본적으로 Go 런타임이 자체 관리한다.&lt;/p>
 &lt;ul>
@@ -15003,7 +14802,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>동시성과 병렬성은 비슷하게 들리지만 전혀 다른 개념이다.&lt;/p></description></item><item><title>Golang: 11. defer와 panic</title><link>https://codemario318.github.io/post/go_11/</link><pubDate>Thu, 20 Apr 2023 13:26:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_11/</guid><description>&lt;img src="https://codemario318.github.io/post/go_11/go_cover.webp" alt="Featured image of post Golang: 11. defer와 panic" />&lt;h2 id="지연실행-defer">지연실행 defer&lt;/h2>
+&lt;/div>&lt;p>동시성과 병렬성은 비슷하게 들리지만 전혀 다른 개념이다.&lt;/p></description></item><item><title>Golang: 11. defer와 panic</title><link>https://codemario318.github.io/post/golang/11/</link><pubDate>Thu, 20 Apr 2023 13:26:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/11/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/11/go_cover.webp" alt="Featured image of post Golang: 11. defer와 panic" />&lt;h2 id="지연실행-defer">지연실행 defer&lt;/h2>
 &lt;p>Go 언어의 &lt;code>defer&lt;/code> 키워드는 특정 문장 혹은 함수를 나중에 (defer를 호출하는 함수의 결과를 반환하기 직전에) 실행된다.&lt;/p>
 &lt;p>일반적으로 defer는 C#, Java 같은 언어에서 finally 블럭처럼 마지막에 Clena-up 작업을 위해 사용된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -15176,7 +14975,7 @@ data-flex-basis="740px"
 &lt;/div>
 &lt;/div>&lt;ul>
 &lt;li>recover 함수를 사용하면 panic 상태를 제거하고 openFile() 다음 문장인 println()을 호출하게 된다.&lt;/li>
-&lt;/ul></description></item><item><title>Golang: 10. 에러</title><link>https://codemario318.github.io/post/go_10/</link><pubDate>Thu, 20 Apr 2023 13:25:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_10/</guid><description>&lt;img src="https://codemario318.github.io/post/go_10/go_cover.webp" alt="Featured image of post Golang: 10. 에러" />&lt;p>Go는 내장 타입으로 &lt;code>error&lt;/code> 라는 인터페이스 타입을 갖는다. Go 에러는 이 &lt;code>error&lt;/code> 인터페이스를 통해서 주고 받게 되는데, 메서드 하나를 갖는다.&lt;/p>
+&lt;/ul></description></item><item><title>Golang: 10. 에러</title><link>https://codemario318.github.io/post/golang/10/</link><pubDate>Thu, 20 Apr 2023 13:25:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/10/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/10/go_cover.webp" alt="Featured image of post Golang: 10. 에러" />&lt;p>Go는 내장 타입으로 &lt;code>error&lt;/code> 라는 인터페이스 타입을 갖는다. Go 에러는 이 &lt;code>error&lt;/code> 인터페이스를 통해서 주고 받게 되는데, 메서드 하나를 갖는다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -15260,7 +15059,7 @@ data-flex-basis="740px"
 &lt;/div>&lt;p>예제에서 otherFunc()를 호출한 후 반환된 error의 타입을 통해 여러 유형의 에러를 처리할 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>모든 에러는 error 인터페이스를 구현하므로 마지막 case문은 모든 에러에 적용된다.&lt;/li>
-&lt;/ul></description></item><item><title>Golang: 9. 인터페이스</title><link>https://codemario318.github.io/post/go_9/</link><pubDate>Thu, 20 Apr 2023 13:08:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_9/</guid><description>&lt;img src="https://codemario318.github.io/post/go_9/go_cover.webp" alt="Featured image of post Golang: 9. 인터페이스" />&lt;p>구조체가 필드들의 집합체라면, &lt;code>interface&lt;/code>는 메서드들의 집합체이다.&lt;/p>
+&lt;/ul></description></item><item><title>Golang: 9. 인터페이스</title><link>https://codemario318.github.io/post/golang/9/</link><pubDate>Thu, 20 Apr 2023 13:08:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/9/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/9/go_cover.webp" alt="Featured image of post Golang: 9. 인터페이스" />&lt;p>구조체가 필드들의 집합체라면, &lt;code>interface&lt;/code>는 메서드들의 집합체이다.&lt;/p>
 &lt;p>인터페이스는 타입(type)이 구현해야 하는 메서드 원형(prototype)들을 정의한다. 어떠한 사용자 정의 타입이 인터페이스를 구현하려면 선언한 인터페이스가 갖는 모든 메서드들을 구현하면 된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -15428,7 +15227,7 @@ data-flex-basis="740px"
 &lt;/div>
 &lt;/div>&lt;h2 id="type-assertion">Type Assertion&lt;/h2>
 &lt;p>인터페이스 타입의 x와 타입 T에 대하여 x.(T)로 표현했을 때, 이는 x가 nil이 아니며, x는 T 타입에 속한다는 것을 확인한다. 이러한 표현방식을 Type Assertion 이라고 부른다.&lt;/p>
-&lt;p>만약 x가 nil 이거나 x의 타입이 T가 아니라면, 런타임 에러가 발생하고, x가 T 타입인경우는 T 타입 x를 반환한다.&lt;/p></description></item><item><title>Golang: 8. 메서드</title><link>https://codemario318.github.io/post/go_8/</link><pubDate>Thu, 20 Apr 2023 12:34:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_8/</guid><description>&lt;img src="https://codemario318.github.io/post/go_8/go_cover.webp" alt="Featured image of post Golang: 8. 메서드" />&lt;p>Go 언어는 OOP를 구조체와 메서드를 이용하는 방식으로 지원한다.&lt;/p>
+&lt;p>만약 x가 nil 이거나 x의 타입이 T가 아니라면, 런타임 에러가 발생하고, x가 T 타입인경우는 T 타입 x를 반환한다.&lt;/p></description></item><item><title>Golang: 8. 메서드</title><link>https://codemario318.github.io/post/golang/8/</link><pubDate>Thu, 20 Apr 2023 12:34:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/8/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/8/go_cover.webp" alt="Featured image of post Golang: 8. 메서드" />&lt;p>Go 언어는 OOP를 구조체와 메서드를 이용하는 방식으로 지원한다.&lt;/p>
 &lt;p>다른 언어들이 클래스가 내부에 데이터와 메서드를 함께 갖는 것과 달리 Go 언어에서는 구조체가 데이터만을 가지고, 메서드는 별도로 분리하여 정의한다.&lt;/p>
 &lt;p>Go 메서드는 특별한 형태의 함수이다. 메서드는 함수 정의에서 func 키워드와 함수명 사이에 “그 함수가 어떤 구조체를 위한 메서드인지” 표시한다.&lt;/p>
 &lt;p>receiver로 부르며 메서드가 속한 구조체 타입과 변수명을 지정하는데, 구조체 변수명은 함수 내에서 입력 파라미터처럼 사용된다.&lt;/p>
@@ -15503,7 +15302,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="포인터-리시버">포인터 리시버&lt;/h2>
-&lt;p>포인터 리시버는 구조체의 포인터를 전달한다. 메서드 내의 필드값 변경이 그대로 호출자에서 반영된다.&lt;/p></description></item><item><title>Golang: 7. 구조체</title><link>https://codemario318.github.io/post/go_7/</link><pubDate>Thu, 20 Apr 2023 12:30:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_7/</guid><description>&lt;img src="https://codemario318.github.io/post/go_7/go_cover.webp" alt="Featured image of post Golang: 7. 구조체" />&lt;p>Go 언어는 객체지향 프로그래밍을 고유의 방식으로 지원한다.&lt;/p>
+&lt;p>포인터 리시버는 구조체의 포인터를 전달한다. 메서드 내의 필드값 변경이 그대로 호출자에서 반영된다.&lt;/p></description></item><item><title>Golang: 7. 구조체</title><link>https://codemario318.github.io/post/golang/7/</link><pubDate>Thu, 20 Apr 2023 12:30:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/7/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/7/go_cover.webp" alt="Featured image of post Golang: 7. 구조체" />&lt;p>Go 언어는 객체지향 프로그래밍을 고유의 방식으로 지원한다.&lt;/p>
 &lt;ul>
 &lt;li>클래스, 객체, 상속 개념이 없다.&lt;/li>
 &lt;/ul>
@@ -15662,7 +15461,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>생성자 함수인 &lt;code>newDict()&lt;/code>는 &lt;code>dict&lt;/code>라는 구조체의 &lt;code>map&lt;/code> 필드를 초기화한 후 구조체 포인터를 반호나한다. &lt;code>main&lt;/code> 함수에서 구조체 개체를 만들 때 &lt;code>dict&lt;/code>를 직접 생성하지 않고 대신 생성자 함수를 통해 이미 초기환 된 &lt;code>data&lt;/code> 맵 필드를 사용할 수 있다.&lt;/p></description></item><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/go_6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_6/</guid><description>&lt;img src="https://codemario318.github.io/post/go_6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
+&lt;/div>&lt;p>생성자 함수인 &lt;code>newDict()&lt;/code>는 &lt;code>dict&lt;/code>라는 구조체의 &lt;code>map&lt;/code> 필드를 초기화한 후 구조체 포인터를 반호나한다. &lt;code>main&lt;/code> 함수에서 구조체 개체를 만들 때 &lt;code>dict&lt;/code>를 직접 생성하지 않고 대신 생성자 함수를 통해 이미 초기환 된 &lt;code>data&lt;/code> 맵 필드를 사용할 수 있다.&lt;/p></description></item><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/golang/6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/6/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
 &lt;p>Go는 실제 프로그램 개발에 필요한 많음 패키지들을 표준 라이브러리로 제공한다. 이러한 표준 라이브러리 패키지들을 &lt;code>GOROOT/pkg&lt;/code> 안에 존재한다. &lt;code>GOROOT&lt;/code> 환경변수는 Go 설치 디렉토리를 가르키는데, 보통 Go 설치시 자동으로 추가된다.&lt;/p>
 &lt;p>Go에 사용하는 표준 패키지들은 &lt;a class="link" href="https://golang.org/pkg" target="_blank" rel="noopener"
 >https://golang.org/pkg&lt;/a> 에 자세히 설명되어 있다.&lt;/p>
@@ -15837,7 +15636,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">C:&lt;span class="se">\G&lt;/span>oSrc&lt;span class="se">\s&lt;/span>rc&lt;span class="se">\t&lt;/span>estlib
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/go_5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_5/</guid><description>&lt;img src="https://codemario318.github.io/post/go_5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
+&lt;/div></description></item><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/golang/5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/5/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
 &lt;p>배열은 연속적인 메모리 공간에 동일한 타입의 데이터를 순차적으로 저장하는 자료구조이다.&lt;/p>
 &lt;p>배열의 선언은 &lt;code>var 변수명 [배열크기] 데이터타입&lt;/code> 과 같이 한다. Go에서 배열크기는 Type을 구성하는 한 요소이다. 따라서, [3]int와 [5]int는 서로 다른 타입으로 인식된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -16376,7 +16175,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="for-루프를-사용한-map-열거">for 루프를 사용한 Map 열거&lt;/h2>
-&lt;p>Map이 가진 모든 요소들을 출력하기 위해, &lt;code>for range&lt;/code> 루프를 사용할 수 있다. Map 컬렉션에 &lt;code>for range&lt;/code>를 사용하면, Map 키와 Map 값 2개 데이터를 반환한다.&lt;/p></description></item><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/go_4/</link><pubDate>Thu, 20 Apr 2023 12:10:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_4/</guid><description>&lt;img src="https://codemario318.github.io/post/go_4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
+&lt;p>Map이 가진 모든 요소들을 출력하기 위해, &lt;code>for range&lt;/code> 루프를 사용할 수 있다. Map 컬렉션에 &lt;code>for range&lt;/code>를 사용하면, Map 키와 Map 값 2개 데이터를 반환한다.&lt;/p></description></item><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/golang/4/</link><pubDate>Thu, 20 Apr 2023 12:10:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/4/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
 &lt;p>함수 파라미터는 0개 이상 사용할 수 있는데, 각 파라미터는 파라미터명 뒤에 &lt;code>int&lt;/code>, &lt;code>string&lt;/code> 등 파라미터 타입을 정의한다.&lt;/p>
 &lt;p>함수의 반환 타입은 파라미터 괄호 뒤에 적는다.&lt;/p>
 &lt;p>함수는 패키지 안에 정의되며 호출되는 함수가 호출하는 함수의 반드시 앞에 위치해야 할 필요는 없다.&lt;/p>
@@ -16572,7 +16371,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/go_3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_3/</guid><description>&lt;img src="https://codemario318.github.io/post/go_3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
+&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/golang/3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/3/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
 &lt;p>Go 언어에서 반복문은 &lt;code>for&lt;/code> 하나뿐이다. 다른 언어들과 비슷하게 &lt;code>for 초기값; 조건식; 증감 {...}&lt;/code> 형식을 따른다.&lt;/p>
 &lt;p>초기값, 조건식, 증감식은 경우에 따라 생략할 수 있고, &lt;code>초기값; 조건식; 증감&lt;/code> 을 둘러싸는 괄호를 추가하면 에러가 발생한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -16764,7 +16563,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;code>break&lt;/code>의 레이블은 현재 보통 현재 &lt;code>for&lt;/code> 루프 바로 위에 적게 되는데, 현재 루프를 빠져나와 지정된 레이블로 이동하고, 동작한 &lt;code>break&lt;/code>문이 속한 &lt;code>for&lt;/code> 루프 전체의 다음 문장을 실행한다.&lt;/p></description></item><item><title>Golang: 2. 조건문</title><link>https://codemario318.github.io/post/go_2/</link><pubDate>Thu, 20 Apr 2023 12:00:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_2/</guid><description>&lt;img src="https://codemario318.github.io/post/go_2/go_cover.webp" alt="Featured image of post Golang: 2. 조건문" />&lt;h2 id="if-문">if 문&lt;/h2>
+&lt;/div>&lt;p>&lt;code>break&lt;/code>의 레이블은 현재 보통 현재 &lt;code>for&lt;/code> 루프 바로 위에 적게 되는데, 현재 루프를 빠져나와 지정된 레이블로 이동하고, 동작한 &lt;code>break&lt;/code>문이 속한 &lt;code>for&lt;/code> 루프 전체의 다음 문장을 실행한다.&lt;/p></description></item><item><title>Golang: 2. 조건문</title><link>https://codemario318.github.io/post/golang/2/</link><pubDate>Thu, 20 Apr 2023 12:00:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/2/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/2/go_cover.webp" alt="Featured image of post Golang: 2. 조건문" />&lt;h2 id="if-문">if 문&lt;/h2>
 &lt;p>if 문은 해당 조건이 맞으면 &lt;code>{}&lt;/code> 블럭 안의 내용을 실행한다.&lt;/p>
 &lt;ul>
 &lt;li>조건식을 &lt;code>()&lt;/code>로 둘러 싸지 않아도 된다.&lt;/li>
@@ -16972,7 +16771,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/go_1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_1/</guid><description>&lt;img src="https://codemario318.github.io/post/go_1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h2 id="변수">변수&lt;/h2>
+&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/golang/1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/1/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h2 id="변수">변수&lt;/h2>
 &lt;h3 id="기본-선언">기본 선언&lt;/h3>
 &lt;p>변수는 Go 키워드 &lt;code>var&lt;/code>을 사용하여 선언한다. &lt;code>var&lt;/code> 키워드 뒤에 변수명을 적고 변수 타입을 적는다.&lt;/p>
 &lt;p>변수를 선언하면서 초기값을 지정하지 않으면, Go는 Zero Value를 기본적으로 할당한다.&lt;/p>
@@ -18072,7 +17871,7 @@ data-flex-basis="1021px"
 &lt;/li>
 &lt;li>많은 데이터 전송과 최대 처리량을 유지하기에 대량 데이터 스트리밍에 적합하다.&lt;/li>
 &lt;li>상태 변경이 시간순으로 기록되어야 하는 응용 프로그램인 이벤트 소싱(Event Sourcing) 저장소로 적합하다.&lt;/li>
-&lt;/ul></description></item><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript_tutorial_2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
+&lt;/ul></description></item><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript/tutorial/2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
 &lt;p>타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다.&lt;/p>
 &lt;p>&lt;code>: type&lt;/code> 구문을 식별자 뒤에 붙이는 타입 어노테이션으로 사용한다.&lt;/p>
 &lt;ul>
@@ -18722,7 +18521,7 @@ data-flex-basis="1021px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">isItSummer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">MonthSecond&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Dec&lt;/span>&lt;span class="p">));&lt;/span> &lt;span class="c1">//error TS2345: Argument of type &amp;#39;MonthSecond.Dec&amp;#39; is not assignable to parameter of type &amp;#39;Month&amp;#39;.
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>TypeScript Tutorial - 1. Gettig Started(1)</title><link>https://codemario318.github.io/post/typescript_tutorial_1_1_1/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_1_1_1/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1. Gettig Started(1)" />&lt;h2 id="setup">Setup&lt;/h2>
+&lt;/div></description></item><item><title>TypeScript Tutorial - 1. Gettig Started(1)</title><link>https://codemario318.github.io/post/typescript/tutorial/1/1/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/1/1/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1. Gettig Started(1)" />&lt;h2 id="setup">Setup&lt;/h2>
 &lt;h3 id="tools">Tools&lt;/h3>
 &lt;ul>
 &lt;li>Node.js: TS 컴파일러 실행을 위해 필요함&lt;/li>
@@ -18764,10 +18563,10 @@ TS 코드를 실행하고 REPL(read-eval-print loop: 스크립트 실행 환경)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="what-is-typescript">What is TypeScript&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1.png"
 width="316"
 height="316"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="100"
@@ -18780,10 +18579,10 @@ data-flex-basis="240px"
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2.png"
 width="605"
 height="190"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="Untitled"
 class="gallery-image"
@@ -18954,7 +18753,7 @@ data-flex-basis="764px"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">tsc&lt;/span> &lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ts&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>TypeScript Tutorial - 1.2 Why use TypeScript</title><link>https://codemario318.github.io/post/typescript_tutorial_1_1_2/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_1_1_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1.2 Why use TypeScript" />&lt;p>타입 스크립트를 사용해야하는 2가지 중요한 이유가 있다.&lt;/p>
+&lt;/div></description></item><item><title>TypeScript Tutorial - 1.2 Why use TypeScript</title><link>https://codemario318.github.io/post/typescript/tutorial/1/2/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/1/2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1.2 Why use TypeScript" />&lt;p>타입 스크립트를 사용해야하는 2가지 중요한 이유가 있다.&lt;/p>
 &lt;ul>
 &lt;li>JS의 동적 타이핑으로 발생하는 여러 문제들을 예방할 수 있다.&lt;/li>
 &lt;li>앞으로 반영될 JS 문법을 당장 사용할 수 있다. (ES Next)&lt;/li>
@@ -19121,10 +18920,10 @@ JS 최신 문법은 간편한 기능을 제공하는 경우가 많고, 여러 �
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`The product &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> costs $&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">price&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1.png"
 width="656"
 height="56"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="1171"
@@ -19159,10 +18958,10 @@ data-flex-basis="2811px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">showProduct&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">price&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">name&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2.png"
 width="776"
 height="151"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="513"
@@ -20978,7 +20777,7 @@ Load Balancing을 위해 Web Server를 사용 가능하다&lt;/p>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
+&lt;/div></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker/0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화를 통해 더욱 신속하게 작업을 진행할 수 있다.&lt;/li>
 &lt;li>효율적으로 소프트웨어를 배포할 수 있다.&lt;/li>
@@ -21156,10 +20955,10 @@ Load Balancing을 위해 Web Server를 사용 가능하다&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="정리">정리&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_0.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/0/docker_0.png"
 width="1024"
 height="768"
-srcset="https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="133"
@@ -21169,10 +20968,10 @@ data-flex-basis="320px"
 &lt;p>LXC는 캐노니컬(Canonical)이 지원하고 있는 리눅스 컨테이너 프로젝트로 Docker의 경우 1.8 이전 버전까지 LXC를 이용해 구현해서 사용되었다.&lt;/p>
 &lt;p>이후 Docker는 libcontainer → runC(libcontainer의 리팩토링 구현체)로 자체 구현체를 갖게 되었다.&lt;/p>
 &lt;h2 id="docker">Docker&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/0/docker_1.png"
 width="639"
 height="285"
-srcset="https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="224"
@@ -22086,11 +21885,11 @@ InnoDB 스토리지 엔진의 리두 로그가 손상되면 MySQL 서버가 실�
 &lt;blockquote>
 &lt;p>마지막 풀 백업 시점부터 장애 시점까지의 바이너리 로그가 있다면 이용하는 것이 데이터 손실이 더 적을 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1.png"
+&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real-mysql/4/1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1.png"
 width="780"
 height="802"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 전체 구조"
 class="gallery-image"
@@ -22191,10 +21990,10 @@ MySQL 서버는 크게 &lt;strong>MySQL 엔진&lt;/strong>과 &lt;strong>스토�
 &lt;li>MyISAM: 사용자 스레드가 쓰기 작업까지 함께 처리하도록 설계되어, 일반적인 쿼리는 쓰기 버퍼링 기능을 사용할 수 없다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="메모리-할당-및-사용-구조">메모리 할당 및 사용 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3.png"
 width="640"
 height="423"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 메모리 할당 구조"
 class="gallery-image"
@@ -22285,10 +22084,10 @@ data-flex-basis="363px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="쿼리-실행-구조">쿼리 실행 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6.png"
 width="411"
 height="302"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="쿼리 실행 구조"
 class="gallery-image"

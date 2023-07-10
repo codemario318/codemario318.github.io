@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 16:46:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker_5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Infra on Mario Blog</title><link>https://codemario318.github.io/categories/infra/</link><description>Recent content in Infra on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 16:46:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/infra/index.xml" rel="self" type="application/rss+xml"/><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker/5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
 &lt;p>바인드 마운트는 호스트 파일 시스템에서 디렉토리를 컨테이너로 공유하는 다른 유형의 마운트이다. 어플리케이션을 개발할 때 바인드 마운트를 사용하여 소스 코드를 컨테이너로 마운트 할 수 있다. 파일 시스템 변경 사항을 감시하고 그에 따라 대응하는 프로세스를 컨테이너에서 실행할 수 있기 때문에, 컨테이너는 파일을 저장할 때마다 즉시 코드 변경 사항을 인식한다.&lt;/p>
 &lt;p>따라서 바인드 마운트와 파일 변경 상항을 감지하고 이에 따라 원하는 동작을 수행할 수 있으며, 이번 장에서는 자동으로 애플리케이션을 다시 시작하는 도구인 nodemon을 활용해본다.&lt;/p>
 &lt;h2 id="quick-volume-type-comparisons">Quick volume type comparisons&lt;/h2>
@@ -32,7 +32,7 @@
 &lt;td>No&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker_4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
+&lt;/table></description></item><item><title>4. Persist the DB</title><link>https://codemario318.github.io/post/docker/4/</link><pubDate>Mon, 24 Apr 2023 14:45:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/4/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/4/docker_cover.png" alt="Featured image of post 4. Persist the DB" />&lt;h2 id="컨테이너의-파일-시스템">컨테이너의 파일 시스템&lt;/h2>
 &lt;p>컨테이너가 실행되면, 파일시스템은 여러 레이어들을 사용한다. 각각의 컨테이너는 파일을 생성, 업데이트, 삭제하기 위한 자신만의 &amp;ldquo;스크래치 공간&amp;quot;을 가지는데, 다른 컨테이너에서 같은 이미지를 사용한다고 해도 어떤 변경 사항에 대해서도 다른 컨테이너에서 활용할 수 없다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Scratch image?&lt;/strong>&lt;br>
@@ -88,10 +88,10 @@
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;li>앱을 열고 데이터 todo 리스트 추가
-&lt;img src="https://codemario318.github.io/post/docker_4/docker_4_1.png"
+&lt;img src="https://codemario318.github.io/post/docker/4/docker_4_1.png"
 width="597"
 height="424"
-srcset="https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/4/docker_4_1_hu68522fa8409d403359979c76e53bfe35_21625_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="140"
@@ -133,7 +133,7 @@ data-flex-basis="337px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">]&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;code>Mountpoint&lt;/code>가 디스크상의 실제 위치를 의미하며, 대부분의 컴퓨터에서 호스트가 이 디렉토리에 접근하기 위해 root 권한이 필요하다.&lt;/p></description></item><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker_3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
+&lt;/div>&lt;p>&lt;code>Mountpoint&lt;/code>가 디스크상의 실제 위치를 의미하며, 대부분의 컴퓨터에서 호스트가 이 디렉토리에 접근하기 위해 root 권한이 필요하다.&lt;/p></description></item><item><title>3. Share the application</title><link>https://codemario318.github.io/post/docker/3/</link><pubDate>Mon, 24 Apr 2023 09:50:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/3/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/3/docker_cover.png" alt="Featured image of post 3. Share the application" />&lt;p>만들어진 Docker 이미지는 Docker 레지스트리를 활용하여 공유할 수 있다. 기본 레지스트리는 Docker Hub이다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>Docker ID&lt;/strong>&lt;br>
 Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker Hub는 세계에서 가장 큰 라이브러리, 커뮤니티로 무료로 Docker ID를 만들어 사용할 수 있다.&lt;/p>
@@ -147,10 +147,10 @@ Docker ID는 Docker Hub에 접근할 수 있는 권한을 제공한다. Docker H
 &lt;li>repo 이름 설정 및 public 설정 선택&lt;/li>
 &lt;li>Create 버튼 클릭&lt;/li>
 &lt;/ol>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_1.png"
 width="1253"
 height="205"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_1_hu89bccaeaea324e25ffd8262aa4581072_48485_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="611"
@@ -265,25 +265,25 @@ Play with Docker는 amd64 플랫폼을 사용하므로, Apple silicon 기반의 
 &lt;/div>
 &lt;/div>&lt;hr>
 &lt;p>Play with Docker에서 새 인스턴스를 추가한 후 명령을 실행한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_2.png"
 width="1392"
 height="1423"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_2_hue42f2ec04c2670e4d73e375ebf77b0b0_371084_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="97"
 data-flex-basis="234px"
 >
-&lt;img src="https://codemario318.github.io/post/docker_3/docker_3_3.png"
+&lt;img src="https://codemario318.github.io/post/docker/3/docker_3_3.png"
 width="1392"
 height="1423"
-srcset="https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/3/docker_3_3_hucf2a4d924a5da82a05422408a50d69e5_192788_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="97"
 data-flex-basis="234px"
 >&lt;/p>
-&lt;p>정상적으로 동작하는 것을 확인할 수 있다.&lt;/p></description></item><item><title>2. Update the application</title><link>https://codemario318.github.io/post/docker_2/</link><pubDate>Mon, 24 Apr 2023 09:19:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_2/docker_cover.png" alt="Featured image of post 2. Update the application" />&lt;p>애플리케이션과 컨테이너 이미지를 업데이트 및 삭제할 수 있다.&lt;/p>
+&lt;p>정상적으로 동작하는 것을 확인할 수 있다.&lt;/p></description></item><item><title>2. Update the application</title><link>https://codemario318.github.io/post/docker/2/</link><pubDate>Mon, 24 Apr 2023 09:19:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/2/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/2/docker_cover.png" alt="Featured image of post 2. Update the application" />&lt;p>애플리케이션과 컨테이너 이미지를 업데이트 및 삭제할 수 있다.&lt;/p>
 &lt;h2 id="소스-코드-업데이트-하기">소스 코드 업데이트 하기&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -382,7 +382,7 @@ CLI를 통해 컨테이너를 중지하고, 삭제하기 위해서 컨테이너 
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9732df7c2474fea5223bcd682bbd1a3b7f18cc1f965330bd666478d10a7a73cb
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>이전과 같은 &lt;code>docker run&lt;/code> 명령으로 업데이트된 애플리케이션이 실행된 것을 확인할 수 있다.&lt;/p></description></item><item><title>1. Containerize an application</title><link>https://codemario318.github.io/post/docker_1/</link><pubDate>Fri, 21 Apr 2023 16:08:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_1/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_1/docker_cover.png" alt="Featured image of post 1. Containerize an application" />&lt;h2 id="get-the-app">Get the app&lt;/h2>
+&lt;/div>&lt;p>이전과 같은 &lt;code>docker run&lt;/code> 명령으로 업데이트된 애플리케이션이 실행된 것을 확인할 수 있다.&lt;/p></description></item><item><title>1. Containerize an application</title><link>https://codemario318.github.io/post/docker/1/</link><pubDate>Fri, 21 Apr 2023 16:08:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/1/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/1/docker_cover.png" alt="Featured image of post 1. Containerize an application" />&lt;h2 id="get-the-app">Get the app&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -570,15 +570,15 @@ CLI를 통해 컨테이너를 중지하고, 삭제하기 위해서 컨테이너 
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2b5285b3ebfa getting-started &lt;span class="s2">&amp;#34;docker-entrypoint.s…&amp;#34;&lt;/span> &lt;span class="m">3&lt;/span> minutes ago Up &lt;span class="m">3&lt;/span> minutes 0.0.0.0:3000-&amp;gt;3000/tcp youthful_yonath
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker_1/docker_1_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/docker/1/docker_1_1.png"
 width="3024"
 height="1964"
-srcset="https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/1/docker_1_1_hua28a16394a2a062e4726149f09f9ef2e_285699_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="153"
 data-flex-basis="369px"
->&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes_5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
+>&lt;/p></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes/5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
 &lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
 &lt;p>노드의 컴포넌트에는 &lt;code>kubelet&lt;/code>, 컨테이너 런타임 그리고 &lt;code>kube-proxy&lt;/code>가 포함된다.&lt;/p>
@@ -951,7 +951,7 @@ data-flex-basis="369px"
 &lt;/ul>
 &lt;p>테스트를 지원하고 피드벡을 제공하기 위한 정보는 &lt;a class="link" href="https://github.com/kubernetes/enhancements/issues/2400" target="_blank" rel="noopener"
 >KEP-2400&lt;/a> 및 &lt;a class="link" href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md" target="_blank" rel="noopener"
->디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes_4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
+>디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes/4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
 &lt;blockquote>
 &lt;p>⛔ 쿠버네티스 오브젝트는 하나의 기법만 사용하여 관리해야 한다. 동일한 오브젝트에 대해 여러 기법을 혼용하면 오동작이 발생할 수 있다.&lt;/p>
 &lt;/blockquote>
@@ -1013,7 +1013,7 @@ data-flex-basis="369px"
 &lt;li>새로운 오브젝트 생성을 위한 템플릿을 제공하지 않는다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="명령형-오브젝트-구성">명령형 오브젝트 구성&lt;/h2>
-&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/kubernetes_3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_3/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
+&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/kubernetes/3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/3/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
 &lt;p>쿠버네티스 오브젝트는 &lt;strong>하나의 의도를 담은 레코드&lt;/strong>이다.&lt;/p>
 &lt;/blockquote>
 &lt;p>쿠버네티스 오브젝트는 쿠버네티스 시스템에서 영속성을 가지는 오브젝트이다. 쿠버네티스는 클러스터의 상태를 나타내기 위해 &lt;code>.yaml&lt;/code>로 작성된 오브젝트에 상세 내용을 기술한다.&lt;/p>
@@ -1090,8 +1090,8 @@ data-flex-basis="369px"
 &lt;/ul>
 &lt;p>spec에 대한 정확한 포맷은 모든 쿠버네티스 오브젝트마다다르고, 그 오브젝트 특유의 중첩된 필드를 포함한다.&lt;/p>
 &lt;p>&lt;a class="link" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/" target="_blank" rel="noopener"
->https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes_2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_2/kubernetes_2_1.svg"
+>https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes/2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_2_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>컨테이너화 된 애프릴케이션을 실행하는 노드라고 하는 워커 머신의 집합으로, 모든 클러스터는 최소 한 개의 워커 노드를 가진다.&lt;/p>
@@ -1171,7 +1171,7 @@ loading="lazy"
 &lt;blockquote>
 &lt;p>&lt;strong>CRI란?&lt;/strong>&lt;br>
 클러스터 컴포넌트를 다시 컴파일하지 않아도 Kubelet이 다양한 컨테이너 런타임을 사용할 수 있도록 하는 플러그인 인터페이스이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes_1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes_1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
+&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes/1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장 가능한 오픈소스 플랫폼이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있다.&lt;/li>
@@ -1206,7 +1206,7 @@ Ubuntu, RHEL, CoreOS, 온-프레미스, 주요 퍼블릭 클라우드와 어디�
 &lt;/ul>
 &lt;/blockquote>
 &lt;h2 id="쿠버네티스가-왜-필요하고-무엇을-할-수-있나">쿠버네티스가 왜 필요하고 무엇을 할 수 있나&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes_1/kubernetes_1_1.svg"
+&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_1_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>기존 &amp;ldquo;전통적인 배포&amp;rdquo;, &amp;ldquo;가상화된 배포&amp;quot;를 거치며 &amp;ldquo;컨테이너를 통한 배포&amp;rdquo; 까지 발전해왔다.&lt;/p>
@@ -1223,7 +1223,7 @@ loading="lazy"
 &lt;h3 id="자동화된-복구self-healing">자동화된 복구(self-healing)&lt;/h3>
 &lt;p>쿠버네티스는 실패한 컨테이너를 다시 시작하고, 컨테이너를 교체하며, &amp;lsquo;사용자 정의 상태 검사&amp;rsquo;에 응답하지 않는 컨테이너를 죽이고, 서비스 준비가 끝날 때까지 그러한 과정을 클라이언트에 보여주지 않는다.&lt;/p>
 &lt;h3 id="시크릿과-구성-관리">시크릿과 구성 관리 &lt;/h3>
-&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker_0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker_0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker_0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
+&lt;p>쿠버네티스를 사용하면 암호, OAuth 토큰 및 SSH 키와 같은 중요한 정보를 저장하고 관리 할 수 있다. 컨테이너 이미지를 재구성하지 않고 스택 구성에 시크릿을 노출하지 않고도 시크릿 및 애플리케이션 구성을 배포 및 업데이트 할 수 있다.&lt;/p></description></item><item><title>0. 컨테이너와 도커</title><link>https://codemario318.github.io/post/docker/0/</link><pubDate>Sat, 15 Apr 2023 16:30:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/0/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/0/docker_cover.png" alt="Featured image of post 0. 컨테이너와 도커" />&lt;p>컨테이너는 애플리케이션, 실행 라이브러리, 시스템 도구, 시스템 라이브러리 등을 포함하여 애플리케이션과 그 애플리케이션을 실행하는 환경을 패키징하여 이식성이 뛰어난 소프트웨어 패키지로 만든것이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화를 통해 더욱 신속하게 작업을 진행할 수 있다.&lt;/li>
 &lt;li>효율적으로 소프트웨어를 배포할 수 있다.&lt;/li>
@@ -1401,10 +1401,10 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="정리">정리&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_0.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/0/docker_0.png"
 width="1024"
 height="768"
-srcset="https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/0/docker_0_hue9d68cbf9111f86fb8f3a72a1a21b38c_93810_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="133"
@@ -1414,10 +1414,10 @@ data-flex-basis="320px"
 &lt;p>LXC는 캐노니컬(Canonical)이 지원하고 있는 리눅스 컨테이너 프로젝트로 Docker의 경우 1.8 이전 버전까지 LXC를 이용해 구현해서 사용되었다.&lt;/p>
 &lt;p>이후 Docker는 libcontainer → runC(libcontainer의 리팩토링 구현체)로 자체 구현체를 갖게 되었다.&lt;/p>
 &lt;h2 id="docker">Docker&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/docker_0/docker_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/docker/0/docker_1.png"
 width="639"
 height="285"
-srcset="https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker_0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/docker/0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/docker/0/docker_1_huc907679b82100c393cee3016a545dcdb_13595_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="224"

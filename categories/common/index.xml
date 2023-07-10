@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:11:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean_code_15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:11:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean-code/15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
 &lt;ul>
 &lt;li>생성자 두 번째 인수와 세 번째 인수를 비교한다.&lt;/li>
 &lt;li>comapct 함수에 문자열을 넣으면 결과 메시지 앞에 문자열이 추가된다.&lt;/li>
@@ -950,7 +950,7 @@
 &lt;p>코드를 리펙터링 하다보면 원래 했던 변경을 되돌리는 경우가 흔하다.&lt;/p>
 &lt;blockquote>
 &lt;p>리펙터링은 코드가 어느 수준에 이를때까지 수많은 시행착오를 반복하는 작업이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean_code_17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
+&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean-code/17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
 &lt;p>Heruistics(발견법): 경험, 학습 등으로 습득한 직감을 이용해 현실적으로 만족할 만한 수준의 해답을 찾는 것&lt;/p>
 &lt;/blockquote>
 &lt;p>리펙토링(마틴 파울러)에서 언급된 내용과 저자의 경험을 합쳐 깨끗하지 못한 코드를 발견하는 방법에 대하여 설명했다.&lt;/p>
@@ -1485,7 +1485,7 @@
 &lt;h3 id="t9-테스트는-빨라야한다">T9: 테스트는 빨라야한다&lt;/h3>
 &lt;p>느린 테스트 케이스는 실행하지 않게 된다. 일정이 촉박하면 느린 테스트 케이스를 제일 먼저 건너 뛴다.&lt;/p>
 &lt;h2 id="결론">결론&lt;/h2>
-&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean_code_14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
+&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean-code/14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
 &lt;p>프로그래밍은 과학보다 공예에 가깝다. 깨끗한 코드를 짜려면 먼저 지저분한 코드를 짠 뒤에 정리해야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="args-구현">Args 구현&lt;/h2>
@@ -4299,7 +4299,7 @@
 &lt;li>규모가 있는 코드를 한번에 변경하는 것은 매우 어렵다.&lt;/li>
 &lt;li>따라서 테스트를 기반으로 조금씩 변경하는 과정을 거쳤다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean_code_12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
+&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean-code/12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
 &lt;p>창발성: 떠오름 현상, 創發性, emergent property, emergence&lt;/p>
 &lt;ol>
 &lt;li>하위 계층에서 없는 특성이나 행동이 상위 계층에서 자발적으로 돌연히 출현하는 현상, 불시에 솟아나는 특성(wikipedia)&lt;/li>
@@ -4664,7 +4664,7 @@
 &lt;p>경험을 대신할 단순한 개발 기법은 없다. 하지만 소개하는 기법은 저자들이 수십 년 동안 쌓은 경험의 정수다.&lt;/p>
 &lt;blockquote>
 &lt;p>💡 단순한 설계 규칙을 따른다면 우수한 기법과 원칙을 단번에 활용할 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
+&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean-code/10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
 &lt;h2 id="클래스-체계">클래스 체계&lt;/h2>
 &lt;p>표준 자바 관례에 의하면 아래 순서로 선언하게 된다.&lt;/p>
 &lt;ul>
@@ -5350,7 +5350,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>결합도를 최대한 낮추면 변경으로 부터 격리할 수 있다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean_code_9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean-code/9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
 &lt;p>테스트를 급하게 서두르는 와중에 많은 개발자들이 제대로 된 테스트 케이스를 작성해야한다는 중요한 사실을 놓친다.&lt;/p>
 &lt;h2 id="tdd-법칙-세-가지">TDD 법칙 세 가지&lt;/h2>
 &lt;ol>
@@ -5662,7 +5662,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>테스트 코드를 먼저 만드는 이유는 테스트에 적합한 실제 코드를 만드는데 도움이 되기 때문이다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean_code_7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
+&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean-code/7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
 &lt;p>뭔가 잘못되면 바로잡을 책임은 바로 우리 프로그래머에게 있다.&lt;/p>
 &lt;/blockquote>
 &lt;p>깨끗한 코드와 오류처리는 연관이 있다. 상당수 코드들은 전적으로 오류 처리 코드에 좌우된다. 여기저기 흩어진 오류 처리 코드 때문에 실제 코드가 하는 일을 파악하기가 거의 불가능하다는 의미다.&lt;/p>
@@ -6284,7 +6284,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>null은 사용자의 실수를 유발하므로 되도록 자제해야 한다.&lt;/li>
-&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean_code_6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
+&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean-code/6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
 &lt;blockquote>
 &lt;p>사용자가 구현을 모른 채 자료의 핵심을 조작할 수 있어야 진정한 의미의 클래스다.&lt;/p>
 &lt;/blockquote>
@@ -6787,7 +6787,7 @@
 &lt;li>객체지향을 조금 다른 관점에서 접근하여 깨끗한 코드를 만드는 방법을 추천하는 책&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean_code_3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean-code/3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
 &lt;ul>
 &lt;li>어떻게 해야 읽기 쉽고 이해하기 쉬운 함수를 만들 수 있을까&lt;/li>
 &lt;li>의도를 분명히 표현하는 함수를 어떻게 구현할수 있을까&lt;/li>
@@ -6829,7 +6829,7 @@
 &lt;p>Switch문은 본질적으로 switch 문은 N 가지를 처리하기 때문에 작게, 한 가지 작업만 수행하게 만들기 어렵다.&lt;/p>
 &lt;blockquote>
 &lt;p>완전히 사용하지 않을 방법은 없기 때문에 다형성을 사용하여 저차원 클래스에 숨기고 반복하지 않게 만들어야 한다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean_code_1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
+&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean-code/1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
 &lt;li>코드는 요구사항을 표현하는 도구이다.
 &lt;ul>
 &lt;li>고도로 추상화된 언어나 특정 응용 분야 언어로 기술하는 명세 역시 코드이다.&lt;/li>
@@ -6908,11 +6908,11 @@
 &lt;li>결코 설계자의 의도를 숨기지 않는다.&lt;/li>
 &lt;li>명쾌한 추상화와 단순한 제어문으로 가득하다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;strong>가독성을 강조하고 있다.&lt;/strong>&lt;/p></description></item><item><title>Golang: 13. Go 채널</title><link>https://codemario318.github.io/post/go_13/</link><pubDate>Thu, 20 Apr 2023 13:38:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_13/</guid><description>&lt;img src="https://codemario318.github.io/post/go_13/go_cover.webp" alt="Featured image of post Golang: 13. Go 채널" />&lt;p>Go 언어에서 채널은 고루틴을 연결해주는 통로(파이프)다. 기본적으로 채널은 양방향이고 고루틴이 아래 이미지와 같이 동일한 채널을 통해 데이터를 보내거나 받을 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/go_13/go_13_1.png"
+&lt;p>&lt;strong>가독성을 강조하고 있다.&lt;/strong>&lt;/p></description></item><item><title>Golang: 13. Go 채널</title><link>https://codemario318.github.io/post/golang/13/</link><pubDate>Thu, 20 Apr 2023 13:38:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/13/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/13/go_cover.webp" alt="Featured image of post Golang: 13. Go 채널" />&lt;p>Go 언어에서 채널은 고루틴을 연결해주는 통로(파이프)다. 기본적으로 채널은 양방향이고 고루틴이 아래 이미지와 같이 동일한 채널을 통해 데이터를 보내거나 받을 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/golang/13/go_13_1.png"
 width="725"
 height="235"
-srcset="https://codemario318.github.io/post/go_13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/go_13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/golang/13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/golang/13/go_13_1_huaf1cd571ed3739fe89c2eeb7ddbdd6d9_16560_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="308"
@@ -7339,7 +7339,7 @@ data-flex-basis="740px"
 &lt;/div>&lt;p>채널 range문은 range 키워드 다음에 명시한 채널로부터 데이터를 계속 수신하다가 채널이 닫힌 것을 감지하면 for 루프를 종료한다.&lt;/p>
 &lt;h2 id="채널-select-문">채널 select 문&lt;/h2>
 &lt;p>select문은 복수 채널들을 기다리면서 준비된 채널을 실행하는 기능을 제공한다.&lt;/p>
-&lt;p>select문은 여러개의 case문에서 각각 다른 채널을 기다리다가 준비가 된 채널 case를 실행한다. select문은 case 채널들이 준비되지 않으면 계속 대기하게 되고, 가장 먼저 도착한 채널의 case를 실행한다. 만약 복수 채널에 신호가 오면, Go 런타임이 랜덤하게 그중 한 개를 선택하게 된다. select문에 default문이 있으면, case문 채널이 준비되지 않더라도 계속 대기하지 않고 바로 default문을 실행한다.&lt;/p></description></item><item><title>Golang: 12. Go 루틴</title><link>https://codemario318.github.io/post/go_12/</link><pubDate>Thu, 20 Apr 2023 13:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_12/</guid><description>&lt;img src="https://codemario318.github.io/post/go_12/go_cover.webp" alt="Featured image of post Golang: 12. Go 루틴" />&lt;p>Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 &lt;code>goroutine&lt;/code>을 실행한다.&lt;/p>
+&lt;p>select문은 여러개의 case문에서 각각 다른 채널을 기다리다가 준비가 된 채널 case를 실행한다. select문은 case 채널들이 준비되지 않으면 계속 대기하게 되고, 가장 먼저 도착한 채널의 case를 실행한다. 만약 복수 채널에 신호가 오면, Go 런타임이 랜덤하게 그중 한 개를 선택하게 된다. select문에 default문이 있으면, case문 채널이 준비되지 않더라도 계속 대기하지 않고 바로 default문을 실행한다.&lt;/p></description></item><item><title>Golang: 12. Go 루틴</title><link>https://codemario318.github.io/post/golang/12/</link><pubDate>Thu, 20 Apr 2023 13:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/12/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/12/go_cover.webp" alt="Featured image of post Golang: 12. Go 루틴" />&lt;p>Go루틴(goroutine)은 Go 런타임이 관리하는 Lightweight 논리적 (혹은 가상) 쓰레드이다. Go에서 go 키워드를 사용하여 함수를 호출하면, 런타임시 새로운 &lt;code>goroutine&lt;/code>을 실행한다.&lt;/p>
 &lt;p>고루틴은 비동기적으로 함수루틴을 실행하므로, 여러 코드를 동시에 실행하는데 사용된다.&lt;/p>
 &lt;p>고루틴은 OS 쓰레드보다 훨씬 가볍게 비동기 Concurrent(동시성) 처리를 구현하기 위하여 만든것으로, 기본적으로 Go 런타임이 자체 관리한다.&lt;/p>
 &lt;ul>
@@ -7592,7 +7592,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>동시성과 병렬성은 비슷하게 들리지만 전혀 다른 개념이다.&lt;/p></description></item><item><title>Golang: 11. defer와 panic</title><link>https://codemario318.github.io/post/go_11/</link><pubDate>Thu, 20 Apr 2023 13:26:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_11/</guid><description>&lt;img src="https://codemario318.github.io/post/go_11/go_cover.webp" alt="Featured image of post Golang: 11. defer와 panic" />&lt;h2 id="지연실행-defer">지연실행 defer&lt;/h2>
+&lt;/div>&lt;p>동시성과 병렬성은 비슷하게 들리지만 전혀 다른 개념이다.&lt;/p></description></item><item><title>Golang: 11. defer와 panic</title><link>https://codemario318.github.io/post/golang/11/</link><pubDate>Thu, 20 Apr 2023 13:26:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/11/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/11/go_cover.webp" alt="Featured image of post Golang: 11. defer와 panic" />&lt;h2 id="지연실행-defer">지연실행 defer&lt;/h2>
 &lt;p>Go 언어의 &lt;code>defer&lt;/code> 키워드는 특정 문장 혹은 함수를 나중에 (defer를 호출하는 함수의 결과를 반환하기 직전에) 실행된다.&lt;/p>
 &lt;p>일반적으로 defer는 C#, Java 같은 언어에서 finally 블럭처럼 마지막에 Clena-up 작업을 위해 사용된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -7765,7 +7765,7 @@ data-flex-basis="740px"
 &lt;/div>
 &lt;/div>&lt;ul>
 &lt;li>recover 함수를 사용하면 panic 상태를 제거하고 openFile() 다음 문장인 println()을 호출하게 된다.&lt;/li>
-&lt;/ul></description></item><item><title>Golang: 10. 에러</title><link>https://codemario318.github.io/post/go_10/</link><pubDate>Thu, 20 Apr 2023 13:25:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_10/</guid><description>&lt;img src="https://codemario318.github.io/post/go_10/go_cover.webp" alt="Featured image of post Golang: 10. 에러" />&lt;p>Go는 내장 타입으로 &lt;code>error&lt;/code> 라는 인터페이스 타입을 갖는다. Go 에러는 이 &lt;code>error&lt;/code> 인터페이스를 통해서 주고 받게 되는데, 메서드 하나를 갖는다.&lt;/p>
+&lt;/ul></description></item><item><title>Golang: 10. 에러</title><link>https://codemario318.github.io/post/golang/10/</link><pubDate>Thu, 20 Apr 2023 13:25:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/10/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/10/go_cover.webp" alt="Featured image of post Golang: 10. 에러" />&lt;p>Go는 내장 타입으로 &lt;code>error&lt;/code> 라는 인터페이스 타입을 갖는다. Go 에러는 이 &lt;code>error&lt;/code> 인터페이스를 통해서 주고 받게 되는데, 메서드 하나를 갖는다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -7849,7 +7849,7 @@ data-flex-basis="740px"
 &lt;/div>&lt;p>예제에서 otherFunc()를 호출한 후 반환된 error의 타입을 통해 여러 유형의 에러를 처리할 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>모든 에러는 error 인터페이스를 구현하므로 마지막 case문은 모든 에러에 적용된다.&lt;/li>
-&lt;/ul></description></item><item><title>Golang: 9. 인터페이스</title><link>https://codemario318.github.io/post/go_9/</link><pubDate>Thu, 20 Apr 2023 13:08:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_9/</guid><description>&lt;img src="https://codemario318.github.io/post/go_9/go_cover.webp" alt="Featured image of post Golang: 9. 인터페이스" />&lt;p>구조체가 필드들의 집합체라면, &lt;code>interface&lt;/code>는 메서드들의 집합체이다.&lt;/p>
+&lt;/ul></description></item><item><title>Golang: 9. 인터페이스</title><link>https://codemario318.github.io/post/golang/9/</link><pubDate>Thu, 20 Apr 2023 13:08:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/9/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/9/go_cover.webp" alt="Featured image of post Golang: 9. 인터페이스" />&lt;p>구조체가 필드들의 집합체라면, &lt;code>interface&lt;/code>는 메서드들의 집합체이다.&lt;/p>
 &lt;p>인터페이스는 타입(type)이 구현해야 하는 메서드 원형(prototype)들을 정의한다. 어떠한 사용자 정의 타입이 인터페이스를 구현하려면 선언한 인터페이스가 갖는 모든 메서드들을 구현하면 된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -8017,7 +8017,7 @@ data-flex-basis="740px"
 &lt;/div>
 &lt;/div>&lt;h2 id="type-assertion">Type Assertion&lt;/h2>
 &lt;p>인터페이스 타입의 x와 타입 T에 대하여 x.(T)로 표현했을 때, 이는 x가 nil이 아니며, x는 T 타입에 속한다는 것을 확인한다. 이러한 표현방식을 Type Assertion 이라고 부른다.&lt;/p>
-&lt;p>만약 x가 nil 이거나 x의 타입이 T가 아니라면, 런타임 에러가 발생하고, x가 T 타입인경우는 T 타입 x를 반환한다.&lt;/p></description></item><item><title>Golang: 8. 메서드</title><link>https://codemario318.github.io/post/go_8/</link><pubDate>Thu, 20 Apr 2023 12:34:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_8/</guid><description>&lt;img src="https://codemario318.github.io/post/go_8/go_cover.webp" alt="Featured image of post Golang: 8. 메서드" />&lt;p>Go 언어는 OOP를 구조체와 메서드를 이용하는 방식으로 지원한다.&lt;/p>
+&lt;p>만약 x가 nil 이거나 x의 타입이 T가 아니라면, 런타임 에러가 발생하고, x가 T 타입인경우는 T 타입 x를 반환한다.&lt;/p></description></item><item><title>Golang: 8. 메서드</title><link>https://codemario318.github.io/post/golang/8/</link><pubDate>Thu, 20 Apr 2023 12:34:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/8/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/8/go_cover.webp" alt="Featured image of post Golang: 8. 메서드" />&lt;p>Go 언어는 OOP를 구조체와 메서드를 이용하는 방식으로 지원한다.&lt;/p>
 &lt;p>다른 언어들이 클래스가 내부에 데이터와 메서드를 함께 갖는 것과 달리 Go 언어에서는 구조체가 데이터만을 가지고, 메서드는 별도로 분리하여 정의한다.&lt;/p>
 &lt;p>Go 메서드는 특별한 형태의 함수이다. 메서드는 함수 정의에서 func 키워드와 함수명 사이에 “그 함수가 어떤 구조체를 위한 메서드인지” 표시한다.&lt;/p>
 &lt;p>receiver로 부르며 메서드가 속한 구조체 타입과 변수명을 지정하는데, 구조체 변수명은 함수 내에서 입력 파라미터처럼 사용된다.&lt;/p>
@@ -8092,7 +8092,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="포인터-리시버">포인터 리시버&lt;/h2>
-&lt;p>포인터 리시버는 구조체의 포인터를 전달한다. 메서드 내의 필드값 변경이 그대로 호출자에서 반영된다.&lt;/p></description></item><item><title>Golang: 7. 구조체</title><link>https://codemario318.github.io/post/go_7/</link><pubDate>Thu, 20 Apr 2023 12:30:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_7/</guid><description>&lt;img src="https://codemario318.github.io/post/go_7/go_cover.webp" alt="Featured image of post Golang: 7. 구조체" />&lt;p>Go 언어는 객체지향 프로그래밍을 고유의 방식으로 지원한다.&lt;/p>
+&lt;p>포인터 리시버는 구조체의 포인터를 전달한다. 메서드 내의 필드값 변경이 그대로 호출자에서 반영된다.&lt;/p></description></item><item><title>Golang: 7. 구조체</title><link>https://codemario318.github.io/post/golang/7/</link><pubDate>Thu, 20 Apr 2023 12:30:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/7/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/7/go_cover.webp" alt="Featured image of post Golang: 7. 구조체" />&lt;p>Go 언어는 객체지향 프로그래밍을 고유의 방식으로 지원한다.&lt;/p>
 &lt;ul>
 &lt;li>클래스, 객체, 상속 개념이 없다.&lt;/li>
 &lt;/ul>
@@ -8251,7 +8251,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>생성자 함수인 &lt;code>newDict()&lt;/code>는 &lt;code>dict&lt;/code>라는 구조체의 &lt;code>map&lt;/code> 필드를 초기화한 후 구조체 포인터를 반호나한다. &lt;code>main&lt;/code> 함수에서 구조체 개체를 만들 때 &lt;code>dict&lt;/code>를 직접 생성하지 않고 대신 생성자 함수를 통해 이미 초기환 된 &lt;code>data&lt;/code> 맵 필드를 사용할 수 있다.&lt;/p></description></item><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/go_6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_6/</guid><description>&lt;img src="https://codemario318.github.io/post/go_6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
+&lt;/div>&lt;p>생성자 함수인 &lt;code>newDict()&lt;/code>는 &lt;code>dict&lt;/code>라는 구조체의 &lt;code>map&lt;/code> 필드를 초기화한 후 구조체 포인터를 반호나한다. &lt;code>main&lt;/code> 함수에서 구조체 개체를 만들 때 &lt;code>dict&lt;/code>를 직접 생성하지 않고 대신 생성자 함수를 통해 이미 초기환 된 &lt;code>data&lt;/code> 맵 필드를 사용할 수 있다.&lt;/p></description></item><item><title>Golang: 6. 패키지</title><link>https://codemario318.github.io/post/golang/6/</link><pubDate>Thu, 20 Apr 2023 12:28:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/6/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/6/go_cover.webp" alt="Featured image of post Golang: 6. 패키지" />&lt;p>Go는 패키지를 통해 모듈화, 재사용 기능을 제공한다. 패키지를 사용해서 작은 단위의 컴포넌트를 작성하고, 이러한 작은 패키지들을 활용해서 프로그램을 작성할 것을 권장한다.&lt;/p>
 &lt;p>Go는 실제 프로그램 개발에 필요한 많음 패키지들을 표준 라이브러리로 제공한다. 이러한 표준 라이브러리 패키지들을 &lt;code>GOROOT/pkg&lt;/code> 안에 존재한다. &lt;code>GOROOT&lt;/code> 환경변수는 Go 설치 디렉토리를 가르키는데, 보통 Go 설치시 자동으로 추가된다.&lt;/p>
 &lt;p>Go에 사용하는 표준 패키지들은 &lt;a class="link" href="https://golang.org/pkg" target="_blank" rel="noopener"
 >https://golang.org/pkg&lt;/a> 에 자세히 설명되어 있다.&lt;/p>
@@ -8426,7 +8426,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">C:&lt;span class="se">\G&lt;/span>oSrc&lt;span class="se">\s&lt;/span>rc&lt;span class="se">\t&lt;/span>estlib
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/go_5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_5/</guid><description>&lt;img src="https://codemario318.github.io/post/go_5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
+&lt;/div></description></item><item><title>Golang: 5. 컬렉션</title><link>https://codemario318.github.io/post/golang/5/</link><pubDate>Thu, 20 Apr 2023 12:17:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/5/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/5/go_cover.webp" alt="Featured image of post Golang: 5. 컬렉션" />&lt;h2 id="배열-array">배열 Array&lt;/h2>
 &lt;p>배열은 연속적인 메모리 공간에 동일한 타입의 데이터를 순차적으로 저장하는 자료구조이다.&lt;/p>
 &lt;p>배열의 선언은 &lt;code>var 변수명 [배열크기] 데이터타입&lt;/code> 과 같이 한다. Go에서 배열크기는 Type을 구성하는 한 요소이다. 따라서, [3]int와 [5]int는 서로 다른 타입으로 인식된다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -8965,7 +8965,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="for-루프를-사용한-map-열거">for 루프를 사용한 Map 열거&lt;/h2>
-&lt;p>Map이 가진 모든 요소들을 출력하기 위해, &lt;code>for range&lt;/code> 루프를 사용할 수 있다. Map 컬렉션에 &lt;code>for range&lt;/code>를 사용하면, Map 키와 Map 값 2개 데이터를 반환한다.&lt;/p></description></item><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/go_4/</link><pubDate>Thu, 20 Apr 2023 12:10:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_4/</guid><description>&lt;img src="https://codemario318.github.io/post/go_4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
+&lt;p>Map이 가진 모든 요소들을 출력하기 위해, &lt;code>for range&lt;/code> 루프를 사용할 수 있다. Map 컬렉션에 &lt;code>for range&lt;/code>를 사용하면, Map 키와 Map 값 2개 데이터를 반환한다.&lt;/p></description></item><item><title>Golang: 4. 함수</title><link>https://codemario318.github.io/post/golang/4/</link><pubDate>Thu, 20 Apr 2023 12:10:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/4/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/4/go_cover.webp" alt="Featured image of post Golang: 4. 함수" />&lt;p>&lt;code>func&lt;/code> 키워드를 사용하여 정의한다.&lt;/p>
 &lt;p>함수 파라미터는 0개 이상 사용할 수 있는데, 각 파라미터는 파라미터명 뒤에 &lt;code>int&lt;/code>, &lt;code>string&lt;/code> 등 파라미터 타입을 정의한다.&lt;/p>
 &lt;p>함수의 반환 타입은 파라미터 괄호 뒤에 적는다.&lt;/p>
 &lt;p>함수는 패키지 안에 정의되며 호출되는 함수가 호출하는 함수의 반드시 앞에 위치해야 할 필요는 없다.&lt;/p>
@@ -9161,7 +9161,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/go_3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_3/</guid><description>&lt;img src="https://codemario318.github.io/post/go_3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
+&lt;/div>&lt;p>마지막에 빈 &lt;code>return&lt;/code>이 있지만 named return parameter로 정의된 형태로 반환된다. &lt;code>return&lt;/code> 은 반환값에 아무런 영향을 주지 않지만 생략하면 에러가 발생한다.&lt;/p></description></item><item><title>Golang: 3. 반복문</title><link>https://codemario318.github.io/post/golang/3/</link><pubDate>Thu, 20 Apr 2023 12:05:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/3/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/3/go_cover.webp" alt="Featured image of post Golang: 3. 반복문" />&lt;h2 id="for-문">for 문&lt;/h2>
 &lt;p>Go 언어에서 반복문은 &lt;code>for&lt;/code> 하나뿐이다. 다른 언어들과 비슷하게 &lt;code>for 초기값; 조건식; 증감 {...}&lt;/code> 형식을 따른다.&lt;/p>
 &lt;p>초기값, 조건식, 증감식은 경우에 따라 생략할 수 있고, &lt;code>초기값; 조건식; 증감&lt;/code> 을 둘러싸는 괄호를 추가하면 에러가 발생한다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -9353,7 +9353,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;code>break&lt;/code>의 레이블은 현재 보통 현재 &lt;code>for&lt;/code> 루프 바로 위에 적게 되는데, 현재 루프를 빠져나와 지정된 레이블로 이동하고, 동작한 &lt;code>break&lt;/code>문이 속한 &lt;code>for&lt;/code> 루프 전체의 다음 문장을 실행한다.&lt;/p></description></item><item><title>Golang: 2. 조건문</title><link>https://codemario318.github.io/post/go_2/</link><pubDate>Thu, 20 Apr 2023 12:00:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_2/</guid><description>&lt;img src="https://codemario318.github.io/post/go_2/go_cover.webp" alt="Featured image of post Golang: 2. 조건문" />&lt;h2 id="if-문">if 문&lt;/h2>
+&lt;/div>&lt;p>&lt;code>break&lt;/code>의 레이블은 현재 보통 현재 &lt;code>for&lt;/code> 루프 바로 위에 적게 되는데, 현재 루프를 빠져나와 지정된 레이블로 이동하고, 동작한 &lt;code>break&lt;/code>문이 속한 &lt;code>for&lt;/code> 루프 전체의 다음 문장을 실행한다.&lt;/p></description></item><item><title>Golang: 2. 조건문</title><link>https://codemario318.github.io/post/golang/2/</link><pubDate>Thu, 20 Apr 2023 12:00:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/2/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/2/go_cover.webp" alt="Featured image of post Golang: 2. 조건문" />&lt;h2 id="if-문">if 문&lt;/h2>
 &lt;p>if 문은 해당 조건이 맞으면 &lt;code>{}&lt;/code> 블럭 안의 내용을 실행한다.&lt;/p>
 &lt;ul>
 &lt;li>조건식을 &lt;code>()&lt;/code>로 둘러 싸지 않아도 된다.&lt;/li>
@@ -9561,7 +9561,7 @@ data-flex-basis="740px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/go_1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/go_1/</guid><description>&lt;img src="https://codemario318.github.io/post/go_1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h2 id="변수">변수&lt;/h2>
+&lt;/div></description></item><item><title>Golang: 1. 변수와 상수</title><link>https://codemario318.github.io/post/golang/1/</link><pubDate>Thu, 20 Apr 2023 11:56:40 +0900</pubDate><guid>https://codemario318.github.io/post/golang/1/</guid><description>&lt;img src="https://codemario318.github.io/post/golang/1/go_cover.webp" alt="Featured image of post Golang: 1. 변수와 상수" />&lt;h2 id="변수">변수&lt;/h2>
 &lt;h3 id="기본-선언">기본 선언&lt;/h3>
 &lt;p>변수는 Go 키워드 &lt;code>var&lt;/code>을 사용하여 선언한다. &lt;code>var&lt;/code> 키워드 뒤에 변수명을 적고 변수 타입을 적는다.&lt;/p>
 &lt;p>변수를 선언하면서 초기값을 지정하지 않으면, Go는 Zero Value를 기본적으로 할당한다.&lt;/p>

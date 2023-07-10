@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:11:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean_code_15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CleanCode on Mario Blog</title><link>https://codemario318.github.io/tags/cleancode/</link><description>Recent content in CleanCode on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Apr 2023 11:11:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cleancode/index.xml" rel="self" type="application/rss+xml"/><item><title>클린코드: 15. JUnit 들여다보기</title><link>https://codemario318.github.io/post/clean-code/15/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/15/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 15. JUnit 들여다보기" />&lt;h2 id="junit-프레임워크-comparisoncompactorjava-모듈-개선하기">JUnit 프레임워크 &lt;code>ComparisonCompactor.java&lt;/code> 모듈 개선하기&lt;/h2>
 &lt;ul>
 &lt;li>생성자 두 번째 인수와 세 번째 인수를 비교한다.&lt;/li>
 &lt;li>comapct 함수에 문자열을 넣으면 결과 메시지 앞에 문자열이 추가된다.&lt;/li>
@@ -950,7 +950,7 @@
 &lt;p>코드를 리펙터링 하다보면 원래 했던 변경을 되돌리는 경우가 흔하다.&lt;/p>
 &lt;blockquote>
 &lt;p>리펙터링은 코드가 어느 수준에 이를때까지 수많은 시행착오를 반복하는 작업이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean_code_17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
+&lt;/blockquote></description></item><item><title>클린코드: 17. 냄새와 휴리스틱</title><link>https://codemario318.github.io/post/clean-code/17/</link><pubDate>Fri, 21 Apr 2023 11:11:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/17/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 17. 냄새와 휴리스틱" />&lt;blockquote>
 &lt;p>Heruistics(발견법): 경험, 학습 등으로 습득한 직감을 이용해 현실적으로 만족할 만한 수준의 해답을 찾는 것&lt;/p>
 &lt;/blockquote>
 &lt;p>리펙토링(마틴 파울러)에서 언급된 내용과 저자의 경험을 합쳐 깨끗하지 못한 코드를 발견하는 방법에 대하여 설명했다.&lt;/p>
@@ -1485,7 +1485,7 @@
 &lt;h3 id="t9-테스트는-빨라야한다">T9: 테스트는 빨라야한다&lt;/h3>
 &lt;p>느린 테스트 케이스는 실행하지 않게 된다. 일정이 촉박하면 느린 테스트 케이스를 제일 먼저 건너 뛴다.&lt;/p>
 &lt;h2 id="결론">결론&lt;/h2>
-&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean_code_14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
+&lt;p>휴리스틱 목록을 익힌다고 소프트웨어 장인이 되지는 못한다. 전문가 정신과 장인 정신은 가치에서 나온다. 그 가치에 기반한 규율과 절제가 필요하다.&lt;/p></description></item><item><title>클린코드: 14. 점진적인 개선</title><link>https://codemario318.github.io/post/clean-code/14/</link><pubDate>Fri, 21 Apr 2023 11:00:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/14/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/14/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 14. 점진적인 개선" />&lt;blockquote>
 &lt;p>프로그래밍은 과학보다 공예에 가깝다. 깨끗한 코드를 짜려면 먼저 지저분한 코드를 짠 뒤에 정리해야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="args-구현">Args 구현&lt;/h2>
@@ -4299,7 +4299,7 @@
 &lt;li>규모가 있는 코드를 한번에 변경하는 것은 매우 어렵다.&lt;/li>
 &lt;li>따라서 테스트를 기반으로 조금씩 변경하는 과정을 거쳤다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean_code_12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
+&lt;p>&lt;em>&lt;strong>테스트는 매우 중요하다!&lt;/strong>&lt;/em>&lt;/p></description></item><item><title>클린코드: 12. 창발성</title><link>https://codemario318.github.io/post/clean-code/12/</link><pubDate>Fri, 21 Apr 2023 10:52:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/12/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 12. 창발성" />&lt;blockquote>
 &lt;p>창발성: 떠오름 현상, 創發性, emergent property, emergence&lt;/p>
 &lt;ol>
 &lt;li>하위 계층에서 없는 특성이나 행동이 상위 계층에서 자발적으로 돌연히 출현하는 현상, 불시에 솟아나는 특성(wikipedia)&lt;/li>
@@ -4664,7 +4664,7 @@
 &lt;p>경험을 대신할 단순한 개발 기법은 없다. 하지만 소개하는 기법은 저자들이 수십 년 동안 쌓은 경험의 정수다.&lt;/p>
 &lt;blockquote>
 &lt;p>💡 단순한 설계 규칙을 따른다면 우수한 기법과 원칙을 단번에 활용할 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean_code_10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
+&lt;/blockquote></description></item><item><title>클린코드: 10. 클래스</title><link>https://codemario318.github.io/post/clean-code/10/</link><pubDate>Thu, 20 Apr 2023 16:30:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/10/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/10/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 10. 클래스" />&lt;p>코드의 표현력과 그 코드로 이루어진 함수에 아무리 신경 쓸지라도 좀 더 차원 높은 단계까지 신경쓰지 않으면 깨끗한 코드를 얻기는 어렵다.&lt;/p>
 &lt;h2 id="클래스-체계">클래스 체계&lt;/h2>
 &lt;p>표준 자바 관례에 의하면 아래 순서로 선언하게 된다.&lt;/p>
 &lt;ul>
@@ -5350,7 +5350,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>결합도를 최대한 낮추면 변경으로 부터 격리할 수 있다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean_code_9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 9. 단위 테스트</title><link>https://codemario318.github.io/post/clean-code/9/</link><pubDate>Thu, 20 Apr 2023 16:22:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/9/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 9. 단위 테스트" />&lt;p>애자일과 TDD 덕택에 단위 테스트를 자동화하는 개발자들이 이미 많아졌으며 점점 더 늘어나는 추세다.&lt;/p>
 &lt;p>테스트를 급하게 서두르는 와중에 많은 개발자들이 제대로 된 테스트 케이스를 작성해야한다는 중요한 사실을 놓친다.&lt;/p>
 &lt;h2 id="tdd-법칙-세-가지">TDD 법칙 세 가지&lt;/h2>
 &lt;ol>
@@ -5662,7 +5662,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>테스트 코드를 먼저 만드는 이유는 테스트에 적합한 실제 코드를 만드는데 도움이 되기 때문이다.&lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean_code_7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
+&lt;/ul></description></item><item><title>클린코드: 7. 오류 처리</title><link>https://codemario318.github.io/post/clean-code/7/</link><pubDate>Thu, 20 Apr 2023 16:12:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/7/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 7. 오류 처리" />&lt;blockquote>
 &lt;p>뭔가 잘못되면 바로잡을 책임은 바로 우리 프로그래머에게 있다.&lt;/p>
 &lt;/blockquote>
 &lt;p>깨끗한 코드와 오류처리는 연관이 있다. 상당수 코드들은 전적으로 오류 처리 코드에 좌우된다. 여기저기 흩어진 오류 처리 코드 때문에 실제 코드가 하는 일을 파악하기가 거의 불가능하다는 의미다.&lt;/p>
@@ -6284,7 +6284,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>null은 사용자의 실수를 유발하므로 되도록 자제해야 한다.&lt;/li>
-&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean_code_6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
+&lt;/ol></description></item><item><title>클린코드: 6. 객체와 자료구조</title><link>https://codemario318.github.io/post/clean-code/6/</link><pubDate>Thu, 20 Apr 2023 15:53:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/6/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 6. 객체와 자료구조" />&lt;h2 id="자료-추상화">자료 추상화&lt;/h2>
 &lt;blockquote>
 &lt;p>사용자가 구현을 모른 채 자료의 핵심을 조작할 수 있어야 진정한 의미의 클래스다.&lt;/p>
 &lt;/blockquote>
@@ -6787,7 +6787,7 @@
 &lt;li>객체지향을 조금 다른 관점에서 접근하여 깨끗한 코드를 만드는 방법을 추천하는 책&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean_code_3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
+&lt;/ul></description></item><item><title>클린코드: 3. 함수 잘 만드는 법</title><link>https://codemario318.github.io/post/clean-code/3/</link><pubDate>Thu, 20 Apr 2023 15:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/3/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/3/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 3. 함수 잘 만드는 법" />&lt;p>어떤 프로그램이든 가장 기본적인 단위는 함수다&lt;/p>
 &lt;ul>
 &lt;li>어떻게 해야 읽기 쉽고 이해하기 쉬운 함수를 만들 수 있을까&lt;/li>
 &lt;li>의도를 분명히 표현하는 함수를 어떻게 구현할수 있을까&lt;/li>
@@ -6829,7 +6829,7 @@
 &lt;p>Switch문은 본질적으로 switch 문은 N 가지를 처리하기 때문에 작게, 한 가지 작업만 수행하게 만들기 어렵다.&lt;/p>
 &lt;blockquote>
 &lt;p>완전히 사용하지 않을 방법은 없기 때문에 다형성을 사용하여 저차원 클래스에 숨기고 반복하지 않게 만들어야 한다.&lt;/p>
-&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean_code_1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean_code_1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean_code_1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
+&lt;/blockquote></description></item><item><title>클린코드: 1. 깨끗한 코드</title><link>https://codemario318.github.io/post/clean-code/1/</link><pubDate>Thu, 20 Apr 2023 15:42:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-code/1/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-code/1/clean_code_cover.jpeg" alt="Featured image of post 클린코드: 1. 깨끗한 코드" />&lt;ul>
 &lt;li>코드는 요구사항을 표현하는 도구이다.
 &lt;ul>
 &lt;li>고도로 추상화된 언어나 특정 응용 분야 언어로 기술하는 명세 역시 코드이다.&lt;/li>

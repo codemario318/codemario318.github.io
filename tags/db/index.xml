@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 22 Apr 2023 15:31:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real_mysql_5_3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 22 Apr 2023 15:31:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real-mysql/5/3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>READ UNCOMMITTED&lt;/code>&lt;br>
 &lt;code>DIRTY READ&lt;/code>라고도 하며 일반적인 데이터베이스에서는 거의 사용하지 않는다.&lt;/li>
@@ -52,10 +52,10 @@
 &lt;/ul>
 &lt;h2 id="read-uncommitted">READ UNCOMMITTED&lt;/h2>
 &lt;p>&lt;code>READ UNCOMMITTED&lt;/code> 격리 수준에서는 각 트랜잭션에서 변경 내용이 &lt;code>COMMIT&lt;/code>, &lt;code>ROLLBACK&lt;/code> 여부에 상관 없이 다른 트랜잭션에서 보인다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1.png"
 width="483"
 height="440"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="109"
@@ -67,10 +67,10 @@ data-flex-basis="263px"
 &lt;p>더티 리드 현상은 데이터가 나타났다 사라지는 현상을 초래하므로 개발자와 사용자를 혼란스럽게 만들 수 있다. 더티 리드를 유발하는 &lt;code>READ UNCOMMITTED&lt;/code>는 &lt;code>RDBMS&lt;/code> 표준에서는 트랜잭션의 격리 수준으로 인정하지 않을 정도로 정합성에 문제가 많으므로 &lt;code>READ COMMITTED&lt;/code> 이상의 격리 수준을 사용할 것을 권장한다.&lt;/p>
 &lt;h2 id="read-committed">READ COMMITTED&lt;/h2>
 &lt;p>오라클 DBMS에서 기본으로 사용되는 격리 수준이며, 온라인 서비스에서 가장 많이 선택되는 격리 수준이다. 어떤 트랜잭션에서 데이터를 변경했더라도 &lt;code>COMMIT&lt;/code>이 완료된 데이터만 다른 트랜잭션에서 조회할 수 있기 때문에 더티 리드 현상은 발생하지 않는다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2.png"
 width="507"
 height="441"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="114"
@@ -80,10 +80,10 @@ data-flex-basis="275px"
 &lt;p>&lt;code>COMMIT&lt;/code>이 완료 되기 전 B가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 조회하면, 언두 영역에 백업된 레코드에서 가져온 &amp;ldquo;Lara&amp;quot;를 조회하게 된다.&lt;/p>
 &lt;h3 id="non-repeatable-read">NON-REPEATABLE READ&lt;/h3>
 &lt;p>&lt;code>READ COMMITTED&lt;/code> 격리 수준에서도 &lt;code>NON-REPEATABLE READ&lt;/code>라는 부정합 문제가 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3.png"
 width="480"
 height="461"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="104"
@@ -105,10 +105,10 @@ data-flex-basis="249px"
 &lt;/blockquote>
 &lt;p>InnoDB의 모든 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는 값)를 가지며, 언두 영역에 백업된 모든 레코드에는 변경을 발생시킨 트랜잭션 번호가 포함되어 있다. 언두 영역에 백업된 데이터는 InnoDB 스토리지 엔진이 불필요하다고 판단하는 시점에 주기적으로 삭제한다.&lt;/p>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서는 MVCC를 보장하기 위해 실행중인 트랜잭션 가운데 가장 오래된 트랜잭션 번호보다 트랜잭션 번호가 앞선 언두 영역의 데이터는 삭제할 수가 없다. 그렇다고 가장 오래된 트랜잭션 번호 이전의 트랜잭션에 의해 변경된 모든 언두 데이터가 필요한 것은 아니며, 특정 트랜잭션 번호의 구간 내에서 백업된 언두 데이터가 보존 돼야 한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4.png"
 width="537"
 height="612"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="87"
@@ -120,10 +120,10 @@ data-flex-basis="210px"
 &lt;/blockquote>
 &lt;h3 id="phantom-read">PHANTOM READ&lt;/h3>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서도 부정합이 발생 가능하다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5.png"
 width="566"
 height="592"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="95"
@@ -139,7 +139,7 @@ data-flex-basis="229px"
 &lt;blockquote>
 &lt;p>엄밀하게는 &lt;code>SELECT ... FOR UPDATE&lt;/code>, &lt;code>SELECT ... FOR SHARE&lt;/code> 쿼리의 경우 &lt;code>REPEATABLE READ&lt;/code> 격리수준에서 &lt;code>PHANTOM READ&lt;/code> 현상이 발생할 수 있다.&lt;br>
 하지만 레코드의 변경 이력(언두 레코드)에 잠금을 걸 수는 없기 때문에, 이러한 잠금을 동반한 &lt;code>SELECT&lt;/code> 쿼리는 예외적인 상황으로 볼 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real_mysql_5_2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
+&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real-mysql/5/2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
 &lt;ul>
 &lt;li>
 &lt;p>MySQL 엔진 레벨&lt;br>
@@ -371,10 +371,10 @@ MyISAM뿐 아니라 InnoDB 스토리지 엔진을 사용하는 테이블도 동�
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="innodb-스토리지-엔진의-잠금">InnoDB 스토리지 엔진의 잠금&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1.png"
 width="568"
 height="391"
-srcset="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="145"
@@ -1435,11 +1435,11 @@ InnoDB 스토리지 엔진의 리두 로그가 손상되면 MySQL 서버가 실�
 &lt;blockquote>
 &lt;p>마지막 풀 백업 시점부터 장애 시점까지의 바이너리 로그가 있다면 이용하는 것이 데이터 손실이 더 적을 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1.png"
+&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real-mysql/4/1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1.png"
 width="780"
 height="802"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 전체 구조"
 class="gallery-image"
@@ -1540,10 +1540,10 @@ MySQL 서버는 크게 &lt;strong>MySQL 엔진&lt;/strong>과 &lt;strong>스토�
 &lt;li>MyISAM: 사용자 스레드가 쓰기 작업까지 함께 처리하도록 설계되어, 일반적인 쿼리는 쓰기 버퍼링 기능을 사용할 수 없다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="메모리-할당-및-사용-구조">메모리 할당 및 사용 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3.png"
 width="640"
 height="423"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 메모리 할당 구조"
 class="gallery-image"
@@ -1634,10 +1634,10 @@ data-flex-basis="363px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="쿼리-실행-구조">쿼리 실행 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6.png"
 width="411"
 height="302"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="쿼리 실행 구조"
 class="gallery-image"

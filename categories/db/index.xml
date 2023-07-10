@@ -434,7 +434,7 @@
 &lt;/ul>
 &lt;blockquote>
 &lt;p>코스트 모델은 MySQL 서버가 사용하는 하드웨어와 MySQL 서버 내부적인 처리 방식에 대한 깊이 있는 지식을 필요로 한다. MySQL 서버에 적용된 기본 값으로도 20년이 넘는 시간동안 수많은 응용 프로그램에서 잘 사용되어 왔으므로, 이런 부분에 대해 전문적인 지식을 가지고 있지 않다면 서버스에 사용되는 MySQL 서버의 engine_cost 테이블과 server_cost 테이블의 기본값을 함부로 변경하지 않는 게 좋다.&lt;/p>
-&lt;/blockquote></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real_mysql_9_4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
+&lt;/blockquote></description></item><item><title>9.4 옵티마이저와 힌트 - 쿼리 힌트</title><link>https://codemario318.github.io/post/real-mysql/9/4/</link><pubDate>Fri, 09 Jun 2023 11:42:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/4/real_mysql.jpeg" alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" />&lt;p>MySQL 버전이 업그레이드되고 통계 정보나 옵티마이저의 최적화 방법들이 더 아양해지면서 쿼리의 실행 계획 최적화가 많이 성숙하고 있지만, 여전히 서비스 로직을 이하지는 못하기 때문에 개발자나 DBA보다 MySQL 서버가 부족한 실행 계획을 수립할 때가 있을 수 있다.&lt;/p>
 &lt;p>이런 경우에는 옵티마이저에게 쿼리의 실행 계획을 어떻게 수립해야 할지 알려줄 수 있는 방법이 필요하다. 일반적인 DBMS는 이러한 목적으로 힌트가 제공되며, MySQL에서도 다양한 옵티마이저 힌트를 제공한다.&lt;/p>
 &lt;ul>
 &lt;li>인덱스 힌트
@@ -927,7 +927,7 @@
 &lt;td>인덱스&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real_mysql_9_3_2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/real_mysql.jpeg" alt="Featured image of post 9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
+&lt;/table></description></item><item><title>9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)</title><link>https://codemario318.github.io/post/real-mysql/9/3/2/</link><pubDate>Thu, 08 Jun 2023 11:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/real_mysql.jpeg" alt="Featured image of post 9.3.2 옵티마이저와 힌트 - 고급 최적화(조인 최적화 알고리즘)" />&lt;p>테이블의 개수가 많아지면 실행 계획을 찾는 것이 상당히 어려워지고, 하나의 쿼리에서 조인되는 테이블의 개수가 많아지면 실행 계획을 수립하는 데만 몇 분이 걸릴 수도 있다.&lt;/p>
 &lt;p>MySQL에는 최적화된 조인 실행 계획 수립을 위한 2가지 알고리즘이 있으며, 4개의 테이블을 조인하는 쿼리가 조인 옵티마이저 알고리즘에 어떻게 처리되는지 살펴볼것이다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -942,10 +942,10 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="exhaustive-검색-알고리즘-완전-탐색">Exhaustive 검색 알고리즘 (완전 탐색)&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/img.png"
 width="820"
 height="333"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_2/img_hu4f22347e8ea2d11fad300347b825d752_52009_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_2/img_hu4f22347e8ea2d11fad300347b825d752_52009_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/2/img_hu4f22347e8ea2d11fad300347b825d752_52009_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/2/img_hu4f22347e8ea2d11fad300347b825d752_52009_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="246"
@@ -954,10 +954,10 @@ data-flex-basis="590px"
 &lt;p>Exhausitve 검색 알고리즘은 MySQL 5.0 이하 버전에서 사용되던 조인 최적화 기법으로, &lt;code>FROM&lt;/code>절에 명시된 모든 테이블의 조합에 대해 실행 계획의 비용을 계산해서 최적의 조합 1개를 찾는 방법이다.&lt;/p>
 &lt;p>테이블이 20개라면 이 방법으로 처리했을 때 가능한 조인 조합은 모드 20!(3628800)개가 된다.&lt;/p>
 &lt;h2 id="greedy-검색-알고리즘">Greedy 검색 알고리즘&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_2/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/2/img_1.png"
 width="850"
 height="629"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/2/img_1_hue481870147ec17843ad629c2d99aa03e_688274_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="135"
@@ -991,7 +991,7 @@ data-flex-basis="324px"
 &lt;li>실제 Hueuristic 조인 최적화는 조인 대상 테이블이 몇개 되지 않터라도 상당한 성능 차이를 내므로 0으로 변경하지 않을 것을 권장한다.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)</title><link>https://codemario318.github.io/post/real_mysql_9_3_1/</link><pubDate>Tue, 06 Jun 2023 12:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_3_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/real_mysql.jpeg" alt="Featured image of post 9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)" />&lt;p>MySQL 서버의 옵티마이저가 실행 계획을 수립할 때 통계 정보와 옵티마이저 옵션을 결합하여 최적의 실행 계획을 수립하게 된다.&lt;/p>
+&lt;/ul></description></item><item><title>9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)</title><link>https://codemario318.github.io/post/real-mysql/9/3/1/</link><pubDate>Tue, 06 Jun 2023 12:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/3/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/real_mysql.jpeg" alt="Featured image of post 9.3.1 옵티마이저와 힌트 - 고급 최적화(옵티마이저 스위치 옵션)" />&lt;p>MySQL 서버의 옵티마이저가 실행 계획을 수립할 때 통계 정보와 옵티마이저 옵션을 결합하여 최적의 실행 계획을 수립하게 된다.&lt;/p>
 &lt;ul>
 &lt;li>조인 관련 옵티마이저 옵션
 &lt;ul>
@@ -1272,10 +1272,10 @@ MySQL 서버에서 지금까지 지원하던 조인 방식은 드라이빙 테�
 &lt;/tbody>
 &lt;/table>
 &lt;p>위 쿼리의 실행 계획을 살펴보면 다음과 같이 &lt;code>dept_emp&lt;/code>테이블이 드라이빙 테이블이며, employees 테입르을 읽을 때는 조인 버퍼를 이용해 블록 네스티드 루프 조인을 한다는 것을 알 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img.png"
 width="738"
 height="495"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_huea3cca03c4b6c1e52e04e5b5e4eb4fb7_197093_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="149"
@@ -1868,10 +1868,10 @@ data-flex-basis="357px"
 &lt;/table>
 &lt;p>실행 계획의 id 컬럼 값이 모두 1로 표시된 것으로 봐서 서브쿼리 패턴이 아닌 조인으로 처리되었음을 알 수 있다.&lt;/p>
 &lt;p>&amp;ldquo;FirstMatch(e)&amp;rdquo; 문구는 &lt;code>employees&lt;/code> 테이블의 레코드에 대해 &lt;code>titles&lt;/code> 테이블에 일치하는 레코드 1건만 찾으면 더이상의 &lt;code>titles&lt;/code> 테이블 검색을 하지 않는다는 것을 의미한다. 실제 의미론적으로 &lt;code>EXISTS (subquery)&lt;/code>와 동일하게 처리된 것이다. 하지만 FirstMatch는 서브쿼라 아니라 조인으로 풀어서 실행하면서 일치하는 첫번째 레코드만 검색하는 최적화를 실행한 것이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_1.png"
 width="724"
 height="289"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_1_hu693ebdb68d0723329308cdd2680bdd64_221143_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="250"
@@ -1948,10 +1948,10 @@ data-flex-basis="601px"
 &lt;/tbody>
 &lt;/table>
 &lt;p>&lt;code>departments&lt;/code> 테이블의 레코드 건수는 9건뿐이지만 &lt;code>dept_emp&lt;/code> 테이블의 레코드 건수는 약 33만건 저장되어있다. 그런데 &lt;code>dept_emp&lt;/code> 테이블에는 &lt;code>(dept_no + emp_no)&lt;/code> 컬럼의 조합으로 프라이머리 키 인덱스가 만들어져 있다. 이 프라이머리 키는 전체 레코드 수는 33만 건 정도 있지만 &lt;code>dept_no&lt;/code> 만으로 그루핑해서 보면 결국 9건 뿐이므로 &lt;code>dept_emp&lt;/code> 테이블의 프라이머리 키를 루스 인덱스 스캔으로 유니카한 &lt;code>dept_no&lt;/code>만 읽으면 효율적으로 서브쿼리 부분을 실행할 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_2.png"
 width="718"
 height="454"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_2_hu0e9055da5ad2cd43d05e61a8ec89865b_201457_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="158"
@@ -2123,10 +2123,10 @@ data-flex-basis="379px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>위와 같은 방식으로 &lt;code>GROUP BY&lt;/code>를 활용하면 세미 조인 서브쿼리와 동일한 결과를 얻을 수 있다. 실제로 Duplicate Weedout 최적화 알고리즘은 원본 쿼리를 위와 같이 &lt;code>INNER JOIN&lt;/code> + &lt;code>GROUP BY&lt;/code> 절로 바꿔 실행하는 것과 동일한 작업으로 쿼리를 처리한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_3.png"
 width="655"
 height="554"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_3_hu88656eaa08f63d27627468504ceac26b_426916_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="118"
@@ -2465,10 +2465,10 @@ data-flex-basis="283px"
 &lt;p>첫 번째 쿼리를 실행할 때 옵티마이저는 테이블에 존재하는 모든 &lt;code>gender&lt;/code> 컬럼의 값을 가져와 두 번째 쿼리와 같이 &lt;code>gender&lt;/code> 컬럼의 조건이 있는 것처럼 쿼리를 최적화한다. 따라서 인덱스의 선행 컬럼이 매우 다양한 값을 가지는 경우 인덱스 스킵 스캔 최적화가 비효율적일 수 있게된다. 따라서 인덱스의 선행 컬럼이 소수의 유니크한 값을 가질때만 인덱스 스킵 스캔 최적화를 사용한다.&lt;/p>
 &lt;h2 id="해시-조인">해시 조인&lt;/h2>
 &lt;p>MySQL 8.0.18 버전부터는 해시 조인이 추가로 지원되기 시작했다. 해시 조인 기능은 기존 네스티드 루프 조인보다 해시 조인이 빠르다고 생각하지만 항상 참은 아니다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_3_1/img_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/3/1/img_4.png"
 width="622"
 height="283"
-srcset="https://codemario318.github.io/post/real_mysql_9_3_1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_3_1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/3/1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/3/1/img_4_hu254c588f9ff8be3feafdf10c55131e38_4873_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="219"
@@ -2639,7 +2639,7 @@ data-flex-basis="527px"
 &lt;/ol>
 &lt;p>상황에 따라 다르지만 일반적으로 &lt;code>hire_date&lt;/code> 컬럼의 조건에 부합되는 레코드 건수가 많지 않다면 1번으로 실행될 것 같지만, 실행 계획에서는 체므해야 하는 레코드 건수가 상당히 많음에도 불구하고 PRIMARY 키를 풀 스캔하면서 &lt;code>hire_date&lt;/code> 컬럼을 필터링하도록 쿼리를 처리하고 있다. 이는 정렬된 인덱스를 활용하도록 하기 위해 잘못된 실행계획을 선택했을 확률이 높다.&lt;/p>
 &lt;p>MySQL 8.0.20 버전까지는 이러한 옵티마이저의 실수가 자주 발생하면 &lt;code>IGNORE INDEX&lt;/code> 힌트를 사용하여 &lt;code>ORDER BY&lt;/code>를 위한 특정 인덱스를 사용하지 못하도록 했으나, MySQL 8.0.21 버전부터는 옵티마이저가 &lt;code>ORDER BY&lt;/code>를 위한 인덱스에 너무 가중치를 부여하지 않도록 &lt;code>prefer_ordering_index&lt;/code> 옵티마이저 옵션이 추가되었다.&lt;/p>
-&lt;p>기본값은 ON 이지만 비효율적인 선택을 자주 한다면 OFF로 변경할 수 있다.&lt;/p></description></item><item><title>9.2 기본 데이터 처리(2)</title><link>https://codemario318.github.io/post/real_mysql_9_2_2/</link><pubDate>Tue, 23 May 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2)" />&lt;h2 id="group-by-처리">&lt;code>GROUP BY&lt;/code> 처리&lt;/h2>
+&lt;p>기본값은 ON 이지만 비효율적인 선택을 자주 한다면 OFF로 변경할 수 있다.&lt;/p></description></item><item><title>9.2 기본 데이터 처리(2)</title><link>https://codemario318.github.io/post/real-mysql/9/2/2/</link><pubDate>Tue, 23 May 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/2/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/2/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(2)" />&lt;h2 id="group-by-처리">&lt;code>GROUP BY&lt;/code> 처리&lt;/h2>
 &lt;p>&lt;code>GROUP BY&lt;/code> 또한 &lt;code>ORDER BY&lt;/code>와 같이 쿼리가 스트리밍된 처리를 할 수 없게 하는 처리 중 하나다. &lt;code>GROUP BY&lt;/code>절 사용시 결과에 대한 필터링 처리를 할 수 있는 &lt;code>HAVING&lt;/code>절을 사용할 수 있느데, &lt;code>GROUP BY&lt;/code> 에서 사용된 조건은 인덱스를 사용해서 처리될 수 없으므로 &lt;code>HAVING&lt;/code>절을 튜닝하려고 인덱스를 생성하거나 다른 방법을 고민할 필요는 없다.&lt;/p>
 &lt;p>&lt;code>GROUP BY&lt;/code> 작업도 인덱스를 사용하는 경우과 그렇지 못한 경우로 나눌 수 있다.&lt;/p>
 &lt;ul>
@@ -3026,7 +3026,7 @@ data-flex-basis="527px"
 &lt;/div>&lt;ul>
 &lt;li>&lt;code>Created_tmp_tables&lt;/code>: 쿼리의 처리를 위해 만들어진 내부 임시 테이블의 개수를 누적하는 상태값이다. 내부 임시 테입르이 메모리에 만들어 졌는지를 구분하지 않고 모두 누적한다.&lt;/li>
 &lt;li>&lt;code>Created_tmp_disk_tables&lt;/code>: 디스크에 내부 임시 테이블이 만들어진 개수만 누적해서 가지고 있는 상태값이다.&lt;/li>
-&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real_mysql_9_2_1/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_2_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
+&lt;/ul></description></item><item><title>9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)</title><link>https://codemario318.github.io/post/real-mysql/9/2/1/</link><pubDate>Tue, 23 May 2023 12:40:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/real_mysql.jpeg" alt="Featured image of post 9.2 기본 데이터 처리(1) - ORDER BY 처리 (Using filesort)" />&lt;p>레코드 1~2건을 가져오는 쿼리를 제외하면 대부분의 &lt;code>SELECT&lt;/code>쿼리에서 정렬은 필수적으로 사용된다. 정렬을 처리하는 방법은 인덱스를 이용하는 방법과 쿼리가 실행될 때 &lt;strong>Filesort&lt;/strong>라는 별도의 처리를 이용하는 방법으로 나눌 수 있다.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -3098,10 +3098,10 @@ data-flex-basis="527px"
 &lt;p>여기서는 첫 번째 방식을 &lt;strong>투 패스&lt;/strong>정렬 방식이라 명명하고, 나머지 방식을 &lt;strong>싱글 패스&lt;/strong>정렬 방식이라고 명명하겠다. 세 번째 방식은 MySQL 5.7 버전부터 도입됐는데, 이는 정렬을 위한 메모리 공간의 효율적인 사용을 위해 추가 도입된 방식이다.&lt;/p>
 &lt;h3 id="싱글-패스-정렬-방식">싱글 패스 정렬 방식&lt;/h3>
 &lt;p>소트 버퍼에 정렬 기준 컬럼을 포함해 &lt;code>SELECT&lt;/code> 대상이 되는 컬럼 전부를 담아 정렬을 수행하는 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img.png"
 width="776"
 height="462"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_hu7ba9783b8b9dc18b0295061f72b59865_163286_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="167"
@@ -3122,10 +3122,10 @@ data-flex-basis="403px"
 &lt;/div>&lt;p>위 쿼리와 같이 &lt;code>first_name&lt;/code>으로 정렬해서 &lt;code>emp_no&lt;/code>, &lt;code>first_name&lt;/code>, &lt;code>last_name&lt;/code>을 &lt;code>SELECT&lt;/code>하는 쿼리를 싱글 패스 정렬 방식으로 처리하게 되면, 처음 employees 테이블을 읽을 때 정렬에 필요하지 않는 &lt;code>last_name&lt;/code> 컬럼까지 전부 읽어 소트 버퍼에 담고 정렬을 수행한다. 그리고 정렬이 완료되면 정렬 버퍼의 내용을 그대로 클라이언트로 넘겨준다.&lt;/p>
 &lt;h3 id="투-패스-정렬-방식">투 패스 정렬 방식&lt;/h3>
 &lt;p>정렬 대상 컬럼과 프라이머리 키 값만 소트 버퍼에 담아서 정렬을 수행하고, 정렬된 순서대로 다시 프라이머리 키로 테이블을 읽어서 &lt;code>SELECT&lt;/code>할 컬럼을 가져오는 정렬 방식으로, 싱글 패스 정렬 방식이 도입되기 이전부터 사용하던 방식이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_1.png"
 width="787"
 height="555"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_1_hu74a11d1b0b3686c1814ecb3f55fd39f2_199453_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="141"
@@ -3212,10 +3212,10 @@ data-flex-basis="340px"
 &lt;li>드리븐 테이블의 조인 컬럼인 &lt;code>emp_no&lt;/code> 컬럼에 인덱스가 있다.&lt;/li>
 &lt;/ul>
 &lt;p>검색은 인덱스 레인지 스캔으로 처리할 수 있지만 &lt;code>ORDER BY&lt;/code> 절에 명시된 컬럼은 &lt;code>employees&lt;/code> 테이블의 프라이머리 키와 전혀 연관이 없으므로 인덱스를 이용한 정렬은 불가능하지만, 정렬 기준 컬럼이 드라이빙 테이블에 포함된 컬럼이므로 옵티마이저는 드라이빙 테이블만 검색해서 정렬을 먼저 수행하고, 그 결과와 &lt;code>salaries&lt;/code> 테이블을 조인하는 방식을 선택한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_2.png"
 width="742"
 height="597"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_2_hu848bd5ebfe4cf90ecee74647ec1cf9e6_233875_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="124"
@@ -3275,10 +3275,10 @@ data-flex-basis="298px"
 &lt;/tbody>
 &lt;/table>
 &lt;p>쿼리 실행 계획 &amp;ldquo;Extra&amp;quot;컬럼에 &amp;ldquo;Using where; Using temporary; Using filesort&amp;quot;코멘트가 표시되는데, 이는 조인의 결과를 임시 테이블에 저장하고, 그 결과를 다시 정렬 처리했음을 의미한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_3.png"
 width="706"
 height="708"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_3_hue96011af0d56e981814f7fcadbfc8c3d_233651_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="99"
@@ -3288,10 +3288,10 @@ data-flex-basis="239px"
 &lt;p>주로 웹 서비스용 쿼리에서는 &lt;code>ORDER BY&lt;/code>와 함께 &lt;code>LIMIT&lt;/code>이 거의 필수로 사용되는 경우가 많은데, 일반적으로 &lt;code>LIMIT&lt;/code>은 테이블이나 처리 결과의 일부만 가져오기 때문에 MySQL 서버가 처리해야 할 작업량을 줄이는 역할을 한다.&lt;/p>
 &lt;p>하지만 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 같은 작업은 &lt;code>WHERE&lt;/code> 족너을 만족하는 레코드를 &lt;code>LIMIT&lt;/code> 건수 만큼만 가져와서는 처리할 수 없고, 우선 조건을 만족하는 레코드를 모두 가져와서 정렬을 수행하거나 그루핑 작업을 실행해야만 처리할 수 있다. 이로 인해 &lt;code>WHERE&lt;/code> 조건이 아무리 인덱스를 잘 활용하도록 튜닝해도 잘못된 &lt;code>ORDER BY&lt;/code>, &lt;code>GROUP BY&lt;/code> 때문에 쿼리가 느려지는 경우가 많이 발생한다.&lt;/p>
 &lt;h4 id="스트리밍-방식">스트리밍 방식&lt;/h4>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_9_2_1/img_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/9/2/1/img_4.png"
 width="587"
 height="342"
-srcset="https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_9_2_1/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/9/2/1/img_4_hu54316a551e24229225ba558a713cce1e_55710_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/9/2/1/img_4_hu54316a551e24229225ba558a713cce1e_55710_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="171"
@@ -3415,7 +3415,7 @@ data-flex-basis="411px"
 &lt;li>&lt;code>Sort_range&lt;/code>: 인덱스 레인지 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
 &lt;li>&lt;code>Sort_rows&lt;/code>: 풀 테이블 스캔을 통해 검색된 결과에 대한 정렬 작업 횟수(누적)&lt;/li>
 &lt;li>&lt;code>Sort_rows&lt;/code>: 지금까지 정렬한 전체 레코드 건수&lt;/li>
-&lt;/ul></description></item><item><title>9. 옵티마이저와 힌트 (1)</title><link>https://codemario318.github.io/post/real_mysql_9_1/</link><pubDate>Mon, 22 May 2023 16:09:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_9_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_9_1/real_mysql.jpeg" alt="Featured image of post 9. 옵티마이저와 힌트 (1)" />&lt;p>MySQL 서버로 요청된 쿼리는 결과는 동일하지만 내부적으로 그 결과를 만들어내는 방법은 매우 다양하며, 어떤 방법이 최적이고 최소의 비용이 소모될지 결정해야 한다. MySQL 옵티마이저는 쿼리를 최적으로 실행하기 위해 각 테이블의 데이터가 어떤 분포로 저장돼 있는지 통계 정보를 참조하여 기본 데이터를 비교해 최적의 실행 계획을 수립한다.&lt;/p>
+&lt;/ul></description></item><item><title>9. 옵티마이저와 힌트 (1)</title><link>https://codemario318.github.io/post/real-mysql/9/1/</link><pubDate>Mon, 22 May 2023 16:09:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/9/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/9/1/real_mysql.jpeg" alt="Featured image of post 9. 옵티마이저와 힌트 (1)" />&lt;p>MySQL 서버로 요청된 쿼리는 결과는 동일하지만 내부적으로 그 결과를 만들어내는 방법은 매우 다양하며, 어떤 방법이 최적이고 최소의 비용이 소모될지 결정해야 한다. MySQL 옵티마이저는 쿼리를 최적으로 실행하기 위해 각 테이블의 데이터가 어떤 분포로 저장돼 있는지 통계 정보를 참조하여 기본 데이터를 비교해 최적의 실행 계획을 수립한다.&lt;/p>
 &lt;h2 id="개요">개요&lt;/h2>
 &lt;p>어떤 DBMS든지 쿼리의 실행 계획을 수립하는 옵티마이저는 가장 복잡한 부분으로 알려져 있으며, 옵티마이저가 만들어 내는 실행 계획을 이해하는 것 또한 상당히 어려운 부분이다. 하지만 실행 계획을 이해할 수 있어야만 실행 계획의 불합리한 부분을 찾아내고, 더 최적화된 방법으로 실행 계획을 수립하도록 유도할 수 있다.&lt;/p>
 &lt;h3 id="실행-절차">실행 절차&lt;/h3>
@@ -3487,7 +3487,7 @@ data-flex-basis="411px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>병렬 처리용 스레드 개수가 늘어날수록 쿼리 처리에 걸리는 시간이 대체로 줄어들지만, 서버에 장착된 CPU의 코어 개수를 넘어서는 경우에는 오히려 성능이 떨어질 수도 있으니 주의가 필요하다.&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real_mysql_8_4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
+&lt;/div>&lt;p>병렬 처리용 스레드 개수가 늘어날수록 쿼리 처리에 걸리는 시간이 대체로 줄어들지만, 서버에 장착된 CPU의 코어 개수를 넘어서는 경우에는 오히려 성능이 떨어질 수도 있으니 주의가 필요하다.&lt;/p></description></item><item><title>8. 인덱스 (4)</title><link>https://codemario318.github.io/post/real-mysql/8/4/</link><pubDate>Sun, 14 May 2023 19:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (4)" />&lt;h2 id="함수-기반-인덱스">함수 기반 인덱스&lt;/h2>
 &lt;p>일반적인 인덱스는 컬럼의 값 일부(걸럽의 값 앞부분) 또는 전체에 대해서만 인덱스 생성이 허용되지만, 컬럼의 값을 변형해서 만들어진 값에 대해 인덱스를 구축해야 하는 경우도 있는데, 이러한 경우 함수 기반 인덱스를 활용할 수 있다.&lt;/p>
 &lt;p>MySQL 서버의 함수 기반 인덱스는 인덱싱할 값을 계산하는 과정의 차이만 있을 뿐, 실제 인덱스의 내부적인 구조 및 유지 관리 방법은 B-Tree 인덱스와 동일하다.&lt;/p>
 &lt;h3 id="가상-컬럼을-이용한-인덱스">가상 컬럼을 이용한 인덱스&lt;/h3>
@@ -3608,10 +3608,10 @@ data-flex-basis="411px"
 &lt;p>따라서 프라이머리 키 값에 의해 레코드에 저장 위치가 결정되며, 프라이머리 키 값이 변경된다면 그 레코드의 물리적인 저장 위치가 바뀌어야 한다는 것을 의미한다.&lt;/p>
 &lt;p>프라이머리 키 값으로 클러스터링 된 테이블은 프라이머리 키 값 자체에 대한 의존도가 상당히 크기 때문에 신중히 프라이머리 키를 결정해야한다.&lt;/p>
 &lt;p>클러스터링 인덱스는 프라이커리 키 값에 의해 레코드의 저장 위치가 결정되므로 인덱스 알고리즘이라기 보다는 테이블 레코드의 저장 방식이라고 볼 수 있다, 그래서 클러스터링 인덱스와 클러스터링 테이블은 동의어로 사용되기도 한다. 일반적으로 InnoDB와 같이 항상 클러스터링 인덱스로 저장되는 테이블은 프라이머리 키 기반 검색이 매우 빠르며, 대신 레코드의 저장이나 프라이머리 키의 변경이 상대적으로 느리다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/img.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/img.png"
 width="677"
 height="472"
-srcset="https://codemario318.github.io/post/real_mysql_8_4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/4/img_hu0f5f38116678265441d9dcf98671fa4d_130453_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="143"
@@ -3626,10 +3626,10 @@ data-flex-basis="344px"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tb_test&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10002&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">10007&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_4/img_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/4/img_1.png"
 width="678"
 height="552"
-srcset="https://codemario318.github.io/post/real_mysql_8_4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/4/img_1_hu896e1a2cf10a15f621e482a8890a1f26_151848_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="122"
@@ -3851,7 +3851,7 @@ data-flex-basis="294px"
 &lt;p>데이터베이스에서 외래 키를 물리적으로 생성하려면 이러한 현상으로 인한 잠금 경합까지 고려해 모델링을 진행하는 것이 좋다.&lt;br>
 물리적으로 외래키를 생성하면 자식 테이블에 레코드가 추가되는 경우 해당 참조키가 부모 테이블에 있는지 확인하는데, 물리적인 외래키의 고려 사항은 이러한 체크 작업이 아니라 이러한 체크를 위해 연관 테이블에 읽기 잠금을 걸어야 한다는 점이다.&lt;br>
 이렇게 잠금이 다른 테이블로 확장되면 그만큼 전체적으로 쿼리의 동시 처리에 영향을 미친다.&lt;/p>
-&lt;/blockquote></description></item><item><title>8. 인덱스 (3) - 전문 검색 인덱스</title><link>https://codemario318.github.io/post/real_mysql_8_3/</link><pubDate>Sun, 14 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_3/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (3) - 전문 검색 인덱스" />&lt;p>문서의 내용 전체를 인덱스화해서 특정 키워드가 포함된 문서를 검색하는 전문(Full Text) 검색에는 InnoDB나 MyISAM 스토리지 엔진에서 제공하는 일반적인 용도의 B-Tree 인덱스를 사용할 수 없다.&lt;/p>
+&lt;/blockquote></description></item><item><title>8. 인덱스 (3) - 전문 검색 인덱스</title><link>https://codemario318.github.io/post/real-mysql/8/3/</link><pubDate>Sun, 14 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/3/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (3) - 전문 검색 인덱스" />&lt;p>문서의 내용 전체를 인덱스화해서 특정 키워드가 포함된 문서를 검색하는 전문(Full Text) 검색에는 InnoDB나 MyISAM 스토리지 엔진에서 제공하는 일반적인 용도의 B-Tree 인덱스를 사용할 수 없다.&lt;/p>
 &lt;p>문서 전체에 대한 분석과 검색을 위한 인덱싱 알고리즘을 전문 검색(Full Text Search) 인덱스라고 하는데, 전문 검색 인덱스는 일반화된 기능의 명칭으로 알고리즘의 이름을 지칭하는 것은 아니다.&lt;/p>
 &lt;h2 id="인덱스-알고리즘">인덱스 알고리즘&lt;/h2>
 &lt;p>전문 검색에서는 문서 본문의 내용에서 사용자가 검색하게 될 키워드를 분석하고, 빠른 검색용으로 사용할 수 있게 이러한 키워드로 인덱스를 구축한다. 키워드의 분석 및 인덱스 구축에는 여러 가지 방법이 있을 수 있다.&lt;/p>
@@ -4191,14 +4191,14 @@ data-flex-basis="294px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">MATCH&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">doc_body&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">AGAINST&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;애플&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">BOOLEAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">MODE&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>전문 검색 인덱스를 사용하려면 반드시 &lt;code>MATCH ... AGAINST ...&lt;/code>구문으로 검색 쿼리를 작성해야 하며, 인덱스를 구성하는 컬럼들은 &lt;code>MATCH&lt;/code>절의 괄호 안에 모두 명시되어야 한다.&lt;/p></description></item><item><title>8. 인덱스 (2) - B-Tree 인덱스</title><link>https://codemario318.github.io/post/real_mysql_8_2/</link><pubDate>Sun, 07 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (2) - B-Tree 인덱스" />&lt;p>B-Tree는 데이터베이스의 인덱싱 알고리즘 가운데 가장 일반적으로 사용되고, 가장 먼저 도입되었지만 아직까지도 가장 범용적으로 사용되는 인덱스 알고리즘이다.&lt;/p>
+&lt;/div>&lt;p>전문 검색 인덱스를 사용하려면 반드시 &lt;code>MATCH ... AGAINST ...&lt;/code>구문으로 검색 쿼리를 작성해야 하며, 인덱스를 구성하는 컬럼들은 &lt;code>MATCH&lt;/code>절의 괄호 안에 모두 명시되어야 한다.&lt;/p></description></item><item><title>8. 인덱스 (2) - B-Tree 인덱스</title><link>https://codemario318.github.io/post/real-mysql/8/2/</link><pubDate>Sun, 07 May 2023 17:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (2) - B-Tree 인덱스" />&lt;p>B-Tree는 데이터베이스의 인덱싱 알고리즘 가운데 가장 일반적으로 사용되고, 가장 먼저 도입되었지만 아직까지도 가장 범용적으로 사용되는 인덱스 알고리즘이다.&lt;/p>
 &lt;p>B-Tree에는 여러 변형된 형대의 알고리즘이 있는데, 일반적으로 DMBS에서는 B+-Tree, B*-Tree가 사용된다.&lt;/p>
 &lt;p>B-Tree는 컬럼의 원래 값을 변형시키지 않고 인덱스 구조체 내에서는 항상 정렬된 상태로 유지한다. 전문 검색같은 특수한 요건이 아닌 경우, 대부분 인덱스는 B-Tree를 사용한다.&lt;/p>
 &lt;h2 id="구조-및-특성">구조 및 특성&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_1.png"
 width="1168"
 height="884"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_1_hu251c6ae64d7d90de5696088b141275a8_1856492_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree 인덱스의 구조"
 class="gallery-image"
@@ -4208,20 +4208,20 @@ data-flex-basis="317px"
 &lt;p>B-Tree는 트리 구조의 최상위에 하나의 루트 노드가 존재하고 그 하위에 자식 노드가 붙어있는 형태이다. 트리 구조의 가장 하위에 있는 노드를 리프 노드라 하고, 트리 구조에서 루트 노드도 아니고 리프 노드도 아닌 중간 노드를 브랜치 노드라고 한다.&lt;/p>
 &lt;p>데이터베이스에서 인덱스와 실제 데이터가 저장된 데이터는 따로 관리되는데, 인덱스의 리프 노드는 항상 실제 데이터 레코드를 찾아가기 위한 주솟값을 가진다.&lt;/p>
 &lt;p>인덱스의 키 값은 모두 정렬돼 있지만, 데이터 파일릐 레코드는 정렬돼 있지 않고 임의의 순서로 저장돼 있다. 레코드가 삭제되어 빈 공간이 생기면 그다음 &lt;code>INSERT&lt;/code>는 가능한 한 삭제된 공간을 재활용 하도록 DBMS가 설계되기 때문에, 항상 &lt;code>INSERT&lt;/code>순서대로 저장되는 것은 아니다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_2.png"
 width="1462"
 height="842"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_2_hu7b3c22bf020200bd3cdee7811beafb13_1752782_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree의 리프 노드와 테이블 데이터 레코드(MyISAM)"
 class="gallery-image"
 data-flex-grow="173"
 data-flex-basis="416px"
 >
-&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_3.png"
+&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_3.png"
 width="1548"
 height="780"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_3_hu1c5f6032d99b8c52f1f8d347a8e170df_2414393_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="B-Tree의 리프 노드와 테이블 데이터 레코드(InnoDB)"
 class="gallery-image"
@@ -4313,10 +4313,10 @@ data-flex-basis="476px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Ebbe&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Gad&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_4.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_4.png"
 width="582"
 height="558"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_4_hu301057c997b3b41ee80848125dd9db57_152006_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="인덱스 레인지 스캔"
 class="gallery-image"
@@ -4325,10 +4325,10 @@ data-flex-basis="250px"
 >&lt;/p>
 &lt;p>인덱스 레인지 스캔은 검색해야 할 인덱스의 범위가 결정됐을 대 사용하는 방식이다. 검색하려는 값의 수나 검색 결과 레코드 건수와 관계 없이 레인지 스캔이라고 표현한다.&lt;/p>
 &lt;p>루트 노드에서부터 비교를 시작해 브랜치 노드를 거치고 최종적으로 리프 노드까지 찾아 들어가야만 비로소 필요한 레코드의 시작 지점을 찾을 수 있다. 이처럼 차례대로 죽 읽는 것을 스캔이라고 표현하며, 스캔하다가 리프 노드의 끝까지 읽으면 리프 노드의 구간은 실제 스캔하는 범위를 표현한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_5.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_5.png"
 width="628"
 height="557"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_5_hu766996a0529fd6a35a8cd6100064bbf2_220325_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="112"
@@ -4360,10 +4360,10 @@ data-flex-basis="270px"
 &lt;/ul>
 &lt;h3 id="인덱스-풀-스캔">인덱스 풀 스캔&lt;/h3>
 &lt;p>인덱스 레인지 스캔과는 달리 인덱스의 처음부터 끝까지 모두 읽는 방식이다. 대표적으로 쿼리의 조건절에 사용된 컬럼이 인덱스의 첫 번째 컬럼이 아닌 경우 인덱스 풀 스캔 방식이 사용된다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_6.png"
 width="575"
 height="556"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_6_huab8bc2140b6b20b790aac6ab1b0d6466_163070_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="103"
@@ -4379,10 +4379,10 @@ data-flex-basis="248px"
 &lt;blockquote>
 &lt;p>인덱스 레인지 스캔과 인덱스 풀 스캔은 루스 인덱스 스캔과는 상반된 의미로 타이트 인덱스 스캔으로 분류한다.&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_7.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_7.png"
 width="602"
 height="730"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_7_hu994beec9ee7afb666dcc0c6049363bba_231238_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="82"
@@ -4504,10 +4504,10 @@ data-flex-basis="197px"
 &lt;/ul>
 &lt;h3 id="다중-컬럼-인덱스">다중 컬럼 인덱스&lt;/h3>
 &lt;p>실제 서비스용 데이터베이스에서는 2개 이상의 컬럼을 포함하는 인덱스가 더 많이 사용된다. 두개 이상의 컬럼으로 구성된 인덱스를 다중 컬럼 인덱스(복합 컬럼 인덱스, Concatenated Index)라고 한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_8_2/img_8.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/8/2/img_8.png"
 width="417"
 height="676"
-srcset="https://codemario318.github.io/post/real_mysql_8_2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_8_2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/8/2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/8/2/img_8_hu52c72accbc20e94b4dc26061f37645f3_153808_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="61"
@@ -4659,7 +4659,7 @@ data-flex-basis="148px"
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>적업 범위 결정 조건으로 인덱스를 사용하는 쿼리 패턴은 이 밖에도 상당히 많지만, 대표적인 것을 기억해 두면 좀 더 효율적인 쿼리를 쉽게 작성할 수 있다.&lt;/p></description></item><item><title>8. 인덱스 (1)</title><link>https://codemario318.github.io/post/real_mysql_8_1/</link><pubDate>Sun, 07 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_8_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_8_1/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (1)" />&lt;p>인덱스는 데이터베이스 쿼리의 성능을 언급하면서 뻬놓을 수 없는 부분이다. 각 인덱스의 특성과 차이는 상당히 중요하며, 물리 수준의 모델링을 할 때도 중요한 요소가 된다.&lt;/p>
+&lt;p>적업 범위 결정 조건으로 인덱스를 사용하는 쿼리 패턴은 이 밖에도 상당히 많지만, 대표적인 것을 기억해 두면 좀 더 효율적인 쿼리를 쉽게 작성할 수 있다.&lt;/p></description></item><item><title>8. 인덱스 (1)</title><link>https://codemario318.github.io/post/real-mysql/8/1/</link><pubDate>Sun, 07 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/8/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/8/1/real_mysql.jpeg" alt="Featured image of post 8. 인덱스 (1)" />&lt;p>인덱스는 데이터베이스 쿼리의 성능을 언급하면서 뻬놓을 수 없는 부분이다. 각 인덱스의 특성과 차이는 상당히 중요하며, 물리 수준의 모델링을 할 때도 중요한 요소가 된다.&lt;/p>
 &lt;p>MySQL 8.0 버전까지 업그레이드되어 오면서 다른 상용 RDBMS에서 제공하는 많은 기능을 지원하게 됐으며, 기존의 MyISAM 스토리지 엔진에서만 제공하던 전문 검색이나 위치 기반 검색 기능도 모두 InnoDB 스토리지 엔진에서 사용할 수 있게 개선되었다.&lt;/p>
 &lt;p>하지만 아무리 MySQL 서버의 옵티마이저가 발전하고 성능이 개선됐다고 해도 여전히 관리자의 역할은 매우 중요하며, 인덱스에 대한 기본 지식은 지금도 앞으로도 개발자나 관리자에게 매우 중요하고 쿼리 튜닝의 기본이 될 것이다.&lt;/p>
 &lt;h2 id="디스크-읽기-방식">디스크 읽기 방식&lt;/h2>
@@ -4740,14 +4740,14 @@ data-flex-basis="148px"
 &lt;/ul>
 &lt;p>&lt;strong>데이터 중복 허용 여부로 분류&lt;/strong>&lt;/p>
 &lt;p>데이터의 중복 허용 여부로 분류하면 유니크 인덱스와 유니크하지 않은 인덱스로 구분할 수 있다.&lt;/p>
-&lt;p>인덱스가 유니크한지 아닌지는 단순히 같은 값이 1개만 존재하는지 1개 이상 존재할 수 있는지를 의미하지만, 실제 DBMS의 쿼리를 실행할 때 유니크 인덱스에 대해 동등 조건으로 검색한다는 것은 1건의 레코드만 찾으면 더 찾지 않아도 된다는 것을 옵티마이저에게 알려주는 효과를 내기 때문에 옵티마이저에게는 상당히 중요하다.&lt;/p></description></item><item><title>7. 데이터 암호화</title><link>https://codemario318.github.io/post/real_mysql_7/</link><pubDate>Mon, 01 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_7/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql.jpeg" alt="Featured image of post 7. 데이터 암호화" />&lt;p>데이터 암호화는 MySQL 5.7 버전부터 지원되기 시작했으며, 처음에는 데이터 파일(테이블스페이스)에서만 암호화 기능이 제공 되었으나 MySQL 8.0으로 업그레이드 리두 로그나 언두 로그, 복제를 위한 바이너리 로그 등도 모두 암호화 기능을 지원하기 시작했다.&lt;/p>
+&lt;p>인덱스가 유니크한지 아닌지는 단순히 같은 값이 1개만 존재하는지 1개 이상 존재할 수 있는지를 의미하지만, 실제 DBMS의 쿼리를 실행할 때 유니크 인덱스에 대해 동등 조건으로 검색한다는 것은 1건의 레코드만 찾으면 더 찾지 않아도 된다는 것을 옵티마이저에게 알려주는 효과를 내기 때문에 옵티마이저에게는 상당히 중요하다.&lt;/p></description></item><item><title>7. 데이터 암호화</title><link>https://codemario318.github.io/post/real-mysql/7/</link><pubDate>Mon, 01 May 2023 16:24:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/7/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql.jpeg" alt="Featured image of post 7. 데이터 암호화" />&lt;p>데이터 암호화는 MySQL 5.7 버전부터 지원되기 시작했으며, 처음에는 데이터 파일(테이블스페이스)에서만 암호화 기능이 제공 되었으나 MySQL 8.0으로 업그레이드 리두 로그나 언두 로그, 복제를 위한 바이너리 로그 등도 모두 암호화 기능을 지원하기 시작했다.&lt;/p>
 &lt;p>데이터 암호화 여부는 보안 감사에서 필수적으로 언급되는 부분이며, 핀테크 서비스처럼 중요한 정보를 저장하는 서비스에서는 응용 프로그램에서 암호화한 데이터를 데이터베이스 서버에서 다시 암호화하는 이중 암호화 방법을 선택하기도 한다.&lt;/p>
 &lt;p>응용 프로그램의 암호화는 주로 중요 정보를 가진 칼럼 단위로 암호화를 수행하며, 데이터베이스 수준에서는 테입르 단위로 암호화를 적용한다.&lt;/p>
 &lt;h2 id="mysql-서버의-데이터-암호화">MySQL 서버의 데이터 암호화&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1.png"
 width="746"
 height="523"
-srcset="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/7/real_mysql_7_1_hu25fd17147a88de2c4ef9d22824b432ad_31685_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="142"
@@ -4765,10 +4765,10 @@ data-flex-basis="342px"
 &lt;li>&lt;code>keyring_aws&lt;/code> Amazon Web Services keyring 플러그인&lt;/li>
 &lt;/ul>
 &lt;p>MySQL커뮤니티 에디션에서는 &lt;code>keyring_file&lt;/code> 플러그인만 사용 가능하고, 나머지 플러그인은 모두 엔터프라이즈 에디션에서만 사용 가능하다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2.png"
 width="1078"
 height="785"
-srcset="https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/7/real_mysql_7_2_hu3b106e5a2b1e6e575b248ed5137a917c_45768_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="137"
@@ -4977,7 +4977,7 @@ Percona Server는 HashiCorp Vault를 연동하는 키 관리 플러그인을 오
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">mysqlbinlog --read-from-remote-server -uroot -p -vvv mysql-bin.000011
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>6. 데이터 압축</title><link>https://codemario318.github.io/post/real_mysql_6/</link><pubDate>Mon, 01 May 2023 14:12:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_6/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql.jpeg" alt="Featured image of post 6. 데이터 압축" />&lt;p>MySQL 서버에서 디스크에 저장된 데이터 파일의 크기는 일반저긍로 쿼리의 처리 성능과도 직결되지만 백업 및 복구 시간과도 밀접하게 연결된다.&lt;/p>
+&lt;/div></description></item><item><title>6. 데이터 압축</title><link>https://codemario318.github.io/post/real-mysql/6/</link><pubDate>Mon, 01 May 2023 14:12:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/6/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql.jpeg" alt="Featured image of post 6. 데이터 압축" />&lt;p>MySQL 서버에서 디스크에 저장된 데이터 파일의 크기는 일반저긍로 쿼리의 처리 성능과도 직결되지만 백업 및 복구 시간과도 밀접하게 연결된다.&lt;/p>
 &lt;ul>
 &lt;li>디스크의 데이터 파일이 크면 클수록 쿼리를 처리하기 위해서 더 많은 데이터 페이지를 InnoDB 버퍼풀로 읽어야 할 수 있다.&lt;/li>
 &lt;li>새로운 페이지가 버퍼풀로 적재되기 때문에 그만큼 더티 페이지가 더 자주 디스크로 기록돼야 한다.&lt;/li>
@@ -4997,10 +4997,10 @@ Percona Server는 HashiCorp Vault를 연동하는 키 관리 플러그인을 오
 이전에는 파일 전체를 복사하고 일부분을 수정하는 드으이 방법으로 파일을 수정해야 했으나 시간과 디스크 공간을 많이 소모하게 되어 펀치홀이 개발되었다.&lt;br>
 펀치홀은 일부 운영체제에서만 지원되는 기능이며(리눅스), 대용량 파일 시스템에 사용되어 성능을 향상시키는데 도움을 준다.&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1.png"
 width="634"
 height="323"
-srcset="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/6/real_mysql_6_1_hu9e1be328866812ff8360a547525aa20f_35207_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="196"
@@ -5104,10 +5104,10 @@ data-flex-basis="471px"
 &lt;p>&lt;code>innodb_file_per_table&lt;/code> 시스템 변수가 0 인 상태에서 제너럴 테이블스페이스(General Tablespace)에 생성되는 테이블도 테이블 압축을 사용할 수 있으나, 제너럴 테이블스페이스의 FILE_BLOCK_SIZE에 의해 압축을 사용하지 못할 수 있다.&lt;/p>
 &lt;/blockquote>
 &lt;h3 id="테이블-압축-동작-방식">테이블 압축 동작 방식&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2.png"
 width="667"
 height="564"
-srcset="https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/6/real_mysql_6_2_hu1eec0e327e62387810554f727dd21d6c_42206_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="118"
@@ -5289,7 +5289,7 @@ MySQL 서버가 비정상적으로 종료됐다가 다시 시작되는 경우 �
 &lt;li>기본값은 ON, 가능하면 기본값 상태를 유지하자.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real_mysql_5_3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
+&lt;/ul></description></item><item><title>5.3 MySQL의 격리 수준</title><link>https://codemario318.github.io/post/real-mysql/5/3/</link><pubDate>Sat, 22 Apr 2023 15:31:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql.jpeg" alt="Featured image of post 5.3 MySQL의 격리 수준" />&lt;p>트랜잭션의 격리 수준(isolation level)이란 여러 트랜잭션이 동시에 처리될 때 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정한다.&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>READ UNCOMMITTED&lt;/code>&lt;br>
 &lt;code>DIRTY READ&lt;/code>라고도 하며 일반적인 데이터베이스에서는 거의 사용하지 않는다.&lt;/li>
@@ -5343,10 +5343,10 @@ MySQL 서버가 비정상적으로 종료됐다가 다시 시작되는 경우 �
 &lt;/ul>
 &lt;h2 id="read-uncommitted">READ UNCOMMITTED&lt;/h2>
 &lt;p>&lt;code>READ UNCOMMITTED&lt;/code> 격리 수준에서는 각 트랜잭션에서 변경 내용이 &lt;code>COMMIT&lt;/code>, &lt;code>ROLLBACK&lt;/code> 여부에 상관 없이 다른 트랜잭션에서 보인다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1.png"
 width="483"
 height="440"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_1_hu8bfedc3c815f101934f614175f765b59_81960_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="109"
@@ -5358,10 +5358,10 @@ data-flex-basis="263px"
 &lt;p>더티 리드 현상은 데이터가 나타났다 사라지는 현상을 초래하므로 개발자와 사용자를 혼란스럽게 만들 수 있다. 더티 리드를 유발하는 &lt;code>READ UNCOMMITTED&lt;/code>는 &lt;code>RDBMS&lt;/code> 표준에서는 트랜잭션의 격리 수준으로 인정하지 않을 정도로 정합성에 문제가 많으므로 &lt;code>READ COMMITTED&lt;/code> 이상의 격리 수준을 사용할 것을 권장한다.&lt;/p>
 &lt;h2 id="read-committed">READ COMMITTED&lt;/h2>
 &lt;p>오라클 DBMS에서 기본으로 사용되는 격리 수준이며, 온라인 서비스에서 가장 많이 선택되는 격리 수준이다. 어떤 트랜잭션에서 데이터를 변경했더라도 &lt;code>COMMIT&lt;/code>이 완료된 데이터만 다른 트랜잭션에서 조회할 수 있기 때문에 더티 리드 현상은 발생하지 않는다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2.png"
 width="507"
 height="441"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_2_huf34101d31019847065ade1c20bab32d5_93822_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="114"
@@ -5371,10 +5371,10 @@ data-flex-basis="275px"
 &lt;p>&lt;code>COMMIT&lt;/code>이 완료 되기 전 B가 &lt;code>emp_no=500000&lt;/code>인 사원의 &lt;code>first_name&lt;/code>을 조회하면, 언두 영역에 백업된 레코드에서 가져온 &amp;ldquo;Lara&amp;quot;를 조회하게 된다.&lt;/p>
 &lt;h3 id="non-repeatable-read">NON-REPEATABLE READ&lt;/h3>
 &lt;p>&lt;code>READ COMMITTED&lt;/code> 격리 수준에서도 &lt;code>NON-REPEATABLE READ&lt;/code>라는 부정합 문제가 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3.png"
 width="480"
 height="461"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_3_hub45ba31922b305f9c247d678b3f895cf_95240_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="104"
@@ -5396,10 +5396,10 @@ data-flex-basis="249px"
 &lt;/blockquote>
 &lt;p>InnoDB의 모든 트랜잭션은 고유한 트랜잭션 번호(순차적으로 증가하는 값)를 가지며, 언두 영역에 백업된 모든 레코드에는 변경을 발생시킨 트랜잭션 번호가 포함되어 있다. 언두 영역에 백업된 데이터는 InnoDB 스토리지 엔진이 불필요하다고 판단하는 시점에 주기적으로 삭제한다.&lt;/p>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서는 MVCC를 보장하기 위해 실행중인 트랜잭션 가운데 가장 오래된 트랜잭션 번호보다 트랜잭션 번호가 앞선 언두 영역의 데이터는 삭제할 수가 없다. 그렇다고 가장 오래된 트랜잭션 번호 이전의 트랜잭션에 의해 변경된 모든 언두 데이터가 필요한 것은 아니며, 특정 트랜잭션 번호의 구간 내에서 백업된 언두 데이터가 보존 돼야 한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4.png"
 width="537"
 height="612"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_4_hu3774675e9e7b708e8581ff00eef375a8_148898_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="87"
@@ -5411,10 +5411,10 @@ data-flex-basis="210px"
 &lt;/blockquote>
 &lt;h3 id="phantom-read">PHANTOM READ&lt;/h3>
 &lt;p>&lt;code>REPEATABLE READ&lt;/code> 격리 수준에서도 부정합이 발생 가능하다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5.png"
 width="566"
 height="592"
-srcset="https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/3/real_mysql_5_3_5_hu957d9367aefd1e011547afa2e94b6d81_137043_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="95"
@@ -5430,7 +5430,7 @@ data-flex-basis="229px"
 &lt;blockquote>
 &lt;p>엄밀하게는 &lt;code>SELECT ... FOR UPDATE&lt;/code>, &lt;code>SELECT ... FOR SHARE&lt;/code> 쿼리의 경우 &lt;code>REPEATABLE READ&lt;/code> 격리수준에서 &lt;code>PHANTOM READ&lt;/code> 현상이 발생할 수 있다.&lt;br>
 하지만 레코드의 변경 이력(언두 레코드)에 잠금을 걸 수는 없기 때문에, 이러한 잠금을 동반한 &lt;code>SELECT&lt;/code> 쿼리는 예외적인 상황으로 볼 수 있다.&lt;/p>
-&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real_mysql_5_2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
+&lt;/blockquote></description></item><item><title>5.2 잠금</title><link>https://codemario318.github.io/post/real-mysql/5/2/</link><pubDate>Sat, 22 Apr 2023 15:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql.jpeg" alt="Featured image of post 5.2 잠금" />&lt;p>잠금은 동시성을 제어하기 위한 기능으로 하나의 데이터를 여러 커넥션에서 동시에 동일한 자원(레코드나 테이블)을 요청할 경우 순서대로 한 시점에는 하나의 커넥션만 변경할 수 있게 해주는 역할을 한다.&lt;/p>
 &lt;ul>
 &lt;li>
 &lt;p>MySQL 엔진 레벨&lt;br>
@@ -5662,10 +5662,10 @@ MyISAM뿐 아니라 InnoDB 스토리지 엔진을 사용하는 테이블도 동�
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="innodb-스토리지-엔진의-잠금">InnoDB 스토리지 엔진의 잠금&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1.png"
 width="568"
 height="391"
-srcset="https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_5_2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/5/2/real_mysql_5_2_1_huce10c04fd991a9d92b7f64aa4285a0fb_125963_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="145"
@@ -5821,7 +5821,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;li>&lt;code>performance_schema&lt;/code>의 &lt;code>data_locks&lt;/code>, &lt;code>data_lock_waits&lt;/code>로 확인&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>5.1 트랜잭션</title><link>https://codemario318.github.io/post/real_mysql_5_1/</link><pubDate>Sat, 22 Apr 2023 15:29:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_5_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_5_1/real_mysql.jpeg" alt="Featured image of post 5.1 트랜잭션" />&lt;p>트랜잭션은 작업의 완전성을 보장해 주는 것이다.&lt;br>
+&lt;/ul></description></item><item><title>5.1 트랜잭션</title><link>https://codemario318.github.io/post/real-mysql/5/1/</link><pubDate>Sat, 22 Apr 2023 15:29:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/5/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/5/1/real_mysql.jpeg" alt="Featured image of post 5.1 트랜잭션" />&lt;p>트랜잭션은 작업의 완전성을 보장해 주는 것이다.&lt;br>
 논리적이 작업 셋을 모두 완벽하게 처리하거나, 처리하지 못할 경우에는 원 상태로 복구해서 작업의 일부만 적용되는 현상(Partial update)이 발생하지 않게 만들어주는 기능이다.&lt;/p>
 &lt;p>트랜잭션은 꼭 여러 개의 변경 작업을 수행하는 쿼리가 조합됐을 때만 의미있는 개념은 아니다. 트랜잭션은 하나의 논리적인 작업 셋이 100% 적용되거나(&lt;code>COMMIT&lt;/code>) 아무것도 적용되지 않아야(&lt;code>ROLLBACK&lt;/code>)함을 보장해 주는 것이다.&lt;/p>
 &lt;h2 id="mysql에서의-트랜잭션">MySQL에서의 트랜잭션&lt;/h2>
@@ -6888,11 +6888,11 @@ InnoDB 스토리지 엔진의 리두 로그가 손상되면 MySQL 서버가 실�
 &lt;blockquote>
 &lt;p>마지막 풀 백업 시점부터 장애 시점까지의 바이너리 로그가 있다면 이용하는 것이 데이터 손실이 더 적을 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1.png"
+&lt;p>백업은 있지만 복제의 바이너리 로그가 없거나 손실되었다면, 마지막 백업 시점가지만 복구할 수 있다.&lt;/p></description></item><item><title>4.1 MySQL 엔진 아키텍처</title><link>https://codemario318.github.io/post/real-mysql/4/1/</link><pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/real_mysql.jpeg" alt="Featured image of post 4.1 MySQL 엔진 아키텍처" />&lt;h2 id="mysql의-전체-구조">MySQL의 전체 구조&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1.png"
 width="780"
 height="802"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_1_hu83fe18d660041abfde171686de4da5cf_206729_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 전체 구조"
 class="gallery-image"
@@ -6993,10 +6993,10 @@ MySQL 서버는 크게 &lt;strong>MySQL 엔진&lt;/strong>과 &lt;strong>스토�
 &lt;li>MyISAM: 사용자 스레드가 쓰기 작업까지 함께 처리하도록 설계되어, 일반적인 쿼리는 쓰기 버퍼링 기능을 사용할 수 없다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="메모리-할당-및-사용-구조">메모리 할당 및 사용 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3.png"
 width="640"
 height="423"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_3_huc090c2efafb1abf5a9a425a77bd2dd06_96981_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL 메모리 할당 구조"
 class="gallery-image"
@@ -7087,10 +7087,10 @@ data-flex-basis="363px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="쿼리-실행-구조">쿼리 실행 구조&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6.png"
 width="411"
 height="302"
-srcset="https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/1/mysql_4_6_hue3f22860c2cd0cfc88afa48f7566f2b3_32277_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="쿼리 실행 구조"
 class="gallery-image"

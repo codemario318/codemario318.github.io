@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TypeScript on Mario Blog</title><link>https://codemario318.github.io/tags/typescript/</link><description>Recent content in TypeScript on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 17:09:29 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/typescript/index.xml" rel="self" type="application/rss+xml"/><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript_tutorial_2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TypeScript on Mario Blog</title><link>https://codemario318.github.io/tags/typescript/</link><description>Recent content in TypeScript on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Apr 2023 17:09:29 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/typescript/index.xml" rel="self" type="application/rss+xml"/><item><title>TypeScript Tutorial - 2. Basic Types</title><link>https://codemario318.github.io/post/typescript/tutorial/2/</link><pubDate>Tue, 18 Apr 2023 17:09:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 2. Basic Types" />&lt;h2 id="what-is-type-annotation-in-typescript">What is Type Annotation in TypeScript&lt;/h2>
 &lt;p>타입스크립트는 타입 어노테이션을 사용하여 변수, 함수, 객체 등과 같은 식별자의 유형을 명시적으로 지정한다.&lt;/p>
 &lt;p>&lt;code>: type&lt;/code> 구문을 식별자 뒤에 붙이는 타입 어노테이션으로 사용한다.&lt;/p>
 &lt;ul>
@@ -648,7 +648,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">isItSummer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">MonthSecond&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Dec&lt;/span>&lt;span class="p">));&lt;/span> &lt;span class="c1">//error TS2345: Argument of type &amp;#39;MonthSecond.Dec&amp;#39; is not assignable to parameter of type &amp;#39;Month&amp;#39;.
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>TypeScript Tutorial - 1. Gettig Started(1)</title><link>https://codemario318.github.io/post/typescript_tutorial_1_1_1/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_1_1_1/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1. Gettig Started(1)" />&lt;h2 id="setup">Setup&lt;/h2>
+&lt;/div></description></item><item><title>TypeScript Tutorial - 1. Gettig Started(1)</title><link>https://codemario318.github.io/post/typescript/tutorial/1/1/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/1/1/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1. Gettig Started(1)" />&lt;h2 id="setup">Setup&lt;/h2>
 &lt;h3 id="tools">Tools&lt;/h3>
 &lt;ul>
 &lt;li>Node.js: TS 컴파일러 실행을 위해 필요함&lt;/li>
@@ -690,10 +690,10 @@ TS 코드를 실행하고 REPL(read-eval-print loop: 스크립트 실행 환경)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h2 id="what-is-typescript">What is TypeScript&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1.png"
 width="316"
 height="316"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_1_hu24737d69ef0177310b5709efda648f90_11551_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="100"
@@ -706,10 +706,10 @@ data-flex-basis="240px"
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2.png"
 width="605"
 height="190"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/1/ts_1_2_hufc6fcdace6725c4d23f87c7ba3108591_9916_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="Untitled"
 class="gallery-image"
@@ -880,7 +880,7 @@ data-flex-basis="764px"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">tsc&lt;/span> &lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ts&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>TypeScript Tutorial - 1.2 Why use TypeScript</title><link>https://codemario318.github.io/post/typescript_tutorial_1_1_2/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript_tutorial_1_1_2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1.2 Why use TypeScript" />&lt;p>타입 스크립트를 사용해야하는 2가지 중요한 이유가 있다.&lt;/p>
+&lt;/div></description></item><item><title>TypeScript Tutorial - 1.2 Why use TypeScript</title><link>https://codemario318.github.io/post/typescript/tutorial/1/2/</link><pubDate>Tue, 18 Apr 2023 16:43:29 +0900</pubDate><guid>https://codemario318.github.io/post/typescript/tutorial/1/2/</guid><description>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_cover.webp" alt="Featured image of post TypeScript Tutorial - 1.2 Why use TypeScript" />&lt;p>타입 스크립트를 사용해야하는 2가지 중요한 이유가 있다.&lt;/p>
 &lt;ul>
 &lt;li>JS의 동적 타이핑으로 발생하는 여러 문제들을 예방할 수 있다.&lt;/li>
 &lt;li>앞으로 반영될 JS 문법을 당장 사용할 수 있다. (ES Next)&lt;/li>
@@ -1047,10 +1047,10 @@ JS 최신 문법은 간편한 기능을 제공하는 경우가 많고, 여러 �
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`The product &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> costs $&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">price&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1.png"
 width="656"
 height="56"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_1_hucdb208bd4ac52b69ed343ce5b277465c_7084_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="1171"
@@ -1085,10 +1085,10 @@ data-flex-basis="2811px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">showProduct&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">price&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">product&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">name&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2.png"
 width="776"
 height="151"
-srcset="https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript_tutorial_1_1_2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/typescript/tutorial/1/2/ts_1_2_2_huba0bd7a1c92d15fc7cb87cbdca9175a0_14909_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="513"
