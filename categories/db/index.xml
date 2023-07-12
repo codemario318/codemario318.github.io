@@ -254,11 +254,86 @@
 &lt;li>실행 계획의 type 컬럼이 index_merge가 아는 경우에는 반드시 테이블 하나당 하나의 인덱스만 이용할 수 있다.&lt;/li>
 &lt;li>인덱스를 사용하지 못하면 NULL로 표시된다.&lt;/li>
 &lt;/ul>
-&lt;h2 id="key_len">key_len&lt;/h2>
+&lt;h2 id="key_len-컬럼">key_len 컬럼&lt;/h2>
 &lt;p>실제 업무에서 사용하는 테이블은 단일 컬럼으로 만들어진 인덱스보다 다중 컬럼으로 만들어진 인덱스가 더 많은데, key_len 컬럼은 쿼리를 처리하기 위해 다중 컬럼으로 구성된 인덱스에서 몇 개의 컬럼까지 사용했는지 알려준다.(인덱스의 각 레코드에서 몇 바이트까지 사용했는지)&lt;/p>
 &lt;ul>
 &lt;li>다중 컬럼 인덱스뿐 아니라 단일 컬럼으로 만들어진 인덱스에서도 같은 지표를 제공한다.&lt;/li>
-&lt;/ul></description></item><item><title>10.2 실행 계획 - 실행 계획 확인</title><link>https://codemario318.github.io/post/real_mysql/10/2/</link><pubDate>Thu, 29 Jun 2023 11:07:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql/10/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql/10/2/real_mysql.jpeg" alt="Featured image of post 10.2 실행 계획 - 실행 계획 확인" />&lt;p>MySQL 실행 계획은 &lt;code>DESC&lt;/code> 또는 &lt;code>EXPLAIN&lt;/code> 명령으로 확인할 수 있다. 또한 MySQL 8.0 부터 EXPLAIN 명령에 사용할 수 있는 새로운 옵션이 추가되었다.&lt;/p>
+&lt;/ul>
+&lt;h2 id="ref-컬럼">ref 컬럼&lt;/h2>
+&lt;p>접근 방법이 ref라면 참조 조건(Equal 비교 조건)으로 어떤 값이 제공되었는지 보여준다.&lt;/p>
+&lt;ul>
+&lt;li>상숫값을 지정했다면 const 표시&lt;/li>
+&lt;li>다른 테이블의 컬럼 값이면 테이블명과 컬럼명 표시&lt;/li>
+&lt;li>콜레이션 변환이나 값 차체의 연산을 거쳐 참조했을 경우 func 표시&lt;/li>
+&lt;li>MySQL 서버가 내부적으로 값을 변환해야 하는 경우 func 표시
+&lt;ul>
+&lt;li>문자집합이 일치하지 않는 두 문자열 컬럼을 조인&lt;/li>
+&lt;li>숫자 타입의 컬럼과 문자열 타입의 컬럼 조인 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="rows-컬럼">rows 컬럼&lt;/h2>
+&lt;p>rows 컬럼은 실행 계획의 효율성 판단을 위해 예측한 읽어야 할 총 레코드 건수를 의미한다.&lt;/p>
+&lt;blockquote>
+&lt;p>MySQL 옵티마이저는 각 조건에 대해 가능한 처리 방식을 나열하고, 각 처리방식의 비용을 비교해 최종적으로 하나의 실행 계획을 수립할 때 각 처리 방식이 얼마나 많은 레코드를 읽고 비교해야 하는지 예측해 비용을 산정한다.&lt;/p>
+&lt;ul>
+&lt;li>대상 테이블에 얼마나 많은 레코드가 포함되어 있는지&lt;/li>
+&lt;li>각 인덱스 값의 분포도가 어떤지&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>rows 값은 각 스토리지 엔질별로 가지고 있는 통계 정보를 참조해 산출해낸 예상값이므로 전확하지는 않다.&lt;/li>
+&lt;li>반환하는 레코드의 예측치가 아니라 쿼리를 처리하기 위해 얼마나 많은 레코드를 읽고 체크해야 하는지를 의미한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="filtered-컬럼">filtered 컬럼&lt;/h2>
+&lt;p>filtered 컬럼은 읽어야 할 총 레코드 건수 rows에서 필터링 되고 남는 레코드의 비율을 의미한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Matt&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">hire_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;1990-01-01&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;1991-01-01&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>id&lt;/th>
+&lt;th>select_type&lt;/th>
+&lt;th>type&lt;/th>
+&lt;th>key&lt;/th>
+&lt;th>rows&lt;/th>
+&lt;th>filtered&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>SIMPLE&lt;/td>
+&lt;td>ref&lt;/td>
+&lt;td>ix_firstname&lt;/td>
+&lt;td>233&lt;/td>
+&lt;td>16.03&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위 실행계획에서 ix_firstname 인덱스를 활용하여 읽어야 할 범위를 제한하였고, 따라서 필수적으로 읽어야 하는 레코드 건수는 rows 값인 233이다.&lt;/p>
+&lt;p>읽어야 하는 레코드 233건 중 인덱스를 활용할 수 없는 조건인 &lt;code>hire_date&lt;/code> 조건을 통해 다시 값을 필터링하게 되는데, filtered 값은 읽어와야할 레코드 중 조건으로 인해 필터링 되고 남은 레코드의 비율을 의미한다.&lt;/p>
+&lt;p>따라서 쿼리의 결과 예상 건수는 &lt;code>233 * 0.1603&lt;/code> 으로 약 37건이다.&lt;/p>
+&lt;blockquote>
+&lt;p>대부분 쿼리에서 &lt;code>WHERE&lt;/code> 절에서 사용되는 조건이 모두 인덱스를 사용할 수 있는 것은 아니며, 특히 조인이 사용되는 경우에는 &lt;code>WHERE&lt;/code> 절에서 인덱스를 사용할 수 있는 조건도 중요하지만 인덱스를 사용하지 못하는 조건에 일치하는 레코드 건수를 파악하는 것도 매우 중요하다.&lt;/p>
+&lt;/blockquote></description></item><item><title>10.2 실행 계획 - 실행 계획 확인</title><link>https://codemario318.github.io/post/real_mysql/10/2/</link><pubDate>Thu, 29 Jun 2023 11:07:10 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql/10/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql/10/2/real_mysql.jpeg" alt="Featured image of post 10.2 실행 계획 - 실행 계획 확인" />&lt;p>MySQL 실행 계획은 &lt;code>DESC&lt;/code> 또는 &lt;code>EXPLAIN&lt;/code> 명령으로 확인할 수 있다. 또한 MySQL 8.0 부터 EXPLAIN 명령에 사용할 수 있는 새로운 옵션이 추가되었다.&lt;/p>
 &lt;h2 id="실행-계획-출력-포맷">실행 계획 출력 포맷&lt;/h2>
 &lt;p>이전 버전에서는 &lt;code>EXPLAIN EXTENDED&lt;/code>, &lt;code>EXPLAIN PARTITIONS&lt;/code> 명령이 구분되어 있었지만 8.0 버전부터는 모든 내용이 통합되어 보이도록 개선되면서 옵션이 문법에서 제거되었다.&lt;/p>
 &lt;p>또한 &lt;code>FORMAT&lt;/code> 옵션을 사용해 실행 계획의 표시 방법을 JSON, TREE, 단순 테이블 형태로 선택할 수 있다.&lt;/p>
