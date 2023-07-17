@@ -1,4 +1,294 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 11 Jul 2023 13:07:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>10.3 실행 계획 - 실행 계획 분석 (1)</title><link>https://codemario318.github.io/post/real-mysql/10/3/1/</link><pubDate>Tue, 11 Jul 2023 13:07:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/1/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (1)" />&lt;p>&lt;code>EXPLAIN&lt;/code> 명령을 실행하면 쿼리 문장의 특성에 따라 표 형태로 1줄 이상의 결과가 표시된다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 12 Jul 2023 15:19:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</title><link>https://codemario318.github.io/post/real-mysql/10/3/2/</link><pubDate>Wed, 12 Jul 2023 15:19:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/2/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" />&lt;p>컬럼 이름과 달리 쿼리의 실행 계획에서 성능에 관련된 중요한 내용이 Extra 컬럼에 지주 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>고정된 몇개의 문장이 표시되는데, 일반적으로 2~3개씩 함께 표시된다.&lt;/li>
+&lt;li>내부적인 처리 알고리즘에 대해 조금 더 깊이 있는 내용을 보여주는 경우가 많다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="const-row-not-found">const row not found&lt;/h2>
+&lt;p>쿼리의 실행 계획에서 const 접근 방법으로 테이블을 읽었지만 실제로 해당 테이블에 레코드가 1건도 존재하지 않을 경우 표시된다.&lt;/p>
+&lt;h2 id="deleting-all-rows">Deleting all rows&lt;/h2>
+&lt;p>MyISAM 스토리지 엔진과 같이 스토리지 엔진의 핸들러 차원에서 테이블의 모든 레코드를 삭제하는 기능을 제공하는 스토리지 엔진의 경우 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>WHERE&lt;/code> 조건절이 없는 &lt;code>DELETE&lt;/code> 문장의 실행 계획에서 자주 표시된다.&lt;/li>
+&lt;li>테이블의 모든 레코드를 삭제하는 핸들러 기능(API)을 한번 호출해서 처리되었다는 것을 의미한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>MySQL 8.0 버전부터 InnoDB, MyISAM 스토리지 엔진 모두 해당 최적하는 표시하지 않으며, 테이블의 모든 레코드를 삭제하고자 한다면 &lt;code>WHERE&lt;/code> 조건절이 없는 &lt;code>DELETE&lt;/code> 보다 &lt;code>TURNCATE TABLE&lt;/code> 명령을 사용하는 것을 권장한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="distinct">Distinct&lt;/h2>
+&lt;p>쿼리의 &lt;code>DISTINCT&lt;/code>를 처리하기 위해 조인하지 않아도 되는 항목은 무시하고 곡 필요한 것만 조인했을 경우 표시된다.&lt;/p>
+&lt;h2 id="firstmatch">FirstMatch&lt;/h2>
+&lt;p>세미 조인 최적화 중에서 FirstMatch 전략이 사용되면 표시된다.&lt;/p>
+&lt;h2 id="full-scan-on-null-key">Full scan on NULL key&lt;/h2>
+&lt;p>&lt;code>col1 IN (SELECT col2 FROM ...)&lt;/code>과 같은 조건을 가진 쿼리에서 col1의 값이 NULL이 가능할 경우 표시된다.&lt;/p>
+&lt;p>col1의 값이 NULL 일 경우 결과적으로 조건은 &lt;code>NULL IN (SELECT col2 FROM ...)&lt;/code>로 처리되는데, 이 때 차선책으로 서브쿼리 테이블에 대해 풀 테이블 스캔을 사용할 것이라는 사실을 알려주는 키워드이다.&lt;/p>
+&lt;p>&lt;code>IN&lt;/code>, &lt;code>NOT IN&lt;/code> 연산자 왼쪽 값이 NULL인 레코드가 있고 개별적으로 &lt;code>WHERE&lt;/code> 조건이 지정되어 있다면 성능에 큰 문제가 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>col1이 &lt;code>NOT NULL&lt;/code>로 정의된 컬럼이라면 표시되지 않는다.&lt;/li>
+&lt;li>NULL 비교 조건을 무시해도 괜찮다면 &lt;code>IS NOT NULL&lt;/code> 조건을 추가하면 표시되지 않는다.&lt;/li>
+&lt;li>&lt;code>IN&lt;/code>, &lt;code>NOT IN&lt;/code> 연산자 왼쪽에 있는 값에 실제로 NULL이 없다면 풀 테이블 스캔은 발생하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>SQL 표준에서 NULL을 &lt;strong>알 수 없는 값&lt;/strong>으로 정의하고 있으며 NULL 연산에 대한 규칙을 정의하고 있다.&lt;/p>
+&lt;ul>
+&lt;li>서브쿼리가 1건이라도 결과 레코드를 가진다면 최종 비교 결과는 NULL&lt;/li>
+&lt;li>서브쿼리가 1건도 결과 레코드를 가지지 않는다면 최종 비교 결과는 FALSE
+이러한 비교 과정에서 col1이 NULL이면 서브쿼리에 사용된 테이블에 대해 풀 테이블 스캔을 해야만 결과를 알아낼 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="impossible-having">Impossible HAVING&lt;/h2>
+&lt;p>쿼리에 사용된 &lt;code>HAVING&lt;/code> 절의 조건을 만족하는 레코드가 없을 때 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>애플리케이션의 쿼리 중에서 해당 메시지가 출력된다면 쿼리가 제대로 작성되지 못한 경우가 대부분이므로 쿼리의 내용을 다시 점검하는 것이 좋다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="impossible-where">Impossible WHERE&lt;/h2>
+&lt;p>&lt;code>WHERE&lt;/code> 조건이 항상 &lt;code>FALSE&lt;/code>가 될 수 밖에 없는 경우 표시된다.&lt;/p>
+&lt;h2 id="loosescan">LooseScan&lt;/h2>
+&lt;p>세미 조인 최적화 중에서 LooseScan 최적화 전략이 사용될 경우 표시된다.&lt;/p>
+&lt;h2 id="no-matching-minmax-row">No matching (min/max) row&lt;/h2>
+&lt;p>&lt;code>MIN()&lt;/code>, &lt;code>MAX()&lt;/code>와 같은 집합 한수가 있는 쿼리의 조건절에 일치하는 레코드가 한 건도 없을 경우 출력되며, 결과로 NULL이 반환된다.&lt;/p>
+&lt;h2 id="no-matching-row-in-const-table">no matching row in const table&lt;/h2>
+&lt;p>조인에서 사용된 테이블에서 const 접근 방법으로 접근할 때 일치하는 레코드가 없을경우 표시된다.&lt;/p>
+&lt;h2 id="no-matching-rows-after-partition-pruning">No matching rows after partition pruning&lt;/h2>
+&lt;p>파티션된 테이블에 대한 &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 명령 실행시 해당 파티션에서 대상 레코드가 없을 경우 표시된다.&lt;/p>
+&lt;h2 id="no-tables-used">No tables used&lt;/h2>
+&lt;p>&lt;code>FROM&lt;/code> 절이 없는 쿼리 문장이나 &lt;code>FROM DUAL&lt;/code> 형태의 쿼리 실행 계획에서 출력된다.&lt;/p>
+&lt;blockquote>
+&lt;p>MySQL 서버는 &lt;code>FROM&lt;/code> 절이 없는 쿼리도 허용된다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="not-exists">Not exists&lt;/h2>
+&lt;p>아우터 조인을 이용해 안티 조인을 수행하는 쿼리에서 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>옵티마이저가 테이블의 레코드를 이용해 테이블을 조인할 때 레코드가 존재하는지만 판단한다는 것을 의미한다.&lt;/li>
+&lt;li>조인 조건에 일치하는 레코드가 여러 건 있다고 하더라도 1건만 조회해보고 처리를 완료화는 최적화를 의미한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>안티 조인(Anti-join)이란?&lt;/strong>&lt;br>
+A 테이블에서는 존재하지만 B 테이블에는 없는 값을 조회해야 하는 경우 &lt;code>NOT IN (subquery)&lt;/code>, &lt;code>NOT EXISTS&lt;/code> 연산자를 사용하는데 이러한 형태의 조인을 안티-조인이라고 한다.&lt;/p>
+&lt;p>똑같은 처리를 아우터 조인을 이용해서도 구현할 수 있는데 레코드 건수가 많을 경우 아우터 조인을 이용하면 더 빠른 성능을 낼 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="plan-isnt-ready-yet">Plan isn&amp;rsquo;t ready yet&lt;/h2>
+&lt;p>MySQL 8.0 버전에서는 다른 커넥션에서 실행 중인 쿼리의 실행 계획을 &lt;code>EXPLAIN FOR CONNECTION&lt;/code> 명령으로 확인할 수 있는데, 이 때 해당 커넥션에서 아직 쿼리의 실행 계획을 수립하지 못한 경우 해당 메시지가 출력된다.&lt;/p>
+&lt;ul>
+&lt;li>이 경우 대상 커넥션의 쿼리가 실행 계획을 수립할 여유 시간을 주고 다시 명령을 실행하면 된다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="range-checked-for-each-recordindex-mapn">Range checked for each record(index map:N)&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;gt;=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>두 개의 테이블을 조인하는 경우 조인 조건에 상수가 없고 둘 다 변수인 경우 MySQL 옵티마이저는 e1의 레코드를 읽을 때마다 &lt;code>e1.emp_no&lt;/code> 값이 계속 변화하므로 쿼리의 비용 계산을 위한 기준값이 바뀌므로 어떤 접근 방법으로 e2 테이블을 읽는 것이 좋을지 판단할 수 없다.&lt;/p>
+&lt;p>조건에 만족하는 레코드를 조회하기 위해 e1 테이블을 처음부터 끝까지 스캔하며 e2 테이블에서 조건을 비교해야 한다.&lt;/p>
+&lt;p>사번이 1 ~ 1억 번 까지 있다고 가정하면 e1.emp_no가 1인 경우 e2 테이블의 1억 건을 모두 읽어야 하고, e1.emp_no가 1억인 경우 e2 테이블을 한 건만 읽으면 된다.&lt;/p>
+&lt;p>따라서 e1 테이블의 emp_no가 작을 때는 e2 테이블을 풀 테이블 스캔으로 접근하고, e1 테이블의 emp_no가 큰 값일 때는 e2 테이블을 레인지 스캔으로 접근하는 형태로 수행되는 것이 최적의 조인 방법이다.&lt;/p>
+&lt;p>이렇게 레코드마다 인덱스 레인지 스캔 사용이 더 적합한지 체크하는 실행 계획이 활용될 경우 &amp;ldquo;Range checked for each record&amp;quot;가 노출되고, 출력 내용에서 표시되는 &amp;ldquo;(index map: N)&amp;ldquo;은 인덱스가 활용될 경우 사용될 후보 인덱스 순번의 16진수로 값으로 실제 확인 시 어떤 레코드가 사용될지는 알 수 없다.&lt;/p>
+&lt;h2 id="recursive">Recursive&lt;/h2>
+&lt;p>MySQL 8.0 버전부터 CTE(Common Table Expression)를 이용해 재귀 쿼리를 작성할 수 있게 되었으며, 재귀 쿼리의 실행 계획은 Recursive로 표시된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">WITH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">RECURSIVE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">cte&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ALL&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">cte&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">cte&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol>
+&lt;li>&amp;rsquo;n&amp;rsquo; 이라는 컬럼 하나를 가진 cte라는 이름의 내부 임시 테이블 생성&lt;/li>
+&lt;li>&amp;rsquo;n&amp;rsquo; 컬럼의 값이 1부터 5 까지 1씩 증가시켜 레코드를 5건 만들고 cte 내부 임시 테이블에 저장&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>&lt;code>WITH&lt;/code> 구문을 이용한 CTE가 사용됐다고 반드시 &amp;ldquo;Recursive&amp;rdquo; 문구가 표시되는 것이 아닌, &lt;code>WITH&lt;/code> 구분이 **재귀 CTE(Recursive CTE)**로 사용될 경우에만 메시지가 표시된다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="rematerialize">Rematerialize&lt;/h2>
+&lt;p>MySQL 버전부터 래터럴 조인(&lt;code>LATERAL JOIN&lt;/code>) 기능이 추가되었는데, 래터럴로 조인되는 테이블은 선행 테이블의 레코드별로 서브 쿼리를 실행해서 그 결과를 임시 테이블에 저장한다. 이 과정을 &amp;ldquo;Rematerializing&amp;rdquo; 이라고 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">LEFT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">LATERAL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DESC&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Matt&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;strong>래터럴 조인&lt;/strong>&lt;br>
+&lt;code>FROM&lt;/code>절 서브쿼리에서 메인쿼리를 활용한 조건을 활용할 수 있도록 한다. 따라서 선행 테이블의 레코드 별로 서브 쿼리 실행이 필요하다.&lt;br>
+(&lt;code>WHERE s.emp_no=e.emp_no&lt;/code>)&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="select-tables-optimized-away">Select tables optimized away&lt;/h2>
+&lt;p>&lt;code>MIN()&lt;/code>, &lt;code>MAX()&lt;/code>만 &lt;code>SELECT&lt;/code> 절에 사용되거나 &lt;code>GROUP BY&lt;/code>로 &lt;code>MIN()&lt;/code>, &lt;code>MAX()&lt;/code>를 조회하는 쿼리가 인덱스를 오름차순 또는 내림차순으로 1건만 읽는 형태의 최적화가 적용될 경우 노출된다.&lt;/p>
+&lt;p>MyISAM 테이블은 전체 레코드 건수를 별도로 관리하기 때문에&lt;code>GROUP BY&lt;/code> 없이 &lt;code>COUNT(*)&lt;/code>만 &lt;code>SELECT&lt;/code> 하는 경우에도 이러한 형태의 최적화가 발생한다. 하지만 &lt;code>WHERE&lt;/code> 조건절이 있는 쿼리는 이러한 최적화를 적용하지 못한다.&lt;/p>
+&lt;h2 id="start-temporary-end-temporary">Start temporary, End temporary&lt;/h2>
+&lt;p>세미 조인 최적화 중 &lt;strong>Duplicate Weed-out&lt;/strong> 최적화 전략이 사용되면 표시된다.&lt;/p>
+&lt;p>Duplicate Weed-out 최적화 전략은 불필요한 중복 건을 제거하기 위해 내부 임시 테이블을 사용하는데, 이때 조인되어 내부 임시 테이블에 저장되는 테이블을 식별할 수 있도록 조인 첫 테이블에 &amp;ldquo;Start temporary&amp;rdquo;, 조인이 끝나는 부분에 &amp;ldquo;End temporary&amp;rdquo; 문구를 표시한다.&lt;/p>
+&lt;h2 id="unique-row-not-found">Unique row not found&lt;/h2>
+&lt;p>두 개의 테이블이 각각 유니크 컬럼으로 아우터 조인을 수행하는 쿼리에서 아우터 테이블과 일치하는 레코드가 존재하지 않을때 표시된다.&lt;/p>
+&lt;h2 id="using-filesort">Using filesort&lt;/h2>
+&lt;p>&lt;code>ORDER BY&lt;/code>를 처리하기 위해 인덱스를 사용하지 못할 때는 조회된 레코드를 다시 정렬하는데, 이처럼 인덱스를 사용하지 못하여 이미 조회된 레코드를 정렬용 메모리 버퍼에 복사하여 정렬을 수행하게 된 경우 표시된다.&lt;/p>
+&lt;p>Using filesort 문구가 출력되는 쿼리는 많은 부하를 일으키므로 쿼리를 튜닝하거나 인덱스를 생성하는 것이 좋다.&lt;/p>
+&lt;h2 id="using-index커버링-인덱스">Using index(커버링 인덱스)&lt;/h2>
+&lt;p>데이터 파일을 전혀 읽지 않고 인덱스만 읽어 쿼리를 모두 처리할 수 있을 때 표시된다.&lt;/p>
+&lt;p>인덱스를 이용해 처리하는 쿼리에서 가장 큰 부하를 차지하는 부분은 인덱스 검색에서 일치하는 키 값들의 레코드를 읽기 위해 데이터 파일을 검색하는 작업으로, 최악의 경우 모든 레코드에 대해 디스크를 읽어야 할 수 있다.&lt;/p>
+&lt;p>커버링 인덱스는 인덱스를 통해 모든 레코드를 처리할 수 있는 경우를 의미하며 매우 빠른 조회 성능을 보여준다.&lt;/p>
+&lt;p>하지만 무조건 커버링 인덱스로 처리하려고 인덱스에 많은 컬럼을 추가하면 과도하게 인덱스 컬럼이 많아지면서 메모리 낭비가 심해지고, 레코드를 저장하거나 변경하는 작업이 매우 느려질 수 있다.&lt;/p>
+&lt;p>접근 방법(실행 계획의 type 컬럼)이 eq_ref, ref, range, index_merge, index 등과 같이 인덱스를 사용하는 모든 실행 계획에 표시될 수 있으며, 인덱스 풀 스캔을 실행할 때도 커버링 인덱스로 처리되면 아닌 경우보다 훨씬 빠르게 처리된다.&lt;/p>
+&lt;h2 id="using-index-condition">Using index condition&lt;/h2>
+&lt;p>옵티마이저가 &lt;strong>인덱스 컨디션 푸시다운&lt;/strong> 최적화를 사용할 경우 표시된다.&lt;/p>
+&lt;h2 id="using-index-for-group-by">Using index for group-by&lt;/h2>
+&lt;p>&lt;code>GROUP BY&lt;/code> 처리가 인덱스를 활용해 추가 정렬 작업 없이 수행될 경우 표시된다.&lt;/p>
+&lt;p>&lt;code>GROUP BY&lt;/code> 처리를 위해 그루핑 컬럼을 이용해 정렬 작업을 수행하고 다시 정렬된 결과를 그루핑 하는 형태의 고부하 작업을 수행한다. 이러한 처리가 인덱스(B-Tree 인덱스에 한해)를 이용하면 별도의 추가 정렬 작업 없이 정렬된 인덱스 컬럼을 순서대로 읽으며 그루핑 작업만 수행하게 되어 효율적이고 빠르게 처리된다.&lt;/p>
+&lt;h3 id="타이트-인덱스-스캔을-통한-group-by-처리">타이트 인덱스 스캔을 통한 &lt;code>GROUP BY&lt;/code> 처리&lt;/h3>
+&lt;p>&lt;code>AVG()&lt;/code>, &lt;code>SUM()&lt;/code>, &lt;code>COUNT()&lt;/code> 처럼 조회하려는 값이 모든 인덱스를 다 읽어야 할 경우 필요한 레코드만 읽을 수가 없는 경우 인덱스를 활용하지만, 루스 인덱스 스캔이라 하지 않으며, 이 에따라 실행 계획에는 표시되지 않는다.&lt;/p>
+&lt;h3 id="루스-인덱스-스캔을-통한-group-by-처리">루스 인덱스 스캔을 통한 &lt;code>GROUP BY&lt;/code> 처리&lt;/h3>
+&lt;p>루스 인덱스 스캔은 필요한 부분만 활용하기 위해 인덱스를 듬성듬성 읽는 처리를 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>단일 컬럼으로 구성된 인덱스에서는 그루핑 컬럼 말고는 아무것도 조회하지 않는 쿼리에서 루스 인덱스 스캔을 활용할 수 있다.&lt;/li>
+&lt;li>다중 컬럼으로 만들어진 인덱스에서는 &amp;lsquo;GROUP BY&amp;rsquo; 절이 인덱스를 사용할 수 있고, &lt;code>MIN()&lt;/code>, &lt;code>MAX()&lt;/code> 같이 첫 번째, 마지막 레코드만 읽어도 되는 경우 루스 인덱스 스캔을 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>GROUP BY&lt;/code>에서 인덱스를 사용하려면&lt;code>GROUP BY&lt;/code> 조건에서 인덱스르 사용할 수 있는 조건이 갖춰져야 하지만 그 이전에 &lt;code>WHERE&lt;/code> 절에서 사용하는 인덱스에서도 영향을 받는다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>&lt;code>WHERE&lt;/code> 조건절이 없는 경우&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>GROUP BY&lt;/code> 절의 컬럼과 &lt;code>SELECT&lt;/code>로 가져오는 컬럼이 루스 인덱스 스캔을 사용할 수 있는 조건을 갖추면 된다.&lt;/li>
+&lt;li>그렇지 못할 경우 타이트 인덱스 스캔이나 별도 정렬 과정을 통해 처리된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>&lt;code>WHERE&lt;/code> 조건절이 있지만 검색을 위해 인덱스를 사용하지 못하는 경우&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>GROUP BY&lt;/code> 절은 인덱스를 사용할 수 있지만 &lt;code>WHERE&lt;/code> 조건이 인덱스를 사용하지 못하는 경우 &lt;code>GROUP BY&lt;/code>를 위해 인덱스를 읽은 후 &lt;code>WHERE&lt;/code> 조건의 비교를 위해 데이터 레코드를 읽어야 한다.&lt;/li>
+&lt;li>루스 인덱스 스캔을 활용할 수 없어 타이트 인덱스 스캔을 통해 처리된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>&lt;code>WHERE&lt;/code> 절의 조건이 있고, 검색을 위해 인덱스를 사용하는 경우&lt;/strong>
+&lt;ul>
+&lt;li>하나의 단위 쿼리가 실행되는 경우에 index_merge 이외의 접근 방법에서는 단 하나의 인덱스만 사용할 수 있다.&lt;/li>
+&lt;li>&lt;code>WHERE&lt;/code> 절의 조건과 &lt;code>GROUP BY&lt;/code> 처리가 똑같은 인덱스를 공통으로 사용할 수 있는 경우 루스 인ㄷ게스 스캔을 사용할 수 있다.&lt;/li>
+&lt;li>인덱스가 다른 경우 옵티마이저는 일반적으로 &lt;code>WHERE&lt;/code> 조건 절이 작업 범위를 좁히는 못한다고 하더라도 인덱스를 사용하도록 실행 계획을 수립하는 경향을 보인다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>루스 인덱스 스캔은 주로 대량의 레코드를 &lt;code>GROUP BY&lt;/code>하는 경우 성능 향상 효과가 있을 수 있다. 따라서 &lt;code>WHERE&lt;/code>, &lt;code>GROUP BY&lt;/code> 모두 인덱스를 사용할 수 있는 경우라도 &lt;code>WHERE&lt;/code> 조건에 의해 검색된 레코드 건수가 적으면 루스 인덱스 스캔을 사용하지 않아도 충분히 빠르므로 사용하지 않는다.&lt;br>
+루스 인덱스를 이용한 처리보다 사용하지 않는 경우가 더 빠르다고 판단한다면 사용하지 않는다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="using-index-for-skip-scan">Using index for skip scan&lt;/h2>
+&lt;p>인덱스 스킵 스캔 최적화를 사용될 경우 표시된다.&lt;/p>
+&lt;h2 id="using-join-buffer">Using join buffer&lt;/h2>
+&lt;p>테이블 조인시 조인 버퍼가 사용되는 쿼리의 실행 계획에 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>일반적으로 빠른 쿼리 실행을 위해 조인되는 컬럼은 인덱스를 생성하는데, 실제 조인에 필요한 인덱스는 조인되는 양쪽 테이블 컬럼이 아니라 조인에서 뒤에 읽는 테이블의 컬럼이다.&lt;/li>
+&lt;li>드리븐 테이블이 검색 위주로 사용되기 때문에 인덱스가 없으면 성능에 미치는 영향이 커지므로, 조인되는 두 테이블에 있는 각 컬럼에서 인덱스를 조사하고, 인덱스가 없는 테이블을 먼저 읽어 조인을 실행한다.&lt;/li>
+&lt;li>드리븐 테이블에 검색을 위한 적절한 인덱스가 없다면 블록 네스티드 루프 조인이나 해시 조인을 사용하는데, 이때 조인 버퍼를 사용하게 되며 해당 문구가 노출된다.&lt;/li>
+&lt;li>카테시안 조인을 수행하는 쿼리는 항상 조인 버퍼를 이용한다.&lt;/li>
+&lt;li>Block Nested Loop, Batched Key Access, Hash join 등 사용된 알고리즘이 같이 표시된다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="using-mrr">Using MRR&lt;/h2>
+&lt;p>MMR(Multi Range Read) 최적화가 사용된 경우 노출된다.&lt;/p>
+&lt;h3 id="mmr">MMR?&lt;/h3>
+&lt;p>MySQL 엔진이 여러 개의 키 값을 한번에 스토리지 엔진으로 전달하고, 스토리지 엔진은 넘겨받은 키 값들을 정렬해서 최소한의 페이지 접근마능로 필요한 레코드를 읽는 최적화 방법이다.&lt;/p>
+&lt;ul>
+&lt;li>InnoDB를 포한한 스토리지 엔진 레벨에서는 쿼리 실행의 전체적인 부분을 알지 못하기 때문에 최적화가 한계가 있다.&lt;/li>
+&lt;li>아무리 많은 레코드를 읽는 과정이라 하더라도 스토리지 엔진은 MySQL 엔진이 넘겨주는 키 값을 기준으로 레코드를 한 건씩 읽어 반환하는 방식으로 작동한은 한계점이 있었다.&lt;/li>
+&lt;li>매번 읽어서 반환하는 레코드가 동일 페이지에 있다고 하더라도 레코드 단위로 API 호출이 필요하다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="using-sort_union-using-union-using-intersect">Using sort_union, Using union, Using intersect&lt;/h2>
+&lt;p>쿼리가 index_merge 접근 방법으로 실행되는 경우 2개 이상의 인덱스가 동시에 사용될 수 있는데, 이 때 두 인덱스로부터 읽은 결과를 어떻게 병합했는지 조금 더 상세하게 설명하기 위해 3개 중 하나의 메시지를 선택적으로 출력한다.&lt;/p>
+&lt;ul>
+&lt;li>Using intersect(&amp;hellip;)
+&lt;ul>
+&lt;li>각 인덱스를 사용할 수 있는 조건이 AND로 연결된 경우 각 처리 결과에서 교집합을 추출하는 작업을 수행한 경우&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Using union(&amp;hellip;)
+&lt;ul>
+&lt;li>각 인덱스를 사용할 수 있는 조건이 OR로 연결된 경우 각 처리 결과에서 합집합을 추출해내는 작업 수행&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Using sort_union(&amp;hellip;)
+&lt;ul>
+&lt;li>Using union과 같은 작업을 수행하지만 Using union으로 처리될 수 없는 경우(ex: OR로 연결된 대량의 range 조건들) 이 방식으로 처리됨&lt;/li>
+&lt;li>프라이머리 키만 먼저 읽어 절렬하고 병합한 이후 레코드를 읽어서 반환할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>실제로 레코드 건수에 관계 없이 &lt;code>WHERE&lt;/code> 조건이 사용된 비교 조건이 모두 동등하다면 Using union, 아닐 경우 Using sort_union이 사용된다.&lt;/p>
+&lt;h2 id="using-temporary">Using temporary&lt;/h2>
+&lt;p>쿼리가 임시 테이블을 사용하여 처리된 경우 표시된다.&lt;/p>
+&lt;ul>
+&lt;li>사용된 임시 테이블이 메모리, 디스크 중 어디에 생성되었는지는 실행 계획으로 파악할 수 없다.&lt;/li>
+&lt;li>Using temporary가 표시되지 않아도 내부적으로 임시 테이블을 사용할 때도 많다.
+&lt;ul>
+&lt;li>&lt;code>FROM&lt;/code> 절에 사용된 서브 쿼리는 무조건 임시 테이블을 생성한다.(파생 테이블)&lt;/li>
+&lt;li>&lt;code>COUNT(DISTINCT col1)&lt;/code>를 포함하는 쿼리도 인덱스를 사용할 수 없다면 임시 테이블을 만든다.&lt;/li>
+&lt;li>&lt;code>UNION&lt;/code>, &lt;code>UNION DISTINCT&lt;/code>가 사용된 쿼리는 항상 임시 테이블을 사용해 결과를 병합한다.
+&lt;ul>
+&lt;li>MySQL 8.0 부터 &lt;code>UNION ALL&lt;/code>의 경우는 임시 테이블을 생성하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>인덱스를 사용하지 못하는 정렬 작업은 임시 버퍼 공간을 사용하는데, 정렬해야 할 레코드가 많이지면 디스크를 사용하며, 디스크에 사용된 버퍼도 임시 테이블과 동일하다.
+&lt;ul>
+&lt;li>쿼리가 정렬을 수행할 때 실행 계획의 Extra 컬럼에 Using filesort가 표시된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="using-where">Using where&lt;/h2>
+&lt;p>MySQL 엔진은 내부적으로 크게 MySQL 엔진과 스토리지 엔진 2개의 레이어로 나눠볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>스토리지 엔진은 디스크나 메모리상에서 필요한 레코드를 읽는 역할 수행&lt;/li>
+&lt;li>MySQL 엔진은 스토리지 엔진으로부터 받은 레코드를 가공 또는 연산하는 작업 수행.
+이 때 MySQL 엔진 레이어에서 별도의 가공을 해서 필터링 작업을 처리한 경우 Using where가 표시된다.&lt;/li>
+&lt;/ul>
+&lt;p>실행 계획에서 Using where 문구가 노출된 이유를 이해할 수 없는 경우가 많아 성능상의 문제를 일으킬지 선별하는 능력이 필요한데, MySQL 8.0에서는 실행 계획에 filtered 컬럼이 표시되므로 성능상의 이슈가 있는지 알아낼 수 있다.&lt;/p>
+&lt;h2 id="zero-limit">Zero limit&lt;/h2>
+&lt;p>MySQL 서버에서 데이터 값이 아닌 쿼리의 결과값의 메타데이터만 필요한 경우 &lt;code>LIMIT 0&lt;/code>를 사용하는데, 이때 옵티마이저가 사용자의 의도를 알아채고 실제 테이블의 레코드는 전혀 읽지 않으며, 이러한 경우 해당 문구가 노출된다.&lt;/p></description></item><item><title>10.3 실행 계획 - 실행 계획 분석 (1)</title><link>https://codemario318.github.io/post/real-mysql/10/3/1/</link><pubDate>Tue, 11 Jul 2023 13:07:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/1/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (1)" />&lt;p>&lt;code>EXPLAIN&lt;/code> 명령을 실행하면 쿼리 문장의 특성에 따라 표 형태로 1줄 이상의 결과가 표시된다.&lt;/p>
 &lt;p>표의 각 라인(레코드)은 쿼리 문장에서 사용된 테이블(임시 테이블 포함)의 개수만큼 출력된다.&lt;/p>
 &lt;p>실행 순서는 일반적으로 위에서 아래로 순서대로 표시되며 출력된 실행 계획에서 위쪽에 출력된 결과일수록 쿼리의 바깥 부분이거나 먼저 접근한 테이블이고, 아래쪽에 출력된 결과일수록 쿼리의 안쪽 부분 또는 나중에 접근한 테이블에 해당한다.&lt;/p>
 &lt;h2 id="id-컬럼">id 컬럼&lt;/h2>
