@@ -26,60 +26,28 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>SELECT&lt;/code> 쿼리에서 어느 절이 먼저 실행될지 예측하지 못할 때가 있는데, 어느 절이 먼저 실행되는지 모른다면 처리 내용, 처리 결과를 예측할 수 없다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph FIRST [&amp;#34;WHERE 적용 및 조인 실행&amp;#34;]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> A(드라이빙 테이블)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -.-&amp;gt; B(드리븐 테이블 1)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -.-&amp;gt; C(드리븐 테이블 2)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> FIRST --&amp;gt; D(&amp;#34;GROUP BY&amp;#34;) --&amp;gt; E(&amp;#34;DISTINCT&amp;#34;) --&amp;gt; F(&amp;#34;HAVING 조건 적용&amp;#34;) --&amp;gt; G(&amp;#34;ORDER BY&amp;#34;) --&amp;gt; H(&amp;#34;LIMIT&amp;#34;)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>대부분 위 순서대로 쿼리가 실행된다. 또한 SQL에는 &lt;code>ORDER BY&lt;/code>나 &lt;code>GROUP BY&lt;/code> 절이 있더라도 인덱스를 이용해 처리할 때는 그 단계 자체가 불필요하므로 생략된다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph FIRST [&amp;#34;WHERE 적용&amp;#34;]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> A(드라이빙 테이블)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SECOND [&amp;#34;조인 실행&amp;#34;]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> B(드리븐 테이블 1)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -.-&amp;gt; C(드리븐 테이블 2)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> FIRST --&amp;gt; G(&amp;#34;ORDER BY&amp;#34;) --&amp;gt; SECOND --&amp;gt; H(&amp;#34;LIMIT&amp;#34;)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>GROUP BY&lt;/code> 절이 없이 &lt;code>ORDER BY&lt;/code>만 사용된 쿼리같은 경우 첫 번째 테이블만 읽어 정렬을 수행한 뒤 나머지 테이블을 읽는다.&lt;/p>
+&lt;pre class="mermaid">flowchart LR
+subgraph FIRST ["WHERE 적용 및 조인 실행"]
+direction TB
+A(드라이빙 테이블)
+-.-> B(드리븐 테이블 1)
+-.-> C(드리븐 테이블 2)
+end
+FIRST --> D("GROUP BY") --> E("DISTINCT") --> F("HAVING 조건 적용") --> G("ORDER BY") --> H("LIMIT")
+&lt;/pre>
+&lt;p>대부분 위 순서대로 쿼리가 실행된다. 또한 SQL에는 &lt;code>ORDER BY&lt;/code>나 &lt;code>GROUP BY&lt;/code> 절이 있더라도 인덱스를 이용해 처리할 때는 그 단계 자체가 불필요하므로 생략된다.&lt;/p>
+&lt;pre class="mermaid">flowchart LR
+subgraph FIRST ["WHERE 적용"]
+A(드라이빙 테이블)
+end
+subgraph SECOND ["조인 실행"]
+direction TB
+B(드리븐 테이블 1)
+-.-> C(드리븐 테이블 2)
+end
+FIRST --> G("ORDER BY") --> SECOND --> H("LIMIT")
+&lt;/pre>
+&lt;p>&lt;code>GROUP BY&lt;/code> 절이 없이 &lt;code>ORDER BY&lt;/code>만 사용된 쿼리같은 경우 첫 번째 테이블만 읽어 정렬을 수행한 뒤 나머지 테이블을 읽는다.&lt;/p>
 &lt;p>위의 실행 순서를 벗어나는 쿼리가 필요하다면 서브쿼리로 작성된 인라인 뷰(Inline View)를 사용해야 한다. 예를 들어 예시 쿼리에서 &lt;code>LIMIT&lt;/code>를 먼저 적용하고 &lt;code>ORDER BY&lt;/code>를 실행하기 위해 다음과 같이 쿼리를 작성할 수 있다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -145,41 +113,22 @@
 &lt;h3 id="where">WHERE&lt;/h3>
 &lt;p>&lt;code>WHERE&lt;/code> 조건이 인덱스를 사용하는 방법은 크게 작업 범위 결정 조건과 체크 조건 두 가지 방식으로 구분할 수 있다.&lt;/p>
 &lt;p>그 중 작업 범위 결정 조건은 동등 비교 조건이나 &lt;code>IN&lt;/code>으로 구성된 조건에 사용된 컬럼들이 인덱스의 컬럼 구성과 좌측에서부터 비교했을 때 얼마나 일치하는가에 따라 달라진다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SA [인덱스 컬럼 순서]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> saa(COL_1) ~~~ sab(COL_2) ~~~ sac(COL_3) ~~~ sad(COL_4)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SB [WHERE 조건절 컬럼 순서]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sba(COL_2 = ?) ~~~ sbb(COL_4 = ?) ~~~ sbc(COL_3 &amp;gt; ?) ~~~ sbd(COL_1 = ?)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SA ~~~ SB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sba --&amp;gt; sab
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbb -.-&amp;gt; sad
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbc --&amp;gt; sac
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbd --&amp;gt; saa
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>WHERE&lt;/code>절에서 조건절에 나열된 순서가 인덱스와 다르더라도 옵티마이저는 인덱스를 사용할 수 있는 조건들을 뽑아서 최적화를 수행하기 때문에 사용된 조건의 순서는 실제 인덱스 사용과 무관하다.&lt;/p>
+&lt;pre class="mermaid">flowchart TB
+subgraph SA [인덱스 컬럼 순서]
+direction LR
+saa(COL_1) ~~~ sab(COL_2) ~~~ sac(COL_3) ~~~ sad(COL_4)
+end
+subgraph SB [WHERE 조건절 컬럼 순서]
+direction LR
+sba(COL_2 = ?) ~~~ sbb(COL_4 = ?) ~~~ sbc(COL_3 > ?) ~~~ sbd(COL_1 = ?)
+end
+SA ~~~ SB
+%% sba --> sab
+%% sbb -.-> sad
+%% sbc --> sac
+%% sbd --> saa
+&lt;/pre>
+&lt;p>&lt;code>WHERE&lt;/code>절에서 조건절에 나열된 순서가 인덱스와 다르더라도 옵티마이저는 인덱스를 사용할 수 있는 조건들을 뽑아서 최적화를 수행하기 때문에 사용된 조건의 순서는 실제 인덱스 사용과 무관하다.&lt;/p>
 &lt;ul>
 &lt;li>동등 비교 조건: COL_1, COL_2&lt;/li>
 &lt;li>범위 비교 조건: COL_3&lt;/li>
@@ -226,41 +175,22 @@
 &lt;h3 id="group-by">GROUP BY&lt;/h3>
 &lt;p>&lt;code>GROUP BY&lt;/code> 절의 각 컬럼은 비교 연산자를 가지지 않으므로 작업 범위 결정 조건이나 체크 조건과 같이 구분해서 생각할 필요는 없다.&lt;/p>
 &lt;p>쿼리에 &lt;code>GROUP BY&lt;/code>가 사용될 때 명시된 컬럼의 순서가 인덱스를 구성하는 컬럼의 순서와 같으면 인덱스를 사용할 수 있다.&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SA [인덱스 컬럼 순서]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> saa(COL_1) --&amp;gt; sab(COL_2) --&amp;gt; sac(COL_3) --&amp;gt; sad(COL_4)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SB [WHERE 조건절 컬럼 순서]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sba(COL_1) --&amp;gt; sbb(COL_2) --&amp;gt; sbc(COL_3)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SA ~~~ SB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sba --&amp;gt; saa
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbb -.-&amp;gt; sab
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbc --&amp;gt; sac
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%% sbd --&amp;gt; saa
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
+&lt;pre class="mermaid">flowchart TB
+subgraph SA [인덱스 컬럼 순서]
+direction LR
+saa(COL_1) --> sab(COL_2) --> sac(COL_3) --> sad(COL_4)
+end
+subgraph SB [WHERE 조건절 컬럼 순서]
+direction LR
+sba(COL_1) --> sbb(COL_2) --> sbc(COL_3)
+end
+SA ~~~ SB
+%% sba --> saa
+%% sbb -.-> sab
+%% sbc --> sac
+%% sbd --> saa
+&lt;/pre>
+&lt;ul>
 &lt;li>&lt;code>GROUP BY&lt;/code> 절에 명시된 컬럼이 인덱스 컬럼의 순서와 위치가 같아야한다.&lt;/li>
 &lt;li>인덱스를 구성하는 컬럼 중에서 뒤쪽에 있는 컬럼은 명시되지 않아도 인덱스를 사용할 수 있지만 인덱스 앞쪽에 있는 컬럼이 명시되지 않으면 인덱스를 사용할 수 없다.&lt;/li>
 &lt;li>&lt;code>GROUP BY&lt;/code> 절에 명시도니 컬럼이 하나라도 익덱스에 없으면 전혀 인덱스를 사용하지 못한다.&lt;/li>
@@ -426,89 +356,45 @@
 &lt;li>비교 조건에 사용된 컬럼과 &lt;code>ORDER BY&lt;/code> 절의 컬럼의 중복은 상관 없다.&lt;/li>
 &lt;li>중간에 빠지는 컬럼이 있으면 모두 인덱스를 사용할 수 없어 주로 &lt;code>WHERE&lt;/code>절만 인덱스를 활용한다.&lt;/li>
 &lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;span class="lnt">30
-&lt;/span>&lt;span class="lnt">31
-&lt;/span>&lt;span class="lnt">32
-&lt;/span>&lt;span class="lnt">33
-&lt;/span>&lt;span class="lnt">34
-&lt;/span>&lt;span class="lnt">35
-&lt;/span>&lt;span class="lnt">36
-&lt;/span>&lt;span class="lnt">37
-&lt;/span>&lt;span class="lnt">38
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SAB [&amp;#34; &amp;#34;]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SA ~~~ SB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SA [WHERE 절]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> saa(COL_1 = ?)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SB [ORDER BY 절]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sba(COL_2) ~~~ sbb(COL_3)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SC [인덱스]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sca(COL_1 ASC) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> scb(COL_2 ASC) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> scc(COL_3 ASC) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> scd(COL_4 ASC)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SDE [&amp;#34; &amp;#34;]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SD ~~~ SE
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SD [WHERE 절]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sda(COL_1 = ?) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sdb(COL_2 = ?) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sdc(COL_3 &amp;gt; ?)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph SE [ORDER BY 절]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> direction TB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sea(COL_3 DESC) ~~~
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> seb(COL_4 DESC)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SA ~~~ SB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SAB ~~~ SC ~~~ SDE
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;hr>
+&lt;pre class="mermaid">flowchart LR
+subgraph SAB [" "]
+direction TB
+SA ~~~ SB
+end
+subgraph SA [WHERE 절]
+direction TB
+saa(COL_1 = ?)
+end
+subgraph SB [ORDER BY 절]
+direction TB
+sba(COL_2) ~~~ sbb(COL_3)
+end
+subgraph SC [인덱스]
+direction TB
+sca(COL_1 ASC) ~~~
+scb(COL_2 ASC) ~~~
+scc(COL_3 ASC) ~~~
+scd(COL_4 ASC)
+end
+subgraph SDE [" "]
+direction TB
+SD ~~~ SE
+end
+subgraph SD [WHERE 절]
+direction TB
+sda(COL_1 = ?) ~~~
+sdb(COL_2 = ?) ~~~
+sdc(COL_3 > ?)
+end
+subgraph SE [ORDER BY 절]
+direction TB
+sea(COL_3 DESC) ~~~
+seb(COL_4 DESC)
+end
+SA ~~~ SB
+SAB ~~~ SC ~~~ SDE
+&lt;/pre>
+&lt;hr>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -629,45 +515,21 @@
 &lt;li>&lt;code>GROUP BY&lt;/code> 절이 인덱스를 사용할 수 있는가?&lt;/li>
 &lt;li>&lt;code>GROUP BY&lt;/code> 절과 &lt;code>ORDER BY&lt;/code> 절이 동시에 인덱스를 사용할 수 있는가?&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">flowchart LR
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> A(START) --&amp;gt;|Y| B{WHERE}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> B --&amp;gt;|Y| C{GROUP BY}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> B --&amp;gt;|N| D{GROUP BY}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> C --&amp;gt;|Y| E{ORDER BY}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> C --&amp;gt;|N| RB[Only WHERE]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> E --&amp;gt;|Y| RA[WHERE, GROUP BY, ORDER BY]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> E --&amp;gt;|N| RB
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> D --&amp;gt;|N| F{GROUP BY}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> F --&amp;gt;|Y| G{ORDER BY}
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> F --&amp;gt;|N| RD[인덱스 사용 불가]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> G --&amp;gt;|Y| RC[GROUP BY, ORDER BY]
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> G --&amp;gt;|N| RD
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 id="where-절-비교-조건-사용시-주의사항">WHERE 절 비교 조건 사용시 주의사항&lt;/h2>
+&lt;pre class="mermaid">flowchart LR
+A(START) -->|Y| B{WHERE}
+B -->|Y| C{GROUP BY}
+B -->|N| D{GROUP BY}
+C -->|Y| E{ORDER BY}
+C -->|N| RB[Only WHERE]
+E -->|Y| RA[WHERE, GROUP BY, ORDER BY]
+E -->|N| RB
+D -->|N| F{GROUP BY}
+F -->|Y| G{ORDER BY}
+F -->|N| RD[인덱스 사용 불가]
+G -->|Y| RC[GROUP BY, ORDER BY]
+G -->|N| RD
+&lt;/pre>
+&lt;h2 id="where-절-비교-조건-사용시-주의사항">WHERE 절 비교 조건 사용시 주의사항&lt;/h2>
 &lt;p>&lt;code>WHERE&lt;/code>절에 사용되는 비교 조건의 표현식은 상당히 중요하다. 쿼리가 최적으로 실행되려면 적합한 인덱스와 함께 비교 조건의 표현식을 적절하게 사용해야 한다.&lt;/p>
 &lt;h3 id="null-비교">NULL 비교&lt;/h3>
 &lt;p>다른 DBMS와 다르게 MySQL 에서는 NULL 값이 포함된 레코드도 인덱스로 관리한다.&lt;/p>
