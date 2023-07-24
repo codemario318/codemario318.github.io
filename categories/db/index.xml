@@ -577,10 +577,10 @@ G -->|N| RD
 &lt;li>따로 변환하지 않고 비교해도 내부적으로 &lt;code>DATE&lt;/code> 타입을 YYYY-MM-DD 00:00:00 형태로 변환하여 비교를 수행한다.&lt;/li>
 &lt;li>해당 타입 비교에서 타입 변환은 인덱스 사용여부에 영향을 미치지 않으므로 성능보다는 쿼리의 결과에 주의하여 사용한다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;strong>&lt;code>DATETIME&lt;/code> 와 &lt;code>TIMESTAMP&lt;/code> 비교&lt;/strong>
-&lt;code>DATE&lt;/code>, &lt;code>DATETIME&lt;/code> 값을 &lt;code>TIMESTAMP&lt;/code> 값을 변환 없이 비교하면 문제없이 작동하고 실행 계획도 인덱스 레인지 스캔을 사용해서 처리하는 것
+&lt;p>&lt;strong>&lt;code>DATETIME&lt;/code> 와 &lt;code>TIMESTAMP&lt;/code> 비교&lt;/strong>&lt;/p>
+&lt;p>&lt;code>DATE&lt;/code>, &lt;code>DATETIME&lt;/code> 값을 &lt;code>TIMESTAMP&lt;/code> 값을 변환 없이 비교하면 문제없이 작동하고 실행 계획도 인덱스 레인지 스캔을 사용해서 처리하는 것
 처럼 보이지만 그렇지 않다.&lt;/p>
-&lt;p>TIMESTAMP값은 내부적으로 단순 숫자 값이므로 원하는 결과를 얻지 못할 수 있다. 따라서 비교 대상 컬럼 타입에 맞게 변환해서 사용하는 것이 좋다.&lt;/p>
+&lt;p>&lt;code>TIMESTAMP&lt;/code>값은 내부적으로 단순 숫자 값으로 원하는 결과를 얻지 못하기 때문에 비교 대상 컬럼 타입에 맞게 변환해서 사용해야한다.&lt;/p>
 &lt;h3 id="short-circuit-evalutation">Short-Circuit Evalutation&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -599,7 +599,8 @@ G -->|N| RD
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>위 처럼 여러 개의 표현식이 &lt;code>AND&lt;/code>, &lt;code>OR&lt;/code> 논리 연산자로 연결된 경우 선행 표현식의 결과에 따라 후행 표현식을 평가할지 결정하는 최적화를 &lt;code>Short-circuit Evaluation&lt;/code> 이라고 하며, MySQL 서버에서도 이러한 방식으로 쿼리의 성능 최적화를 수행한다.&lt;/p>
-&lt;p>MySQL 서버는 쿼리의 &lt;code>WHERE&lt;/code> 절에 나열된 순서대로 &lt;code>Short-circuit Evaluation&lt;/code> 방식으로 평가하여 해당 레코드를 반환해야 할지 결정하지만, 나열된 조건 중 인덱스를 활용할 수 있는 조건이 있다면 해당 조건을 최우선으로 사용한다. 그렇기 때문에 &lt;code>WHERE&lt;/code> 조건절에서 나열된 순서가 인덱스의 사용 여부를 결정하지는 않게된다.&lt;/p>
+&lt;p>MySQL 서버는 쿼리의 &lt;code>WHERE&lt;/code> 절에 나열된 순서대로 &lt;code>Short-circuit Evaluation&lt;/code> 방식으로 평가하여 해당 레코드를 반환해야 할지 결정하지만, 나열된 조건 중 인덱스를 활용할 수 있는 조건이 있다면 해당 조건을 최우선으로 사용한다.&lt;/p>
+&lt;p>그렇기 때문에 &lt;code>WHERE&lt;/code> 조건절에서 나열된 순서가 인덱스의 사용 여부를 결정하지는 않게된다.&lt;/p>
 &lt;p>&lt;strong>인덱스 사용 불가&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -862,7 +863,7 @@ G -->|N| RD
 &lt;p>&lt;code>COUNT(*)&lt;/code> 쿼리에서 가장 많이 하는 실수는 &lt;code>ORDER BY&lt;/code> 구문이나 체크 조건을 가지지 않는 &lt;code>LEFT JOIN&lt;/code>과 같은 레코드 건수를 가져오는 것과는 무관한 작업을 포함하는 것이다.&lt;/p>
 &lt;p>&lt;code>COUNT(*)&lt;/code> 쿼리에서 &lt;code>ORDER BY&lt;/code> 절은 어떠한 경우에서 필요하지 않으며, &lt;code>LEFT JOIN&lt;/code> 또한 레코드 건수의 변화가 없거나 아우터 테이블에서 별도 체크를 하지 않아도 되는 경우 모두 제거해야한다.&lt;/p>
 &lt;hr>
-&lt;p>많은 사용자가 일반적으로 컬럼의 값을 &lt;code>SELECT&lt;/code> 하는 쿼리보다 &lt;code>COUNT(*)&lt;/code> 쿼리가 훨씬 빠르게 실행될 것으로 생각하지만, 인덱스르 제대로 사용하지 못한 &lt;code>COUNT&lt;/code>쿼리는 페이징해서 데이터를 가져오는 쿼리보다 매우 느리게 실행 될 수 있다.&lt;/p>
+&lt;p>많은 사용자가 일반적으로 컬럼의 값을 &lt;code>SELECT&lt;/code> 하는 쿼리보다 &lt;code>COUNT(*)&lt;/code> 쿼리가 훨씬 빠르게 실행될 것으로 생각하지만, 인덱스를 제대로 사용하지 못한 &lt;code>COUNT&lt;/code>쿼리는 페이징해서 데이터를 가져오는 쿼리보다 매우 느리게 실행 될 수 있다.&lt;/p>
 &lt;hr>
 &lt;p>&lt;code>COUNT()&lt;/code> 함수에 컬럼명이나 표현식이 인자로 사용되면 그 컬럼이나 표현식의 결과가 NULL이 아닌 레코드 건수만 반환한다. 따라서 NULL이 될 수 있는 컬럼에 &lt;code>COUNT&lt;/code> 함수를 사용할 때는 위도대로 쿼리가 작동하는지 확인이 필요하다.&lt;/p></description></item><item><title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</title><link>https://codemario318.github.io/post/real-mysql/10/3/2/</link><pubDate>Wed, 12 Jul 2023 15:19:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/2/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" />&lt;p>컬럼 이름과 달리 쿼리의 실행 계획에서 성능에 관련된 중요한 내용이 Extra 컬럼에 지주 표시된다.&lt;/p>
 &lt;ul>
