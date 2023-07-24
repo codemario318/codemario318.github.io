@@ -1,0 +1,640 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Real MySQL 8.0"><title>11.4 쿼리 작성 및 최적화 - SELECT</title><link rel=canonical href=https://codemario318.github.io/post/real-mysql/11/4/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="11.4 쿼리 작성 및 최적화 - SELECT"><meta property="og:description" content="Real MySQL 8.0"><meta property="og:url" content="https://codemario318.github.io/post/real-mysql/11/4/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="MySQL"><meta property="article:published_time" content="2023-07-21T11:13:10+09:00"><meta property="article:modified_time" content="2023-07-21T11:13:10+09:00"><meta property="og:image" content="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg"><meta name=twitter:title content="11.4 쿼리 작성 및 최적화 - SELECT"><meta name=twitter:description content="Real MySQL 8.0"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>BackEnd</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>27</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>26</span></a></li><li><a href=/categories/frontend/><span>FrontEnd</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>3</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#select-절의-처리-순서>SELECT 절의 처리 순서</a></li><li><a href=#인덱스-사용을-위한-기본-규칙>인덱스 사용을 위한 기본 규칙</a><ol><li><a href=#where>WHERE</a></li><li><a href=#group-by>GROUP BY</a></li><li><a href=#order-by>ORDER BY</a></li><li><a href=#where--order-by-or-group-by>WHERE + (ORDER BY or GROUP BY)</a></li><li><a href=#group-by--order-by>GROUP BY + ORDER BY</a></li><li><a href=#where--group-by--order-by>WHERE + GROUP BY + ORDER BY</a></li></ol></li><li><a href=#where-절-비교-조건-사용시-주의사항>WHERE 절 비교 조건 사용시 주의사항</a><ol><li><a href=#null-비교>NULL 비교</a></li><li><a href=#문자열이나-숫자-비교>문자열이나 숫자 비교</a></li><li><a href=#날짜-비교>날짜 비교</a></li><li><a href=#short-circuit-evalutation>Short-Circuit Evalutation</a></li></ol></li><li><a href=#distinct>DISTINCT</a></li><li><a href=#limit-n>LIMIT n</a><ol><li><a href=#풀-테이블-스캔>풀 테이블 스캔</a></li><li><a href=#group-by-1>GROUP BY</a></li><li><a href=#distinct-1>DISTINCT</a></li><li><a href=#where--order-by>WHERE + ORDER BY</a></li><li><a href=#offset>OFFSET</a></li></ol></li><li><a href=#count>COUNT()</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/real-mysql/11/4/><img src=/post/real-mysql/11/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg srcset="/post/real-mysql/11/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg 800w, /post/real-mysql/11/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_1600x0_resize_q75_box.jpeg 1600w" width=800 height=994 loading=lazy alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT"></a></div><div class=article-details><header class=article-category><a href=/categories/db/ style=background-color:#2a9d8f;color:#fff>DB</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/real-mysql/11/4/>11.4 쿼리 작성 및 최적화 - SELECT</a></h2><h3 class=article-subtitle>Real MySQL 8.0</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/07/21</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>16 minute read</time></div></footer></div></header><section class=article-content><p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 <code>INSERT</code>, <code>UPDATE</code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.</p><p>하지만 <code>SELECT</code>는 여러개의 테이블로 부터 데이터를 조합해서 빠르게 가져와야 하는 경우가 많아 여러개의 테이블을 어떻게 읽느냐에 따라 성능 이슈가 자주 발생하게 된다.</p><h2 id=select-절의-처리-순서>SELECT 절의 처리 순서</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=k>DISTINCT</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>first_name</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>cnt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=mi>100001</span><span class=p>,</span><span class=w> </span><span class=mi>100002</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>HAVING</span><span class=w> </span><span class=nf>AVG</span><span class=p>(</span><span class=n>s</span><span class=p>.</span><span class=n>salary</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>1000</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=nf>AVG</span><span class=p>(</span><span class=n>s</span><span class=p>.</span><span class=n>salary</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>SELECT</code> 쿼리에서 어느 절이 먼저 실행될지 예측하지 못할 때가 있는데, 어느 절이 먼저 실행되는지 모른다면 처리 내용, 처리 결과를 예측할 수 없다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart LR 
+</span></span><span class=line><span class=cl>    subgraph FIRST [&#34;WHERE 적용 및 조인 실행&#34;]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        A(드라이빙 테이블) 
+</span></span><span class=line><span class=cl>        -.-&gt; B(드리븐 테이블 1)
+</span></span><span class=line><span class=cl>        -.-&gt; C(드리븐 테이블 2)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    FIRST --&gt; D(&#34;GROUP BY&#34;) --&gt; E(&#34;DISTINCT&#34;) --&gt; F(&#34;HAVING 조건 적용&#34;) --&gt; G(&#34;ORDER BY&#34;) --&gt; H(&#34;LIMIT&#34;)
+</span></span></code></pre></td></tr></table></div></div><p>대부분 위 순서대로 쿼리가 실행된다. 또한 SQL에는 <code>ORDER BY</code>나 <code>GROUP BY</code> 절이 있더라도 인덱스를 이용해 처리할 때는 그 단계 자체가 불필요하므로 생략된다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart LR 
+</span></span><span class=line><span class=cl>    subgraph FIRST [&#34;WHERE 적용&#34;]
+</span></span><span class=line><span class=cl>        A(드라이빙 테이블)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    subgraph SECOND [&#34;조인 실행&#34;]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        B(드리븐 테이블 1)
+</span></span><span class=line><span class=cl>        -.-&gt; C(드리븐 테이블 2)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    FIRST --&gt; G(&#34;ORDER BY&#34;) --&gt; SECOND --&gt; H(&#34;LIMIT&#34;)
+</span></span></code></pre></td></tr></table></div></div><p><code>GROUP BY</code> 절이 없이 <code>ORDER BY</code>만 사용된 쿼리같은 경우 첫 번째 테이블만 읽어 정렬을 수행한 뒤 나머지 테이블을 읽는다.</p><p>위의 실행 순서를 벗어나는 쿼리가 필요하다면 서브쿼리로 작성된 인라인 뷰(Inline View)를 사용해야 한다. 예를 들어 예시 쿼리에서 <code>LIMIT</code>를 먼저 적용하고 <code>ORDER BY</code>를 실행하기 위해 다음과 같이 쿼리를 작성할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=n>cnt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>SELECT</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>,</span><span class=nf>COUNT</span><span class=p>(</span><span class=k>DISTINCT</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>first_name</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>cnt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>,</span><span class=nf>MAX</span><span class=p>(</span><span class=n>s</span><span class=p>.</span><span class=n>salary</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>max_salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=mi>100001</span><span class=p>,</span><span class=w> </span><span class=mi>100002</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>HAVING</span><span class=w> </span><span class=nf>MAX</span><span class=p>(</span><span class=n>s</span><span class=p>.</span><span class=n>salary</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>1000</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=n>temp_view</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>max_salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>LIMIT</code>를 <code>GROUP BY</code>전 실행하고자 할때도 서브쿼리로 인라인 뷰를 만들어, 뷰 안에서 LIMIT 를 정용하고 바깥 쿼리에서 <code>GROUP BY</code>, <code>ORDER BY</code>를 적용해야 한다.</p><blockquote><p>인라인 뷰가 사용되면 임시 테이블이 사용되기 때문에 주의가 필요하다.</p></blockquote><h2 id=인덱스-사용을-위한-기본-규칙>인덱스 사용을 위한 기본 규칙</h2><p>인덱스는 B-Tree에 컬럼의 값을 아무런 변환 없이 정렬하여 저장하기 때문에 원본 값을 이용할 때만 인덱스를 사용하게 된다.</p><p>따라서 인덱스를 사용하려면 <strong>기본적으로 인덱스된 컬럼의 값 자체를 변환하지 않고 그대로 사용한다는 조건</strong>을 만족해야 한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=cm>/* 인덱스 사용 불가*/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>salary</span><span class=o>*</span><span class=mi>10</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>150000</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/* 인덱스 사용 가능 */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>salary</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>150000</span><span class=o>/</span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>복잡한 연산을 수행한다거나 <code>MD5</code> 함수와 같이 해시 값을 만들어 비교해야 하는 경우라면 미리 계산된 값을 저장하도록 MySQL 가상 컬럼(Virtual Column)을 추가하고 그 컬럼에 인덱스를 생성하거나 함수 기반의 인덱스를 사용하면 된다.</p><blockquote><p>저장하고자 하는 값의 타입에 맞춰 컬럼의 타입을 선정하고, 쿼리 작성시 데이터의 타입에 맞춰 비교 조건을 사용해야하며, 데이터 타입이 조금이라도 다른 경우 최적화되지 못하는 현상은 MySQL 서버의 버전이 업그레이드된다고 해서 해결될 수 있는 부분이 아니므로 주의가 필요하다.</p></blockquote><h3 id=where>WHERE</h3><p><code>WHERE</code> 조건이 인덱스를 사용하는 방법은 크게 작업 범위 결정 조건과 체크 조건 두 가지 방식으로 구분할 수 있다.</p><p>그 중 작업 범위 결정 조건은 동등 비교 조건이나 <code>IN</code>으로 구성된 조건에 사용된 컬럼들이 인덱스의 컬럼 구성과 좌측에서부터 비교했을 때 얼마나 일치하는가에 따라 달라진다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart TB
+</span></span><span class=line><span class=cl>    subgraph SA [인덱스 컬럼 순서]
+</span></span><span class=line><span class=cl>        direction LR 
+</span></span><span class=line><span class=cl>        saa(COL_1) ~~~ sab(COL_2) ~~~ sac(COL_3) ~~~ sad(COL_4)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SB [WHERE 조건절 컬럼 순서]
+</span></span><span class=line><span class=cl>        direction LR
+</span></span><span class=line><span class=cl>        sba(COL_2 = ?) ~~~ sbb(COL_4 = ?) ~~~ sbc(COL_3 &gt; ?) ~~~ sbd(COL_1 = ?)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    SA ~~~ SB
+</span></span><span class=line><span class=cl>%%    sba --&gt; sab
+</span></span><span class=line><span class=cl>%%    sbb -.-&gt; sad
+</span></span><span class=line><span class=cl>%%    sbc --&gt; sac
+</span></span><span class=line><span class=cl>%%    sbd --&gt; saa
+</span></span></code></pre></td></tr></table></div></div><p><code>WHERE</code>절에서 조건절에 나열된 순서가 인덱스와 다르더라도 옵티마이저는 인덱스를 사용할 수 있는 조건들을 뽑아서 최적화를 수행하기 때문에 사용된 조건의 순서는 실제 인덱스 사용과 무관하다.</p><ul><li>동등 비교 조건: COL_1, COL_2</li><li>범위 비교 조건: COL_3</li><li>체크조건: COL_4<ul><li>직전 컬럼인 COL_3가 동등 비교 조건이 아니라 범위 비교 조건으로 사용되었기 때문에 작업범위 결정 조건으로 사용하지 못한다.</li></ul></li></ul><blockquote><p><code>WHERE</code> 절의 조건은 <code>GROUP BY</code>, <code>ORDER BY</code>와 달리 순서를 변경해도 결과의 차이가 없다.<br>인덱스를 구성하는 컬럼에 대한 조건 존재 유무가 중요하다.</p></blockquote><p><code>WHERE</code> 조건에서 <code>OR</code> 을 통해 조건을 사용할 경우 처리 방식이 바뀐다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>first_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Kebin&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>OR</span><span class=w> </span><span class=n>last_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Poly&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li><code>first_name</code>컬럼에 인덱스가 있고, <code>last_name</code> 컬럼에 인덱스가 없는 경우<ul><li><code>first_name</code>의 인덱스를 활용할 경우 <code>(풀 테이블 스캔) + (인덱스 레인지 스캔)</code> 보다 <code>(풀 테이블 스캔)</code>이 작업량이 적으므로 옵티마이저는 풀 테이블 스캔을 선택한다.</li></ul></li><li>조건에 사용된 모든 컬럼에 인덱스가 있는 경우<ul><li><code>index_merge</code> 접근 방법으로 쿼리가 실행될 수 있어 풀 테이블 스캔보다 빠르지만, 인덱스 하나를 레인지 스캔하는 것 보다는 느리다.</li></ul></li></ul><p><code>WHERE</code> 조건절에서 <code>AND</code>로 연결된다면 읽어와야 할 레코드 건수를 줄이지만, <code>OR</code>로 연결되면 비교해야 할 레코드가 늘어나기 때문에 사용에 주의가 필요하다.</p><h3 id=group-by>GROUP BY</h3><p><code>GROUP BY</code> 절의 각 컬럼은 비교 연산자를 가지지 않으므로 작업 범위 결정 조건이나 체크 조건과 같이 구분해서 생각할 필요는 없다.</p><p>쿼리에 <code>GROUP BY</code>가 사용될 때 명시된 컬럼의 순서가 인덱스를 구성하는 컬럼의 순서와 같으면 인덱스를 사용할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart TB
+</span></span><span class=line><span class=cl>    subgraph SA [인덱스 컬럼 순서]
+</span></span><span class=line><span class=cl>        direction LR 
+</span></span><span class=line><span class=cl>        saa(COL_1) --&gt; sab(COL_2) --&gt; sac(COL_3) --&gt; sad(COL_4)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SB [WHERE 조건절 컬럼 순서]
+</span></span><span class=line><span class=cl>        direction LR
+</span></span><span class=line><span class=cl>        sba(COL_1) --&gt; sbb(COL_2) --&gt; sbc(COL_3)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    SA ~~~ SB
+</span></span><span class=line><span class=cl>%%    sba --&gt; saa
+</span></span><span class=line><span class=cl>%%    sbb -.-&gt; sab
+</span></span><span class=line><span class=cl>%%    sbc --&gt; sac
+</span></span><span class=line><span class=cl>%%    sbd --&gt; saa
+</span></span></code></pre></td></tr></table></div></div><ul><li><code>GROUP BY</code> 절에 명시된 컬럼이 인덱스 컬럼의 순서와 위치가 같아야한다.</li><li>인덱스를 구성하는 컬럼 중에서 뒤쪽에 있는 컬럼은 명시되지 않아도 인덱스를 사용할 수 있지만 인덱스 앞쪽에 있는 컬럼이 명시되지 않으면 인덱스를 사용할 수 없다.</li><li><code>GROUP BY</code> 절에 명시도니 컬럼이 하나라도 익덱스에 없으면 전혀 인덱스를 사용하지 못한다.</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1>## 인덱스를 활용하지 못하는 GROUP BY 예시
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ix_col1234 (col_1, col_2, col_3, col_4)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 1
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 2
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 3
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 4
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_4</span><span class=p>,</span><span class=w> </span><span class=n>COL_5</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li>1,2: 인덱스를 구성하는 컬럼 순서와 불일치</li><li>3: COL_3 앞 COL_2 없음</li><li>4: 인덱스가 없는 COL_5 사용</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1>## 인덱스를 활용하는 GROUP BY 예시
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ix_col1234 (col_1, col_2, col_3, col_4)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_4</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>WHERE</code> 조건절에 COL_1이나 COL_2같이 인덱스 순서가 앞인 컬럼에 대해 동등 비교 조건으로 사용된다면 상수로 비교하기 때문에 해당 컬럼을 명시하지 않아도 인덱스를 활용할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1>## GROUP BY에 컬럼을 명시하지 않아도 인덱스를 활용하는 예시
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ix_col1234 (col_1, col_2, col_3, col_4)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;상수&#39;</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>...</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;상수&#39;</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>COL_2</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;상수&#39;</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_4</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=order-by>ORDER BY</h3><p>MySQL에서 <code>ORDER BY</code>와 <code>GROUP BY</code>는 처리 방법이 상당히 비슷하여 인덱스 사용 여부 또한 거의 흡사하다.</p><p>다른 점은 정렬되는 각 컬럼의 오름차순 및 내림차순 옵션이 인덱스와 같거나 정반대인 경우에만 사용할 수 있어 모든 컬럼이 오름차순이나 내림차순일 때만 인덱스를 사용할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1>## 인덱스를 활용하지 못하는 ORDER BY 예시
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ix_col1234 (col_1, col_2, col_3, col_4)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 1
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 2
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 3
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=w> </span><span class=k>DESC</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 4
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>## 5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_4</span><span class=p>,</span><span class=w> </span><span class=n>COL_5</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ol><li>COL_1 누락</li><li>컬럼 순서 불일치</li><li>COL_2 내림차순</li><li>COL_2 누락</li><li>인덱스에 존재하지 않는 COL_5 사용</li></ol><h3 id=where--order-by-or-group-by>WHERE + (ORDER BY or GROUP BY)</h3><p>쿼리가 <code>WHERE</code> + (<code>ORDER BY</code> 또는 <code>GROUP BY</code>) 형식으로 구성되어 있는 경우 각각 다른 인덱스를 사용할 수 없기 때문에 3가지 방식 중 한가지 방법으로만 인덱스를 이용한다.</p><ul><li>동시에 같은 인덱스를 이용:<ul><li>정렬 대상 컬럼이 모두 하나의 인덱스에 연속해서 포함되어 있는 경우 사용</li><li>나머지 방식보다 훨씬 빠르다.</li></ul></li><li><code>WHERE</code> 절만 인덱스를 이용:<ul><li><code>ORDER BY</code> 절은 인덱스를 이용한 정렬이 불가능하며, 인덱스를 통해 검색된 결과 레코드를 별도의 정렬 처리 과정을 거친다(Using Filesort)</li><li><code>WHERE</code> 절의 조건에 일치하는 레코드 건수가 많지 않을 때 효율적이다.</li></ul></li><li><code>ORDER BY</code> 절만 인덱스를 이용<ul><li><code>ORDER BY</code> 절의 순서대로 인덱스를 읽으면서 레코드를 한 건씩 <code>WHERE</code> 절의 조건에 일치하는지 비교하여 아닌경우 버리는 형식으로 처리된다.</li><li>아주 많은 레코드를 조회해서 정렬해야 하는 경우 이러한 형태로 튜닝하기도 한다.</li></ul></li></ul><p>또한 <code>WHERE</code> 절에서 동등 비교 조건으로 비교된 컬럼과 <code>ORDER BY</code> 절에 명시된 컬럼이 순서대로 빠짐없이 인덱스 컬럼의 왼쪽부터 일치해야 한다.</p><ul><li>비교 조건에 사용된 컬럼과 <code>ORDER BY</code> 절의 컬럼의 중복은 상관 없다.</li><li>중간에 빠지는 컬럼이 있으면 모두 인덱스를 사용할 수 없어 주로 <code>WHERE</code>절만 인덱스를 활용한다.</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart LR
+</span></span><span class=line><span class=cl>    subgraph SAB [&#34; &#34;]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        SA ~~~ SB
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SA [WHERE 절]
+</span></span><span class=line><span class=cl>        direction TB 
+</span></span><span class=line><span class=cl>        saa(COL_1 = ?) 
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SB [ORDER BY 절]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        sba(COL_2) ~~~ sbb(COL_3)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SC [인덱스]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        sca(COL_1 ASC) ~~~
+</span></span><span class=line><span class=cl>        scb(COL_2 ASC) ~~~
+</span></span><span class=line><span class=cl>        scc(COL_3 ASC) ~~~
+</span></span><span class=line><span class=cl>        scd(COL_4 ASC)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SDE [&#34; &#34;]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        SD ~~~ SE
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SD [WHERE 절]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        sda(COL_1 = ?) ~~~
+</span></span><span class=line><span class=cl>        sdb(COL_2 = ?) ~~~
+</span></span><span class=line><span class=cl>        sdc(COL_3 &gt; ?)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    subgraph SE [ORDER BY 절]
+</span></span><span class=line><span class=cl>        direction TB
+</span></span><span class=line><span class=cl>        sea(COL_3 DESC) ~~~ 
+</span></span><span class=line><span class=cl>        seb(COL_4 DESC)
+</span></span><span class=line><span class=cl>    end
+</span></span><span class=line><span class=cl>    SA ~~~ SB
+</span></span><span class=line><span class=cl>    SAB ~~~ SC ~~~ SDE
+</span></span><span class=line><span class=cl>    
+</span></span></code></pre></td></tr></table></div></div><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 인덱스 사용 가능: 등등 비교로 사용된 컬럼
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 위와 같은 방식으로 처리된다.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 범위 조건으로 사용되었지만 모든 컬럼을 명시하여 인덱스 사용 가능
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_1</span><span class=p>,</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 인덱스 사용 불가
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 인덱스 사용 불가
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_3</span><span class=p>,</span><span class=w> </span><span class=n>COL_4</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=p>,</span><span class=w> </span><span class=n>COL_3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>tb_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>COL_1</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=mi>3</span><span class=p>,</span><span class=w> </span><span class=mi>4</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>COL_2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=group-by--order-by>GROUP BY + ORDER BY</h3><p><code>GROUP BY</code>와 <code>ORDER BY</code> 동시에 사용된 쿼리에서 두 절이 모두 하나의 인덱스를 사용해 처리되려면 명시된 컬럼의 순서와 내용이 모두 일치해야 한다.</p><p>MySQL 5.7 버전까지는 <code>GROUP BY</code>는 사용된 컬럼에 대한 정렬까지 함께 수행하는 방식이었으나 MySQL 8.0 부터는 컬럼의 정렬을 보장하지 않아 정렬이 필요한 <code>GROUP BY</code>라면 <code>ORDER BY</code>를 모두 명시해야 한다.</p><h3 id=where--group-by--order-by>WHERE + GROUP BY + ORDER BY</h3><p>아래 질문을 기본으로 하여 흐름을 확인한다.</p><ol><li><code>WHERE</code> 절이 인덱스를 사용할 수 있는가?</li><li><code>GROUP BY</code> 절이 인덱스를 사용할 수 있는가?</li><li><code>GROUP BY</code> 절과 <code>ORDER BY</code> 절이 동시에 인덱스를 사용할 수 있는가?</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>flowchart LR
+</span></span><span class=line><span class=cl>    A(START) --&gt;|Y| B{WHERE} 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    B --&gt;|Y| C{GROUP BY}
+</span></span><span class=line><span class=cl>    B --&gt;|N| D{GROUP BY}
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    C --&gt;|Y| E{ORDER BY}
+</span></span><span class=line><span class=cl>    C --&gt;|N| RB[Only WHERE]
+</span></span><span class=line><span class=cl>    E --&gt;|Y| RA[WHERE, GROUP BY, ORDER BY]
+</span></span><span class=line><span class=cl>    E --&gt;|N| RB
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    D --&gt;|N| F{GROUP BY}
+</span></span><span class=line><span class=cl>    F --&gt;|Y| G{ORDER BY}
+</span></span><span class=line><span class=cl>    F --&gt;|N| RD[인덱스 사용 불가]
+</span></span><span class=line><span class=cl>    G --&gt;|Y| RC[GROUP BY, ORDER BY]
+</span></span><span class=line><span class=cl>    G --&gt;|N| RD
+</span></span></code></pre></td></tr></table></div></div><h2 id=where-절-비교-조건-사용시-주의사항>WHERE 절 비교 조건 사용시 주의사항</h2><p><code>WHERE</code>절에 사용되는 비교 조건의 표현식은 상당히 중요하다. 쿼리가 최적으로 실행되려면 적합한 인덱스와 함께 비교 조건의 표현식을 적절하게 사용해야 한다.</p><h3 id=null-비교>NULL 비교</h3><p>다른 DBMS와 다르게 MySQL 에서는 NULL 값이 포함된 레코드도 인덱스로 관리한다.</p><p>하지만 SQL 표준에서 NULL의 정의는 비교할 수 없는 값이며, 이에 따라 두 값이 모두 NULL을 가진다고 하더라도 이 두 값이 동등한지 비교하는 것은 불가능하다.</p><p>쿼리에서 <code>IS NULL</code> 또는 <code>&lt;=></code>연산자를 사용하는 방법 외 컬럼의 값이 NULL인지 알 수 있는 방법은 없다.</p><h3 id=문자열이나-숫자-비교>문자열이나 숫자 비교</h3><p>문자열 컬럼이나 숫자 컬럼을 비교할 때는 반드시 그 타입에 맞는 상수값을 사용할 것을 권장한다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>emp_no</span><span class=o>=</span><span class=mi>1001</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>first_name</span><span class=o>=</span><span class=s1>&#39;smith&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>emp_no</span><span class=o>=</span><span class=s1>&#39;1001&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>first_name</span><span class=o>=</span><span class=mi>1001</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li>1, 2번 쿼리는 컬럼의 타입과 비교하는 상수값이 동일한 타입으로 사용되어 인덱스를 적절히 이용할 수 있다.</li><li>3번 쿼리는 emp_no 컬럼이 숫자 타입이므로 문자열 상수값을 숫자로 타입 변환해서 사용하므로 특별한 성능 저하는 발생하지 않는다.</li><li>4번 쿼리는 first_name이 문자열 컬럼이지만 비교되는 상수값이 숫자 타입이므로 옵티마이저는 우선순위를 가지는 숫자 타입으로 비교를 수행하려고 실행 계획을 수립한다.<ul><li>first_name 컬럼의 문자열을 숫자로 변환하여 비교를 수행하게 되어 인덱스를 활용하지 못한다.</li></ul></li></ul><p>컬럼 타입에 맞게 상수 리터럴을 비교 조건에 사용하는 것이 중요하다.</p><h3 id=날짜-비교>날짜 비교</h3><p><strong><code>DATE</code> or <code>DATETIME</code> 문자열 비교</strong></p><ul><li><code>DATE</code>, <code>DATETIME</code> 타입 갑과 문자열을 비교할 때는 문자열 값을 자동으로 변환해서 비교를 수행하므로 명시적으로 변환하는 처리를 거치지 않아도 동일하게 처리된다.</li><li><code>DATE</code>, <code>DATETIME</code> 타입 컬럼을 변경하는 경우 인덱스를 효율적으로 이용할 수 없으므로 상수를 변형하는 형태로 처리하는 것이 좋다.<ul><li>문자열로 변경</li><li>날짜 계산 처리 등</li></ul></li></ul><p><strong><code>DATE</code> 와 <code>DATETIME</code> 비교</strong></p><ul><li>따로 변환하지 않고 비교해도 내부적으로 <code>DATE</code> 타입을 YYYY-MM-DD 00:00:00 형태로 변환하여 비교를 수행한다.</li><li>해당 타입 비교에서 타입 변환은 인덱스 사용여부에 영향을 미치지 않으므로 성능보다는 쿼리의 결과에 주의하여 사용한다.</li></ul><p><strong><code>DATETIME</code> 와 <code>TIMESTAMP</code> 비교</strong>
+<code>DATE</code>, <code>DATETIME</code> 값을 <code>TIMESTAMP</code> 값을 변환 없이 비교하면 문제없이 작동하고 실행 계획도 인덱스 레인지 스캔을 사용해서 처리하는 것
+처럼 보이지만 그렇지 않다.</p><p>TIMESTAMP값은 내부적으로 단순 숫자 값이므로 원하는 결과를 얻지 못할 수 있다. 따라서 비교 대상 컬럼 타입에 맞게 변환해서 사용하는 것이 좋다.</p><h3 id=short-circuit-evalutation>Short-Circuit Evalutation</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>boolean in_transaction;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>if ( in_transaction &amp;&amp; has_modified() ) {
+</span></span><span class=line><span class=cl>  commit();
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>위 처럼 여러 개의 표현식이 <code>AND</code>, <code>OR</code> 논리 연산자로 연결된 경우 선행 표현식의 결과에 따라 후행 표현식을 평가할지 결정하는 최적화를 <code>Short-circuit Evaluation</code> 이라고 하며, MySQL 서버에서도 이러한 방식으로 쿼리의 성능 최적화를 수행한다.</p><p>MySQL 서버는 쿼리의 <code>WHERE</code> 절에 나열된 순서대로 <code>Short-circuit Evaluation</code> 방식으로 평가하여 해당 레코드를 반환해야 할지 결정하지만, 나열된 조건 중 인덱스를 활용할 수 있는 조건이 있다면 해당 조건을 최우선으로 사용한다. 그렇기 때문에 <code>WHERE</code> 조건절에서 나열된 순서가 인덱스의 사용 여부를 결정하지는 않게된다.</p><p><strong>인덱스 사용 불가</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 0번: 2,844,047건
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 1번: 2,442,943건
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=nf>CONVERT_TZ</span><span class=p>(</span><span class=n>from_date</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+00:00&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+09:00&#39;</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=s1>&#39;1991-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 2번: 0건
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>to_date</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=s1>&#39;1985-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 3번(1 AND 2 조건): 0건
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=nf>CONVERT_TZ</span><span class=p>(</span><span class=n>from_date</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+00:00&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+09:00&#39;</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=s1>&#39;1991-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=n>to_date</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=s1>&#39;1985-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 4번(2 AND 1 조건): 0건
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>to_date</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=s1>&#39;1985-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=nf>CONVERT_TZ</span><span class=p>(</span><span class=n>from_date</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+00:00&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;+09:00&#39;</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=s1>&#39;1991-01-01&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>위 쿼리에서 사용된 두 개의 조건은 모두 인덱스를 사용하지 못하기 때문에 풀 테이블 스캔이 발생한다. 그리고 2번 조건의 결과 레코드 건수가 0 이므로 1번 조건과 2번 조건이 <code>AND</code> 연결된 3번, 4번 쿼리의 결과도 0건이다.</p><p>1번 조건은 전체 레코드에 대해 <code>CONVERT_TZ</code> 함수를 실행 후 그 결과에 대해 비교 작업을 수행해야하지만, 2번 조건은 비교 작업만 전체 레코드에 대해 수행한다.</p><p>이러한 상황에서 <code>Short-circuit Evaluation</code> 최적화를 수행하기 위해 조건의 결과가 0건인 2번 조건을 선행하면 1번 쿼리가 실행되지 않기 때문에, 3번 쿼리보다 더 좋은 성능을 보인다.</p><p><strong>인덱스 사용 가능</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># ix_firstname(first_name)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>last_name</span><span class=o>=</span><span class=s1>&#39;Aamodt&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=n>first_name</span><span class=o>=</span><span class=s1>&#39;Matt&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=nf>MONTH</span><span class=p>(</span><span class=n>birth_date</span><span class=p>)</span><span class=o>=</span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>위 쿼리는 인덱스를 사용 가능한 first_name을 먼저 평가하고, 이후 나열된 순서대로 조건들을 평가한다.</p><h2 id=distinct>DISTINCT</h2><p>특정 컬럼의 유니크한 값을 조회하기 위해 <code>SELECT</code> 절에 <code>DISTINCT</code>를 사용하는데, 많은 사용자가 조인을 하는 경우 레코드 중복을 막기 위해 남발하는 경향이 있다.</p><p>이러한 남용은 성능적인 문제도 있지만 쿼리의 결과도 의도한 바와 달라질 수 있으므로 주의해야한다.</p><blockquote><p>여러 테이블을 조인하는 쿼리에서는 조인 조건에 따라 레코드가 몇 배씩 불어나기도 하는데, 테이블간 업무적인 연결 조건을 이해하지 못하고 쿼리를 작성하는 경우 이러한 남용이 발생하게되므로 1:1. 1:N 조인인지 업무적인 특성을 잘 이해하는 것이 중요하다.</p></blockquote><h2 id=limit-n>LIMIT n</h2><p><code>LIMIT</code>는 쿼리 결과에서 지정된 순서에 위치한 레코드만 가져오고자 할 때 사용한다.</p><p>오라클과 같은 RDBMS와는 다르게 MySQL의 <code>LIMIT</code>는 <code>WHERE</code> 조건이 아니기 때문에 항상 쿼리의 가장 마지막에 실행된다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>emp_no</span><span class=w> </span><span class=k>BETWEEN</span><span class=w> </span><span class=mi>10001</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=mi>10010</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>first_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ol><li><code>employees</code> 테이블에서 <code>WHERE</code> 절의 검색 조건에 일치하는 레코드를 전부 읽어온다.</li><li>1번에서 읽어온 레코드를 first_name 컬럼 값에 따라 정렬한다.</li><li>정렬된 결과에서 상위 5건만 반환한다.</li></ol><p>MySQL에서 <code>LIMIT</code>는 쿼리에서 모든 레코드의 정렬이 완료되지 않았다고 하더라도 필요한 레코드 건수만 준비되면 즉시 쿼리를 종료한다.</p><p>하지만 쿼리에 포함된 <code>ORDER BY</code>, <code>GROUP BY</code> 절에서 수행하는 정렬 작업이 인덱스를 적절히 이용하지 못하는 경우 처리가 완료된 후에 <code>LIMIT</code>가 적용되므로 성능 개선에 큰 의미가 없을 수 있다.</p><h3 id=풀-테이블-스캔>풀 테이블 스캔</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>풀 테이블 스캔을 수행하지만 <code>LIMIT</code> 조건으로 인해 MySQL이 스토리지 엔진으로 부터 10개의 레코드를 읽어 들이는 순간 읽기 작업을 멈추게된다.</p><blockquote><p>정렬, 그루핑, <code>DISTINCT</code>가 없는 쿼리에서 <code>LIMIT</code> 조건을 사용하면 쿼리가 상당히 빨라질 수 있다.</p></blockquote><h3 id=group-by-1>GROUP BY</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>first_name</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>인덱스를 사용하지 못하는 <code>GROUP BY</code>는 그루핑과 정렬의 특성을 모두 가지고 있기 때문에 <code>GROUP BY</code> 작업이 완료되고 나서야 <code>LIMIT</code> 처리를 수행할 수 있다.</p><blockquote><p><code>LIMIT</code>이 <code>GROUP BY</code>와 함께 사용되는 경우 실질적인 서버의 작업 내용을 크게 줄여주지는 못한다.</p></blockquote><h3 id=distinct-1>DISTINCT</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>first_name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>정렬이 필요없는 <code>DISTINCT</code>는 유니크한 그룹만 만들어 내면 된다.</p><p>MySQL은 스토리지 엔진을 통해 풀 테이블 스캔으로 <code>employees</code> 테이블 레코드를 읽어 들임과 동시에 <code>DISTINCT</code>를 위한 중복 제거 작업(임시 테이블 사용)을 작업을 반복적으로 처리하다가 유니크한 레코드가 <code>LIMIT</code> 건수 만큼 채워졌다면 쿼리를 멈춘다.</p><p>이렇게 <code>DISTINCT</code> 와 함께 사용된 <code>LIMIT</code>가 실질적인 중복 제거 작업 범위를 줄여주게 되므로 작업량도 줄이는 효과를 가진다.</p><h3 id=where--order-by>WHERE + ORDER BY</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>emp_no</span><span class=w> </span><span class=k>BETWEEN</span><span class=w> </span><span class=mi>10001</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=mi>11000</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>first_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>employees</code> 테이블로부터 조건에 일치하는 레코드를 읽은 후 <code>first_name</code> 컬럼 값으로 정렬을 수행한다.</p><p>정렬을 수행하면서 필요한 10건을 채우면 나머지 작업을 멈추고 결과를 사용자에게 반환한다.</p><p>이 때 정렬을 수행하기 전에 <code>WHERE</code> 조건에 일치하는 모든 레코드를 읽어와야 하지만, 읽어온 결과가 전부 정렬돼야 쿼리가 완료되는 것이 아니라 필요한 만큼만 정렬하면 된다.</p><p>하지만 이 쿼리도 <code>GROUP BY</code> 와 사용했을 때 처럼 크게 작업량을 줄여주지는 못한다.</p><h3 id=offset>OFFSET</h3><p>실제 쿼리의 성능은 사용자의 화면에 레코드가 몇 건 출력되느냐보다 MySQL 서버가 그 결과를 만들어내기 위해 어떠한 작업들을 했는지가 중요한데, <code>LIMIT</code>에 offset을 사용하여 페이징과 같은 처리를 할 때 큰 영향을 미칠 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>2</span><span class=n>_000_000</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>위 쿼리 처리는 <code>salaries</code> 테이블을 처음부터 읽으면서 2,000,010건의 레코드를 읽은 후 2,000,000건은 버리고 마지막 10건만 사용자에게 반환하는데, 사용자 화면에 보여주는 레코드는 10건이지만 실제 2,000,010건의 레코드를 읽어야 하므로 매우 느려질 수 있다.</p><p>이처럼 <code>LIMIT</code> 조건의 페이징이 처음 몇 개 페이지 조회로 끝나지 않을 가능성이 높다면 <code>WHERE</code> 조건절로 읽어야 할 위치를 찾고 그 위치에서 10개만 읽는 형태의 쿼리를 사용하는 것이 좋다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 첫 페이지
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>salary</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 두 번째 페이지(첫 페이지의 마지막 salary 값과 emp_no 값 이용)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>salary</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=mi>38864</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=p>(</span><span class=n>salary</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>38864</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>emp_no</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>274049</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>salary</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># 마지막 페이지
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>salary</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=mi>154888</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=p>(</span><span class=n>salary</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>154888</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>emp_no</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>109334</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>0</span><span class=p>,</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>salary</code>와 같이 중복이 발생할 수 있는 컬럼을 사용하면 조건에 따라서 데이터가 누락, 중복 등으로 의도하지 않은 데이터를 받아올 수 있으므로 주의해야 한다.</p><h2 id=count>COUNT()</h2><p><code>COUNT()</code> 한수는 결과 레코드의 건수를 반호나하는 함수이다. 컬럼이나 표현식을 인자로 받으며, 특별한 형태로 <code>*</code>을 받을 수 있다.</p><ul><li><code>COUNT(*)</code>처럼 함수 내에 사용된 <code>*</code>는 <code>SELECT</code>와 달리 레코드 자체를 의미하는 것으로 pk, 1 과 같은 값을 인자로 주지 않아도 동일한 성능을 보여준다.</li></ul><hr><p>MyISAM 스토리지 엔진을 사용하는 테이블은 테이블의 메타 정보에 전체 레코드 건수를 관리하므로, 조건이 없는 경우 <code>COUNT</code> 처리는 매우 빠르게 처리되지만, 조건이 있는 경우 레코드를 읽지 않는 이상 알 수 없으므로 일반적인 DBMS와 같이 처리된다.</p><p>InnoDB 스토리지 엔진을 사용하는 테이블에서는 조건이 없는 <code>COUNT(*)</code> 쿼리라고 하더라도 직접 데이터나 인덱스를 읽어야만 레코드 건수를 가져올 수 있기 때문에 큰 테이블에서 <code>COUNT()</code> 함수를 사용하는 작업에 주의해야 한다.</p><hr><p><code>COUNT(*)</code> 쿼리에서 가장 많이 하는 실수는 <code>ORDER BY</code> 구문이나 체크 조건을 가지지 않는 <code>LEFT JOIN</code>과 같은 레코드 건수를 가져오는 것과는 무관한 작업을 포함하는 것이다.</p><p><code>COUNT(*)</code> 쿼리에서 <code>ORDER BY</code> 절은 어떠한 경우에서 필요하지 않으며, <code>LEFT JOIN</code> 또한 레코드 건수의 변화가 없거나 아우터 테이블에서 별도 체크를 하지 않아도 되는 경우 모두 제거해야한다.</p><hr><p>많은 사용자가 일반적으로 컬럼의 값을 <code>SELECT</code> 하는 쿼리보다 <code>COUNT(*)</code> 쿼리가 훨씬 빠르게 실행될 것으로 생각하지만, 인덱스르 제대로 사용하지 못한 <code>COUNT</code>쿼리는 페이징해서 데이터를 가져오는 쿼리보다 매우 느리게 실행 될 수 있다.</p><hr><p><code>COUNT()</code> 함수에 컬럼명이나 표현식이 인자로 사용되면 그 컬럼이나 표현식의 결과가 NULL이 아닌 레코드 건수만 반환한다. 따라서 NULL이 될 수 있는 컬럼에 <code>COUNT</code> 함수를 사용할 때는 위도대로 쿼리가 작동하는지 확인이 필요하다.</p></section><footer class=article-footer><section class=article-tags><a href=/tags/mysql/>MySQL</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/real-mysql/10/3/2/><div class=article-image><img src=/post/real-mysql/10/3/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" data-key=real-mysql/10/3/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</h2></div></a></article><article class=has-image><a href=/post/real-mysql/10/3/1/><div class=article-image><img src=/post/real-mysql/10/3/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (1)" data-key=real-mysql/10/3/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.3 실행 계획 - 실행 계획 분석 (1)</h2></div></a></article><article class=has-image><a href=/post/real_mysql/10/2/><div class=article-image><img src=/post/real_mysql/10/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.2 실행 계획 - 실행 계획 확인" data-key=real_mysql/10/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.2 실행 계획 - 실행 계획 확인</h2></div></a></article><article class=has-image><a href=/post/real_mysql/10/1/><div class=article-image><img src=/post/real_mysql/10/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.1 실행 계획 - 통계 정보" data-key=real_mysql/10/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.1 실행 계획 - 통계 정보</h2></div></a></article><article class=has-image><a href=/post/real-mysql/9/4/><div class=article-image><img src=/post/real-mysql/9/4/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 9.4 옵티마이저와 힌트 - 쿼리 힌트" data-key=real-mysql/9/4 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>9.4 옵티마이저와 힌트 - 쿼리 힌트</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
