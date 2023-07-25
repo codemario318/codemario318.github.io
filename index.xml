@@ -1,4 +1,138 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 21 Jul 2023 11:13:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>11.4 쿼리 작성 및 최적화 - SELECT</title><link>https://codemario318.github.io/post/real-mysql/11/4/</link><pubDate>Fri, 21 Jul 2023 11:13:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT" />&lt;p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 25 Jul 2023 11:52:14 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실</title><link>https://codemario318.github.io/post/where-on/</link><pubDate>Tue, 25 Jul 2023 11:52:14 +0900</pubDate><guid>https://codemario318.github.io/post/where-on/</guid><description>&lt;img src="https://codemario318.github.io/post/where-on/cover.png" alt="Featured image of post OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실" />&lt;p>스터디를 위해 Real MySQL 8.0를 주제로 학습을 진행중 &lt;strong>11.4.7.3 OUTER JOIN의 성능과 주의사항&lt;/strong> 부분에서 &lt;strong>&amp;quot;&lt;code>OUTER JOIN&lt;/code>을 사용할 때 드리븐 테이블에 &lt;code>WHERE&lt;/code> 조건 적용 시 &lt;code>INNER JOIN&lt;/code>으로 변경되어 실행되니 주의해야 한다.&amp;quot;&lt;/strong> 라는 내용과 예시가 있었는데, 해당 부분이 이해가 잘 안되었습니다.&lt;/p>
+&lt;p>관련 자료를 찾아보았으나, 실행 계획에서 &lt;code>OUTER JOIN&lt;/code>이 &lt;code>INNER JOIN&lt;/code>으로 변경되는 이유를 설명한 자료는 못 찾았고, 확인한 모든 글에서 **&lt;code>WHERE&lt;/code>, &lt;code>ON&lt;/code>절 조건을 처리하는 순서가 또는 범위가 다르다.**라는 정확하지 않은듯한 설명을 하고 있어 이런 정보를 바로 잡기 위해 제가 이해한 내용을 기록하려고합니다.&lt;/p>
+&lt;p>책의 예시 쿼리와 &lt;a class="link" href="https://github.com/wikibook/realmysql80/tree/main" target="_blank" rel="noopener"
+>Real MySQL 8.0 학습 자료&lt;/a>를 바탕으로 확인해보겠습니다.&lt;/p>
+&lt;h2 id="테이블-구조">테이블 구조&lt;/h2>
+&lt;p>예시로 사용되는 테이블의 구조는 아래와 같습니다.&lt;/p>
+&lt;pre class="mermaid">erDiagram
+EMPLOYEES ||--o{ DEPT_MANAGER: ""
+EMPLOYEES {
+emp_no int pk
+birth_date date
+first_name varchar
+last_name varchar
+gender enum
+hire_date date
+}
+DEPARTMENTS ||--o{ DEPT_MANAGER: ""
+DEPARTMENTS {
+dept_no char pk
+dept_name varchar
+emp_count int
+}
+DEPT_MANAGER {
+dept_no char pk, fk
+emp_no int pk, fk
+from_date date
+to_date date
+}
+&lt;/pre>
+&lt;h2 id="조인-처리-과정">조인 처리 과정&lt;/h2>
+&lt;p>조인 작업은 드라이빙 테이블을 스캔하고, 스캔한 드라이빙 테이블 레코드의 조인 컬럼으로 드리븐 테이블의 레코드에 대해 탐색 작업을 수행하게 됩니다.&lt;/p>
+&lt;p>인덱스를 활용할 수 있는 경우라고 하더라도 인덱스는 이미 정렬된 값을 가지기 때문에 빠른 속도를 보장하지만, 여러 레코드를 가져오는 상황에서는 인덱스의 특정 범위를 가져오는 인덱스 스캔 작업 보다, 인덱스 값을 하나씩 비교해서 반복적으로 가져오는 탐색 작업이 상대적으로 부하가 높습니다.&lt;/p>
+&lt;p>이러한 이유로 옵티마이저는 테이블의 인덱스 사용 가능 여부, 테이블 레코드 개수 등과 같은 통계 정보를 활용하여 더 빠르게 처리될 수 있는 테이블을 드리븐 테이블로 선택하는 방식으로 최적화를 수행합니다.&lt;/p>
+&lt;h2 id="이너-조인과-아우터-조인의-차이">이너 조인과 아우터 조인의 차이&lt;/h2>
+&lt;p>옵티마이저에서 이너 조인은 옵티마이저에 의해 드라이빙, 드리븐 테이블이 변경될 수 있는 반면 아우터 조인(&lt;code>LEFT JOIN&lt;/code>, &lt;code>RIGHT JOIN&lt;/code>)은 대상 테이블을 기준으로 조회될 레코드들이 결정되므로 테이블의 조인 순서를 변경할 수 없으므로(이미 결정된 순서이므로) 테이블 조인 순서에 의한 최적화는 발생하지 않게 됩니다.&lt;/p>
+&lt;p>즉, 이너 조인은 여러 상황을 고려하여 더 효율적인 테이블을 드리븐 테이블로 결정하지만, 아우터 조인은 대상 테이블을 기준으로 레코드를 선택하기 때문에 드라이빙 테이블이 결정되므로 테이블 조인 순서에 의한 최적화를 진행할 수 없습니다.&lt;/p>
+&lt;h2 id="쿼리-분석">쿼리 분석&lt;/h2>
+&lt;p>아우터 조인을 사용하는 쿼리에서 드리븐 테이블에 대한 조건을 &lt;code>WHERE&lt;/code> 절에 명시하면 &lt;code>INNER JOIN&lt;/code>으로 변경되어 처리된다고 하는데, &lt;code>EXPLAIN ANALYZE&lt;/code> 명령으로 예시 쿼리가 어떤식으로 처리되는지 살펴보겠습니다.&lt;/p>
+&lt;h3 id="left-join--where-조건">LEFT JOIN + WHERE 조건&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ANALYZE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">LEFT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_manager&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;d001&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">-&amp;gt; Nested loop inner join (cost=2.89 rows=2) (actual time=0.196..0.207 rows=2 loops=1)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> -&amp;gt; Filter: (mgr.emp_no is not null) (cost=0.7 rows=2) (actual time=0.0439..0.0504 rows=2 loops=1)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> -&amp;gt; Index lookup on mgr using PRIMARY (dept_no=&amp;#39;d001&amp;#39;) (cost=0.7 rows=2) (actual time=0.0425..0.0488 rows=2 loops=1)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> -&amp;gt; Single-row index lookup on e using PRIMARY (emp_no=mgr.emp_no) (cost=1.04 rows=1) (actual time=0.077..0.077 rows=1 loops=2)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>WHERE&lt;/code> 조건으로 처리한 쿼리가 &lt;code>Nested loop inner join&lt;/code>으로 실행되었습니다. &lt;code>dept_manager&lt;/code> 테이블을 드라이빙 테이블로 선택하였고, &lt;code>mgr.emp_no is not null&lt;/code> 조건을 통해 필터링한 후, `` &lt;code>dept_no='d001'&lt;/code> 조건을 통해 인덱스 탐색을 수행하였습니다.&lt;/p>
+&lt;p>그리고 &lt;code>employees&lt;/code> 테이블에 대해 조인 컬럼인 &lt;code>emp_no=mgr.emp_no&lt;/code> 이용해 인덱스 탐색을 수행하여 조인을 완료하였습니다.&lt;/p>
+&lt;p>&lt;code>dept_manager&lt;/code> 테이블에 대한 &lt;code>mgr.emp_no is not null&lt;/code> 필터 처리는 예방 차원에서 추가시키는 것이 아닌가 추측해봅니다.&lt;/p>
+&lt;p>(참고로 드리븐 테이블의 모든 컬럼의 조건에서 같은 처리가 발생합니다.)&lt;/p>
+&lt;h3 id="inner-join">INNER JOIN&lt;/h3>
+&lt;p>책에서는 쿼리를 &lt;code>INNER JOIN&lt;/code>으로 변경하여 실행한다고 언급했는데, 실제로 그럴까요? &lt;code>INNER JOIN&lt;/code>으로 변경하여 실행 계획을 확인해보겠습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ANALYZE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_manager&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">mgr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;d001&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">-&amp;gt; Nested loop inner join (cost=1.4 rows=2) (actual time=0.0411..0.0482 rows=2 loops=1)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> -&amp;gt; Index lookup on mgr using PRIMARY (dept_no=&amp;#39;d001&amp;#39;) (cost=0.7 rows=2) (actual time=0.025..0.0287 rows=2 loops=1)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> -&amp;gt; Single-row index lookup on e using PRIMARY (emp_no=mgr.emp_no) (cost=0.3 rows=1) (actual time=0.00877..0.00881 rows=1 loops=2)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>거의 같은 방식으로 처리되지만, &lt;code>INNER JOIN&lt;/code>으로 실행한 쿼리는 &lt;code>dept_manager&lt;/code> 테이블을 &lt;code>mgr.emp_no is not null&lt;/code> 조건으로 필터링하는 처리가 없다는 점이 다릅니다.&lt;/p>
+&lt;h2 id="그래서-이유는">그래서 이유는?&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/where-on/img.png"
+width="600"
+height="472"
+srcset="https://codemario318.github.io/post/where-on/img_hueb5b0420ddd46a8c4b832144c85adad4_141768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/where-on/img_hueb5b0420ddd46a8c4b832144c85adad4_141768_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="SQL Joins"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="305px"
+>&lt;/p>
+&lt;p>그림에서 보이듯 안티 조인이 아닌 아우터 조인(&lt;code>LEFT JOIN&lt;/code>,&lt;code>OUTER JOIN&lt;/code>)은 드라이빙 테이블의 조인 컬럼이 존재하는 데이터만 취하는 처리를 수행합니다. 따라서, 드라이빙 테이블의 조인되는 드리븐 테이블의 레코드가 존재하지 않을 경우 알 수 없다는 의미의 NULL을 채워 반환하게 됩니다.&lt;/p>
+&lt;p>아우터 조인의 &lt;code>WHERE&lt;/code> 절에서 드리븐 테이블의 컬럼을 조건으로 사용한다는 뜻은 사실, &lt;strong>&amp;ldquo;조인된 결과에서 특정 조건으로 필터링 처리를 한다&amp;rdquo;&lt;/strong> 라는 의미로 많이 해석되는 것 같습니다.&lt;/p>
+&lt;p>결과적으로 조인 결과의 드리븐 테이블 컬럼에 대해 &lt;code>IS NULL&lt;/code>을 제외한 모든 조건 처리는 아우터 조인으로 만들어지는 조인 결과물의 해당 컬럼 값이 NULL 아님을 의미하고, 이는 드라이빙 테이블과 드리븐 테이블의 교집합을 의미하는 &lt;code>INNER JOIN&lt;/code> 결과에 조건을 처리하는 것과 같은 결과를 만들게 됩니다.&lt;/p>
+&lt;p>아우터 조인으로 처리되어 드라이빙 테이블을 모두 읽고 교집합이 아닌 드리븐 테이블 영역에 대해서 NULL을 채워주는 처리 후 조건을 이용한 필터링으로 처리하는 것 보다 훨씬 더 효율적이므로, 이너 조인으로 처리되는 옵티마이저가 해당 부분을 &lt;code>INNER JOIN&lt;/code>으로 변경하는 것은 매우 합리적으로 보입니다.&lt;/p>
+&lt;p>반대로 해당 컬럼이 NULL임을 확인해야하는 안티 조인은 아우터 조인 처리가 필요하므로 이너 조인으로 변경이 발생하지 않습니다.&lt;/p>
+&lt;h2 id="정리">정리&lt;/h2>
+&lt;ol>
+&lt;li>아우터 조인의 목적은 드라이빙 테이블의 모든 컬럼을 조회하되, 드리븐 테이블 대상이 드라이빙 테이블에 없다면 NULL을 채우기 위함입니다.
+&lt;ul>
+&lt;li>예시 쿼리로 예를 들면, 직원들을 보는데 관리자 여부까지 확인하고 싶어(NULL이 아니면 관리자 의미)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>아우터 조인의 드리븐 테이블 영역 컬럼에 &lt;code>IS NULL&lt;/code>을 제외한 모든 &lt;code>WHERE&lt;/code> 조건은 사실 조건에 해당하는 컬럼이 NULL이 아님을 의미합니다.&lt;/li>
+&lt;li>이는 이너 조인으로 처리되어도 동일한 결과를 만들고, 또한 훨씬 더 효율적이므로 옵티마이저가 아우터 조인을 이너 조인으로 변경합니다.&lt;/li>
+&lt;li>아우터 조인이 이너 조인으로 변경되게 되면 관련 데이터 혹시 모를 오작동을 예방하기 위해 조인 컬럼이 없는 항목을 필터링 처리하여 성능에 손해가 있을 수 있으므로 결과를 만든 후 조건을 처리해야하는 쿼리는 모두 &lt;code>INNER JOIN&lt;/code>을 활용해야 합니다.(추측)&lt;/li>
+&lt;/ol></description></item><item><title>11.4 쿼리 작성 및 최적화 - SELECT</title><link>https://codemario318.github.io/post/real-mysql/11/4/</link><pubDate>Fri, 21 Jul 2023 11:13:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT" />&lt;p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.&lt;/p>
 &lt;p>하지만 &lt;code>SELECT&lt;/code>는 여러개의 테이블로 부터 데이터를 조합해서 빠르게 가져와야 하는 경우가 많아 여러개의 테이블을 어떻게 읽느냐에 따라 성능 이슈가 자주 발생하게 된다.&lt;/p>
 &lt;h2 id="select-절의-처리-순서">SELECT 절의 처리 순서&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
