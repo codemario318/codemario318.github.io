@@ -130,7 +130,7 @@ data-flex-basis="305px"
 &lt;/ul>
 &lt;/li>
 &lt;li>아우터 조인의 드리븐 테이블 영역 컬럼에 &lt;code>IS NULL&lt;/code>을 제외한 모든 &lt;code>WHERE&lt;/code> 조건은 사실 조건에 해당하는 컬럼이 NULL이 아님을 의미합니다.&lt;/li>
-&lt;li>이는 이너 조인으로 처리되어도 동일한 결과를 만들고, 또한 훨씬 더 효율적 처리할 여지가 있기 때문에 옵티마이저가 아우터 조인을 이너 조인으로 변경합니다.&lt;/li>
+&lt;li>이는 이너 조인으로 처리되어도 동일한 결과를 만들고, 더 효율적 처리할 여지가 있기 때문에 옵티마이저가 아우터 조인을 이너 조인으로 변경합니다.&lt;/li>
 &lt;li>아우터 조인이 이너 조인으로 변경되게 되면 오작동을 예방하기 위한 처리로 성능에 손해가 있을 수 있고(추측), 잘못된 쿼리 해석 예방을 위해 드리븐 테이블의 &lt;code>WHERHE&lt;/code> 조건을 사용하는 &lt;code>OUTER JOIN&lt;/code> 쿼리는 모두 &lt;code>INNER JOIN&lt;/code>로 사용해야 합니다.&lt;/li>
 &lt;/ol></description></item><item><title>11.4 쿼리 작성 및 최적화 - SELECT</title><link>https://codemario318.github.io/post/real-mysql/11/4/</link><pubDate>Fri, 21 Jul 2023 11:13:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT" />&lt;p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.&lt;/p>
 &lt;p>하지만 &lt;code>SELECT&lt;/code>는 여러개의 테이블로 부터 데이터를 조합해서 빠르게 가져와야 하는 경우가 많아 여러개의 테이블을 어떻게 읽느냐에 따라 성능 이슈가 자주 발생하게 된다.&lt;/p>
