@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 25 Jul 2023 11:52:14 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실</title><link>https://codemario318.github.io/post/where-on/</link><pubDate>Tue, 25 Jul 2023 11:52:14 +0900</pubDate><guid>https://codemario318.github.io/post/where-on/</guid><description>&lt;img src="https://codemario318.github.io/post/where-on/cover.png" alt="Featured image of post OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실" />&lt;p>스터디를 위해 Real MySQL 8.0를 주제로 학습을 진행중 &lt;strong>11.4.7.3 OUTER JOIN의 성능과 주의사항&lt;/strong> 부분에서 &lt;strong>&amp;quot;&lt;code>OUTER JOIN&lt;/code>을 사용할 때 드리븐 테이블에 &lt;code>WHERE&lt;/code> 조건 적용 시 &lt;code>INNER JOIN&lt;/code>으로 변경되어 실행되니 주의해야 한다.&amp;quot;&lt;/strong> 라는 내용과 예시가 있었는데, 해당 부분이 이해가 잘 안되었습니다.&lt;/p>
-&lt;p>관련 자료를 찾아보았으나, 실행 계획에서 &lt;code>OUTER JOIN&lt;/code>이 &lt;code>INNER JOIN&lt;/code>으로 변경되는 이유를 설명한 자료는 못 찾았고, 확인한 모든 글에서 &lt;strong>&lt;code>WHERE&lt;/code>, &lt;code>ON&lt;/code>절 조건을 처리하는 순서가 또는 범위가 다르다.&lt;/strong> 라는 정확하지 않은듯한 설명을 하고 있어 더 정확한 내용들을 알려드릴 수 있을까 싶어 제가 이해한 내용을 기록합니다.&lt;/p>
+&lt;p>관련 자료를 찾아보았으나, 실행 계획에서 &lt;code>OUTER JOIN&lt;/code>이 &lt;code>INNER JOIN&lt;/code>으로 변경되는 이유를 설명한 자료는 못 찾았고, 확인한 모든 글에서 &lt;strong>&lt;code>WHERE&lt;/code>, &lt;code>ON&lt;/code>절 조건을 처리하는 순서가 또는 범위가 다르다.&lt;/strong> 라는 간략한 설명만 하고 있어 더 정확한 내용들을 알려드릴 수 있을까 싶어 제가 이해한 내용을 기록합니다.&lt;/p>
 &lt;p>책의 예시 쿼리와 &lt;a class="link" href="https://github.com/wikibook/realmysql80/tree/main" target="_blank" rel="noopener"
 >Real MySQL 8.0 학습 자료&lt;/a>를 바탕으로 확인해보겠습니다.&lt;/p>
 &lt;h2 id="테이블-구조">테이블 구조&lt;/h2>
@@ -30,7 +30,7 @@ to_date date
 &lt;h2 id="조인-처리-과정">조인 처리 과정&lt;/h2>
 &lt;p>조인 작업은 드라이빙 테이블을 스캔하고, 스캔한 드라이빙 테이블 레코드의 조인 컬럼으로 드리븐 테이블의 레코드에 대해 탐색 작업을 수행하게 됩니다.&lt;/p>
 &lt;p>인덱스는 이미 정렬된 값을 가지기 때문에 빠른 속도를 보장하지만, 인덱스를 활용할 수 있는 경우라고 하더라도 여러 레코드를 가져오는 상황에서는 인덱스의 특정 범위를 가져오는 인덱스 스캔 작업 보다, 인덱스 값을 하나씩 비교해서 반복적으로 가져오는 탐색 작업이 상대적으로 부하가 높습니다.&lt;/p>
-&lt;p>이러한 이유로 옵티마이저는 테이블의 인덱스 사용 가능 여부나 테이블 레코드 개수 등과 같은 통계 정보를 활용하여 더 빠르게 처리될 수 있는 테이블을 드리븐 테이블로 선택하는 방식으로 최적화를 수행합니다.&lt;/p>
+&lt;p>이러한 이유로 옵티마이저는 테이블의 인덱스 사용 가능 여부나 테이블 레코드 개수 같은 통계 정보를 활용하여 더 빠르게 처리될 수 있는 테이블을 드리븐 테이블로 선택하는 방식으로 최적화를 수행합니다.&lt;/p>
 &lt;h2 id="이너-조인과-아우터-조인의-차이">이너 조인과 아우터 조인의 차이&lt;/h2>
 &lt;p>옵티마이저에서 이너 조인은 옵티마이저에 의해 드라이빙, 드리븐 테이블이 변경될 수 있는 반면 아우터 조인(&lt;code>LEFT JOIN&lt;/code>, &lt;code>RIGHT JOIN&lt;/code>)은 대상 테이블을 기준으로 조회될 레코드들이 결정되므로 테이블의 조인 순서를 변경할 수 없으므로(이미 결정된 순서이므로) 테이블 조인 순서에 의한 최적화는 발생하지 않게 됩니다.&lt;/p>
 &lt;p>즉, 이너 조인은 여러 상황을 고려하여 더 효율적인 테이블을 드리븐 테이블로 결정하지만, 아우터 조인은 대상 테이블을 기준으로 레코드를 선택하기 때문에 드라이빙 테이블이 결정되므로 테이블 조인 순서에 의한 최적화를 진행할 수 없습니다.&lt;/p>
@@ -119,7 +119,7 @@ data-flex-basis="305px"
 >&lt;/p>
 &lt;p>그림에서 보이듯 안티 조인이 아닌 아우터 조인(&lt;code>LEFT JOIN&lt;/code>,&lt;code>OUTER JOIN&lt;/code>)은 드라이빙 테이블의 조인 컬럼이 존재하는 데이터만 취하는 처리를 수행합니다. 따라서, 드라이빙 테이블의 조인되는 드리븐 테이블의 레코드가 존재하지 않을 경우 알 수 없다는 의미의 NULL을 채워 반환하게 됩니다.&lt;/p>
 &lt;p>아우터 조인의 &lt;code>WHERE&lt;/code> 절에서 드리븐 테이블의 컬럼을 조건으로 사용한다는 것을 &lt;strong>&amp;ldquo;아우터 조인된 결과에서 특정 조건으로 필터링 처리를 한다&amp;rdquo;&lt;/strong> 라는 의미로 많이 해석되는 것 같은데 이는 사실 완벽하게 일치하는 표현은 아닙니다.&lt;/p>
-&lt;p>결과적으로 조인 결과의 드리븐 테이블 컬럼에 대해 &lt;code>IS NULL&lt;/code>을 제외한 모든 조건 처리는 아우터 조인으로 만들어지는 조인 결과물의 해당 컬럼 값이 NULL 아님을 의미하고, 이는 드라이빙 테이블과 드리븐 테이블의 교집합을 의미하는 &lt;code>INNER JOIN&lt;/code> 결과에 조건을 처리하는 것과 같은 결과를 만들게 됩니다.&lt;/p>
+&lt;p>결과적으로 조인 결과의 드리븐 테이블 컬럼에 대해 &lt;code>IS NULL&lt;/code>을 제외한 모든 조건이 존재한다는 자체가 아우터 조인으로 만들어지는 조인 결과물의 해당 컬럼 값이 NULL 아님을 가정하고, 이는 드라이빙 테이블과 드리븐 테이블의 교집합을 의미하는 &lt;code>INNER JOIN&lt;/code> 결과에 조건을 처리하는 것과 같은 결과를 만들게 됩니다.&lt;/p>
 &lt;p>옵티마이저가 아우터 조인을 &lt;code>INNER JOIN&lt;/code>으로 변경하는 것은 아우터 조인으로 처리되어 드라이빙 테이블을 모두 읽고 교집합이 아닌 드리븐 테이블 영역에 대해서 NULL을 채워주는 처리 후 &lt;code>WHERE&lt;/code> 조건을 이용한 필터링으로 처리하는 방식 보다 효율적이고, 조인 테이블 순서 변경에 의한 최적화도 가능하므로 합리적으로 보입니다.&lt;/p>
 &lt;p>반대로 해당 컬럼이 NULL임을 확인해야하는 안티 조인은 아우터 조인 처리가 필요하므로 이너 조인으로 변경이 발생하지 않습니다.&lt;/p>
 &lt;h2 id="정리">정리&lt;/h2>
@@ -132,7 +132,7 @@ data-flex-basis="305px"
 &lt;li>아우터 조인의 드리븐 테이블 영역 컬럼에 &lt;code>IS NULL&lt;/code>을 제외한 모든 &lt;code>WHERE&lt;/code> 조건은 사실 조건에 해당하는 컬럼이 NULL이 아님을 의미합니다.&lt;/li>
 &lt;li>이는 이너 조인으로 처리되어도 동일한 결과를 만들고, 더 효율적 처리할 여지가 있기 때문에 옵티마이저가 아우터 조인을 이너 조인으로 변경합니다.&lt;/li>
 &lt;li>아우터 조인이 이너 조인으로 변경되게 되면 오작동을 예방하기 위한 처리로 성능에 손해가 있을 수 있고(추측), 잘못된 쿼리 해석 예방을 위해 드리븐 테이블의 &lt;code>WHERHE&lt;/code> 조건을 사용하는 &lt;code>OUTER JOIN&lt;/code> 쿼리는 모두 &lt;code>INNER JOIN&lt;/code>로 사용해야 합니다.&lt;/li>
-&lt;/ol></description></item><item><title>11.4 쿼리 작성 및 최적화 - SELECT</title><link>https://codemario318.github.io/post/real-mysql/11/4/</link><pubDate>Fri, 21 Jul 2023 11:13:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT" />&lt;p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.&lt;/p>
+&lt;/ol></description></item><item><title>11.4 쿼리 작성 및 최적화 - SELECT (1)</title><link>https://codemario318.github.io/post/real-mysql/11/4/</link><pubDate>Fri, 21 Jul 2023 11:13:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT (1)" />&lt;p>웹 서비스와 같은 일반적인 온라인 트랜잭션 처리 환경의 데이터 베이스에서는 &lt;code>INSERT&lt;/code>, &lt;code>UPDATE&lt;/code> 같은 작업은 레코드 단위로 발생하기 때문에 성능 이슈가 발생하는 경우는 매우 적다.&lt;/p>
 &lt;p>하지만 &lt;code>SELECT&lt;/code>는 여러개의 테이블로 부터 데이터를 조합해서 빠르게 가져와야 하는 경우가 많아 여러개의 테이블을 어떻게 읽느냐에 따라 성능 이슈가 자주 발생하게 된다.&lt;/p>
 &lt;h2 id="select-절의-처리-순서">SELECT 절의 처리 순서&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -999,7 +999,92 @@ G -->|N| RD
 &lt;hr>
 &lt;p>많은 사용자가 일반적으로 컬럼의 값을 &lt;code>SELECT&lt;/code> 하는 쿼리보다 &lt;code>COUNT(*)&lt;/code> 쿼리가 훨씬 빠르게 실행될 것으로 생각하지만, 인덱스를 제대로 사용하지 못한 &lt;code>COUNT&lt;/code>쿼리는 페이징해서 데이터를 가져오는 쿼리보다 매우 느리게 실행 될 수 있다.&lt;/p>
 &lt;hr>
-&lt;p>&lt;code>COUNT()&lt;/code> 함수에 컬럼명이나 표현식이 인자로 사용되면 그 컬럼이나 표현식의 결과가 NULL이 아닌 레코드 건수만 반환한다. 따라서 NULL이 될 수 있는 컬럼에 &lt;code>COUNT&lt;/code> 함수를 사용할 때는 위도대로 쿼리가 작동하는지 확인이 필요하다.&lt;/p></description></item><item><title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</title><link>https://codemario318.github.io/post/real-mysql/10/3/2/</link><pubDate>Wed, 12 Jul 2023 15:19:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/2/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" />&lt;p>컬럼 이름과 달리 쿼리의 실행 계획에서 성능에 관련된 중요한 내용이 Extra 컬럼에 지주 표시된다.&lt;/p>
+&lt;p>&lt;code>COUNT()&lt;/code> 함수에 컬럼명이나 표현식이 인자로 사용되면 그 컬럼이나 표현식의 결과가 NULL이 아닌 레코드 건수만 반환한다. 따라서 NULL이 될 수 있는 컬럼에 &lt;code>COUNT&lt;/code> 함수를 사용할 때는 위도대로 쿼리가 작동하는지 확인이 필요하다.&lt;/p>
+&lt;h2 id="join">JOIN&lt;/h2>
+&lt;h3 id="join의-순서와-인덱스">JOIN의 순서와 인덱스&lt;/h3>
+&lt;p>일반적으로 인덱스를 이용해서 쿼리하는 작업에서는 가져오는 레코드 건수가 소량이기 때문에 인덱스 스캔 작업은 부하가 작지만 특정 인덱스키를 찾는 인덱스 탐색 작업은 상대적으로 부하가 높은편이다.&lt;/p>
+&lt;p>조인 작업에서 드라이빙 테이블을 읽을 때는 인덱스 탐색 작업을 단 한 번만 수행하고, 그 이후부터는 스캔만 실행한다.&lt;/p>
+&lt;p>하지만 드리븐 테이블에서는 인덱스 탐색 작업과 스캔 작업을 드라이빙 테이블에서 읽은 레코드 건수만큼 반복하므로 드라이빙 테이블과 드리븐 테이블이 1:1로 조인되더라도 드리븐 테이블을 읽는 것이 훨씬 더 큰 부하를 차지한다.&lt;/p>
+&lt;p>이에 따라 드라이빙 테이블과 드리븐 테이블이 1:1로 조인되더라도 드리븐 테이블을 읽는 것이 훨씬 더 큰 부하를 차지하므로 옵티마이저는 항상 드라이빙 테이블이 아니라 드리븐 테이블을 최적으로 읽을 수 있게 실행 계획을 수립한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>두 컬럼 모두 인덱스가 있는 경우
+&lt;ul>
+&lt;li>어느 테이블을 드라이빙으로 선택하든 인덱스를 이용해 드리븐 테이블의 검색 작업을 빠르게 처리할 수 있다.&lt;/li>
+&lt;li>이러한 경우 옵티마이저가 통계 정보를 이용해 적절히 드라이빙 테이블을 선택하게 된다.
+&lt;ul>
+&lt;li>레코드 건수 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>이러한 경우 옵티마이저가 선택하는 방법이 최적인 경우가 많다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>e.emp_no&lt;/code>에만 인덱스가 있는 경우
+&lt;ul>
+&lt;li>&lt;code>dept_emp&lt;/code> 테이블이 드리븐 테이블로 선택되면 &lt;code>employees&lt;/code> 테이블의 레코드 건수만큼 &lt;code>dept_emp&lt;/code> 테이블을 풀 스캔 해야만 조건에 일치하는 레코드를 찾을 수 있다.&lt;/li>
+&lt;li>따라서 옵티마이저는 항상 &lt;code>dept_no&lt;/code> 테이블을 드라이빙 테이블로 선택한다.&lt;/li>
+&lt;li>&lt;code>e.emp_no=1001&lt;/code> 같이 &lt;code>employees&lt;/code> 테이블을 아주 효율적으로 접근할 수 있는 경우에도 같다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>de.emp_no&lt;/code>에만 인덱스가 있는 경우
+&lt;ul>
+&lt;li>&lt;code>employees&lt;/code> 테이블이 반복된 풀 스캔을 피하기 위해 드라이빙 테이블로 선택된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>두 컬럼 모두 인덱스가 없는 경우
+&lt;ul>
+&lt;li>어느 테이블을 드라이빙으로 선택하더라도 풀 스캔이 발생하므로 옵티마이저가 드라이빙 테이블을 적절히 선택한다.
+&lt;ul>
+&lt;li>레코드 건수가 적은 테이블을 드라이빙 테이블로 선택하는 것이 훨씬 효율적이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>조인 조건을 빠르게 처리할 적절한 인덱스가 없는 경우 MySQL 8.0.18 이전 버전은 블록 네스티드 루프 조인, 이후 버전은 해시 조인을 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="join-컬럼의-데이터-타입">JOIN 컬럼의 데이터 타입&lt;/h3>
+&lt;p>&lt;code>WHERE&lt;/code> 절에 사용되는 조건에서 표현식의 데이터 타입을 동일하게 사용해야 하는 것과 마찬가지로 조인 조건에서도 동일하게 조인 컬럼 간의 비교에서 각 컬럼의 데이터 타입이 일치하지 않으면 인덱스를 효율적으로 사용할 수 없다.&lt;/p>
+&lt;p>비교 조건에서 양쪽 항이 상수이든 테이블의 컬럼이든 관계없이 데이터 타입이 다르다면 대상 컬럼에 대한 타입 변환 후 비교를 수행하므로 인덱스를 활용할 수 없게된다.&lt;/p>
+&lt;p>따라서 옵티마이저는 드리븐 테이블이 인덱스 레인지 스캔을 사용하지 못하고, 드리븐 테이블의 풀 테이블 스캔이 필요하게 된다는것을 미리 알기 때문에 조인 버퍼를 이용하여 작업을 수행한다.&lt;/p>
+&lt;p>&lt;strong>예외 상황&lt;/strong>&lt;/p>
+&lt;p>인덱스 사용에 영향을 미치는 데이터 타입은 변환이 필요한 경우이며, 변환을 하지 않고도 비교할 수 있는 경우 인덱스를 활용할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>CHAR&lt;/code>, &lt;code>VARCHAR&lt;/code>&lt;/li>
+&lt;li>&lt;code>INT&lt;/code>, &lt;code>BIGINT&lt;/code>, &lt;code>SMALLINT&lt;/code>&lt;/li>
+&lt;li>&lt;code>DATE&lt;/code>, &lt;code>DATETIME&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>대표적으로 아래와 같은 패턴은 문제가 될 가능성이 높다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>CHAR&lt;/code>, &lt;code>INT&lt;/code> 비교 같이 데이터 타입의 종류가 완전히 다른 경우&lt;/li>
+&lt;li>같은 &lt;code>CHAR&lt;/code> 타입이라도 문자 집합이나 콜레이션이 다른 경우&lt;/li>
+&lt;li>같은 &lt;code>INT&lt;/code> 타입이더라도 부호의 존재 여부가 다른 경우&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>이러한 상황을 예방하기 위해 컬럼의 문자 집합, 콜레이션을 통일하는 등 데이터베이스 모델에 대한 표준화 규칙을 수립하고, 규칙을 기반으로 설계를 진행해야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="outer-join-성능과-주의사항">OUTER JOIN 성능과 주의사항&lt;/h3>
+&lt;p>&lt;code>INNER JOIN&lt;/code>은 조인 대상 테이블에 모두 존재하는 레코드만 결과 집합으로 반환한다. 이러한 특성 때문에 아우터 조인으로만 조인을 실행하는 쿼리들도 자주 보이는데 일부 문제가 발생할 수 있는 여지가 있다.&lt;/p>
+&lt;ul>
+&lt;li>MySQL 옵티마이저는 절대로 아우터로 조인되는 테이블을 드라이빙 테이블로 선택하지 못하기 때문에 성능이 떨어지는 실행 계획을 수립할 수 있다.
+&lt;ul>
+&lt;li>이너 조인으로 사용할 수 있는 쿼리를 아우터 조인으로 작성하면 옵티마이저가 조인 순서를 변경하며 수행할 수 있는 최적화 기회를 빼앗는 결과를 만들 수 있다.&lt;/li>
+&lt;li>필요한 데이터가 조인되는 테이블 간의 관계를 명확히 파악해서 꼭 필요한 경우가 아니라면 이너 조인을 사용해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</title><link>https://codemario318.github.io/post/real-mysql/10/3/2/</link><pubDate>Wed, 12 Jul 2023 15:19:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/10/3/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/10/3/2/real_mysql.jpeg" alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" />&lt;p>컬럼 이름과 달리 쿼리의 실행 계획에서 성능에 관련된 중요한 내용이 Extra 컬럼에 지주 표시된다.&lt;/p>
 &lt;ul>
 &lt;li>고정된 몇개의 문장이 표시되는데, 일반적으로 2~3개씩 함께 표시된다.&lt;/li>
 &lt;li>내부적인 처리 알고리즘에 대해 조금 더 깊이 있는 내용을 보여주는 경우가 많다.&lt;/li>
