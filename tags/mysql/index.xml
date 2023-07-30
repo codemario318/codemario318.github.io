@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 26 Jul 2023 12:08:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)</title><link>https://codemario318.github.io/post/real-mysql/11/4/2/</link><pubDate>Wed, 26 Jul 2023 12:08:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/2/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)" />&lt;p>쿼리를 작성할 때 서브쿼리를 사용하면 단위 처리별로 쿼리를 독립적으로 작성할 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 26 Jul 2023 12:08:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)</title><link>https://codemario318.github.io/post/real-mysql/11/4/3/</link><pubDate>Wed, 26 Jul 2023 12:08:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/3/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)" />&lt;p>쿼리를 작성할 때 서브쿼리를 사용하면 단위 처리별로 쿼리를 독립적으로 작성할 수 있다.&lt;/p>
 &lt;p>조인처럼 여러 테이블을 섞어 두는 형태가 아니어서 쿼리의 가독성도 높아지며, 복잡한 쿼리도 손쉽게 작성할 수 있다.&lt;/p>
 &lt;p>MySQL 5.6 버전까지는 서브쿼리를 최적으로 실행하지 못할 때가 많았지만 서브쿼리 처리가 많이 개선되었다.&lt;/p>
 &lt;p>서브쿼리는 쿼리의 여러 위치에 사용될 수 있으며 위치별로 최적화와 성능에 도움이 되는 방법이 조금씩 다르다.&lt;/p>
@@ -7,10 +7,10 @@
 &lt;li>&lt;code>FROM&lt;/code>&lt;/li>
 &lt;li>&lt;code>WHERE&lt;/code> 등&lt;/li>
 &lt;/ul>
-&lt;h3 id="select-절에-사용된-서브쿼리">SELECT 절에 사용된 서브쿼리&lt;/h3>
+&lt;h2 id="select-절에-사용된-서브쿼리">SELECT 절에 사용된 서브쿼리&lt;/h2>
 &lt;p>&lt;code>SELECT&lt;/code> 절에 사용된 서브쿼리는 내부적으로 임시 테이블을 만들거나 쿼리를 비효율적으로 실행하게 만들지는 않기 때문에 서브쿼리가 적절히 인덱스를 사용할 수 있다면 크게 주의할 사항은 없다.&lt;/p>
 &lt;p>일반적으로 &lt;code>SELECT&lt;/code> 절에 서브쿼리를 사용하면 그 서브쿼리는 항상 컬럼과 레코드가 하나인 겨로가를 반환해야 하지만, MySQL에서는 이 체크 조건이 조금 느슨하다.&lt;/p>
-&lt;p>&lt;strong>CASE 1: 서브쿼리의 결과가 0건인 경우&lt;/strong>&lt;/p>
+&lt;h3 id="case-1-서브쿼리의-결과가-0건인-경우">CASE 1: 서브쿼리의 결과가 0건인 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -60,7 +60,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>사용된 서브쿼리는 항상 결과가 0건이다. 하지만 에러를 발생시키지 않고 결과로 NULL을 채워 반환한다.&lt;/p>
-&lt;p>&lt;strong>CASE 2: 2건 이상 레코드를 반환하는 경우&lt;/strong>&lt;/p>
+&lt;h3 id="case-2-2건-이상-레코드를-반환하는-경우">CASE 2: 2건 이상 레코드를 반환하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -80,7 +80,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>에러가 발생하며 쿼리가 종료된다.&lt;/p>
-&lt;p>&lt;strong>CASE 3: 2개 이상 컬럼을 가져오려고 하는 경우&lt;/strong>&lt;/p>
+&lt;h3 id="case-3-2개-이상-컬럼을-가져오려고-하는-경우">CASE 3: 2개 이상 컬럼을 가져오려고 하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -105,7 +105,7 @@
 &lt;blockquote>
 &lt;p>&lt;code>SELECT&lt;/code> 절의 서브쿼리에는 로우(row) 서브쿼리를 사용할 수 없고, 오직 스칼라 서브쿼리만 사용할 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;p>&lt;strong>CASE 4: 조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용하는 경우&lt;/strong>&lt;/p>
+&lt;h3 id="case-4-조인으로-처리해도-되는-쿼리를-select-절의-서브쿼리를-사용하는-경우">CASE 4: 조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용하는 경우&lt;/h3>
 &lt;p>조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용해서 작성하는 경우가 종종 있는데, 서브쿼리로 실행될 때보다 조인으로 처리할 때 조금 더 빠르기 때문에 가능하다면 조인으로 쿼리를 작성하는 것이 좋다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -142,7 +142,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>처리해야 하는 레코드 건수가 많아지면 성능 차이가 커지므로 가능하면 조인으로 쿼리를 작성하는 방법을 권장한다.&lt;/p>
-&lt;p>&lt;strong>CASE 5: 동일한 서브쿼리를 여러번 사용하는 경우&lt;/strong>&lt;/p>
+&lt;h3 id="case-5-동일한-서브쿼리를-여러번-사용하는-경우">CASE 5: 동일한 서브쿼리를 여러번 사용하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -210,7 +210,7 @@
 &lt;li>서브쿼리를 사용한 경우는 테이블을 여러번 읽기 때문에 Handler_read_key 값이 증가할 수 있는 실행계획이다.&lt;/li>
 &lt;/ul>
 &lt;/blockquote>
-&lt;h3 id="from-절에-사용된-서브쿼리">FROM 절에 사용된 서브쿼리&lt;/h3>
+&lt;h2 id="from-절에-사용된-서브쿼리">FROM 절에 사용된 서브쿼리&lt;/h2>
 &lt;p>MySQL 5.7 전 MySQL 서비에서는 &lt;code>FROM&lt;/code> 절에 서브쿼리가 사용되면 항상 서브쿼리의 결과를 임시 테이블로 저장하고 필요할 때 다시 임시 테이블을 읽는 방식으로 처리되어 &lt;code>FROM&lt;/code> 절의 서브 외부 쿼리로 병합하는 형태로 튜닝을 했다.&lt;/p>
 &lt;p>이에 따라 업그레이드 되며 옵티마이저가 &lt;code>FROM&lt;/code> 절의 서브쿼리를 외부로 병합하는 최적화를 수행하도록 개선되었다.&lt;/p>
 &lt;p>MySQL 서버가 서브쿼리를 병합해서 재작성했다면 &lt;code>EXPLAIN&lt;/code> 명령을 실행한 후, &lt;code>SHOW WARNINGS&lt;/code> 명령을 실행하면 어떻게 병합했는지 확인할 수 있다.&lt;/p>
@@ -275,14 +275,14 @@
 &lt;/ul>
 &lt;p>외부 쿼리와 병합되는 &lt;code>FROM&lt;/code> 절의 서브쿼리가 &lt;code>ORDER BY&lt;/code> 절을 가진 경우 외부 쿼리가 &lt;code>GROUP BY&lt;/code>나 &lt;code>DISTINCT&lt;/code>같은 기능을 사용하지 않는다면 서브쿼리의 정렬 조건을 외부 쿼리로 같이 병합한다.&lt;/p>
 &lt;p>외부 쿼리에서 &lt;code>GROUP BY&lt;/code>, &lt;code>DISTINCT&lt;/code>와 같은 기능이 사용되고 있다면, 서브쿼리의 정렬 작업은 무의미하기 때문에 &lt;code>ORDER BY&lt;/code>는 무시된다.&lt;/p>
-&lt;h3 id="where-절에-사용된-서브쿼리">&lt;code>WHERE&lt;/code> 절에 사용된 서브쿼리&lt;/h3>
+&lt;h2 id="where-절에-사용된-서브쿼리">&lt;code>WHERE&lt;/code> 절에 사용된 서브쿼리&lt;/h2>
 &lt;p>&lt;code>WHERE&lt;/code> 절의 서브쿼리는 &lt;code>SELECT&lt;/code> 절이나 &lt;code>FROM&lt;/code> 절보다는 다양한 형태(연산자)로 사용될 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>동등 또는 크다 작다 비교 (&lt;code>= (subquery)&lt;/code>)&lt;/li>
 &lt;li>IN 비교(&lt;code>IN (subquery)&lt;/code>)&lt;/li>
 &lt;li>NOT IN 비교(&lt;code>NOT IN (subquery)&lt;/code>)&lt;/li>
 &lt;/ul>
-&lt;h4 id="동등-또는-크다-작다-비교">동등 또는 크다 작다 비교&lt;/h4>
+&lt;h3 id="동등-또는-크다-작다-비교">동등 또는 크다 작다 비교&lt;/h3>
 &lt;p>MySQL 5.5 이전 버전까지는 서브쿼리 외부의 조건으로 쿼리를 실행하고, 최종적으로 서브쿼리를 체크 조근으로 사용했으나, 이러한 방식은 풀 테이블 스캔이 필요한 경우가 많아 성능 저하가 심각했다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>MySQL 5.5 이하&lt;/strong>
@@ -412,7 +412,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">+----+-------------+----------+------------+------+-------------------+---------+---------+-------+--------+----------+-------------+&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h4 id="in-비교">IN 비교&lt;/h4>
+&lt;/div>&lt;h3 id="in-비교">IN 비교&lt;/h3>
 &lt;p>&lt;code>WHERE&lt;/code> 절에 사용된 &lt;code>IN (subquery)&lt;/code> 형태의 조건을 조인의 한 방식인 세미 조인으로 간주하여 처리한다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>세미 조인(Semi-Join)&lt;/strong>
@@ -454,7 +454,7 @@
 &lt;p>MySQL 8.0을 사용한다면 세미 조인 최적화에 익숙해져야 한다.&lt;br>
 예전처럼 불필요하게 쿼리를 여러 조각으로 분리해서 실행하는 습관을 버리고 MySQL 8.0의 기능을 적극 활용해 개발 생산성을 높힐 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;h4 id="not-in-비교">NOT IN 비교&lt;/h4>
+&lt;h3 id="not-in-비교">NOT IN 비교&lt;/h3>
 &lt;p>&lt;code>IN (subquery)&lt;/code> 와 비슷하지만 이 경우를 안티 세미 조인(Anti Semi-Join)이라고 명명한다.&lt;/p>
 &lt;p>일반적인 RDBMS에서 Not-Equal 비교(&lt;code>&amp;lt;&amp;gt;&lt;/code>)는 인덱스를 제대로 활용할 수 없듯이 안티 세미 조인 또한 최적화할 수 있는 방법이 많지 않다.&lt;/p>
 &lt;p>안티 세미 조인 쿼리가 사용되면 2가지 방식으로 최적화를 수행한다.&lt;/p>
@@ -464,7 +464,7 @@
 &lt;/ul>
 &lt;p>두 가지 최적화 모두 그다지 성능 향상에 도움이 되지 않는 방법이므로 쿼리가 최대한 다른 조건을 활용해서 데이터 검색 범위를 좁힐 수 있게 하는 것이 좋다.&lt;/p>
 &lt;p>&lt;code>WHERE&lt;/code> 절에 안티 세미 조인 조건만 단독으로 있다면 풀 테이블 스캔을 피할 수 없으므로 주의해야한다.&lt;/p>
-&lt;h3 id="ctecommon-table-expression">CTE(Common Table Expression)&lt;/h3>
+&lt;h2 id="ctecommon-table-expression">CTE(Common Table Expression)&lt;/h2>
 &lt;p>CTE(Common Table Expression)는 이름을 가지는 임시 테이블로서, SQL 문장 내에서 한 번 이상 사용될 수 있으며 SQL 문장이 종료되면 자동으로 CTE 임시 테이블은 삭제된다.&lt;/p>
 &lt;p>CTE는 재귀적 반복 실행 여부를 기준으로 Non-recursive, Recursive CTE로 구분된다.&lt;/p>
 &lt;p>MySQL 서버의 CTE는 재귀 여부에 관계없이 다음과 다양한 SQL 문장에서 사용할 수 있다.&lt;/p>
@@ -493,7 +493,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h4 id="비-재귀적-ctenon-recursive-cte">비 재귀적 CTE(Non-Recursive CTE)&lt;/h4>
+&lt;h3 id="비-재귀적-ctenon-recursive-cte">비 재귀적 CTE(Non-Recursive CTE)&lt;/h3>
 &lt;p>MySQL 서버에서는 ANSI 표준을 그대로 이용해서 &lt;code>WITH&lt;/code> 절을 이용해 CTE를 정의한다.&lt;/p>
 &lt;p>&lt;strong>기본 사용&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -632,7 +632,7 @@
 &lt;li>CTE로 선언된 임시 테이블을 다른 CTE 쿼리에서 참조할 수 있다.&lt;/li>
 &lt;li>CTE는 임시 테이블의 생성 부분과 사용 부분의 코드를 분리할 수 있으므로 가독성이 높다.&lt;/li>
 &lt;/ul>
-&lt;h4 id="재귀적-cterecursive-cte">재귀적 CTE(Recursive CTE)&lt;/h4>
+&lt;h3 id="재귀적-cterecursive-cte">재귀적 CTE(Recursive CTE)&lt;/h3>
 &lt;p>MySQL 8.0 부터 CTE를 이용한 재귀 쿼리가 가능해졌다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
