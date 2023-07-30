@@ -10,7 +10,7 @@
 &lt;h2 id="select-절에-사용된-서브쿼리">SELECT 절에 사용된 서브쿼리&lt;/h2>
 &lt;p>&lt;code>SELECT&lt;/code> 절에 사용된 서브쿼리는 내부적으로 임시 테이블을 만들거나 쿼리를 비효율적으로 실행하게 만들지는 않기 때문에 서브쿼리가 적절히 인덱스를 사용할 수 있다면 크게 주의할 사항은 없다.&lt;/p>
 &lt;p>일반적으로 &lt;code>SELECT&lt;/code> 절에 서브쿼리를 사용하면 그 서브쿼리는 항상 컬럼과 레코드가 하나인 겨로가를 반환해야 하지만, MySQL에서는 이 체크 조건이 조금 느슨하다.&lt;/p>
-&lt;h3 id="case-1-서브쿼리의-결과가-0건인-경우">CASE 1: 서브쿼리의 결과가 0건인 경우&lt;/h3>
+&lt;h3 id="서브쿼리의-결과가-0건인-경우">서브쿼리의 결과가 0건인 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -60,7 +60,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>사용된 서브쿼리는 항상 결과가 0건이다. 하지만 에러를 발생시키지 않고 결과로 NULL을 채워 반환한다.&lt;/p>
-&lt;h3 id="case-2-2건-이상-레코드를-반환하는-경우">CASE 2: 2건 이상 레코드를 반환하는 경우&lt;/h3>
+&lt;h3 id="2건-이상-레코드를-반환하는-경우">2건 이상 레코드를 반환하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -80,7 +80,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>에러가 발생하며 쿼리가 종료된다.&lt;/p>
-&lt;h3 id="case-3-2개-이상-컬럼을-가져오려고-하는-경우">CASE 3: 2개 이상 컬럼을 가져오려고 하는 경우&lt;/h3>
+&lt;h3 id="2개-이상-컬럼을-가져오려고-하는-경우">2개 이상 컬럼을 가져오려고 하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -105,7 +105,7 @@
 &lt;blockquote>
 &lt;p>&lt;code>SELECT&lt;/code> 절의 서브쿼리에는 로우(row) 서브쿼리를 사용할 수 없고, 오직 스칼라 서브쿼리만 사용할 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;h3 id="case-4-조인으로-처리해도-되는-쿼리를-select-절의-서브쿼리를-사용하는-경우">CASE 4: 조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용하는 경우&lt;/h3>
+&lt;h3 id="조인으로-처리해도-되는-쿼리를-select-절의-서브쿼리를-사용하는-경우">조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용하는 경우&lt;/h3>
 &lt;p>조인으로 처리해도 되는 쿼리를 &lt;code>SELECT&lt;/code> 절의 서브쿼리를 사용해서 작성하는 경우가 종종 있는데, 서브쿼리로 실행될 때보다 조인으로 처리할 때 조금 더 빠르기 때문에 가능하다면 조인으로 쿼리를 작성하는 것이 좋다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -142,7 +142,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>처리해야 하는 레코드 건수가 많아지면 성능 차이가 커지므로 가능하면 조인으로 쿼리를 작성하는 방법을 권장한다.&lt;/p>
-&lt;h3 id="case-5-동일한-서브쿼리를-여러번-사용하는-경우">CASE 5: 동일한 서브쿼리를 여러번 사용하는 경우&lt;/h3>
+&lt;h3 id="동일한-서브쿼리를-여러번-사용하는-경우">동일한 서브쿼리를 여러번 사용하는 경우&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
