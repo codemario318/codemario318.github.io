@@ -1,0 +1,442 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Real MySQL 8.0"><title>11.4 쿼리 작성 및 최적화 - SELECT (2)</title><link rel=canonical href=https://codemario318.github.io/post/real-mysql/11/4/2/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="11.4 쿼리 작성 및 최적화 - SELECT (2)"><meta property="og:description" content="Real MySQL 8.0"><meta property="og:url" content="https://codemario318.github.io/post/real-mysql/11/4/2/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="MySQL"><meta property="article:published_time" content="2023-07-26T12:08:10+09:00"><meta property="article:modified_time" content="2023-07-26T12:08:10+09:00"><meta property="og:image" content="https://codemario318.github.io/post/real-mysql/11/4/2/real_mysql.jpeg"><meta name=twitter:title content="11.4 쿼리 작성 및 최적화 - SELECT (2)"><meta name=twitter:description content="Real MySQL 8.0"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/real-mysql/11/4/2/real_mysql.jpeg"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>BackEnd</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>27</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>29</span></a></li><li><a href=/categories/frontend/><span>FrontEnd</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>3</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><a href=#select-절에-사용된-서브쿼리>SELECT 절에 사용된 서브쿼리</a></li><li><a href=#from-절에-사용된-서브쿼리>FROM 절에 사용된 서브쿼리</a></li><li><a href=#where-절에-사용된-서브쿼리><code>WHERE</code> 절에 사용된 서브쿼리</a><ol><li><a href=#동등-또는-크다-작다-비교>동등 또는 크다 작다 비교</a></li><li><a href=#in-비교>IN 비교</a></li><li><a href=#not-in-비교>NOT IN 비교</a></li></ol></li><li><a href=#ctecommon-table-expression>CTE(Common Table Expression)</a><ol><li><a href=#비-재귀적-ctenon-recursive-cte>비 재귀적 CTE(Non-Recursive CTE)</a></li><li><a href=#재귀적-cterecursive-cte>재귀적 CTE(Recursive CTE)</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/real-mysql/11/4/2/><img src=/post/real-mysql/11/4/2/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg srcset="/post/real-mysql/11/4/2/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg 800w, /post/real-mysql/11/4/2/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_1600x0_resize_q75_box.jpeg 1600w" width=800 height=994 loading=lazy alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)"></a></div><div class=article-details><header class=article-category><a href=/categories/db/ style=background-color:#2a9d8f;color:#fff>DB</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/real-mysql/11/4/2/>11.4 쿼리 작성 및 최적화 - SELECT (2)</a></h2><h3 class=article-subtitle>Real MySQL 8.0</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/07/26</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>4 minute read</time></div></footer></div></header><section class=article-content><p>쿼리를 작성할 때 서브쿼리를 사용하면 단위 처리별로 쿼리를 독립적으로 작성할 수 있다.</p><p>조인처럼 여러 테이블을 섞어 두는 형태가 아니어서 쿼리의 가독성도 높아지며, 복잡한 쿼리도 손쉽게 작성할 수 있다.</p><p>MySQL 5.6 버전까지는 서브쿼리를 최적으로 실행하지 못할 때가 많았지만 서브쿼리 처리가 많이 개선되었다.</p><p>서브쿼리는 쿼리의 여러 위치에 사용될 수 있으며 위치별로 최적화와 성능에 도움이 되는 방법이 조금씩 다르다.</p><ul><li><code>SELECT</code></li><li><code>FROM</code></li><li><code>WHERE</code> 등</li></ul><h3 id=select-절에-사용된-서브쿼리>SELECT 절에 사용된 서브쿼리</h3><p><code>SELECT</code> 절에 사용된 서브쿼리는 내부적으로 임시 테이블을 만들거나 쿼리를 비효율적으로 실행하게 만들지는 않기 때문에 서브쿼리가 적절히 인덱스를 사용할 수 있다면 크게 주의할 사항은 없다.</p><p>일반적으로 <code>SELECT</code> 절에 서브쿼리를 사용하면 그 서브쿼리는 항상 컬럼과 레코드가 하나인 겨로가를 반환해야 하지만, MySQL에서는 이 체크 조건이 조금 느슨하다.</p><p><strong>CASE 1: 서브쿼리의 결과가 0건인 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>dept_name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>departments</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>dept_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Sales1&#39;</span><span class=p>)</span><span class=w> </span><span class=n>subquery</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+--------+----------+
+</span></span></span><span class=line><span class=cl><span class=cm>| emp_no | subquery |
+</span></span></span><span class=line><span class=cl><span class=cm>+--------+----------+
+</span></span></span><span class=line><span class=cl><span class=cm>| 110022 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110085 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110183 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110303 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110511 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110725 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 111035 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 111400 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 111692 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>| 110114 | NULL     |
+</span></span></span><span class=line><span class=cl><span class=cm>+--------+----------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>사용된 서브쿼리는 항상 결과가 0건이다. 하지만 에러를 발생시키지 않고 결과로 NULL을 채워 반환한다.</p><p><strong>CASE 2: 2건 이상 레코드를 반환하는 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>dept_name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>departments</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ERROR 1242 (21000): Subquery returns more than 1 row
+</span></span></span></code></pre></td></tr></table></div></div><p>에러가 발생하며 쿼리가 종료된다.</p><p><strong>CASE 3: 2개 이상 컬럼을 가져오려고 하는 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,(</span><span class=k>SELECT</span><span class=w> </span><span class=n>dept_no</span><span class=p>,</span><span class=w> </span><span class=n>dept_name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>departments</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>dept_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Sales1&#39;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1># ERROR 1241 (21000): Operand should contain 1 column(s)
+</span></span></span></code></pre></td></tr></table></div></div><p>2건 이상 결과를 반환하는 서브쿼리처럼 에러가 발생한다.</p><blockquote><p><code>SELECT</code> 절의 서브쿼리에는 로우(row) 서브쿼리를 사용할 수 없고, 오직 스칼라 서브쿼리만 사용할 수 있다.</p></blockquote><p><strong>CASE 4: 조인으로 처리해도 되는 쿼리를 <code>SELECT</code> 절의 서브쿼리를 사용하는 경우</strong></p><p>조인으로 처리해도 되는 쿼리를 <code>SELECT</code> 절의 서브쿼리를 사용해서 작성하는 경우가 종종 있는데, 서브쿼리로 실행될 때보다 조인으로 처리할 때 조금 더 빠르기 때문에 가능하다면 조인으로 쿼리를 작성하는 것이 좋다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nf>COUNT</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nf>CONCAT</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>e1</span><span class=p>.</span><span class=n>first_name</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>e2</span><span class=p>.</span><span class=n>first_name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e2</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>e2</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=n>e1</span><span class=p>.</span><span class=n>emp_no</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e1</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=nf>COUNT</span><span class=p>(</span><span class=nf>CONCAT</span><span class=p>(</span><span class=n>e1</span><span class=p>.</span><span class=n>first_name</span><span class=p>,</span><span class=w> </span><span class=n>e2</span><span class=p>.</span><span class=n>first_name</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>employees</span><span class=w> </span><span class=n>e2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>e1</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e2</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>   
+</span></span></span></code></pre></td></tr></table></div></div><p>처리해야 하는 레코드 건수가 많아지면 성능 차이가 커지므로 가능하면 조인으로 쿼리를 작성하는 방법을 권장한다.</p><p><strong>CASE 5: 동일한 서브쿼리를 여러번 사용하는 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>e</span><span class=p>.</span><span class=n>first_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,(</span><span class=k>SELECT</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>salary</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=k>DESC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=n>salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,(</span><span class=k>SELECT</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=k>DESC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=n>salary_from_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,(</span><span class=k>SELECT</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>to_date</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=k>DESC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=n>salary_to_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=mi>499999</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>위 예시의 경우 <code>LIMIT 1</code> 조건으로 인해 <code>salaries</code> 터이블을 조인으로 사용할 수 없는데, MySQL 8.0 버전부터 도입된 래터럴 조인을 이용하면 동일한 결과를 만들 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>e</span><span class=p>.</span><span class=n>first_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>s2</span><span class=p>.</span><span class=n>salary</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>s2</span><span class=p>.</span><span class=n>from_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>,</span><span class=n>s2</span><span class=p>.</span><span class=n>to_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=nf>LATERAL</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=n>s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>WHERE</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=k>DESC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>)</span><span class=w> </span><span class=n>s2</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>s2</span><span class=p>.</span><span class=n>emp_no</span><span class=o>=</span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>499999</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>3번 반복되던 서브쿼리를 래터럴 조인으로 변경하여 한법만 읽어 쿼리를 처리할 수 있다.</p><blockquote><p>래터럴 조인을 사용한 경우 인덱스를 이용해 충분히 정렬된 결과를 가져올 수 있음에도 저열ㄹ을 수행하는 버그가 있다.</p><ul><li>래터럴 조인은 내부적으로 임시 테이블을 생성하기 때문에 Handler_write 값과 Handler_read_key 값이 증가할 수 있다.</li><li>서브쿼리를 사용한 경우는 테이블을 여러번 읽기 때문에 Handler_read_key 값이 증가할 수 있는 실행계획이다.</li></ul></blockquote><h3 id=from-절에-사용된-서브쿼리>FROM 절에 사용된 서브쿼리</h3><p>MySQL 5.7 전 MySQL 서비에서는 <code>FROM</code> 절에 서브쿼리가 사용되면 항상 서브쿼리의 결과를 임시 테이블로 저장하고 필요할 때 다시 임시 테이블을 읽는 방식으로 처리되어 <code>FROM</code> 절의 서브 외부 쿼리로 병합하는 형태로 튜닝을 했다.</p><p>이에 따라 업그레이드 되며 옵티마이저가 <code>FROM</code> 절의 서브쿼리를 외부로 병합하는 최적화를 수행하도록 개선되었다.</p><p>MySQL 서버가 서브쿼리를 병합해서 재작성했다면 <code>EXPLAIN</code> 명령을 실행한 후, <code>SHOW WARNINGS</code> 명령을 실행하면 어떻게 병합했는지 확인할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>EXPLAIN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=p>)</span><span class=w> </span><span class=n>y</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-----------+------------+------+---------------+------+---------+------+--------+----------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>| id | select_type | table     | partitions | type | possible_keys | key  | key_len | ref  | rows   | filtered | Extra |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-----------+------------+------+---------------+------+---------+------+--------+----------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | SIMPLE      | employees | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 300269 |   100.00 | NULL  |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-----------+------------+------+---------------+------+---------+------+--------+----------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SHOW</span><span class=w> </span><span class=n>WARNINGS</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+-------+------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| Level | Code | Message                                                                                                                                                                                                                                                                                                                                                      |
+</span></span></span><span class=line><span class=cl><span class=cm>+-------+------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| Note  | 1003 | /* select#1 */ select `employees`.`employees`.`emp_no` AS `emp_no`,`employees`.`employees`.`birth_date` AS `birth_date`,`employees`.`employees`.`first_name` AS `first_name`,`employees`.`employees`.`last_name` AS `last_name`,`employees`.`employees`.`gender` AS `gender`,`employees`.`employees`.`hire_date` AS `hire_date` from `employees`.`employees` |
+</span></span></span><span class=line><span class=cl><span class=cm>+-------+------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>서브쿼리에서 발생하는 외부 쿼리 병합은 꼭 <code>FROM</code> 절에서만 적용되는 최적화는 아니고, <code>FROM</code> 사용된 뷰의 경우에도 MySQL 옵티마이저는 뷰 쿼리와 외부 쿼리를 병합해서 최적화된 실행 계획을 사용한다.</p><p><code>FROM</code> 절의 모든 서브쿼리를 외부 쿼리로 병합할 수 있는 것은 아니며, 대표적으로 다음과 같은 기느이 서브쿼리가 사용되면 <code>FROM</code> 절의 서브쿼리는 외부 쿼리로 병합되지 못한다.</p><ul><li>집합 함수 사용(<code>SUM</code>, <code>MIN</code>, <code>MAX</code>, <code>COUNT</code> 등)</li><li><code>DISTINCT</code></li><li><code>GROUP BY</code>, <code>HAVING</code></li><li><code>LIMIT</code></li><li><code>UNION(UNION DISTINCT)</code>, <code>UNION ALL</code></li><li><code>SELECT</code> 절에 서브쿼리가 사용된 경우</li><li>사용자 변수 사용(사용자 변수에 값이 할당되는 경우)</li></ul><p>외부 쿼리와 병합되는 <code>FROM</code> 절의 서브쿼리가 <code>ORDER BY</code> 절을 가진 경우 외부 쿼리가 <code>GROUP BY</code>나 <code>DISTINCT</code>같은 기능을 사용하지 않는다면 서브쿼리의 정렬 조건을 외부 쿼리로 같이 병합한다.</p><p>외부 쿼리에서 <code>GROUP BY</code>, <code>DISTINCT</code>와 같은 기능이 사용되고 있다면, 서브쿼리의 정렬 작업은 무의미하기 때문에 <code>ORDER BY</code>는 무시된다.</p><h3 id=where-절에-사용된-서브쿼리><code>WHERE</code> 절에 사용된 서브쿼리</h3><p><code>WHERE</code> 절의 서브쿼리는 <code>SELECT</code> 절이나 <code>FROM</code> 절보다는 다양한 형태(연산자)로 사용될 수 있다.</p><ul><li>동등 또는 크다 작다 비교 (<code>= (subquery)</code>)</li><li>IN 비교(<code>IN (subquery)</code>)</li><li>NOT IN 비교(<code>NOT IN (subquery)</code>)</li></ul><h4 id=동등-또는-크다-작다-비교>동등 또는 크다 작다 비교</h4><p>MySQL 5.5 이전 버전까지는 서브쿼리 외부의 조건으로 쿼리를 실행하고, 최종적으로 서브쿼리를 체크 조근으로 사용했으나, 이러한 방식은 풀 테이블 스캔이 필요한 경우가 많아 성능 저하가 심각했다.</p><ul><li><strong>MySQL 5.5 이하</strong><ul><li><code>dept_emp</code> 테이블을 풀 스캔하면서 서브쿼리 조건에 일치하는지 여부를 체크함</li></ul></li><li><strong>MySQL 5.5 이상</strong><ul><li>서브쿼리를 먼저 실행하여 상수로 변환 후 상수값으로 서브쿼리를 대체해여 나머지 쿼리 실행</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>EXPLAIN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w> </span><span class=n>de</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>de</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>SELECT</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>WHERE</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>first_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Georgi&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>AND</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>last_name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Facello&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>TABLE
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-------+------------+------+-------------------+-------------------+---------+-------+------+----------+-------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| id | select_type | table | partitions | type | possible_keys     | key               | key_len | ref   | rows | filtered | Extra       |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-------+------------+------+-------------------+-------------------+---------+-------+------+----------+-------------+
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | de    | NULL       | ref  | ix_empno_fromdate | ix_empno_fromdate | 4       | const |    1 |   100.00 | Using where |
+</span></span></span><span class=line><span class=cl><span class=cm>|  2 | SUBQUERY    | e     | NULL       | ref  | ix_firstname      | ix_firstname      | 58      | const |  253 |    10.00 | Using where |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+-------+------------+------+-------------------+-------------------+---------+-------+------+----------+-------------+
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>TREE
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| EXPLAIN                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| -&gt; Filter: (de.emp_no = (select #2))  (cost=0.35 rows=1)
+</span></span></span><span class=line><span class=cl><span class=cm>    -&gt; Index lookup on de using ix_empno_fromdate (emp_no=(select #2))  (cost=0.35 rows=1)
+</span></span></span><span class=line><span class=cl><span class=cm>    -&gt; Select #2 (subquery in condition; run only once)
+</span></span></span><span class=line><span class=cl><span class=cm>        -&gt; Limit: 1 row(s)  (cost=65.8 rows=1)
+</span></span></span><span class=line><span class=cl><span class=cm>            -&gt; Filter: (e.last_name = &#39;Facello&#39;)  (cost=65.8 rows=25.3)
+</span></span></span><span class=line><span class=cl><span class=cm>                -&gt; Index lookup on e using ix_firstname (first_name=&#39;Georgi&#39;)  (cost=65.8 rows=253)
+</span></span></span><span class=line><span class=cl><span class=cm> |
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>실행 계획을 살펴보면 <code>dept_emp</code> 테이블을 풀 스캔하지 않고 <code>(emp_no, from_date)</code> 조합의 인덱스를 사용했다.</p><p>TREE 형식으로 출력한 실행 계획의 마지막 라인에서 <code>Index lookup on e using ix_firstname (first_name='Georgi')</code>를 통해 <code>employees</code> 테이블의 <code>ix_firstname</code> 인덱스로 서브쿼리를 처리한 후, 그 결과를 이용해 <code>dept_emp</code> 테이블의 <code>ix_empno_fromdate</code> 인덱스를 검색해 쿼리가 완료되었음을 알 수 있다.</p><p>동등 비교 뿐만 아니라 대소비교가 사용되어도 동일한 실행 계획을 사용한다.</p><p>단일 값 비교가 아닌 튜플 비교 방식이 사용되면 서브쿼리가 먼저 처리되어 상수화 되긴 하지만, 외부 쿼리는 인덱스를 사용하지 못하고 풀 테이블 스캔을 실행하는 것을 확인할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>EXPLAIN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w> </span><span class=n>de</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=p>(</span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=n>from_date</span><span class=p>)</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=n>from_date</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>WHERE</span><span class=w> </span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>100001</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>+----+-------------+----------+------------+------+-------------------+---------+---------+-------+--------+----------+-------------+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>|</span><span class=w> </span><span class=n>id</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>select_type</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=k>table</span><span class=w>    </span><span class=o>|</span><span class=w> </span><span class=n>partitions</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>type</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>possible_keys</span><span class=w>     </span><span class=o>|</span><span class=w> </span><span class=k>key</span><span class=w>     </span><span class=o>|</span><span class=w> </span><span class=n>key_len</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>ref</span><span class=w>   </span><span class=o>|</span><span class=w> </span><span class=n>rows</span><span class=w>   </span><span class=o>|</span><span class=w> </span><span class=n>filtered</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>Extra</span><span class=w>       </span><span class=o>|</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>+----+-------------+----------+------------+------+-------------------+---------+---------+-------+--------+----------+-------------+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>|</span><span class=w>  </span><span class=mi>1</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=k>PRIMARY</span><span class=w>     </span><span class=o>|</span><span class=w> </span><span class=n>de</span><span class=w>       </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>       </span><span class=o>|</span><span class=w> </span><span class=k>ALL</span><span class=w>  </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>              </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>    </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>    </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>  </span><span class=o>|</span><span class=w> </span><span class=mi>331143</span><span class=w> </span><span class=o>|</span><span class=w>   </span><span class=mi>100</span><span class=p>.</span><span class=mi>00</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=k>Using</span><span class=w> </span><span class=k>where</span><span class=w> </span><span class=o>|</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>|</span><span class=w>  </span><span class=mi>2</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>SUBQUERY</span><span class=w>    </span><span class=o>|</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=no>NULL</span><span class=w>       </span><span class=o>|</span><span class=w> </span><span class=n>ref</span><span class=w>  </span><span class=o>|</span><span class=w> </span><span class=k>PRIMARY</span><span class=p>,</span><span class=n>ix_salary</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=mi>4</span><span class=w>       </span><span class=o>|</span><span class=w> </span><span class=n>const</span><span class=w> </span><span class=o>|</span><span class=w>      </span><span class=mi>4</span><span class=w> </span><span class=o>|</span><span class=w>   </span><span class=mi>100</span><span class=p>.</span><span class=mi>00</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=k>Using</span><span class=w> </span><span class=k>index</span><span class=w> </span><span class=o>|</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>+----+-------------+----------+------------+------+-------------------+---------+---------+-------+--------+----------+-------------+</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=in-비교>IN 비교</h4><p><code>WHERE</code> 절에 사용된 <code>IN (subquery)</code> 형태의 조건을 조인의 한 방식인 세미 조인으로 간주하여 처리한다.</p><ul><li><strong>세미 조인(Semi-Join)</strong><ul><li>실제 조인은 아니지만 테이블의 레코드가 다른 테이블의 레코드를 이용한 표현식(또는 컬럼 그 자체)와 일치하는지를 체크하는 형태</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>SELECT</span><span class=w> </span><span class=n>de</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=w> </span><span class=n>de</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>WHERE</span><span class=w> </span><span class=n>de</span><span class=p>.</span><span class=n>from_date</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;1995-01-01&#39;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li></ul><p>MySQL 5.5 버전까지는 세미 조인 최적화가 부족하여 대부분 풀 테이블 스캔이 발생하였으므로 사용하면 안되는 패턴으로 알려졌었으나, 현재는 세미 조인의 최적화가 많이 개선되면서 <code>IN (subquery)</code> 형태를 2개의 쿼리로 쪼개어 실행하거나 다른 우회 방법을 찾을 필요가 없어졌다.</p><p>MySQL 서버의 세미 조인 최적화는 쿼리 특성이나 조인 관계에 맞게 5개 전략을 사용한다.</p><ul><li>테이블 풀-아웃(Table Pull-out)</li><li>퍼스트 매치(Firstmatch)</li><li>루스 스캔(Loosescan)</li><li>구체화(Materialization)</li><li>중복 제거(Duplicated Weed-out)</li></ul><blockquote><p>MySQL 8.0을 사용한다면 세미 조인 최적화에 익숙해져야 한다.<br>예전처럼 불필요하게 쿼리를 여러 조각으로 분리해서 실행하는 습관을 버리고 MySQL 8.0의 기능을 적극 활용해 개발 생산성을 높힐 수 있다.</p></blockquote><h4 id=not-in-비교>NOT IN 비교</h4><p><code>IN (subquery)</code> 와 비슷하지만 이 경우를 안티 세미 조인(Anti Semi-Join)이라고 명명한다.</p><p>일반적인 RDBMS에서 Not-Equal 비교(<code>&lt;></code>)는 인덱스를 제대로 활용할 수 없듯이 안티 세미 조인 또한 최적화할 수 있는 방법이 많지 않다.</p><p>안티 세미 조인 쿼리가 사용되면 2가지 방식으로 최적화를 수행한다.</p><ul><li><code>NOT EXISTS</code></li><li>구체화(Materialization)</li></ul><p>두 가지 최적화 모두 그다지 성능 향상에 도움이 되지 않는 방법이므로 쿼리가 최대한 다른 조건을 활용해서 데이터 검색 범위를 좁힐 수 있게 하는 것이 좋다.</p><p><code>WHERE</code> 절에 안티 세미 조인 조건만 단독으로 있다면 풀 테이블 스캔을 피할 수 없으므로 주의해야한다.</p><h3 id=ctecommon-table-expression>CTE(Common Table Expression)</h3><p>CTE(Common Table Expression)는 이름을 가지는 임시 테이블로서, SQL 문장 내에서 한 번 이상 사용될 수 있으며 SQL 문장이 종료되면 자동으로 CTE 임시 테이블은 삭제된다.</p><p>CTE는 재귀적 반복 실행 여부를 기준으로 Non-recursive, Recursive CTE로 구분된다.</p><p>MySQL 서버의 CTE는 재귀 여부에 관계없이 다음과 다양한 SQL 문장에서 사용할 수 있다.</p><ul><li><code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code> 문장의 제일 앞쪽<ul><li><code>WITH cte1 AS (SELECT ...) SELECT ...</code></li><li><code>WITH cte1 AS (SELECT ...) UPDATE ...</code></li><li><code>WITH cte1 AS (SELECT ...) DELETE ...</code></li></ul></li><li>서브쿼리의 제일 앞쪽<ul><li><code>SELECT ... FROM ... WHERE id IN (WITH cte1 AS (SELECT ...) SELECT ...) ...</code></li><li><code>SELECT ... FROM (WITH cte1 AS (SELECT ...) SELECT ...) ...</code></li></ul></li><li>SELECT 절의 바로 앞쪽<ul><li><code>INSERT ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li><li><code>REPLACE ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li><li><code>CREATE TABLE ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li><li><code>CREATE VIEW ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li><li><code>DECLARE CURSOR ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li><li><code>EXPLAIN ... WITH cte 1 AS (SELECT ...) SELECT ...</code></li></ul></li></ul><h4 id=비-재귀적-ctenon-recursive-cte>비 재귀적 CTE(Non-Recursive CTE)</h4><p>MySQL 서버에서는 ANSI 표준을 그대로 이용해서 <code>WITH</code> 절을 이용해 CTE를 정의한다.</p><p><strong>기본 사용</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>WITH</span><span class=w> </span><span class=n>cte1</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>departments</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>cte1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li>CTE는 <code>WITH</code> 절로 정의한다.</li><li>CTE 쿼리로 생성되는 임시 테이블의 이름은 <code>WITH</code> 바로 뒤에 정의한다.</li><li>예시 쿼리의 cte1 임시 테이블은 한 번만 사용되기 때문에 <code>FROM</code> 절의 서브쿼리로 바꿔 사용할 수 있다.<ul><li>실행 계획까지 동일하게 사용한다.</li></ul></li></ul><p><strong>여러개의 임시 테이블을 하나의 쿼리에서 사용</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>WITH</span><span class=w> </span><span class=n>cte1</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>departments</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>cte2</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>dept_emp</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>temp1</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>cte2</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>cte2</span><span class=p>.</span><span class=n>dept_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cte1</span><span class=p>.</span><span class=n>dept_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>여러 개의 CTE 임시 테이블을 사용하는 쿼리도 FROM 절의 서브쿼리로 대체해서 사용할 수 있지만, 임시 테이블이 여러 번 사용되는 쿼리는 둘의 실행 계획이 조금 달라진다.</p><hr><p><strong>CTE를 이용한 실행 계획</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>EXPLAIN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WITH</span><span class=w> </span><span class=n>cte1</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=nf>MIN</span><span class=p>(</span><span class=n>from_date</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>emp_no</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>cte1</span><span class=w> </span><span class=n>t1</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>t1</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>cte1</span><span class=w> </span><span class=n>t2</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>t2</span><span class=p>.</span><span class=n>emp_no</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>e</span><span class=p>.</span><span class=n>emp_no</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+--------+-------------------+-------------+---------+-----------+--------+----------+--------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| id | select_type | table      | partitions | type   | possible_keys     | key         | key_len | ref       | rows   | filtered | Extra                    |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+--------+-------------------+-------------+---------+-----------+--------+----------+--------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | &lt;derived2&gt; | NULL       | ALL    | NULL              | NULL        | NULL    | NULL      | 293568 |   100.00 | NULL                     |
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | e          | NULL       | eq_ref | PRIMARY           | PRIMARY     | 4       | t1.emp_no |      1 |   100.00 | NULL                     |
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | &lt;derived2&gt; | NULL       | ref    | &lt;auto_key0&gt;       | &lt;auto_key0&gt; | 4       | t1.emp_no |     10 |   100.00 | NULL                     |
+</span></span></span><span class=line><span class=cl><span class=cm>|  2 | DERIVED     | salaries   | NULL       | range  | PRIMARY,ix_salary | PRIMARY     | 4       | NULL      | 293568 |   100.00 | Using index for group-by |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+--------+-------------------+-------------+---------+-----------+--------+----------+--------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><strong>FROM 절의 서브쿼리를 이용한 실행 계획</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>EXPLAIN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=n>e</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=nf>MIN</span><span class=p>(</span><span class=n>from_date</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>emp_no</span><span class=p>)</span><span class=w> </span><span class=n>t1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=n>emp_no</span><span class=p>,</span><span class=w> </span><span class=nf>MIN</span><span class=p>(</span><span class=n>from_date</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>salaries</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>emp_no</span><span class=p>)</span><span class=w> </span><span class=n>t2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+-------+-------------------+---------+---------+------+--------+----------+-------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| id | select_type | table      | partitions | type  | possible_keys     | key     | key_len | ref  | rows   | filtered | Extra                         |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+-------+-------------------+---------+---------+------+--------+----------+-------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | &lt;derived2&gt; | NULL       | ALL   | NULL              | NULL    | NULL    | NULL | 293568 |   100.00 | NULL                          |
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | &lt;derived3&gt; | NULL       | ALL   | NULL              | NULL    | NULL    | NULL | 293568 |   100.00 | Using join buffer (hash join) |
+</span></span></span><span class=line><span class=cl><span class=cm>|  1 | PRIMARY     | e          | NULL       | ALL   | NULL              | NULL    | NULL    | NULL | 300269 |   100.00 | Using join buffer (hash join) |
+</span></span></span><span class=line><span class=cl><span class=cm>|  3 | DERIVED     | salaries   | NULL       | range | PRIMARY,ix_salary | PRIMARY | 4       | NULL | 293568 |   100.00 | Using index for group-by      |
+</span></span></span><span class=line><span class=cl><span class=cm>|  2 | DERIVED     | salaries   | NULL       | range | PRIMARY,ix_salary | PRIMARY | 4       | NULL | 293568 |   100.00 | Using index for group-by      |
+</span></span></span><span class=line><span class=cl><span class=cm>+----+-------------+------------+------------+-------+-------------------+---------+---------+------+--------+----------+-------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><p>CTE를 이용한 쿼리에서는 임시 테이블을 한 번만 생성하지만, <code>FROM</code> 절에 서브쿼리를 이용한 쿼리에서는 2개의 임시 테이블을 생성하기 위해서 각 서브쿼리에서 <code>salaries</code> 테이블을 읽었다. 이뿐만 아니라 CTE로 생성된 임시 테이블은 다른 CTE 쿼리에서 참조할 수 있다는 장점도 있다.</p><p><strong>결론</strong></p><ul><li>CTE 임시 테이블은 재사용 가능하므로 <code>FROM</code> 절의 서브쿼리보다 효율적이다.</li><li>CTE로 선언된 임시 테이블을 다른 CTE 쿼리에서 참조할 수 있다.</li><li>CTE는 임시 테이블의 생성 부분과 사용 부분의 코드를 분리할 수 있으므로 가독성이 높다.</li></ul><h4 id=재귀적-cterecursive-cte>재귀적 CTE(Recursive CTE)</h4><p>MySQL 8.0 부터 CTE를 이용한 재귀 쿼리가 가능해졌다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>WITH</span><span class=w> </span><span class=n>RECURSIVE</span><span class=w> </span><span class=nf>cte</span><span class=w> </span><span class=p>(</span><span class=n>no</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>SELECT</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>UNION</span><span class=w> </span><span class=k>ALL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>SELECT</span><span class=w> </span><span class=p>(</span><span class=n>no</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=mi>1</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>FROM</span><span class=w> </span><span class=n>cte</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>no</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=mi>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>cte</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+------+
+</span></span></span><span class=line><span class=cl><span class=cm>| no   |
+</span></span></span><span class=line><span class=cl><span class=cm>+------+
+</span></span></span><span class=line><span class=cl><span class=cm>|    1 |
+</span></span></span><span class=line><span class=cl><span class=cm>|    2 |
+</span></span></span><span class=line><span class=cl><span class=cm>|    3 |
+</span></span></span><span class=line><span class=cl><span class=cm>|    4 |
+</span></span></span><span class=line><span class=cl><span class=cm>|    5 |
+</span></span></span><span class=line><span class=cl><span class=cm>+------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>재귀적 CTE 쿼리는 비 재귀적 쿼리 파트와 재귀적 파트로 구분되며, 이 둘을 <code>UNION(UNION DISTINCT)</code> 또는 <code>UNION ALL</code>로 연결하는 형태로 반드시 쿼리를 작성해야 한다.</p><ul><li>비재귀적 파트: <code>SELECT 1</code></li><li>재귀적 파트: <code>UNION ALL SELECT (no + 1) FROM cte WHERE no &lt; 5</code></li></ul><p>위 예시가 동작하는 방법은 아래와 같다.</p><ol><li>CTE 쿼리의 비 재귀적 파트의 쿼리를 실행</li><li>1번의 결과를 이용해 <code>cte</code>라는 이름의 임시 테이블 생성</li><li>1번의 결과를 <code>cte</code>라는 임시 테이블에 저장</li><li>1번 결과를 입력으로 사용해 CTE 쿼리의 재귀적 파트를 실행</li><li>4번의 결과를 <code>cte</code>라는 임시 테이블에 저장(이때 <code>UNION</code>, <code>UNION DISTINCT</code>의 경우 중복 제거를 실행)</li><li>전 단계의 결과를 입력으로 사용해 CTE 쿼리의 재귀적 파트 쿼리를 실행</li><li>6번 단계에서 쿼리 결과가 없으면 CTE 쿼리를 종료</li><li>6번의 결과를 <code>cte</code>라는 임시 테이블에 저장</li><li>6번으로 돌아가 반복 실행</li></ol><p>1번 과정에서 매우 중요한 CTE 임시 테이블 구조가 결정된다.</p><ul><li><p>CTE 테이블의 구조(테이블의 컬럼명과 컬럼의 데이터 타입)는 CTE 쿼리의 비 재귀적 파트의 결과로 결정된다.</p><ul><li>비 재귀적 파트의 결과와 재귀적 파트의 결과에서 컬럼 개수나 컬럼 타입, 컬럼 이름이 다른 경우 비 재귀적 파트에 정의된 결과를 사용한다.</li><li>CTE의 비 재귀적 쿼리 파트는 초기 데이터와 임시 테이블의 구조를 준비한다.</li><li>재귀적 쿼리 파트에서는 이후 데이터를 생성해내는 역할을 한다.</li></ul></li><li><p>재귀적 쿼리 파트를 실행할 때는 모든 단계에서 만들어진 결과 셋이 아니라 직전 단계의 결과만 재귀 쿼리의 입력으로 사용된다.</p></li></ul><p>재귀적으로 실행되는 CTE에서 주의할 것은 반복 실행의 종료 조건이다.</p><ul><li>모든 재귀 쿼리에는 종료 조건이 필요할 것처럼 보이지만 실제 재귀 쿼리가 반복을 멈추는 조건은 재귀 파트의 결과가 0건일 때까지다.</li><li>실제 응용 프로그램의 쿼리에서 사용하는 데이터는 몇단계까지 재귀적으로 실행할지 알 수 없는 경우가 더 많다.</li><li>데이터의 오류나 쿼리 작성자의 실수로 종료 조건을 만족하지 못해 무한 반복하는 경우가 발생할 수 있다.<ul><li><code>cte_max_recursion_depth</code> 시스템 변수를 이용해 최대 반복 실행횟수를 제한할 수 있다.</li><li>시스템 변수의 값을 적절히 낮은 값으로 변경하고, 꼭 필요한 쿼리에서만 <code>SET_VAR</code>힌트를 이용해 해당 쿼리에서만 반복 호출 횟수를 늘리는 방법을 추천한다.</li></ul></li></ul><blockquote><p>CTE 임시 테이블의 컬럼명을 변경하고자 한다면 CTE 별명 뒤에 <code>(...)</code>를 이용해 새로운 이름을 부여할 수 있다.</p></blockquote></section><footer class=article-footer><section class=article-tags><a href=/tags/mysql/>MySQL</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/real-mysql/11/4/2/><div class=article-image><img src=/post/real-mysql/11/4/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT (2)" data-key=real-mysql/11/4/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.4 쿼리 작성 및 최적화 - SELECT (2)</h2></div></a></article><article class=has-image><a href=/post/where-on/><div class=article-image><img src=/post/where-on/cover.ab18cf7cea1295bfbcb3bfc90b24de83_hu3d445aeca10173b7df51d6f3cd6c9292_48066_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실" data-key=where-on data-hash="md5-qxjPfOoSlb+8s7/JCyTegw=="></div><div class=article-details><h2 class=article-title>OUTER JOIN의 WHERE, ON 처리에 대한 오해와 진실</h2></div></a></article><article class=has-image><a href=/post/real-mysql/11/4/1/><div class=article-image><img src=/post/real-mysql/11/4/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT (1)" data-key=real-mysql/11/4/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.4 쿼리 작성 및 최적화 - SELECT (1)</h2></div></a></article><article class=has-image><a href=/post/real-mysql/10/3/2/><div class=article-image><img src=/post/real-mysql/10/3/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼" data-key=real-mysql/10/3/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.3 실행 계획 - 실행 계획 분석 (2) Extra 컬럼</h2></div></a></article><article class=has-image><a href=/post/real-mysql/10/3/1/><div class=article-image><img src=/post/real-mysql/10/3/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 10.3 실행 계획 - 실행 계획 분석 (1)" data-key=real-mysql/10/3/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>10.3 실행 계획 - 실행 계획 분석 (1)</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
