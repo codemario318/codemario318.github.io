@@ -1,4 +1,511 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 26 Jul 2023 12:08:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)</title><link>https://codemario318.github.io/post/real-mysql/11/4/3/</link><pubDate>Wed, 26 Jul 2023 12:08:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/3/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)" />&lt;p>쿼리를 작성할 때 서브쿼리를 사용하면 단위 처리별로 쿼리를 독립적으로 작성할 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/categories/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 31 Jul 2023 14:28:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/db/index.xml" rel="self" type="application/rss+xml"/><item><title>11.4 쿼리 작성 및 최적화 - SELECT(4) - 윈도우 함수(Window Function)</title><link>https://codemario318.github.io/post/real-mysql/11/4/4/</link><pubDate>Mon, 31 Jul 2023 14:28:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/4/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT(4) - 윈도우 함수(Window Function)" />&lt;p>윈도우 함수는 현재 레코드를 기준으로 연관된 레코드 집합의 연산을 수행한다.&lt;/p>
+&lt;ul>
+&lt;li>집계 함수는 주어진 그룹(&lt;code>GROUP BY&lt;/code> 절에 나열된 컬럼 값에 따른 그룹 또는 &lt;code>GROUP BY&lt;/code> 절 없이 전체 그룹)별로 하나의 레코드로 묶어 출력하지만 윈도우 함수는 조건에 일치하는 레코드 건수는 변하지 않고 그대로 유지한다.&lt;/li>
+&lt;li>일반적인 SQL 문장에서 하나의 레코드를 연산할 때 다른 레코드의 값을 참조할 수 없는데, 예외적으로 &lt;code>GROUP BY&lt;/code> 또는 집계 함수를 이용하면 다른 레코드의 컬럼 값을 참조할 수 있다.&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code> 또는 집계 함수를 사용하면 결과 집합의 모양이 바뀌나, 윈도우 함수는 겨로가 집합을 그대로 유지하면서 하나의 레코드 연산에 다른 레코드 연산에 따른 레코드 컬럼값을 참조할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="쿼리-각-절의-실행-순서">쿼리 각 절의 실행 순서&lt;/h2>
+&lt;p>윈도우 함수를 사용하는 쿼리의 결과에 보여지는 레코드는 &lt;code>FROM&lt;/code>절과 &lt;code>WHERE&lt;/code> 절, &lt;code>GROUP BY&lt;/code>와 &lt;code>HAVING&lt;/code> 절에 의해 결정되고, 그 이후 윈도우 함수가 실행된다.&lt;/p>
+&lt;pre class="mermaid">flowchart TB
+subgraph S1 [윈도우 함수 이전에 실행]
+direction LR
+A(WHERE) ~~~
+B(FROM) ~~~
+C(GROUP BY) ~~~
+D(HAVING)
+end
+subgraph S2 [윈도우 함수 처리]
+end
+subgraph S3 [윈도우 함수 이후에 실행]
+direction LR
+E(SELECT 절) ~~~
+F(ORDER BY 절) ~~~
+G(LIMIT)
+end
+S1 --> S2 --> S3
+&lt;/pre>
+&lt;p>쿼리에서 각 절의 실행 순서를 숙지하고 있어야 정확한 쿼리를 작성할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>ex) 윈도우 함수를 &lt;code>GROUP BY&lt;/code> 컬름으로 사용하거나 &lt;code>WHERE&lt;/code> 절에 사용할 수 없다.&lt;/li>
+&lt;li>순서를 벗어나는 쿼리를 작성하려면 &lt;code>FROM&lt;/code> 절의 서브쿼리를 사용해야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>FROM절 서브쿼리없이 &lt;code>LIMIT&lt;/code>을 사용한 경우&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">AVG&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">avg_salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| emp_no | from_date | salary | avg_salary |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1986-06-26 | 60117 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1987-06-26 | 62102 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1988-06-25 | 66074 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1989-06-25 | 66596 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1990-06-25 | 66961 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>조건에 일치하는 17건의 레코드를 모두 가져온 다음 윈도우 함수를 실행하고, 그 결과에서 5건만 반환한다.&lt;/p>
+&lt;p>&lt;strong>FROM절 서브쿼리에서 &lt;code>LIMIT&lt;/code>을 사용한 경우&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">AVG&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">avg_salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">s2&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| emp_no | from_date | salary | avg_salary |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1986-06-26 | 60117 | 64370.0000 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1987-06-26 | 62102 | 64370.0000 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1988-06-25 | 66074 | 64370.0000 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1989-06-25 | 66596 | 64370.0000 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1990-06-25 | 66961 | 64370.0000 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>최종 5건의 평균을 의미 한다.&lt;/p>
+&lt;h2 id="윈도우-함수-기본-사용법">윈도우 함수 기본 사용법&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">AGGREGATE_FUNC&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">partition&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">order&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">window_func_column&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>윈도우 함수는 용도별로 다양한 함수들을 사용할 수 있으며, 집계 함수와는 달리 함수 뒤에 &lt;code>OVER&lt;/code> 절을 이용해 연산 대상을 파티션 하기 위한 옵션을 명시할 수 있다.&lt;/li>
+&lt;li>이렇게 &lt;code>OVER&lt;/code> 절에 의해 만들어진 그룹을 파티션 또는 윈도우 라고 한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>정렬 사용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">RANK&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">hire_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">hire_date_rank&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">|...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 227544 | 1954-11-17 | Shahab | Demeyer | M | 2000-01-08 | 300018 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 422990 | 1953-04-09 | Jaana | Verspoor | F | 2000-01-11 | 300019 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 47291 | 1960-09-09 | Ulf | Flexer | M | 2000-01-12 | 300020 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 222965 | 1959-08-07 | Volkmar | Perko | F | 2000-01-13 | 300021 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 499553 | 1954-05-06 | Hideyuki | Delgrande | F | 2000-01-22 | 300022 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 428377 | 1957-05-09 | Yucai | Gerlach | M | 2000-01-23 | 300023 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 463807 | 1964-06-12 | Bikash | Covnot | M | 2000-01-28 | 300024 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+----------------+------------------+--------+------------+----------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>소 그룹을 별도로 구분하지 않고 전체 집합과 집합에서 &lt;code>e.hire_date&lt;/code> 컬럼으로 정렬한 후 순위를 매긴다.&lt;/p>
+&lt;p>&lt;strong>파티션 및 정렬 사용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first_name&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">hire_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">RANK&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">hire_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">hire_date_rank&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">hire_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 461853 | Licheng | 1999-10-14 | 23572 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 292220 | Danny | 1999-10-26 | 23573 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 252656 | Moti | 1999-10-28 | 23574 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 65535 | Aleksander | 1999-11-21 | 23575 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 89511 | Kazuhiro | 1999-11-27 | 23576 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 218859 | Arvin | 1999-12-03 | 23577 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 13919 | Brewster | 1999-12-04 | 23578 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 73925 | Vasilii | 1999-12-30 | 23579 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| d009 | 60134 | Seshu | 2000-01-02 | 23580 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+---------+--------+----------------+------------+----------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>부서 별로 입사 순위를 매기려고 한다면 부서 코드로 파티션을 하면 된다.&lt;/p>
+&lt;p>&lt;strong>파티션 및 정렬 미사용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">AVG&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">avg_salary&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10001&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| emp_no | from_date | salary | avg_salary |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1986-06-26 | 60117 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1987-06-26 | 62102 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1988-06-25 | 66074 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1989-06-25 | 66596 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1990-06-25 | 66961 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1991-06-25 | 71046 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1992-06-24 | 74333 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1993-06-24 | 75286 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1994-06-24 | 75994 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1995-06-24 | 76884 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1996-06-23 | 80013 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1997-06-23 | 81025 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1998-06-23 | 81097 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 1999-06-23 | 84917 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 2000-06-22 | 85112 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 2001-06-22 | 85097 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 10001 | 2002-06-22 | 88958 | 75388.9412 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+--------+------------+--------+------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>소그룹 파티션이나 정렬이 필요하지 않은 경우 &lt;code>PARTITION&lt;/code>이나 &lt;code>ORDER BY&lt;/code> 없이 비어 있는 &lt;code>OVER()&lt;/code> 절을 사용하면 된다.&lt;/p>
+&lt;ul>
+&lt;li>사원 번호가 10001인 사원의 모든 급여 변경 이력의 평균을 조회하므로 &lt;code>PARTITION&lt;/code> 키워드를 생략했다.&lt;/li>
+&lt;li>평균을 계산하므로 정렬이 필요하지 않아 &lt;code>ORDER BY&lt;/code> 키워드를 생략 했다.&lt;/li>
+&lt;li>따라서 &lt;code>avg_salary&lt;/code> 컬럼의 값은 모두 동일하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>프레임 사용&lt;/strong>&lt;/p>
+&lt;p>윈도우 함수의 각 파티션 안에서도 연산 대상을 레코드별로 연산을 수행할 소그룹이 사용되는데, 이를 프레임이라 한다.&lt;/p>
+&lt;ul>
+&lt;li>윈도우 함수에서 프레임을 명시적으로 지정하지 않아도 상황에 맞게 묵시적으로 선택한다.&lt;/li>
+&lt;li>프레임은 레코드의 순서대로 현재 레코드 기준 앞뒤 몇 건을 연산 범위로 제한하는 역할을 한다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">AGGREGATER_FUNC&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">partition&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">order&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">frame&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">window_func_column&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">frame&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="n">ROWS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">RANGE&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="n">frame_start&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">frame_between&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">frame_between&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">frame_start&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">frame_end&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">frame_start&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">frame_end&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">CURRENT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ROW&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">UNBOUNDED&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PRECEDING&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">UNBOUNDED&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FOLLOWING&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">expr&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PRECEDING&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">expr&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FOLLOWING&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>프레임을 만드는 기준
+&lt;ul>
+&lt;li>&lt;code>ROWS&lt;/code>: 레코드의 위치를 기준으로 프레임 생성
+&lt;ul>
+&lt;li>&lt;code>expr&lt;/code>에는 레코드의 위치를 명시해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>RANGE&lt;/code>: &lt;code>ORDER BY&lt;/code> 절에 면시된 컬럼을 기준으로 값의 범위로 프레임 생성
+&lt;ul>
+&lt;li>&lt;code>expr&lt;/code>에는 컬럼과 비교할 값이 설정돼야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>시작과 끝 의미
+&lt;ul>
+&lt;li>&lt;code>CURRENT ROW&lt;/code>: 현재 레코드&lt;/li>
+&lt;li>&lt;code>UNBOUNDED PRECEDING&lt;/code>: 파티션의 첫 번째 레코드&lt;/li>
+&lt;li>&lt;code>UNBOUNDED FOLLOWING&lt;/code>: 파티션의 마지막 레코드&lt;/li>
+&lt;li>&lt;code>expr PRECEDING&lt;/code>: 현재 레코드로부터 n번째 이전 레코드&lt;/li>
+&lt;li>&lt;code>expr FOLLOWING&lt;/code>: 현재 레코드로부터 n번째 이후 레코드&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>윈도우 함수에서 프레임이 별도로 명시되지 않으면 무조건 파티션의 모든 레코드가 연산의 대상이 되는 것은 아니다.&lt;br>
+&lt;code>OVER()&lt;/code> 절이 &lt;code>ORDER BY&lt;/code>를 가지는지 여부에 따라 묵시적인 프레임 범위가 달라진다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>OVER()&lt;/code>가 &lt;code>ORDER BY&lt;/code>를 가지는 경우
+&lt;ul>
+&lt;li>파티션의 첫 번째 레코드부터 현재 레코드까지가 프레임이 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>OVER()&lt;/code>가 &lt;code>ORDER BY&lt;/code>를 가지지 않는 경우
+&lt;ul>
+&lt;li>파티션의 모든 레코드가 묵시적인 프레임으로 선택된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>일부 윈도우 함수들은 프레임이 고정되어있어 SQL 문장에서 프레임을 별도로 명시하더라도 무시된다. 이러한 경우 에러는 발생하지 않기 때문에 혼란스러울 수 있으니 주의한다.
+&lt;ul>
+&lt;li>&lt;code>CUME_DIST()&lt;/code>, &lt;code>DENSE_RANK()&lt;/code>, &lt;code>LAG()&lt;/code>, &lt;code>LEAD()&lt;/code>, &lt;code>NTILE()&lt;/code>, &lt;code>PERCENT_RANK()&lt;/code>, &lt;code>RANK()&lt;/code>, &lt;code>ROW_NUMBER()&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="윈도우-함수">윈도우 함수&lt;/h2>
+&lt;p>MySQL 서버의 윈도우 함수에는 집계 함수와 비 집계 함수를 모두 사용할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>집계함수는 &lt;code>GROUP BY&lt;/code> 절과 함께 사용할 수 있는 함수를 의미하며 &lt;code>OVER()&lt;/code> 절 없이 단독으로도 사용할 수 있다.&lt;/li>
+&lt;li>비 집계 함수는 반드시 &lt;code>OVER()&lt;/code> 절을 가지고 있어야 하며 윈도우 함수로만 사용될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="dense_rank와-rank-row_number">&lt;code>DENSE_RANK()&lt;/code>와 &lt;code>RANK()&lt;/code>, &lt;code>ROW_NUMBER()&lt;/code>&lt;/h3>
+&lt;p>&lt;code>DENSE_RANK()&lt;/code>와 &lt;code>RANK()&lt;/code> 모두 &lt;code>ORDER BY&lt;/code> 기준으로 매겨진 순위를 반환하지만 조금 차이가 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>RANK()&lt;/code>: 동점인 레코드가 두 건 이상인 경우 그 다음 레코드를 동점인 레코드수 만큼 증가시킨 순위를 반환.&lt;/li>
+&lt;li>&lt;code>DENSE_RANK()&lt;/code>: 동점인 레코드를 1건으로 가정하고 순위를 매기기 때문에 연속된 순위를 가진다.&lt;/li>
+&lt;li>&lt;code>ROW_NUMBER()&lt;/code>: 똑같이 순위를 매기지만 각 레코드의 고유한 순번을 반홚나다.
+&lt;ul>
+&lt;li>동점에 대한 고려 없이 정렬된 순서대로 레코드 번호를 부여한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="lag-lead">&lt;code>LAG()&lt;/code>, &lt;code>LEAD()&lt;/code>&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>LAG()&lt;/code>: 파티션 내에서 현재 레코드를 기준으로 n번째 이전 레코드르 반환한다.&lt;/li>
+&lt;li>&lt;code>LEAD()&lt;/code>: 반대로 n번째 이후 레코드를 반환한다.&lt;/li>
+&lt;li>3개 파라미터를 필요로 하며, 1,2 는 필수이며, 3은 선택이다.
+&lt;ol>
+&lt;li>컬럼 이름&lt;/li>
+&lt;li>위치&lt;/li>
+&lt;li>증감 숫자&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="윈도우-함수와-성능">윈도우 함수와 성능&lt;/h2>
+&lt;p>MySQL 서버의 윈도우 함수는 8.0 버전에 처음 도입됐으며, 아직 인덱스를 이용한 최적화가 부족한 부분도 있다.&lt;/p>
+&lt;p>&lt;strong>윈도우 함수 이용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">MAX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">OVER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">max_from_date&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+---------------+-----------+---------+------+---------+----------+-----------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+---------------+-----------+---------+------+---------+----------+-----------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 1 | SIMPLE | salaries | NULL | index | NULL | ix_salary | 4 | NULL | 2838426 | 100.00 | Using index; Using filesort |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+---------------+-----------+---------+------+---------+----------+-----------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>GROUP BY&lt;/code> 이용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">EXPLAIN&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">MAX&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">from_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+-------------------+---------+---------+------+--------+----------+--------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+-------------------+---------+---------+------+--------+----------+--------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| 1 | SIMPLE | salaries | NULL | range | PRIMARY,ix_salary | PRIMARY | 4 | NULL | 293568 | 100.00 | Using index for group-by |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+----+-------------+----------+------------+-------+-------------------+---------+---------+------+--------+----------+--------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>두 쿼리의 결과는 차이가 있지만 사용자별로 &lt;code>MAX(from_date)&lt;/code> 값을 구한다.&lt;/p>
+&lt;ul>
+&lt;li>윈도우 함수 이용
+&lt;ul>
+&lt;li>인덱스를 풀 스캔&lt;/li>
+&lt;li>레코드 정렬 작업 수행&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code>
+&lt;ul>
+&lt;li>별도 정렬 없음&lt;/li>
+&lt;li>루스 인덱스 스캔으로 값을 찾아냄&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 차이로 인해 실제 두 쿼리가 연산에 사용한 레코드 건수도 상당히 차이가 난다.&lt;/p>
+&lt;p>윈도우 함수는 테이블의 모든 레코드 건수만큼의 결과를 만들어야 하지만, &lt;code>GROUP BY&lt;/code> 절을 사용하는 쿼리는 유니크한 &lt;code>emp_no&lt;/code>별로 레코드 1건씩만 결과를 만들어 내면 되므로 레코드 건수에서 차이가 날 수 있다.&lt;/p>
+&lt;p>하지만 앞의 결과를 보면 윈도우 함수를 사용한 쿼리는 예상보다 훨씬 많은 레코드를 가공했고, 그로 인해 레코드의 읽고 쓰기가 상당히 많이 발생했다.&lt;/p>
+&lt;blockquote>
+&lt;p>쿼리 요건에 따라 &lt;code>GROUP BY&lt;/code>나 다른 기존 기능으로는 윈도우 함수를 대체할 수 없겠지만, 가능하다면 윈도우 함수에 너무 의존하지 않는 것이 좋다.&lt;br>
+소량의 레코드에 대해서라면 윈도우 함수를 사용해도 메모리에서 빠르게 처리될 것이므로 특별히 성능에 대해 고민하지 않아도 된다.&lt;/p>
+&lt;/blockquote></description></item><item><title>11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)</title><link>https://codemario318.github.io/post/real-mysql/11/4/3/</link><pubDate>Wed, 26 Jul 2023 12:08:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/4/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/4/3/real_mysql.jpeg" alt="Featured image of post 11.4 쿼리 작성 및 최적화 - SELECT - 서브쿼리 (3)" />&lt;p>쿼리를 작성할 때 서브쿼리를 사용하면 단위 처리별로 쿼리를 독립적으로 작성할 수 있다.&lt;/p>
 &lt;p>조인처럼 여러 테이블을 섞어 두는 형태가 아니어서 쿼리의 가독성도 높아지며, 복잡한 쿼리도 손쉽게 작성할 수 있다.&lt;/p>
 &lt;p>MySQL 5.6 버전까지는 서브쿼리를 최적으로 실행하지 못할 때가 많았지만 서브쿼리 처리가 많이 개선되었다.&lt;/p>
 &lt;p>서브쿼리는 쿼리의 여러 위치에 사용될 수 있으며 위치별로 최적화와 성능에 도움이 되는 방법이 조금씩 다르다.&lt;/p>
