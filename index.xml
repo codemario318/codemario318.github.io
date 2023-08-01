@@ -104,7 +104,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>위 쿼리는 &lt;code>employees&lt;/code>, &lt;code>dept_emp&lt;/code>, &lt;code>departments&lt;/code> 테이블을 조인해서 읽으며 &lt;code>FROM UPDATE&lt;/code>절을 사용했으므로 InnoDB 스토리지 엔진은 3개 테입르에서 읽은 레코드에 대해 모두 쓰기 잠금을 걸게 된다.&lt;/p>
+&lt;/div>&lt;p>위 쿼리는 &lt;code>employees&lt;/code>, &lt;code>dept_emp&lt;/code>, &lt;code>departments&lt;/code> 테이블을 조인해서 읽으며 &lt;code>FROM UPDATE&lt;/code>절을 사용했으므로 InnoDB 스토리지 엔진은 3개 테이블에서 읽은 레코드에 대해 모두 쓰기 잠금을 걸게 된다.&lt;/p>
 &lt;p>그런데 실제 쓰기 잠금은 &lt;code>employees&lt;/code> 테이블만 필요하다면 잠금을 테이블을 선택할 수 있도록 MySQL 8.0 부터 개선이 되었다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
