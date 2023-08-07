@@ -1888,7 +1888,7 @@ S1 --> S2 --> S3
 &lt;li>컬럼 명이라고 하더라도 문자 리터럴이 사용된다면 무시된다.&lt;/li>
 &lt;/ul>
 &lt;h3 id="여러-방향으로-동시-정렬">여러 방향으로 동시 정렬&lt;/h3>
-&lt;p>MySQL 8.0 버전부터는 오름차순과 내림차순을 홍용해서 인덱스를 생성할 수 있게 개선되었다.&lt;/p>
+&lt;p>MySQL 8.0 버전부터는 오름차순과 내림차순을 혼용해서 인덱스를 생성할 수 있게 개선되었다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -25316,7 +25316,7 @@ InnoDB 스토리지 엔진에서도 전문 검색과 공간 좌표 검색 기능
 MySQL 5.7 버전까지 내부 임시 테이블 용도로 활용되었으나, 가변 길이 타입의 컬럼을 지원하지 않는다는 문제점으로 MySQL 8.0 부터는 TempTable 스토리지 엔진이 대체되어 사용된다.&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;p>이러한 이유로 MEMORY 스토리지 엔진을 선택해서 얻을 수 있는 장점이 없어져, 향후 버전에서는 제거될 것으로 예상된다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀</title><link>https://codemario318.github.io/post/real_mysql_4/2/2/</link><pubDate>Wed, 12 Apr 2023 14:27:41 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4/2/2/</guid><description>&lt;img src="https://codemario318.github.io/real-mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀" />&lt;p>버퍼풀은 InnoDB 스토리지 엔진의 핵심으로 디스크에서 데이터를 읽어 메모리에 보관하고, 필요할 때 메모리에서 데이터를 읽어와 처리하는 역할을 수행한다. 또한 디스크와 메모리 사이에서 데이터 읽기 및 쓰기를 관리하여 데이터 베이스의 성능을 향상시킨다.&lt;/p>
+&lt;p>이러한 이유로 MEMORY 스토리지 엔진을 선택해서 얻을 수 있는 장점이 없어져, 향후 버전에서는 제거될 것으로 예상된다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀</title><link>https://codemario318.github.io/post/real_mysql_4/2/2/</link><pubDate>Wed, 12 Apr 2023 14:27:41 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4/2/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4/2/2/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀" />&lt;p>버퍼풀은 InnoDB 스토리지 엔진의 핵심으로 디스크에서 데이터를 읽어 메모리에 보관하고, 필요할 때 메모리에서 데이터를 읽어와 처리하는 역할을 수행한다. 또한 디스크와 메모리 사이에서 데이터 읽기 및 쓰기를 관리하여 데이터 베이스의 성능을 향상시킨다.&lt;/p>
 &lt;ul>
 &lt;li>디스크의 데이터 파일이나 인덱스 정보를 메모리에 캐시해 두는 공간이다.&lt;/li>
 &lt;li>쓰기 작업을 지연시켜 일괄 작업으로 처리할 수 있게 해주는 버퍼 역할도 수행한다.&lt;/li>
