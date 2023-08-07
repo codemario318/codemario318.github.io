@@ -9825,7 +9825,7 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;li>처리완료&lt;/li>
 &lt;/ol>
 &lt;hr>
-&lt;p>위와 같은 방식으로 개선 될 수 있다.&lt;/p></description></item><item><title>4.4 MySQL 로그 파일</title><link>https://codemario318.github.io/post/real_mysql_4_4/</link><pubDate>Fri, 14 Apr 2023 16:31:23 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_4/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_4/real_mysql.jpeg" alt="Featured image of post 4.4 MySQL 로그 파일" />&lt;p>MySQL 서버는 서버의 상태를 진단할 수 있는 많은 도구들을 지원하지만 이러한 기능은 많은 지식을 필요로 하는 경우가 많다. 로그 파일을 활용하면 MySQL 서버에 대해 깊은 지식이 없어도 서버의 상태나 부하를 일으키는 원인을 쉽게 찾아 해결할 수 있다.&lt;/p>
+&lt;p>위와 같은 방식으로 개선 될 수 있다.&lt;/p></description></item><item><title>4.4 MySQL 로그 파일</title><link>https://codemario318.github.io/post/real-mysql/4/4/</link><pubDate>Fri, 14 Apr 2023 16:31:23 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/4/real_mysql.jpeg" alt="Featured image of post 4.4 MySQL 로그 파일" />&lt;p>MySQL 서버는 서버의 상태를 진단할 수 있는 많은 도구들을 지원하지만 이러한 기능은 많은 지식을 필요로 하는 경우가 많다. 로그 파일을 활용하면 MySQL 서버에 대해 깊은 지식이 없어도 서버의 상태나 부하를 일으키는 원인을 쉽게 찾아 해결할 수 있다.&lt;/p>
 &lt;h2 id="에러-로그-파일">에러 로그 파일&lt;/h2>
 &lt;p>MySQL이 실행되는 도중 발생하는 에러나 경고 메시지가 출력되는 로그 파일이다. MySQL 설정 파일(&lt;code>my.cnf&lt;/code>)에서 &lt;code>log_error&lt;/code>라는 이름의 파라미터로 정의된 경로에 생성되는데 설정 파일에 별도로 정의도지 않은 경우 데이터 디렉터리(&lt;code>datadir&lt;/code> 파라미터에 설정된 디렉터리)에 &lt;code>.err&lt;/code>라는 확장자가 붙은 파일로 생성된다.&lt;/p>
 &lt;h2 id="mysql이-시작하는-과정과-곤련된-정보성-및-에러-메시지">MySQL이 시작하는 과정과 곤련된 정보성 및 에러 메시지&lt;/h2>
@@ -9889,10 +9889,10 @@ DBMS에서 여러 스레드 혹은 프로세스가 동시에 접근할 수 있�
 &lt;p>각 쿼리별로 응답 시간과 실행 횟수를 보여주는데, &lt;code>pt-query-digest&lt;/code> 명령 실행 시 &lt;code>--oorder-by&lt;/code>옵션으로 정렬 순서를 변경할 수 있다.&lt;/p>
 &lt;p>&lt;code>Query ID&lt;/code>는 실행된 쿼리 문장을 정규화(쿼리에 사용된 리터럴을 제거)해서 만들어진 해시 값을 의미하는데, 같은 모양의 쿼리라면 동일한 &lt;code>Query ID&lt;/code>를 가지게 된다.&lt;/p>
 &lt;h3 id="쿼리별-실행-횟수-및-누적-실행-시간-상세-정보">쿼리별 실행 횟수 및 누적 실행 시간 상세 정보&lt;/h3>
-&lt;p>&lt;code>Query ID&lt;/code>별 쿼리를 쿼리 랭킹에 표시된 순서대로 자세한 내용을 보여준다. 랭킹별 쿼리에서는 대상 테이블에 대해 어떤 쿼리인지만을 표시하는데, 실제 상세한 쿼리 내용은 개별 쿼리의 정보를 확인해보면 된다.&lt;/p></description></item><item><title>4.3 MyISAM 스토리지 엔진 아키텍처</title><link>https://codemario318.github.io/post/real_mysql_4_3/</link><pubDate>Fri, 14 Apr 2023 15:52:19 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/real_mysql.jpeg" alt="Featured image of post 4.3 MyISAM 스토리지 엔진 아키텍처" />&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam.png"
+&lt;p>&lt;code>Query ID&lt;/code>별 쿼리를 쿼리 랭킹에 표시된 순서대로 자세한 내용을 보여준다. 랭킹별 쿼리에서는 대상 테이블에 대해 어떤 쿼리인지만을 표시하는데, 실제 상세한 쿼리 내용은 개별 쿼리의 정보를 확인해보면 된다.&lt;/p></description></item><item><title>4.3 MyISAM 스토리지 엔진 아키텍처</title><link>https://codemario318.github.io/post/real-mysql/4/3/</link><pubDate>Fri, 14 Apr 2023 15:52:19 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/3/real_mysql.jpeg" alt="Featured image of post 4.3 MyISAM 스토리지 엔진 아키텍처" />&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/3/mysql_myisam.png"
 width="1280"
 height="1077"
-srcset="https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/3/mysql_myisam_hu3bc5a7e6ebcdb2648e2fccb3d445443f_121520_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MyISAM 스토리지 엔진 구조"
 class="gallery-image"
@@ -9961,7 +9961,7 @@ data-flex-basis="285px"
 &lt;p>가변 길이 ROWID&lt;br>
 MAX_ROWS 옵션을 사용하지 않으면 MyISAM 테이블의 ROWID는 최대 &lt;code>myisam_data_pointer_size&lt;/code> 시스템 변수에 설정된 바이트 수 만큼에 공간을 사용할 수 있다. 기본값은 7이며 최소 2byte 부터 7byte 까지 가변적인 ROWID를 갖게 된다. 첫 바이트는 ROWID의 길이를 저장하는 용도로 사용되고 나머지 공간은 실제 ROWID를 저장하는데 사용한다. 가변적인 ROWID를 가지면 데이터 파일에서 레코드의 위치가 ROWID로 사용되어, 가변 길이 ROWID인 테이블일때 최대 크기 256TB(2**(8(7-1)))가질 수 있다.&lt;/p>
 &lt;/li>
-&lt;/ul></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(3)</title><link>https://codemario318.github.io/post/real_mysql_4_2_3/</link><pubDate>Thu, 13 Apr 2023 12:39:01 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_2_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(3)" />&lt;h2 id="double-write-buffer">Double Write Buffer&lt;/h2>
+&lt;/ul></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(3)</title><link>https://codemario318.github.io/post/real-mysql/4_2_3/</link><pubDate>Thu, 13 Apr 2023 12:39:01 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/4_2_3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(3)" />&lt;h2 id="double-write-buffer">Double Write Buffer&lt;/h2>
 &lt;p>InnoDB 스토리지 엔진의 리두 로그는 공간 낭비를 막기 위해 페이지의 변경된 내용만 기록한다. 이로인해 더티 페이지를 디스크 파일로 플러시할 때 일부만 기록되는 문제가 발생하면 그 페이지의 내용은 복구할 수 없을 가능성이 있다.&lt;/p>
 &lt;p>이런 현상을 파셜 페이지 또는 톤 페이지라고 하는데, 하드웨어의 오작동이나 시스템의 비정상 종료 등으로 발생할 수 있다.&lt;/p>
 &lt;ul>
@@ -9971,10 +9971,10 @@ MAX_ROWS 옵션을 사용하지 않으면 MyISAM 테이블의 ROWID는 최대 &l
 디스크에 기록 중인 페이지의 기록 작업이 중간에 중단되어 발생하는 문제. 페이지 일부가 디스크에 기록되지 않아 데이터 무결성이 손상되는 문제를 일으킬 수 있다.&lt;/li>
 &lt;/ul>
 &lt;p>InnoDB 스토리지 엔진은 이러한 문제를 막기 위해 Double-Write 기법을 활용한다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql_4_15.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql_4_15.png"
 width="577"
 height="469"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql_4_15_hud9759c13d9680ee964cf64ca3b80fcce_99858_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql_4_15_hud9759c13d9680ee964cf64ca3b80fcce_99858_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql_4_15_hud9759c13d9680ee964cf64ca3b80fcce_99858_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql_4_15_hud9759c13d9680ee964cf64ca3b80fcce_99858_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="Double Write 작동 방식"
 class="gallery-image"
@@ -10151,10 +10151,10 @@ data-flex-basis="295px"
 &lt;p>MySQL 8.0 버전부터 수동으로 리두 로그를 비활성화 할 수 있어, 대용량 데이터를 한번에 적재하는 경우 사용하여 적재 시간을 단축할 수 있다.&lt;/p>
 &lt;h3 id="어댑티브-해시-인덱스">어댑티브 해시 인덱스&lt;/h3>
 &lt;p>어댑티브 해시 인덱스는 InnoDB 스토리지 엔진에서 사용자가 자주 요청하는 데이터에 대해 자동으로 생성하는 인덱스로, &lt;code>innodb_adaptive_hash_index&lt;/code> 시스템 변수를 이용하여 활성화, 비활성화 할 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-btree-index.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-btree-index.png"
 width="854"
 height="359"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-btree-index_hu7ca498aefa34ff05f0faa56ead14966c_53504_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql-btree-index_hu7ca498aefa34ff05f0faa56ead14966c_53504_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-btree-index_hu7ca498aefa34ff05f0faa56ead14966c_53504_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql-btree-index_hu7ca498aefa34ff05f0faa56ead14966c_53504_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL B-Tree Index"
 class="gallery-image"
@@ -10168,10 +10168,10 @@ data-flex-basis="570px"
 &lt;p>따라서 B-Tree 자료구조 특성으로 데이터가 많아진다 하더라도 탐색 비용이 크게 증가하지 않지만, 동시에 많은 스레드에서 탐색 작업이 발생할 경우 Lock 등으로 인해 성능 저하가 발생할 수 있다.&lt;/p>
 &lt;p>어댑티브 해시 인덱스는 B-Tree의 검색 시간을 줄여주기 위해 도입된 기능으로, 자주 읽히는 데이터 페이지의 키 값을 이용해 해시 인덱스를 만들고, 필요할 때마다 어댑티브 해시 인덱스를 검색해서 레코드가 저장된 데이터 페이지를 즉시 찾아갈 수 있다.&lt;/p>
 &lt;h4 id="구조">구조&lt;/h4>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-index.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-index.png"
 width="509"
 height="345"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-index_hu35636e5b1bec8218b375a53611c0cccc_35239_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-index_hu35636e5b1bec8218b375a53611c0cccc_35239_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-index_hu35636e5b1bec8218b375a53611c0cccc_35239_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-index_hu35636e5b1bec8218b375a53611c0cccc_35239_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="MySQL Adaptive Hash Index"
 class="gallery-image"
@@ -10191,20 +10191,20 @@ B-Tree 인덱스의 고유번호 + B-Tree 인덱스의 실제 키 값
 &lt;/ul>
 &lt;p>어댑티브 해시 인덱스는 버퍼풀에 올려진 데이터 페이지에 대해서만 괸리되고, 버퍼풀에서 해당 데이터 페이지가 없어지면 어댑티브 해시 인덱스에서도 해당 페이지의 정보는 사라진다.&lt;/p>
 &lt;h4 id="성능">성능&lt;/h4>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-search.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-search.png"
 width="665"
 height="226"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-search_hu531e6a3f072257a601880d914189c4d5_19765_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql-adaptive-hash-search_hu531e6a3f072257a601880d914189c4d5_19765_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-search_hu531e6a3f072257a601880d914189c4d5_19765_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql-adaptive-hash-search_hu531e6a3f072257a601880d914189c4d5_19765_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="쿼리 처리 수 변화"
 class="gallery-image"
 data-flex-grow="294"
 data-flex-basis="706px"
 >&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql_adaptive_hash_index_cpu.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql_adaptive_hash_index_cpu.png"
 width="664"
 height="226"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql_adaptive_hash_index_cpu_hu1567471173400d56b803e008a98f0c2b_10894_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql_adaptive_hash_index_cpu_hu1567471173400d56b803e008a98f0c2b_10894_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql_adaptive_hash_index_cpu_hu1567471173400d56b803e008a98f0c2b_10894_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql_adaptive_hash_index_cpu_hu1567471173400d56b803e008a98f0c2b_10894_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="CPU 사용률 변화"
 class="gallery-image"
@@ -10212,10 +10212,10 @@ data-flex-grow="293"
 data-flex-basis="705px"
 >&lt;/p>
 &lt;p>어댑티브 해시 인덱스를 활성화 후 처리량은 2배 가까이 늘었음에도 불구하고 CPU 사용량은 오히려 떨어진다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-semaphores.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-semaphores.png"
 width="763"
 height="252"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_3/mysql-semaphores_hu1335a30742e00261da10a60e6c5fce19_21643_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_3/mysql-semaphores_hu1335a30742e00261da10a60e6c5fce19_21643_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4_2_3/mysql-semaphores_hu1335a30742e00261da10a60e6c5fce19_21643_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4_2_3/mysql-semaphores_hu1335a30742e00261da10a60e6c5fce19_21643_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="세마포어 변화"
 class="gallery-image"
@@ -10319,7 +10319,7 @@ InnoDB 스토리지 엔진에서도 전문 검색과 공간 좌표 검색 기능
 MySQL 5.7 버전까지 내부 임시 테이블 용도로 활용되었으나, 가변 길이 타입의 컬럼을 지원하지 않는다는 문제점으로 MySQL 8.0 부터는 TempTable 스토리지 엔진이 대체되어 사용된다.&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;p>이러한 이유로 MEMORY 스토리지 엔진을 선택해서 얻을 수 있는 장점이 없어져, 향후 버전에서는 제거될 것으로 예상된다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀</title><link>https://codemario318.github.io/post/real_mysql_4_2_2/</link><pubDate>Wed, 12 Apr 2023 14:27:41 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_2_2/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_2/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀" />&lt;p>버퍼풀은 InnoDB 스토리지 엔진의 핵심으로 디스크에서 데이터를 읽어 메모리에 보관하고, 필요할 때 메모리에서 데이터를 읽어와 처리하는 역할을 수행한다. 또한 디스크와 메모리 사이에서 데이터 읽기 및 쓰기를 관리하여 데이터 베이스의 성능을 향상시킨다.&lt;/p>
+&lt;p>이러한 이유로 MEMORY 스토리지 엔진을 선택해서 얻을 수 있는 장점이 없어져, 향후 버전에서는 제거될 것으로 예상된다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀</title><link>https://codemario318.github.io/post/real_mysql_4/2/2/</link><pubDate>Wed, 12 Apr 2023 14:27:41 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4/2/2/</guid><description>&lt;img src="https://codemario318.github.io/real-mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(2) - InnoDB 버퍼풀" />&lt;p>버퍼풀은 InnoDB 스토리지 엔진의 핵심으로 디스크에서 데이터를 읽어 메모리에 보관하고, 필요할 때 메모리에서 데이터를 읽어와 처리하는 역할을 수행한다. 또한 디스크와 메모리 사이에서 데이터 읽기 및 쓰기를 관리하여 데이터 베이스의 성능을 향상시킨다.&lt;/p>
 &lt;ul>
 &lt;li>디스크의 데이터 파일이나 인덱스 정보를 메모리에 캐시해 두는 공간이다.&lt;/li>
 &lt;li>쓰기 작업을 지연시켜 일괄 작업으로 처리할 수 있게 해주는 버퍼 역할도 수행한다.&lt;/li>
@@ -10363,10 +10363,10 @@ MySQL 5.7 버전까지 내부 임시 테이블 용도로 활용되었으나, 가
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="lru-리스트-구조">LRU 리스트 구조&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_13.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_13.png"
 width="316"
 height="292"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_13_hue0f5dcd0b58a4f8a7118d2c75e37f46e_29762_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_13_hue0f5dcd0b58a4f8a7118d2c75e37f46e_29762_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_13_hue0f5dcd0b58a4f8a7118d2c75e37f46e_29762_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_13_hue0f5dcd0b58a4f8a7118d2c75e37f46e_29762_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="LRU 리스트 구조"
 class="gallery-image"
@@ -10413,10 +10413,10 @@ data-flex-basis="259px"
 &lt;p>리두 로그 파일은 일반적으로 디스크에 저장되며, MySQL은 변경 사항을 순차적으로 기록한다. 리두 로그 파일이 가득 차면 MySQL은 &amp;ldquo;체크포인트(checkpoint)&amp;ldquo;를 수행하여 데이터베이스의 모든 더티 페이지(버퍼풀에서 수정된 페이지)를 디스크에 기록한 후, 로그 파일을 잘라내어 공간을 확보하게 된다.&lt;/p>
 &lt;p>MySQL에서 리두 로그는 원형 버퍼 형식으로 저장되며, 채워지면 다음 변경 사항은 순환 방식으로 다음 사용 가능한 리두 로그 파일에 기록된다. 이를 통해 리두 로그에 변경 사항이 지속적으로 기록되어 시스템 충돌이나 장애가 발생하더라도 변경 사항을 손실하지 않도록 보장한다.&lt;/p>
 &lt;h3 id="버퍼풀과-리두-로그의-관계">버퍼풀과 리두 로그의 관계&lt;/h3>
-&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_14.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_14.png"
 width="254"
 height="212"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_14_hu12b3affca177d60e9363f94fd37fd0f1_14755_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_2/mysql_4_14_hu12b3affca177d60e9363f94fd37fd0f1_14755_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_14_hu12b3affca177d60e9363f94fd37fd0f1_14755_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4/2/2/mysql_4_14_hu12b3affca177d60e9363f94fd37fd0f1_14755_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="버퍼풀과 리두 로그의 관계"
 class="gallery-image"
@@ -10537,10 +10537,10 @@ data-flex-basis="287px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>아직 MySQL 서버는 개별 인덱스별로 전체 페이지 개수가 몇 개인지는 사용자에게 알려주지 않기 때문에 &lt;code>information_schema&lt;/code>의 테이블을 이용해도 테이블의 인덱스별로 페이지가 InnoDB 버퍼풀에 적재된 비율은 확인할 수가 없다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(1)</title><link>https://codemario318.github.io/post/real_mysql_4_2_1/</link><pubDate>Tue, 11 Apr 2023 19:15:11 +0900</pubDate><guid>https://codemario318.github.io/post/real_mysql_4_2_1/</guid><description>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_1/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(1)" />&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_9.png"
+&lt;/div>&lt;p>아직 MySQL 서버는 개별 인덱스별로 전체 페이지 개수가 몇 개인지는 사용자에게 알려주지 않기 때문에 &lt;code>information_schema&lt;/code>의 테이블을 이용해도 테이블의 인덱스별로 페이지가 InnoDB 버퍼풀에 적재된 비율은 확인할 수가 없다.&lt;/p></description></item><item><title>4.2 InnoDB 스토리지 엔진 아키텍처(1)</title><link>https://codemario318.github.io/post/real-mysql/4/2/1/</link><pubDate>Tue, 11 Apr 2023 19:15:11 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/4/2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/4/2/1/real_mysql.jpeg" alt="Featured image of post 4.2 InnoDB 스토리지 엔진 아키텍처(1)" />&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_9.png"
 width="430"
 height="388"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_9_hu105976b7b8154af6ae8266098f664ca6_57568_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_9_hu105976b7b8154af6ae8266098f664ca6_57568_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_9_hu105976b7b8154af6ae8266098f664ca6_57568_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_9_hu105976b7b8154af6ae8266098f664ca6_57568_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="InnoDB 구조"
 class="gallery-image"
@@ -10629,10 +10629,10 @@ data-flex-basis="265px"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">member&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">m_area&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;경기&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">m_id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_11.png"
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_11.png"
 width="381"
 height="336"
-srcset="https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_11_hu900f8d0207e527c4c59056077a732b18_46489_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real_mysql_4_2_1/mysql_4_11_hu900f8d0207e527c4c59056077a732b18_46489_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_11_hu900f8d0207e527c4c59056077a732b18_46489_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/4/2/1/mysql_4_11_hu900f8d0207e527c4c59056077a732b18_46489_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="113"
