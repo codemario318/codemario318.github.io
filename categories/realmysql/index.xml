@@ -490,7 +490,7 @@
 &lt;ul>
 &lt;li>집계 함수는 주어진 그룹(&lt;code>GROUP BY&lt;/code> 절에 나열된 컬럼 값에 따른 그룹 또는 &lt;code>GROUP BY&lt;/code> 절 없이 전체 그룹)별로 하나의 레코드로 묶어 출력하지만 윈도우 함수는 조건에 일치하는 레코드 건수는 변하지 않고 그대로 유지한다.&lt;/li>
 &lt;li>일반적인 SQL 문장에서 하나의 레코드를 연산할 때 다른 레코드의 값을 참조할 수 없는데, 예외적으로 &lt;code>GROUP BY&lt;/code> 또는 집계 함수를 이용하면 다른 레코드의 컬럼 값을 참조할 수 있다.&lt;/li>
-&lt;li>&lt;code>GROUP BY&lt;/code> 또는 집계 함수를 사용하면 결과 집합의 모양이 바뀌나, 윈도우 함수는 겨로가 집합을 그대로 유지하면서 하나의 레코드 연산에 다른 레코드 연산에 따른 레코드 컬럼값을 참조할 수 있다.&lt;/li>
+&lt;li>&lt;code>GROUP BY&lt;/code> 또는 집계 함수를 사용하면 결과 집합의 모양이 바뀌나, 윈도우 함수는 결과 집합을 그대로 유지하면서 하나의 레코드 연산에 다른 레코드 연산에 따른 레코드 컬럼값을 참조할 수 있다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="쿼리-각-절의-실행-순서">쿼리 각 절의 실행 순서&lt;/h2>
 &lt;p>윈도우 함수를 사용하는 쿼리의 결과에 보여지는 레코드는 &lt;code>FROM&lt;/code>절과 &lt;code>WHERE&lt;/code> 절, &lt;code>GROUP BY&lt;/code>와 &lt;code>HAVING&lt;/code> 절에 의해 결정되고, 그 이후 윈도우 함수가 실행된다.&lt;/p>
