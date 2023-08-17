@@ -1,4 +1,183 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 02 Aug 2023 08:30:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.5 쿼리 작성 및 최적화 - INSERT</title><link>https://codemario318.github.io/post/real-mysql/11/5/</link><pubDate>Wed, 02 Aug 2023 08:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/5/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/5/real_mysql.jpeg" alt="Featured image of post 11.5 쿼리 작성 및 최적화 - INSERT" />&lt;p>일반적으로 온라인 트랜잭션 서비스에서 &lt;code>INSERT&lt;/code> 문장은 대부분 1건 또는 소량의 레코드를 처리하므로 그다지 성능에 대해 고려할 부분이 많지 않다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 16 Aug 2023 11:01:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.6 쿼리 작성 및 최적화 - UPDATE와 DELETE</title><link>https://codemario318.github.io/post/real-mysql/11/6/</link><pubDate>Wed, 16 Aug 2023 11:01:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/6/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/6/real_mysql.jpeg" alt="Featured image of post 11.6 쿼리 작성 및 최적화 - UPDATE와 DELETE" />&lt;p>일반적인 온라인 트랜잭션 프로그램에서 &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 문장은 주로 하나의 테이블에 대해 한 건 이상의 레코드를 변경, 삭제하기위해 사용되지만, MySQL 서버에서는 여러 테이블을 조인해서 한 개 이상의 테이블의 레코드를 변경하거나 삭제하는 기능도 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>JOIN UPDATE&lt;/code>, &lt;code>JOIN DELETE&lt;/code>로 처리하며 잘못된 데이터 보정, 일괄로 많은 레코드를 변경 및 삭제하는 경우에 유용하다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="update--order-by--limit-n">UPDATE &amp;hellip; ORDER BY &amp;hellip; LIMIT n&lt;/h2>
+&lt;p>MySQL 에서는 &lt;code>UPDATE&lt;/code>, &lt;code>DELETE&lt;/code> 문장에 &lt;code>ORDER BY&lt;/code> 절과 &lt;code>LIMIT&lt;/code>절을 동시에 사용해 특정 컬럼으로 정렬해서 상위 몇 건만 변경 및 삭제하는 것도 가능하다.&lt;/p>
+&lt;p>한 번에 너무 많은 레코드를 변경 및 삭제하는 작업은 MySQL 서버에 과부하를 유발하거나 다른 커넥션의 쿼리를 방해할 수도 있는데, 이 때 &lt;code>LIMIT&lt;/code>절을 이용해 조금씩 잘라서 변경하거나 삭제하는 방식을 손쉽게 구현할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>복제 소스 서버에서 문장을 실행하면 경고 메시지가 발생할 수 있다.
+&lt;ul>
+&lt;li>&lt;code>ORDER BY&lt;/code>에 의해 정렬되더라도 중복된 값의 순서가 복제 소스 서버와 레플리카 서버에서 달라질 수도 있기 때문이다.&lt;/li>
+&lt;li>프라이머리 키로 정렬하면 문제는 없지만 오류는 기록된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>바이너리 로그의 포맷이 로우(&lt;code>ROW&lt;/code>)일 경우 문제가 되지 않지만 문장(&lt;code>STATEMENT&lt;/code>) 기반의 복제에서는 주의가 필요하다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="join-update">JOIN UPDATE&lt;/h2>
+&lt;p>두 개 이상의 테이블을 조인해 조인된 겨로가 레코드를 변경 및 삭제하는 쿼리를 &lt;code>JOIN UPDATE&lt;/code>라고 한다.&lt;/p>
+&lt;ul>
+&lt;li>조인된 테이블 중에서 특정 테이블의 컬럼 값을 다른 테이블의 컬럼에 업데이트해야 할 때 주로 사용한다.&lt;/li>
+&lt;li>꼭 다른 테이블의 컬럼값을 참조하지 않더라도 조인되는 양쪽 테이블에 공통으로 존재하는 레코드만 찾아서 업데이트하는 용도로도 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>일반적으로 조인되는 모든 테이블에 대해 읽기 참조만 되는 테이블은 읽기 잠금이 걸리고, 컬럼이 변경되는 테이블은 쓰기 잠금이 걸린다.&lt;/p>
+&lt;ul>
+&lt;li>웹 서비스 같은 OLTP 환경에서는 데드락을 유발할 가능성이 높으므로 빈번하게 사용하는 것은 피하는게 좋다.&lt;/li>
+&lt;li>배치 프로그램이나 통계용 &lt;code>UPDPATE&lt;/code> 문장에서는 유용하게 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;code>JOIN UPDATE&lt;/code> 쿼리도 2개 이상의 테이블을 먼저 조인해야 하므로 테이블의 조인 순서에 따라 &lt;code>UPDATE&lt;/code> 문장의 성능이 달라질 수 있으므로 사용하기 전에 실행 계획을확인하는 것이 좋다.&lt;/p>
+&lt;h3 id="파생-테이블을-사용하는-join-update">파생 테이블을 사용하는 JOIN UPDATE&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ADD&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>테스트를 위해 &lt;code>departments&lt;/code>에 해당 부서에 소속된 사원의 수를 저장하기위한 &lt;code>emp_count&lt;/code>컬럼을 추가한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &amp;#39;GROUP BY de.dept_no&amp;#39; at line 4
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 쿼리는 &lt;code>dept_emp&lt;/code> 테이블에서 부서별로 사원의 수를 &lt;code>departments&lt;/code> 테이블의 &lt;code>emp_count&lt;/code>를 업데이트 하기 위해 만든 쿼리다.&lt;/p>
+&lt;p>&lt;code>GROUP BY&lt;/code>를 이용해서 해당 부서의 사원을 업데이트 할 수 있을 것 처럼 보이지만 &lt;code>JOIN UPDATE&lt;/code> 문장에서는 &lt;code>GROUP BY&lt;/code>, &lt;code>ORDER BY&lt;/code>절을 사용할 수 없기 때문에 위와 같은 에러가 발생한다.&lt;/p>
+&lt;p>이렇게 문법적으로 지원하지 않는 쿼리는 서브쿼리를 이용한 파생 테이블을 사용하여 의도한 대로 처리할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dc&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>서브쿼리로 &lt;code>dept_dmp&lt;/code> 테이블을 &lt;code>dept_no&lt;/code>로 그루핑하고, 그 결과를 파생 테이블로 저장한 후, &lt;code>departments&lt;/code> 테이블을 조인하여 업데이트 처리하게 된다.&lt;/p>
+&lt;h3 id="여러-레코드-update">여러 레코드 UPDATE&lt;/h3>
+&lt;p>하나의 &lt;code>UPDATE&lt;/code> 문장으로 여러 개의 레코드를 업데이트하는 경우 아래와 같이 모든 레코드 값을 동일한 값으로만 업데이트 할 수 있었다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>하지만 MySQL 8.0 버전부터는 &lt;strong>레코드 생성(Row Constructor) 문법&lt;/strong>을 이용해 레코드별로 서로 다른 값을 업데이트 할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">user_level&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">BIGINT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">user_lv&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">created_at&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">DATETIME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_level&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ul&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INNER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">ROW&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">ROW&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">new_user_level&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_lv&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">new_user_level&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_lv&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_lv&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">new_user_level&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_lv&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>VALUES ROW(...), ROW(...), ...&lt;/code> 문법을 사용하면 SQL 문장 내에서 임시 테이블을 생성하는 효과를 낼 수 있다.&lt;/p>
+&lt;p>위 예제는 2건의 레코드를 가지는 임시 테이블을 생성하고, 임시 테이블과 조인하여 업데이트를 수행하는 &lt;code>JOIN UPDATE&lt;/code> 효과를 낼 수 있다.&lt;/p>
+&lt;h2 id="join-delete">JOIN DELETE&lt;/h2>
+&lt;p>&lt;code>JOIN DELETE&lt;/code> 문장을 사용하려면 단일 테이블 처리시와 조금 다른 문법으로 쿼리를 작성해야한다.&lt;/p>
+&lt;h3 id="한개-테이블-데이터-삭제">한개 테이블 데이터 삭제&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">DELETE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;d001&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 예제는 3개의 테이블을 조인한 후 조인이 성공한 레코드에 대해 &lt;code>employees&lt;/code> 테이블의 레코드만 삭제한다.&lt;/p>
+&lt;ul>
+&lt;li>일반적으로 하나의 테이블에서 레코드를 삭제할 때는 &lt;code>DELETE FROM table ...&lt;/code> 같은 문법으로 사용하지만 &lt;code>JOIN DELETE&lt;/code> 문장에서는 &lt;code>DELETE&lt;/code>와 &lt;code>FROM&lt;/code>절 사이에 삭제할 테이블을 명시해야 한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="여러개-테이블-데이터-삭제">여러개 테이블 데이터 삭제&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">DELETE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dept_emp&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">departments&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">de&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dept_no&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;d001&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>DELETE&lt;/code>와 &lt;code>FROM&lt;/code> 사이에 표시된 테이블에 대해 삭제 처리된다.&lt;/p></description></item><item><title>11.5 쿼리 작성 및 최적화 - INSERT</title><link>https://codemario318.github.io/post/real-mysql/11/5/</link><pubDate>Wed, 02 Aug 2023 08:30:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/5/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/5/real_mysql.jpeg" alt="Featured image of post 11.5 쿼리 작성 및 최적화 - INSERT" />&lt;p>일반적으로 온라인 트랜잭션 서비스에서 &lt;code>INSERT&lt;/code> 문장은 대부분 1건 또는 소량의 레코드를 처리하므로 그다지 성능에 대해 고려할 부분이 많지 않다.&lt;/p>
 &lt;p>오히려 많은 &lt;code>INSERT&lt;/code> 문장이 동시에 실행되는 경우 &lt;code>INSERT&lt;/code> 문장 자체보다는 테이블의 구조가 성능에 더 영향을 미친다.&lt;/p>
 &lt;p>하지만 많은 경우 &lt;code>ISNERT&lt;/code>의 성능과 &lt;code>SELECT&lt;/code>의 성능을 동시에 빠르게 만들 수 있는 테이블 구조는 없기 때문에, &lt;code>INSERT&lt;/code>와 &lt;code>SELECT&lt;/code> 성능을 어느 정도 타협하면서 테이블 구조를 설계해야 한다.&lt;/p>
 &lt;h2 id="고급-옵션">고급 옵션&lt;/h2>
