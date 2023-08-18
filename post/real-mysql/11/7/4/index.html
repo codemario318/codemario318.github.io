@@ -1,0 +1,230 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Real MySQL 8.0"><title>11.7.4 스키마 조작(DDL) - 테이블 변경</title><link rel=canonical href=https://codemario318.github.io/post/real-mysql/11/7/4/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="11.7.4 스키마 조작(DDL) - 테이블 변경"><meta property="og:description" content="Real MySQL 8.0"><meta property="og:url" content="https://codemario318.github.io/post/real-mysql/11/7/4/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="DB"><meta property="article:tag" content="MySQL"><meta property="article:published_time" content="2023-08-18T14:32:10+09:00"><meta property="article:modified_time" content="2023-08-18T14:32:10+09:00"><meta property="og:image" content="https://codemario318.github.io/post/real-mysql/11/7/4/real_mysql.jpeg"><meta name=twitter:title content="11.7.4 스키마 조작(DDL) - 테이블 변경"><meta name=twitter:description content="Real MySQL 8.0"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/real-mysql/11/7/4/real_mysql.jpeg"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>BackEnd</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>27</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>FrontEnd</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/realmysql/><span>RealMySQL</span>
+<span class=content-count>36</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#테이블-생성>테이블 생성</a></li><li><a href=#테이블-구조-조회>테이블 구조 조회</a><ol><li><a href=#show-create-table><code>SHOW CREATE TABLE</code></a></li><li><a href=#desc><code>DESC</code></a></li></ol></li><li><a href=#테이블의-구조-변경>테이블의 구조 변경</a></li><li><a href=#테이블-명-변경>테이블 명 변경</a></li><li><a href=#테이블-상태-조회>테이블 상태 조회</a></li><li><a href=#테이블-구조-복사>테이블 구조 복사</a></li><li><a href=#테이블-삭제>테이블 삭제</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/real-mysql/11/7/4/><img src=/post/real-mysql/11/7/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg srcset="/post/real-mysql/11/7/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_800x0_resize_q75_box.jpeg 800w, /post/real-mysql/11/7/4/real_mysql_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_1600x0_resize_q75_box.jpeg 1600w" width=800 height=994 loading=lazy alt="Featured image of post 11.7.4 스키마 조작(DDL) - 테이블 변경"></a></div><div class=article-details><header class=article-category><a href=/categories/realmysql/>RealMySQL</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/real-mysql/11/7/4/>11.7.4 스키마 조작(DDL) - 테이블 변경</a></h2><h3 class=article-subtitle>Real MySQL 8.0</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/08/18</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>5 minute read</time></div></footer></div></header><section class=article-content><p>테이블은 사용자의 데이터를 가지는 주체로서, 서버의 많은 옵션과 인덱스 등의 기능이 테이블에 종속되어 사용된다.</p><h2 id=테이블-생성>테이블 생성</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=p>[</span><span class=n>TEMPORARY</span><span class=p>]</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=p>[</span><span class=k>IF</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>EXISTS</span><span class=p>]</span><span class=w> </span><span class=nf>tb_test</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>member_id</span><span class=w> </span><span class=kt>BIGINT</span><span class=w> </span><span class=p>[</span><span class=k>UNSIGNED</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=kp>AUTO_INCREMENT</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>nickname</span><span class=w> </span><span class=kt>CHAR</span><span class=p>(</span><span class=mi>20</span><span class=p>)</span><span class=w> </span><span class=p>[</span><span class=k>CHARACTER</span><span class=w> </span><span class=kt>SET</span><span class=w> </span><span class=s1>&#39;utf-8&#39;</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=k>COLLATE</span><span class=w> </span><span class=s1>&#39;utf8_general_ci&#39;</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>home_url</span><span class=w> </span><span class=kt>VARCHAR</span><span class=p>(</span><span class=mi>200</span><span class=p>)</span><span class=w> </span><span class=p>[</span><span class=k>COLLATE</span><span class=w> </span><span class=s1>&#39;latin1_general_cs&#39;</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>birth_year</span><span class=w> </span><span class=kt>SMALLINT</span><span class=w> </span><span class=p>[(</span><span class=mi>4</span><span class=p>)]</span><span class=w> </span><span class=p>[</span><span class=k>UNSIGNED</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=k>ZEROFILL</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>member_point</span><span class=w> </span><span class=kt>INT</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=k>DEFAULT</span><span class=w> </span><span class=mi>0</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>registerd_dttm</span><span class=w> </span><span class=kt>DATETIME</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>modified_ts</span><span class=w> </span><span class=kt>TIMESTAMP</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>]</span><span class=w> </span><span class=p>[</span><span class=k>DEFAULT</span><span class=w> </span><span class=k>CURRENT_TIMESTAMP</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>gender</span><span class=w> </span><span class=kt>ENUM</span><span class=p>(</span><span class=s1>&#39;Female&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Male&#39;</span><span class=p>)</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>hobby</span><span class=w> </span><span class=kt>SET</span><span class=p>(</span><span class=s1>&#39;Reading&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Game&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Sports&#39;</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>profile</span><span class=w> </span><span class=kt>TEXT</span><span class=w> </span><span class=p>[</span><span class=k>NOT</span><span class=w> </span><span class=no>NULL</span><span class=p>],</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>session_data</span><span class=w> </span><span class=kt>BLOB</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>member_id</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>UNIQUE</span><span class=w> </span><span class=k>INDEX</span><span class=w> </span><span class=nf>ux_nickname</span><span class=w> </span><span class=p>(</span><span class=n>nickname</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>INDEX</span><span class=w> </span><span class=nf>ix_registereddttm</span><span class=w> </span><span class=p>(</span><span class=n>registered_dttm</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=kp>ENGINE</span><span class=o>=</span><span class=n>INNODB</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li><code>TEMPORARY</code> 키워드를 사용하면 해당 커넥션에서만 사용 가능한 임시 테이블을 생성한다.</li><li>이미 같은 테이블이 있으면 에러가 발생하며 옵션을 사용하여 무시할 수 있다.</li><li>테이블을 정의한 스크립트 마지막에 스토리지 엔진을 결정하기 위한 <code>ENGINE</code> 키워드를 사용할 수 있다.<ul><li>별도로 정의되지 않으면 MySQL 8.0에서는 InnoDB 스토리지 엔진이 기본으로 사용된다.</li></ul></li></ul><p>각 컬럼은 <code>컬럼명 + 컬럼타입 + [타입 별 옵션] + [NULL 여부] + [기본값]</code> 순서로 명시하고, 타입별로 여러 옵션을 추가로 사용할 수 있다.</p><ul><li>15장 참조</li></ul><h2 id=테이블-구조-조회>테이블 구조 조회</h2><p>테이블 구조를 확인하는 방법은 <code>SHOW CREATE TABLE</code>, <code>DESC</code> 명령이 있다.</p><h3 id=show-create-table><code>SHOW CREATE TABLE</code></h3><p><code>CREATE TABLE</code> 문장을 표시해준다. 최초로 생성할 때 사용자가 실행한 내용이 아닌 테이블의 메타 정보를 읽어 <code>CREATE TABLE</code> 명령으로 재작성하여 보여준다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SHOW</span><span class=w> </span><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>employees</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| Table     | Create Table                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>| employees | CREATE TABLE `employees` (
+</span></span></span><span class=line><span class=cl><span class=cm>  `emp_no` int NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  `birth_date` date NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  `first_name` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  `last_name` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  `gender` enum(&#39;M&#39;,&#39;F&#39;) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  `hire_date` date NOT NULL,
+</span></span></span><span class=line><span class=cl><span class=cm>  PRIMARY KEY (`emp_no`),
+</span></span></span><span class=line><span class=cl><span class=cm>  KEY `ix_hiredate` (`hire_date`),
+</span></span></span><span class=line><span class=cl><span class=cm>  KEY `ix_gender_birthdate` (`gender`,`birth_date`),
+</span></span></span><span class=line><span class=cl><span class=cm>  KEY `ix_firstname` (`first_name`)
+</span></span></span><span class=line><span class=cl><span class=cm>) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci STATS_PERSISTENT=0 |
+</span></span></span><span class=line><span class=cl><span class=cm>+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>컬럼의 목록, 인덱스, 외래키 정보를 동시에 보여주기 때문에 SQL을 튜닝하거나 테이블의 구조를 확인할 때 주로 사용한다.</p><h3 id=desc><code>DESC</code></h3><p><code>DESCRIBE</code>의 약어 형태의 명령으로 같은 결과를 보여준다. 테이블이 컬럼 정보를 보기 편한 표 형태로 표시해준다.</p><p>인덱스 컬럼의 순서나 외래키, 테이블 자체의 속성을 보여주지는 않으므로 테이블의 전체적인 구조를 한 번에 확인하기는 어렵다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>DESC</span><span class=w> </span><span class=n>employees</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>+------------+---------------+------+-----+---------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>| Field      | Type          | Null | Key | Default | Extra |
+</span></span></span><span class=line><span class=cl><span class=cm>+------------+---------------+------+-----+---------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>| emp_no     | int           | NO   | PRI | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>| birth_date | date          | NO   |     | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>| first_name | varchar(14)   | NO   | MUL | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>| last_name  | varchar(16)   | NO   |     | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>| gender     | enum(&#39;M&#39;,&#39;F&#39;) | NO   | MUL | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>| hire_date  | date          | NO   | MUL | NULL    |       |
+</span></span></span><span class=line><span class=cl><span class=cm>+------------+---------------+------+-----+---------+-------+
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=테이블의-구조-변경>테이블의 구조 변경</h2><p><code>ALTER TABLE</code> 명령을 사용한다. 테이블의 자체의 속성을 변경할 수 있을뿐만 아니라 인덱스의 추가 삭제나 컬럼을 추가/삭제하는 용도로도 사용된다.</p><p>테이블 자체에 대한 속성 변경은 주로 테이블의 문자 집합이나 스토리지 엔진, 파티션 구조 등의 변경이다.</p><ul><li>파티션은 13장 참조</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>employees</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>CONVERT</span><span class=w> </span><span class=k>TO</span><span class=w> </span><span class=k>CHARACTER</span><span class=w> </span><span class=kt>SET</span><span class=w> </span><span class=n>UTF8MB4</span><span class=w> </span><span class=k>COLLATE</span><span class=w> </span><span class=n>UTF8MB4_GENERAL_CI</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>ALGORITHM</span><span class=o>=</span><span class=n>INPLACE</span><span class=p>,</span><span class=w> </span><span class=k>LOCK</span><span class=o>=</span><span class=n>NONE</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>employees</span><span class=w> </span><span class=kp>ENGINE</span><span class=o>=</span><span class=n>InnoDB</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>ALGORITHM</span><span class=o>=</span><span class=n>INPLACE</span><span class=p>,</span><span class=w> </span><span class=k>LOCK</span><span class=o>=</span><span class=n>NONE</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>스토리지 엔진을 변경하는 명령은 내부적인 테이블의 저장소를 변경하는 것이라 항상 테이블의 모든 레코드를 복사하는 작업이 필요하다.</p><ul><li><code>ALTER TABLE</code> 문장에 명시된 <code>ENGINE</code>이 기존과 동일하더라도 테이블의 데이터를 복사하는 작업은 실행되기 때문에 주의해야 한다.</li><li>테이블 데이터를 리블드 하는 목적으로도 사용된다.<ul><li>주로 레코드의 삭제가 자주 발생하는 테이블에서 데이터가 저장되지 않은 빈 공간을 제거해 디스크 사용 공간을 줄이는 역할을 한다.</li></ul></li></ul><h2 id=테이블-명-변경>테이블 명 변경</h2><p><code>RENAME TABLE</code> 명령으로 처리할 수 있으며, 당순히 테이블의 이름 변경뿐만 아니라 다른 데이터베이스로 테이블을 이동할 때도 사용할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>RENAME</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>table1</span><span class=w> </span><span class=k>TO</span><span class=w> </span><span class=k>table</span><span class=w> </span><span class=mi>2</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>RENAME</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>db1</span><span class=p>.</span><span class=n>table1</span><span class=w> </span><span class=k>TO</span><span class=w> </span><span class=n>db2</span><span class=p>.</span><span class=k>table</span><span class=w> </span><span class=mi>2</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li><strong>이름만 변경하는 경우</strong><ul><li>첫 번째 명령 처럼 동일 데이터베이스 내에서 이름만 변경하는 작업은 메타 정보만 병경하기 때문에 매우 빨리 처리된다.</li></ul></li><li><strong>테이블 복사</strong><ul><li>두 번째 명령과 같이 데이터베이스를 변경하는 경우는 메타 정보뿐만 아니라 테이블이 저장된 파일까지 다른 디렉터리로 이동해야 한다.</li><li>운영체제에서 서로 다른 파티션으로 파일을 이동할 때는 데이터 파일을 먼저 복사하고 복사를 완료하면 원본 파티션의 파일을 삭제하는 형태로 처리하는데 동일하게 처리된다.</li><li>서로 다른 운영체제의 파일 스스템을 사용하고 있었다면 데이터 파일의 크기에 비례해서 시간이 소요된다.</li><li>테이블을 교체하는 경우 일시적으로 테이블이 없어지는 시점이 발생하기 때문에 에러를 발생 시킬 수 있다.<ul><li>여러 테이블의 <code>RENAME</code>명령을 하나의 문장으로 묶어 실행하여 예방할 수 있다.</li></ul></li></ul></li></ul><h2 id=테이블-상태-조회>테이블 상태 조회</h2><p>모든 테이블은 만들어진 시간, 대략적인 레코드 건수, 데이터 파일의 크기 등 정보를 가지고 있다. 또한 데이터 파일의 버전이나 레코드 포맷 등과 같이 자주 사용되지는 않지만 중요한 정보도 가지고 있는데, 이러한 정보를 조회할 수 있는 명령이 <code>SHOW TABLE STATUS ...</code>다.</p><ul><li><code>LIKE '패턴'</code> 과 같은 조건을 사용해 특정 테이블의 상태만 조회하는 것도 가능하다.</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SHOW</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>STATUS</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;employees&#39;</span><span class=w> </span><span class=err>\</span><span class=n>G</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>*************************** 1. row ***************************
+</span></span></span><span class=line><span class=cl><span class=cm>           Name: employees
+</span></span></span><span class=line><span class=cl><span class=cm>         Engine: InnoDB
+</span></span></span><span class=line><span class=cl><span class=cm>        Version: 10
+</span></span></span><span class=line><span class=cl><span class=cm>     Row_format: Dynamic
+</span></span></span><span class=line><span class=cl><span class=cm>           Rows: 297022
+</span></span></span><span class=line><span class=cl><span class=cm> Avg_row_length: 51
+</span></span></span><span class=line><span class=cl><span class=cm>    Data_length: 15220736
+</span></span></span><span class=line><span class=cl><span class=cm>Max_data_length: 0
+</span></span></span><span class=line><span class=cl><span class=cm>   Index_length: 22593536
+</span></span></span><span class=line><span class=cl><span class=cm>      Data_free: 5242880
+</span></span></span><span class=line><span class=cl><span class=cm> Auto_increment: NULL
+</span></span></span><span class=line><span class=cl><span class=cm>    Create_time: 2023-07-25 10:31:33
+</span></span></span><span class=line><span class=cl><span class=cm>    Update_time: 2023-08-17 14:39:48
+</span></span></span><span class=line><span class=cl><span class=cm>     Check_time: NULL
+</span></span></span><span class=line><span class=cl><span class=cm>      Collation: utf8mb4_general_ci
+</span></span></span><span class=line><span class=cl><span class=cm>       Checksum: NULL
+</span></span></span><span class=line><span class=cl><span class=cm> Create_options: stats_persistent=0
+</span></span></span><span class=line><span class=cl><span class=cm>        Comment:
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>SELECT</code> 쿼리를 이용해서 조회할 수도 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>information_schema</span><span class=p>.</span><span class=kp>TABLES</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=n>TABLE_SCHEMA</span><span class=o>=</span><span class=s1>&#39;employees&#39;</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>TABLE_NAME</span><span class=o>=</span><span class=s1>&#39;employees&#39;</span><span class=w> </span><span class=err>\</span><span class=n>G</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>*************************** 1. row ***************************
+</span></span></span><span class=line><span class=cl><span class=cm>  TABLE_CATALOG: def
+</span></span></span><span class=line><span class=cl><span class=cm>   TABLE_SCHEMA: employees
+</span></span></span><span class=line><span class=cl><span class=cm>     TABLE_NAME: employees
+</span></span></span><span class=line><span class=cl><span class=cm>     TABLE_TYPE: BASE TABLE
+</span></span></span><span class=line><span class=cl><span class=cm>         ENGINE: InnoDB
+</span></span></span><span class=line><span class=cl><span class=cm>        VERSION: 10
+</span></span></span><span class=line><span class=cl><span class=cm>     ROW_FORMAT: Dynamic
+</span></span></span><span class=line><span class=cl><span class=cm>     TABLE_ROWS: 297022
+</span></span></span><span class=line><span class=cl><span class=cm> AVG_ROW_LENGTH: 51
+</span></span></span><span class=line><span class=cl><span class=cm>    DATA_LENGTH: 15220736
+</span></span></span><span class=line><span class=cl><span class=cm>MAX_DATA_LENGTH: 0
+</span></span></span><span class=line><span class=cl><span class=cm>   INDEX_LENGTH: 22593536
+</span></span></span><span class=line><span class=cl><span class=cm>      DATA_FREE: 5242880
+</span></span></span><span class=line><span class=cl><span class=cm> AUTO_INCREMENT: NULL
+</span></span></span><span class=line><span class=cl><span class=cm>    CREATE_TIME: 2023-07-25 10:31:33
+</span></span></span><span class=line><span class=cl><span class=cm>    UPDATE_TIME: 2023-08-17 14:39:48
+</span></span></span><span class=line><span class=cl><span class=cm>     CHECK_TIME: NULL
+</span></span></span><span class=line><span class=cl><span class=cm>TABLE_COLLATION: utf8mb4_general_ci
+</span></span></span><span class=line><span class=cl><span class=cm>       CHECKSUM: NULL
+</span></span></span><span class=line><span class=cl><span class=cm> CREATE_OPTIONS: stats_persistent=0
+</span></span></span><span class=line><span class=cl><span class=cm>  TABLE_COMMENT:
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=테이블-구조-복사>테이블 구조 복사</h2><ul><li><p><code>SHOW CREATE TABLE</code></p><ul><li>테이블 구조는 같지만 이름만 다른 테이블을 생성할 때는 <code>SHOW CREATE TABLE</code> 명령을 이용해 테이블의 생성 DDL을 조회한 후에 조금 변경해서 만들 수도 있다.</li></ul></li><li><p><code>CREATE TABLE ... AS SELECT ... LIMIT 0</code></p><ul><li><code>SHOW CREATE TABLE</code> 명령을 사용하면 내용을 조금 변경해야 할 수도 있다</li><li>인덱스가 생성되지 않는다.</li></ul></li><li><p><code>CREATE TABLE ... LIKE</code></p><ul><li>데이터는 복사하지 않고 테이블의 구조만 동일하게 복사한다.</li><li>데이터가지 복사하려면 생성 후 <code>INSERT INTO</code> 명령을 추가로 사용한다.</li></ul></li></ul><h2 id=테이블-삭제>테이블 삭제</h2><p>MySQL 8.0 에서는 특정 테이블을 삭제하는 작업이 다른 테이블의 DML이나 쿼리를 직접 방해하지는 않는다.</p><p>레코드가 많지 않은 테이블을 삭제하는 작업은 서비스 도중이라고 하더라도 문제가 되지는 않지만 용량이 매우 큰 테이블을 삭제하는 작업은 상당히 부하가 크다.</p><ul><li>서버는 해당 테이블이 사용하던 데이터 파일을 삭제해야 한다.<ul><li>파일의 크기가 매우 크고 디스크에서 파일 조각들이 너무 분산되어 저장돼 있다면 많은 디스크 읽기/쓰기 작업이 필요하다.</li><li>이로인해 다른 커넥션의 쿼리 처리 성능이 떨어질 수도 있다.</li></ul></li></ul><p>InnoDB 스토리지 엔진의 어댑티브 해시 인덱스는 버퍼불의 각 페이지가 가진 레코드에 대한 해시 인덱스 기능을 제공하는데, 어댑티브 해시 인덱스가 활성화돼있는 경우 테이블이 삭제되면 관련 정보들을 모두 삭제해야 한다.</p><ul><li>많이 가지고 있다면 삭제 작업으로 인해 서버의 부하가 높아지고 간접적으로 다른 쿼리 처리에 영향을 미칠 수도 있다.</li><li>테이블의 스키마 변경에도 영향을 미칠 수 있다.</li></ul></section><footer class=article-footer><section class=article-tags><a href=/tags/db/>DB</a>
+<a href=/tags/mysql/>MySQL</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/real-mysql/11/7/3/><div class=article-image><img src=/post/real-mysql/11/7/3/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경" data-key=real-mysql/11/7/3 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경</h2></div></a></article><article class=has-image><a href=/post/real-mysql/11/7/2/><div class=article-image><img src=/post/real-mysql/11/7/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.7.2 스키마 조작(DDL) - 데이터베이스 변경" data-key=real-mysql/11/7/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.7.2 스키마 조작(DDL) - 데이터베이스 변경</h2></div></a></article><article class=has-image><a href=/post/real-mysql/11/7/1/><div class=article-image><img src=/post/real-mysql/11/7/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.7.1 스키마 조작(DDL) - 온라인 DDL" data-key=real-mysql/11/7/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.7.1 스키마 조작(DDL) - 온라인 DDL</h2></div></a></article><article class=has-image><a href=/post/real-mysql/11/6/><div class=article-image><img src=/post/real-mysql/11/6/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.6 쿼리 작성 및 최적화 - UPDATE와 DELETE" data-key=real-mysql/11/6 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.6 쿼리 작성 및 최적화 - UPDATE와 DELETE</h2></div></a></article><article class=has-image><a href=/post/real-mysql/11/5/><div class=article-image><img src=/post/real-mysql/11/5/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 11.5 쿼리 작성 및 최적화 - INSERT" data-key=real-mysql/11/5 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>11.5 쿼리 작성 및 최적화 - INSERT</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

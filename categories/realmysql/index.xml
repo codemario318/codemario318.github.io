@@ -1,4 +1,361 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:23:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/3/</link><pubDate>Fri, 18 Aug 2023 14:23:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/3/real_mysql.jpeg" alt="Featured image of post 11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경" />&lt;p>MySQL 서버에는 전통적으로 테이블별로 전용 테이블 스페이스를 사용했었다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:32:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.4 스키마 조작(DDL) - 테이블 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/4/</link><pubDate>Fri, 18 Aug 2023 14:32:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/4/real_mysql.jpeg" alt="Featured image of post 11.7.4 스키마 조작(DDL) - 테이블 변경" />&lt;p>테이블은 사용자의 데이터를 가지는 주체로서, 서버의 많은 옵션과 인덱스 등의 기능이 테이블에 종속되어 사용된다.&lt;/p>
+&lt;h2 id="테이블-생성">테이블 생성&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">TEMPORARY&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">IF&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">EXISTS&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_test&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">member_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">BIGINT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">UNSIGNED&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kp">AUTO_INCREMENT&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">CHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;utf-8&amp;#39;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;utf8_general_ci&amp;#39;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">home_url&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">200&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;latin1_general_cs&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">birth_year&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SMALLINT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[(&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">)]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">UNSIGNED&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">ZEROFILL&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">member_point&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">registerd_dttm&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">DATETIME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">modified_ts&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">TIMESTAMP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CURRENT_TIMESTAMP&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">gender&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">ENUM&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Female&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Male&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">hobby&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Reading&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Game&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Sports&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">profile&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">TEXT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">session_data&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">BLOB&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">member_id&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">ux_nickname&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">INDEX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">ix_registereddttm&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">registered_dttm&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kp">ENGINE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">INNODB&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>TEMPORARY&lt;/code> 키워드를 사용하면 해당 커넥션에서만 사용 가능한 임시 테이블을 생성한다.&lt;/li>
+&lt;li>이미 같은 테이블이 있으면 에러가 발생하며 옵션을 사용하여 무시할 수 있다.&lt;/li>
+&lt;li>테이블을 정의한 스크립트 마지막에 스토리지 엔진을 결정하기 위한 &lt;code>ENGINE&lt;/code> 키워드를 사용할 수 있다.
+&lt;ul>
+&lt;li>별도로 정의되지 않으면 MySQL 8.0에서는 InnoDB 스토리지 엔진이 기본으로 사용된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>각 컬럼은 &lt;code>컬럼명 + 컬럼타입 + [타입 별 옵션] + [NULL 여부] + [기본값]&lt;/code> 순서로 명시하고, 타입별로 여러 옵션을 추가로 사용할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>15장 참조&lt;/li>
+&lt;/ul>
+&lt;h2 id="테이블-구조-조회">테이블 구조 조회&lt;/h2>
+&lt;p>테이블 구조를 확인하는 방법은 &lt;code>SHOW CREATE TABLE&lt;/code>, &lt;code>DESC&lt;/code> 명령이 있다.&lt;/p>
+&lt;h3 id="show-create-table">&lt;code>SHOW CREATE TABLE&lt;/code>&lt;/h3>
+&lt;p>&lt;code>CREATE TABLE&lt;/code> 문장을 표시해준다. 최초로 생성할 때 사용자가 실행한 내용이 아닌 테이블의 메타 정보를 읽어 &lt;code>CREATE TABLE&lt;/code> 명령으로 재작성하여 보여준다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| Table | Create Table |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| employees | CREATE TABLE `employees` (
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `emp_no` int NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `birth_date` date NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `first_name` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `last_name` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `gender` enum(&amp;#39;M&amp;#39;,&amp;#39;F&amp;#39;) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> `hire_date` date NOT NULL,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> PRIMARY KEY (`emp_no`),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> KEY `ix_hiredate` (`hire_date`),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> KEY `ix_gender_birthdate` (`gender`,`birth_date`),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> KEY `ix_firstname` (`first_name`)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci STATS_PERSISTENT=0 |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>컬럼의 목록, 인덱스, 외래키 정보를 동시에 보여주기 때문에 SQL을 튜닝하거나 테이블의 구조를 확인할 때 주로 사용한다.&lt;/p>
+&lt;h3 id="desc">&lt;code>DESC&lt;/code>&lt;/h3>
+&lt;p>&lt;code>DESCRIBE&lt;/code>의 약어 형태의 명령으로 같은 결과를 보여준다. 테이블이 컬럼 정보를 보기 편한 표 형태로 표시해준다.&lt;/p>
+&lt;p>인덱스 컬럼의 순서나 외래키, 테이블 자체의 속성을 보여주지는 않으므로 테이블의 전체적인 구조를 한 번에 확인하기는 어렵다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">DESC&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+------------+---------------+------+-----+---------+-------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| Field | Type | Null | Key | Default | Extra |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+------------+---------------+------+-----+---------+-------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| emp_no | int | NO | PRI | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| birth_date | date | NO | | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| first_name | varchar(14) | NO | MUL | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| last_name | varchar(16) | NO | | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| gender | enum(&amp;#39;M&amp;#39;,&amp;#39;F&amp;#39;) | NO | MUL | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">| hire_date | date | NO | MUL | NULL | |
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">+------------+---------------+------+-----+---------+-------+
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="테이블의-구조-변경">테이블의 구조 변경&lt;/h2>
+&lt;p>&lt;code>ALTER TABLE&lt;/code> 명령을 사용한다. 테이블의 자체의 속성을 변경할 수 있을뿐만 아니라 인덱스의 추가 삭제나 컬럼을 추가/삭제하는 용도로도 사용된다.&lt;/p>
+&lt;p>테이블 자체에 대한 속성 변경은 주로 테이블의 문자 집합이나 스토리지 엔진, 파티션 구조 등의 변경이다.&lt;/p>
+&lt;ul>
+&lt;li>파티션은 13장 참조&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">CONVERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">UTF8MB4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">UTF8MB4_GENERAL_CI&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">INPLACE&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kp">ENGINE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">InnoDB&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">INPLACE&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>스토리지 엔진을 변경하는 명령은 내부적인 테이블의 저장소를 변경하는 것이라 항상 테이블의 모든 레코드를 복사하는 작업이 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>ALTER TABLE&lt;/code> 문장에 명시된 &lt;code>ENGINE&lt;/code>이 기존과 동일하더라도 테이블의 데이터를 복사하는 작업은 실행되기 때문에 주의해야 한다.&lt;/li>
+&lt;li>테이블 데이터를 리블드 하는 목적으로도 사용된다.
+&lt;ul>
+&lt;li>주로 레코드의 삭제가 자주 발생하는 테이블에서 데이터가 저장되지 않은 빈 공간을 제거해 디스크 사용 공간을 줄이는 역할을 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="테이블-명-변경">테이블 명 변경&lt;/h2>
+&lt;p>&lt;code>RENAME TABLE&lt;/code> 명령으로 처리할 수 있으며, 당순히 테이블의 이름 변경뿐만 아니라 다른 데이터베이스로 테이블을 이동할 때도 사용할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">RENAME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">table1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">table&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">RENAME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">table1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">db2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">table&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;strong>이름만 변경하는 경우&lt;/strong>
+&lt;ul>
+&lt;li>첫 번째 명령 처럼 동일 데이터베이스 내에서 이름만 변경하는 작업은 메타 정보만 병경하기 때문에 매우 빨리 처리된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>테이블 복사&lt;/strong>
+&lt;ul>
+&lt;li>두 번째 명령과 같이 데이터베이스를 변경하는 경우는 메타 정보뿐만 아니라 테이블이 저장된 파일까지 다른 디렉터리로 이동해야 한다.&lt;/li>
+&lt;li>운영체제에서 서로 다른 파티션으로 파일을 이동할 때는 데이터 파일을 먼저 복사하고 복사를 완료하면 원본 파티션의 파일을 삭제하는 형태로 처리하는데 동일하게 처리된다.&lt;/li>
+&lt;li>서로 다른 운영체제의 파일 스스템을 사용하고 있었다면 데이터 파일의 크기에 비례해서 시간이 소요된다.&lt;/li>
+&lt;li>테이블을 교체하는 경우 일시적으로 테이블이 없어지는 시점이 발생하기 때문에 에러를 발생 시킬 수 있다.
+&lt;ul>
+&lt;li>여러 테이블의 &lt;code>RENAME&lt;/code>명령을 하나의 문장으로 묶어 실행하여 예방할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="테이블-상태-조회">테이블 상태 조회&lt;/h2>
+&lt;p>모든 테이블은 만들어진 시간, 대략적인 레코드 건수, 데이터 파일의 크기 등 정보를 가지고 있다. 또한 데이터 파일의 버전이나 레코드 포맷 등과 같이 자주 사용되지는 않지만 중요한 정보도 가지고 있는데, 이러한 정보를 조회할 수 있는 명령이 &lt;code>SHOW TABLE STATUS ...&lt;/code>다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>LIKE '패턴'&lt;/code> 과 같은 조건을 사용해 특정 테이블의 상태만 조회하는 것도 가능하다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">STATUS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;employees&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="n">G&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*************************** 1. row ***************************
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Name: employees
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Engine: InnoDB
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Version: 10
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Row_format: Dynamic
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Rows: 297022
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Avg_row_length: 51
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Data_length: 15220736
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">Max_data_length: 0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Index_length: 22593536
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Data_free: 5242880
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Auto_increment: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Create_time: 2023-07-25 10:31:33
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Update_time: 2023-08-17 14:39:48
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Check_time: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Collation: utf8mb4_general_ci
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Checksum: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Create_options: stats_persistent=0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Comment:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>SELECT&lt;/code> 쿼리를 이용해서 조회할 수도 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">information_schema&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kp">TABLES&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">TABLE_SCHEMA&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;employees&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">TABLE_NAME&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;employees&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="n">G&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*************************** 1. row ***************************
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_CATALOG: def
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_SCHEMA: employees
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_NAME: employees
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_TYPE: BASE TABLE
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> ENGINE: InnoDB
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> VERSION: 10
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> ROW_FORMAT: Dynamic
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_ROWS: 297022
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> AVG_ROW_LENGTH: 51
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> DATA_LENGTH: 15220736
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">MAX_DATA_LENGTH: 0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> INDEX_LENGTH: 22593536
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> DATA_FREE: 5242880
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> AUTO_INCREMENT: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> CREATE_TIME: 2023-07-25 10:31:33
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> UPDATE_TIME: 2023-08-17 14:39:48
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> CHECK_TIME: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">TABLE_COLLATION: utf8mb4_general_ci
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> CHECKSUM: NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> CREATE_OPTIONS: stats_persistent=0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> TABLE_COMMENT:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="테이블-구조-복사">테이블 구조 복사&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>SHOW CREATE TABLE&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>테이블 구조는 같지만 이름만 다른 테이블을 생성할 때는 &lt;code>SHOW CREATE TABLE&lt;/code> 명령을 이용해 테이블의 생성 DDL을 조회한 후에 조금 변경해서 만들 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>CREATE TABLE ... AS SELECT ... LIMIT 0&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>SHOW CREATE TABLE&lt;/code> 명령을 사용하면 내용을 조금 변경해야 할 수도 있다&lt;/li>
+&lt;li>인덱스가 생성되지 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>CREATE TABLE ... LIKE&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>데이터는 복사하지 않고 테이블의 구조만 동일하게 복사한다.&lt;/li>
+&lt;li>데이터가지 복사하려면 생성 후 &lt;code>INSERT INTO&lt;/code> 명령을 추가로 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="테이블-삭제">테이블 삭제&lt;/h2>
+&lt;p>MySQL 8.0 에서는 특정 테이블을 삭제하는 작업이 다른 테이블의 DML이나 쿼리를 직접 방해하지는 않는다.&lt;/p>
+&lt;p>레코드가 많지 않은 테이블을 삭제하는 작업은 서비스 도중이라고 하더라도 문제가 되지는 않지만 용량이 매우 큰 테이블을 삭제하는 작업은 상당히 부하가 크다.&lt;/p>
+&lt;ul>
+&lt;li>서버는 해당 테이블이 사용하던 데이터 파일을 삭제해야 한다.
+&lt;ul>
+&lt;li>파일의 크기가 매우 크고 디스크에서 파일 조각들이 너무 분산되어 저장돼 있다면 많은 디스크 읽기/쓰기 작업이 필요하다.&lt;/li>
+&lt;li>이로인해 다른 커넥션의 쿼리 처리 성능이 떨어질 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>InnoDB 스토리지 엔진의 어댑티브 해시 인덱스는 버퍼불의 각 페이지가 가진 레코드에 대한 해시 인덱스 기능을 제공하는데, 어댑티브 해시 인덱스가 활성화돼있는 경우 테이블이 삭제되면 관련 정보들을 모두 삭제해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>많이 가지고 있다면 삭제 작업으로 인해 서버의 부하가 높아지고 간접적으로 다른 쿼리 처리에 영향을 미칠 수도 있다.&lt;/li>
+&lt;li>테이블의 스키마 변경에도 영향을 미칠 수 있다.&lt;/li>
+&lt;/ul></description></item><item><title>11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/3/</link><pubDate>Fri, 18 Aug 2023 14:23:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/3/real_mysql.jpeg" alt="Featured image of post 11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경" />&lt;p>MySQL 서버에는 전통적으로 테이블별로 전용 테이블 스페이스를 사용했었다.&lt;/p>
 &lt;p>InnoDB 스토리지 엔진의 시스템 테이블 스페이스만 제너럴 테이블스페이스를 사용했는데, 제너럴 테이블스페이스는 여러 테이블의 데이터를 한꺼번에 저장하는 테이블스페이스를 의미한다.&lt;/p>
 &lt;p>MySQL 8.0 버전이 되면서 사용자 테이블을 제너럴 테이블스페이스로 저장하는 기능이 추가되고 테이블스페이스를 관리하는 DDL 명령이 추가됐다.&lt;/p>
 &lt;h2 id="제약-사항">제약 사항&lt;/h2>
