@@ -1,4 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:10:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.2 스키마 조작(DDL) - 데이터베이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/2/</link><pubDate>Fri, 18 Aug 2023 14:10:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/2/real_mysql.jpeg" alt="Featured image of post 11.7.2 스키마 조작(DDL) - 데이터베이스 변경" />&lt;p>MySQL에서 하나의 인스턴스는 1개 이상의 데이터베이스를 가질 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RealMySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in RealMySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:23:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/3/</link><pubDate>Fri, 18 Aug 2023 14:23:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/3/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/3/real_mysql.jpeg" alt="Featured image of post 11.7.3 스키마 조작(DDL) - 테이블 스페이스 변경" />&lt;p>MySQL 서버에는 전통적으로 테이블별로 전용 테이블 스페이스를 사용했었다.&lt;/p>
+&lt;p>InnoDB 스토리지 엔진의 시스템 테이블 스페이스만 제너럴 테이블스페이스를 사용했는데, 제너럴 테이블스페이스는 여러 테이블의 데이터를 한꺼번에 저장하는 테이블스페이스를 의미한다.&lt;/p>
+&lt;p>MySQL 8.0 버전이 되면서 사용자 테이블을 제너럴 테이블스페이스로 저장하는 기능이 추가되고 테이블스페이스를 관리하는 DDL 명령이 추가됐다.&lt;/p>
+&lt;h2 id="제약-사항">제약 사항&lt;/h2>
+&lt;p>MySQL 8.0에서도 제너럴 테이블스페이스는 여러가지 제약 사항을 가진다.&lt;/p>
+&lt;ul>
+&lt;li>파티션 테이블은 제너럴 테이블 스페이스를 사용하지 못함&lt;/li>
+&lt;li>복제 소스와 레플리카 서버가 동일 호스트에서 실행되는 경우 &lt;code>ADD DATAFILE&lt;/code> 문장은 사용 불가&lt;/li>
+&lt;li>테이블 암호화는 테이블스페이스 단위로 설정됨&lt;/li>
+&lt;li>테이블 압축 가능 여부는 테이블스페이스의 블록 사이즈와 InnoDB 페이지 사이즈에 의해 결정됨&lt;/li>
+&lt;li>특정 테이블을 삭제(&lt;code>DROP TABLE&lt;/code>)해도 디스크 공간이 운영체제로 반납되지 않음&lt;/li>
+&lt;/ul>
+&lt;h2 id="장점">장점&lt;/h2>
+&lt;p>그럼에도 불구하고 사용자 테입르이 제너럴 테이블 스페이스를 이용할 수 있게 개선된 것은 다음과 같은 장점이 있기 때문이다.&lt;/p>
+&lt;ul>
+&lt;li>제너럴 테이블스페이스를 사용하면 파일 핸들러(Open file descriptor)를 최소화&lt;/li>
+&lt;li>테이블스페이스 관리에 필요한 메모리 공간 최소화&lt;/li>
+&lt;/ul>
+&lt;p>위 장점은 테입르의 개수가 매우 많은 경우에 유용하며, 아직 일반적인 환경에서 제너럴 테이블 스페이스의 장점을 취하기가 어렵다.&lt;/p>
+&lt;h2 id="사용">사용&lt;/h2>
+&lt;p>MySQL 서버에서 테이블이 어떤 테이블스페이스를 사용할지는 &lt;code>innodb_file_per_table&lt;/code> 시스템 변수로 제어할 수 있다.&lt;/p>
+&lt;p>MySQL 8.0에서는 해당 시스템 변수 기본값이 ON이므로 테이블은 자동으로 개별 테이블스페이스를 사용한다.&lt;/p>
+&lt;blockquote>
+&lt;p>데이터베이스에 작은 테이블이 매우 많이 필요한 응용 프로그램을 개발 중이라면 제너럴 테이블 스페이스에 대한 활용을 고려해보는 것도 좋은 방법이다.&lt;/p>
+&lt;/blockquote></description></item><item><title>11.7.2 스키마 조작(DDL) - 데이터베이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/2/</link><pubDate>Fri, 18 Aug 2023 14:10:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/2/real_mysql.jpeg" alt="Featured image of post 11.7.2 스키마 조작(DDL) - 데이터베이스 변경" />&lt;p>MySQL에서 하나의 인스턴스는 1개 이상의 데이터베이스를 가질 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>다른 RDBMS에서는 스키마와 데이터베이스를 구분해서 관리하지만 MySQL 서버에서는 스키마와 데이터베이스는 동격의 개념이므로 굳이 스키마를 명시적으로 사용하지는 않는다.&lt;/li>
 &lt;li>MySQL의 데이터베이스는 디스크ㅡ이 물리적인 저장소를 구분하기도 하지만 여러 데이터베이스의 테이블을 묶어서 조인 쿼리를 사용할 수도 있기 때문에 단순히 논리적인 개념이기도 하다.&lt;/li>
