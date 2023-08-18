@@ -1,4 +1,81 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 17 Aug 2023 14:51:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.1 스키마 조작(DDL) - 온라인 DDL</title><link>https://codemario318.github.io/post/real-mysql/11/7/1/</link><pubDate>Thu, 17 Aug 2023 14:51:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/1/real_mysql.jpeg" alt="Featured image of post 11.7.1 스키마 조작(DDL) - 온라인 DDL" />&lt;p>DBMS 서버의 모든 오브젝트를 생성하거나 변경하는 쿼리를 DDL(Data Definition Language)라고 한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:10:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.2 스키마 조작(DDL) - 데이터베이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/2/</link><pubDate>Fri, 18 Aug 2023 14:10:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/2/real_mysql.jpeg" alt="Featured image of post 11.7.2 스키마 조작(DDL) - 데이터베이스 변경" />&lt;p>MySQL에서 하나의 인스턴스는 1개 이상의 데이터베이스를 가질 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>다른 RDBMS에서는 스키마와 데이터베이스를 구분해서 관리하지만 MySQL 서버에서는 스키마와 데이터베이스는 동격의 개념이므로 굳이 스키마를 명시적으로 사용하지는 않는다.&lt;/li>
+&lt;li>MySQL의 데이터베이스는 디스크ㅡ이 물리적인 저장소를 구분하기도 하지만 여러 데이터베이스의 테이블을 묶어서 조인 쿼리를 사용할 수도 있기 때문에 단순히 논리적인 개념이기도 하다.&lt;/li>
+&lt;li>데이터베이스는 객체에 대한 권한을 구분하는 용도로 사용되기도 하지만 그 이상의 큰 의미를 가지지는 않는다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="데이터베이스-생성">데이터베이스 생성&lt;/h2>
+&lt;p>데이터베이스에 설정할 수 있는 옵션은 기본 문자 집합이나 콜레이션을 설정하는 정도이므로 간단하다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">IF&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">EXISTS&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">IF&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">EXISTS&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">utf8mb4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">IF&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">EXISTS&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">utf8mb4&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">utf8mb_general_ci&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="데이터베이스-목록">데이터베이스 목록&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASES&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SHOW&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;%emp%&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>접속된 MySQL 서버가 가지고 있는 데이터베이스의 목록을 나열한다.&lt;/p>
+&lt;ul>
+&lt;li>권한을 가지고 있는 데이터 베이스 목록만 표시한다.&lt;/li>
+&lt;li>&lt;code>SHOW DATABASES&lt;/code> 권한이 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="데이터베이스-선택">데이터베이스 선택&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">USE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>기본 데이터베이스를 선택하는 명령이다.&lt;/p>
+&lt;ul>
+&lt;li>SQL 문장에서 데이터베이스를 명시하지 않고 테이블 이름이나 프로시저의 이름만 명시하면 현재 커넥션의 기본 데이터베이스에서 주어진 테이블이나 프로시저를 검색한다.&lt;/li>
+&lt;li>기본 데이터베이스에 존재하지 않는 테이블이나 프로시저를 사용하려면 이름 앞에 데이터베이스 이름을 반드시 명시해야한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="데이터베이스-속성-변경">데이터베이스 속성 변경&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">euckr&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">euckr&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">euckr_korean_ci&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>생성할 때 지정한 문자 집합이나 콜레이션을 변경한다.&lt;/p>
+&lt;h2 id="데이터베이스-삭제">데이터베이스 삭제&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">DROP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DATABASE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">IF&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">EXISTS&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>데이터베이스를 삭제한다.&lt;/p>
+&lt;ul>
+&lt;li>지정한 이름의 데이터베이스가 존재하지 않는다면 에러가 발생한다.&lt;/li>
+&lt;li>&lt;code>IF EXISTS&lt;/code> 키워드를 사용하면 존재할 때만 삭제한다.&lt;/li>
+&lt;/ul></description></item><item><title>11.7.1 스키마 조작(DDL) - 온라인 DDL</title><link>https://codemario318.github.io/post/real-mysql/11/7/1/</link><pubDate>Thu, 17 Aug 2023 14:51:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/1/real_mysql.jpeg" alt="Featured image of post 11.7.1 스키마 조작(DDL) - 온라인 DDL" />&lt;p>DBMS 서버의 모든 오브젝트를 생성하거나 변경하는 쿼리를 DDL(Data Definition Language)라고 한다.&lt;/p>
 &lt;ul>
 &lt;li>스토어드 프로시저나 함수, DB나 테이블 등을 생성하거나 변경하는 대부분의 명령이 DDL에 해당한다.&lt;/li>
 &lt;li>MySQL 서버가 업그레이드 되면서 많은 DDL이 온라인 모드로 처리될 수 있게 개선됐지만, 스키마를 변경하는 작업 중에는 상히 오랜 시간이 걸리고 서버에 많은 부하를 발생시키는 작업들이 있으므로 주의해야 한다.&lt;/li>
