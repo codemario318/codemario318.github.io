@@ -1,4 +1,108 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 14:32:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.4 스키마 조작(DDL) - 테이블 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/4/</link><pubDate>Fri, 18 Aug 2023 14:32:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/4/real_mysql.jpeg" alt="Featured image of post 11.7.4 스키마 조작(DDL) - 테이블 변경" />&lt;p>테이블은 사용자의 데이터를 가지는 주체로서, 서버의 많은 옵션과 인덱스 등의 기능이 테이블에 종속되어 사용된다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MySQL on Mario Blog</title><link>https://codemario318.github.io/tags/mysql/</link><description>Recent content in MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 18 Aug 2023 16:00:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.5 스키마 조작(DDL) - 컬럼 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/5/</link><pubDate>Fri, 18 Aug 2023 16:00:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/5/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/5/real_mysql.jpeg" alt="Featured image of post 11.7.5 스키마 조작(DDL) - 컬럼 변경" />&lt;p>테이블 구조 변경 작업은 대부분 컬럼을 추가하거나 타입을 변경하는 작업이다.&lt;/p>
+&lt;h2 id="컬럼-추가">컬럼 추가&lt;/h2>
+&lt;p>MySQL 8.0 버전으로 업그레이드되면서 테이블 컬럼 추가 작업은 대부분 &lt;code>INPLACE&lt;/code> 알고리즘을 사용하는 온라인 DDL로 처리가 가능하다.&lt;/p>
+&lt;p>또한 컬럼을 테이블의 제일 마지막 컬럼으로 추가하는 작업은 &lt;code>INSTANT&lt;/code> 알고리즘으로 즉시 추가된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ADD&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLUMN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_telno&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">INSTANT&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ADD&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLUMN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_telno&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">AFTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_no&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">INPLACE&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>사용하여 기존 컬럼 중간에 새로 추가하는 경우 테이블의 리빌드가 필요하여 &lt;code>INPLACE&lt;/code> 알고리즘을 사용해야 한다.&lt;/p>
+&lt;p>따라서 테이블이 큰 경우라면 테이블의 마지막 컬럼으로 추가하는 것이 좋다.&lt;/p>
+&lt;h2 id="컬럼-삭제">컬럼 삭제&lt;/h2>
+&lt;p>컬럼을 삭제하는 작업은 항상 테이블 리빌드를 필요로 하기 때문에 &lt;code>INPLACE&lt;/code> 알고리즘만 사용 가능하다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DROP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLUMN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">emp_telno&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">INPLACE&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="이름-및-타입-변경">이름 및 타입 변경&lt;/h2>
+&lt;p>컬럼의 타입 변경은 현재 컬럼의 타입과 변경하고자 하는 데이터 타입에 따라 매우 다양한 형태가 될 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 이름 변경 */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHANGE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">end_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">DATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">INPLACE&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/* INT를 VARCHAR로 변경 */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salaries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MODIFY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">salary&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">VARCHAER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">COPY&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">SHARED&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/* VARCHAR 확장 */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MODIFY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">VARCHAER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">30&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">COPY&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">NONE&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="cm">/* VARCHAR 축소 */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">employees&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MODIFY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">last_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">VARCHAER&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ALGORITHM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">COPY&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LOCK&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">SHARED&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>이름 변경:
+&lt;ul>
+&lt;li>컬럼의 이름만 변경하는 작업은 &lt;code>INPLACE&lt;/code> 알고리즘을 사용하지만 실제 데이터 리빌드 작업은 필요치 않으므로 빠르게 완료된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 타입 변경:
+&lt;ul>
+&lt;li>데이터 타입이 변경되는 경우 &lt;code>COPY&lt;/code> 알고리즘이 필요하며 온라인 DDL로 실행되어도 스키마 변경중에는 테이블 쓰기 작업은 불가능하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>크기 확장:
+&lt;ul>
+&lt;li>확장하는 경우는 현재 길이와 확장하는 길이의 관계에 따라 리빌드가 필요할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>크기 축소:
+&lt;ul>
+&lt;li>길이를 축소하는 경우 완전히 다른 타입으로 변경되는 경우과 같이 &lt;code>COPY&lt;/code> 알고리즘을 사용해야한다.&lt;/li>
+&lt;li>스키마를 변경하는 중 테이블의 데이터 변경은 허용되지 않으므로 &lt;code>SHERED&lt;/code>로 사용돼야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>컬럼 타입을 변경 중 가장 빈번한 것은 &lt;code>VARCHAR&lt;/code>, &lt;code>VARBINARY&lt;/code> 타입의 길이를 확장하는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>해당 타입은 컬럼의 쵀대 허용 사이자가 메타데이터에 저장되지만, 실제 컬럼이 가지는 값의 길이는 데이터 레코드의 컬럼 헤더에 저장되는데, 동일한 값이더라도 다른 용량이 필요할 수 있다.
+&lt;ul>
+&lt;li>값의 길이를 위해서 사용하는 공간의 크기는 최대 가질 수 있는 바이트 수 만큼 필요하기 때문에 컬럼값의 길이 저장용 공간은 컬럼의 값이 최대 가질수 있는 바이트 수가 255 이하인 경우 1 바이트만 사용하며, 256 바이트 이상인 경우 2바이트를 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>INPLACE&lt;/code> 알고리즘으로 필요로 하는 같은 용량으로 변경하는 경우 리빌드가 필요 없지만, 문자 셋이나 크기 변경으로 인해 필요로 하는 용량이 변경된다면 리빌딩이 필요하다.&lt;/li>
+&lt;/ul></description></item><item><title>11.7.4 스키마 조작(DDL) - 테이블 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/4/</link><pubDate>Fri, 18 Aug 2023 14:32:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/4/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/4/real_mysql.jpeg" alt="Featured image of post 11.7.4 스키마 조작(DDL) - 테이블 변경" />&lt;p>테이블은 사용자의 데이터를 가지는 주체로서, 서버의 많은 옵션과 인덱스 등의 기능이 테이블에 종속되어 사용된다.&lt;/p>
 &lt;h2 id="테이블-생성">테이블 생성&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -351,6 +455,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
+&lt;hr>
 &lt;p>InnoDB 스토리지 엔진의 어댑티브 해시 인덱스는 버퍼불의 각 페이지가 가진 레코드에 대한 해시 인덱스 기능을 제공하는데, 어댑티브 해시 인덱스가 활성화돼있는 경우 테이블이 삭제되면 관련 정보들을 모두 삭제해야 한다.&lt;/p>
 &lt;ul>
 &lt;li>많이 가지고 있다면 삭제 작업으로 인해 서버의 부하가 높아지고 간접적으로 다른 쿼리 처리에 영향을 미칠 수도 있다.&lt;/li>
@@ -368,12 +473,12 @@
 &lt;li>특정 테이블을 삭제(&lt;code>DROP TABLE&lt;/code>)해도 디스크 공간이 운영체제로 반납되지 않음&lt;/li>
 &lt;/ul>
 &lt;h2 id="장점">장점&lt;/h2>
-&lt;p>그럼에도 불구하고 사용자 테입르이 제너럴 테이블 스페이스를 이용할 수 있게 개선된 것은 다음과 같은 장점이 있기 때문이다.&lt;/p>
+&lt;p>그럼에도 불구하고 사용자 테이블이 제너럴 테이블 스페이스를 이용할 수 있게 개선된 것은 다음과 같은 장점이 있기 때문이다.&lt;/p>
 &lt;ul>
 &lt;li>제너럴 테이블스페이스를 사용하면 파일 핸들러(Open file descriptor)를 최소화&lt;/li>
 &lt;li>테이블스페이스 관리에 필요한 메모리 공간 최소화&lt;/li>
 &lt;/ul>
-&lt;p>위 장점은 테입르의 개수가 매우 많은 경우에 유용하며, 아직 일반적인 환경에서 제너럴 테이블 스페이스의 장점을 취하기가 어렵다.&lt;/p>
+&lt;p>위 장점은 테이블의 개수가 매우 많은 경우에 유용하며, 일반적인 환경에서 제너럴 테이블 스페이스의 장점을 취하기가 어렵다.&lt;/p>
 &lt;h2 id="사용">사용&lt;/h2>
 &lt;p>MySQL 서버에서 테이블이 어떤 테이블스페이스를 사용할지는 &lt;code>innodb_file_per_table&lt;/code> 시스템 변수로 제어할 수 있다.&lt;/p>
 &lt;p>MySQL 8.0에서는 해당 시스템 변수 기본값이 ON이므로 테이블은 자동으로 개별 테이블스페이스를 사용한다.&lt;/p>
@@ -381,8 +486,8 @@
 &lt;p>데이터베이스에 작은 테이블이 매우 많이 필요한 응용 프로그램을 개발 중이라면 제너럴 테이블 스페이스에 대한 활용을 고려해보는 것도 좋은 방법이다.&lt;/p>
 &lt;/blockquote></description></item><item><title>11.7.2 스키마 조작(DDL) - 데이터베이스 변경</title><link>https://codemario318.github.io/post/real-mysql/11/7/2/</link><pubDate>Fri, 18 Aug 2023 14:10:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/2/real_mysql.jpeg" alt="Featured image of post 11.7.2 스키마 조작(DDL) - 데이터베이스 변경" />&lt;p>MySQL에서 하나의 인스턴스는 1개 이상의 데이터베이스를 가질 수 있다.&lt;/p>
 &lt;ul>
-&lt;li>다른 RDBMS에서는 스키마와 데이터베이스를 구분해서 관리하지만 MySQL 서버에서는 스키마와 데이터베이스는 동격의 개념이므로 굳이 스키마를 명시적으로 사용하지는 않는다.&lt;/li>
-&lt;li>MySQL의 데이터베이스는 디스크ㅡ이 물리적인 저장소를 구분하기도 하지만 여러 데이터베이스의 테이블을 묶어서 조인 쿼리를 사용할 수도 있기 때문에 단순히 논리적인 개념이기도 하다.&lt;/li>
+&lt;li>다른 RDBMS에서는 스키마와 데이터베이스를 구분해서 관리하지만 MySQL 서버에서는 스키마와 데이터베이스는 동격 개념이므로 굳이 스키마를 명시적으로 사용하지는 않는다.&lt;/li>
+&lt;li>MySQL의 데이터베이스는 디스크의 물리적인 저장소를 구분하기도 하지만 여러 데이터베이스의 테이블을 묶어서 조인 쿼리를 사용할 수도 있기 때문에 단순히 논리적인 개념이기도 하다.&lt;/li>
 &lt;li>데이터베이스는 객체에 대한 권한을 구분하는 용도로 사용되기도 하지만 그 이상의 큰 의미를 가지지는 않는다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="데이터베이스-생성">데이터베이스 생성&lt;/h2>
@@ -459,7 +564,7 @@
 &lt;/ul></description></item><item><title>11.7.1 스키마 조작(DDL) - 온라인 DDL</title><link>https://codemario318.github.io/post/real-mysql/11/7/1/</link><pubDate>Thu, 17 Aug 2023 14:51:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/1/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/1/real_mysql.jpeg" alt="Featured image of post 11.7.1 스키마 조작(DDL) - 온라인 DDL" />&lt;p>DBMS 서버의 모든 오브젝트를 생성하거나 변경하는 쿼리를 DDL(Data Definition Language)라고 한다.&lt;/p>
 &lt;ul>
 &lt;li>스토어드 프로시저나 함수, DB나 테이블 등을 생성하거나 변경하는 대부분의 명령이 DDL에 해당한다.&lt;/li>
-&lt;li>MySQL 서버가 업그레이드 되면서 많은 DDL이 온라인 모드로 처리될 수 있게 개선됐지만, 스키마를 변경하는 작업 중에는 상히 오랜 시간이 걸리고 서버에 많은 부하를 발생시키는 작업들이 있으므로 주의해야 한다.&lt;/li>
+&lt;li>MySQL 서버가 업그레이드 되면서 많은 DDL이 온라인 모드로 처리될 수 있게 개선됐지만, 스키마를 변경하는 작업은 오랜 시간이 걸리고 서버에 많은 부하를 발생시키는 작업들이 있으므로 주의해야 한다.&lt;/li>
 &lt;/ul>
 &lt;p>MySQL 5.5 이전 버전까지는 서버에서 테이블의 구조를 변경하는 동안 다른 커넥션에서 DML을 실행할 수 없었기 때문에 Percona에서 개발한 pt-online-schema-change라는 도구를 사용해야했다.(MySQL 5.5 버전에서도 성능상 이유로 사용했다.)&lt;/p>
 &lt;p>MySQL 8.0 버전으로 업그레이드되면서 대부분의 스키마 변경 작업은 서버에 내장된 온라인 DDL 기능으로 처리가 가능하기 때문에 위와 같은 도구는 거의 사용되지 않는다.&lt;/p>
@@ -467,13 +572,13 @@
 &lt;p>온라인 DDL은 스키마를 변경하는 작업 도중에도 다른 커넥션에서 해당 테이블의 데이터를 변경하거나 조회하는 작업을 가능하게 해준다.&lt;/p>
 &lt;ul>
 &lt;li>온라인 DDL 기능은 테이블의 구조를 변경하거나 인덱스 추가와 같은 대부분의 작업에 대해 작동한다.&lt;/li>
-&lt;li>&lt;code>ALGORITHM&lt;/code>, &lt;code>LOCK&lt;/code> 옵션을 통해 어떤 모드로 스키마 변경을 실행할 지 결정할 수 있다.&lt;/li>
+&lt;li>&lt;code>ALGORITHM&lt;/code>, &lt;code>LOCK&lt;/code> 옵션을 통해 어떤 모드로 스키마 변경을 실행할지 결정할 수 있다.&lt;/li>
 &lt;/ul>
 &lt;p>MySQL 서버는 &lt;code>old_alter_table&lt;/code> 시스템 변수를 이용해 &lt;code>ALTER TABLE&lt;/code> 명령이 온라인 DDL 또는 예전 방식(테이블의 읽고 쓰기를 막고 스키마를 변경하는 방식)으로 처리할지를 결정할 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>해당 시스템 변수의 기본값은 &lt;code>OFF&lt;/code>로 설정되어 있어 기본적으로 온라인 DDL이 활성화된다.&lt;/li>
 &lt;/ul>
-&lt;p>&lt;code>ALTER TABLE&lt;/code> 명령이 실행되면 다음과 같은 수서로 스키마 변경에 적합한 알고리즘을 찾는다.&lt;/p>
+&lt;p>&lt;code>ALTER TABLE&lt;/code> 명령이 실행되면 다음과 같은 순서로 스키마 변경에 적합한 알고리즘을 찾는다.&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>ALGORITHM=INSTANT&lt;/code>로 스키마 변경이 가능한지 확인 후, 가능하면 선택&lt;/li>
 &lt;li>&lt;code>ALGORITHM=INPLACE&lt;/code>로 스키마 변경이 가능한지 확인 후, 가능하면 선택&lt;/li>
@@ -483,7 +588,7 @@
 &lt;h3 id="instant">INSTANT&lt;/h3>
 &lt;p>테이블의 데이터는 전혀 변경하지 않고, 메타데이터만 변경하고 작업을 완료한다.&lt;/p>
 &lt;ul>
-&lt;li>테이블이 가진 레코드건수와 무관하게 작업 시간이 매우 짧다.&lt;/li>
+&lt;li>테이블이 가진 레코드 건수와 무관하게 작업 시간이 매우 짧다.&lt;/li>
 &lt;li>스키마 변경 도중 테이블의 읽고 쓰기는 대기하게 되지만 스키마 변경 시간이 매우 짧기 때문에 다른 커넥션의 쿼리 처리에는 크게 영향을 미치지 않는다.&lt;/li>
 &lt;/ul>
 &lt;h3 id="inplace">INPLACE&lt;/h3>
@@ -492,7 +597,7 @@
 &lt;li>내부적으로는 테이블의 리빌드를 실행할 수 있다.&lt;/li>
 &lt;li>레코드의 복사 작업은 없지만 테이블의 모든 레코드를 리빌드해야 하기 때문에 테이블의 크기에 따라 많은 시간이 소요될 수 있다.&lt;/li>
 &lt;li>스키마 변경 중에도 테이블의 읽기와 쓰기 모두 가능하다.&lt;/li>
-&lt;li>최초 시작 시점과 마지막 종료 시점에는 테입르의 읽고 쓰기가 불가능하다.
+&lt;li>최초 시작 시점과 마지막 종료 시점에는 테이블의 읽고 쓰기가 불가능하다.
 &lt;ul>
 &lt;li>하지만 시간이 매우 짧기 때문에 다른 커넥션의 쿼리 처리에 대한 영향도는 높지 않다.&lt;/li>
 &lt;/ul>
@@ -539,7 +644,7 @@
 &lt;li>테이블의 프라이머리 키를 추가하는 작업은 데이터 파일에서 레코드의 저장 위치가 바뀌어야 하기 때문에 테이블 리빌드가 필요하다.&lt;/li>
 &lt;li>단순히 컬럼의 이름만 변경하는 경우 &lt;code>INPLACE&lt;/code> 알고리즘을 사용해야 하지만 테이블 레코드의 리빌드는 필요하지 않다.&lt;/li>
 &lt;/ul>
-&lt;p>프라이머리 키를 추가하는 경우와 같이 테이블 레코드의 리빌드가 필요한 경우를 &lt;strong>Data Reorganizing(데이터 재구성)&lt;/strong> 또는 **Table Rebuild(테이블 리빌드)**라고 부른다.&lt;/p>
+&lt;p>프라이머리 키를 추가하는 경우와 같이 테이블 레코드의 리빌드가 필요한 경우를 &lt;strong>Data Reorganizing(데이터 재구성)&lt;/strong> 또는 &lt;strong>Table Rebuild(테이블 리빌드)&lt;/strong> 라고 부른다.&lt;/p>
 &lt;p>결론적으로 &lt;code>INPLACE&lt;/code> 알고리즘을 사용하는 경우는 데이터 재구성(테이블 리빌드) 여부에 따라 다음과 같이 구분할 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>필요한 경우: 잠금을 필요로 하지 않기 때문에 읽고 쓰기는 가능하지면 테이블의 레코드 건수에 따라 상당히 많은 시간이 소요될 수도 있다.&lt;/li>
@@ -560,7 +665,7 @@
 &lt;/ul>
 &lt;p>온라인 DDL이라 하더라도 서버에 부하를 유발할 수 있으며, 그로 인해 다른 커넥션의 쿼리들이 느려질 수도 있다. 따라서 스키마 변경 작업이 직접 다른 커넥션의 DML을 대기하게 만들지는 않더라도 주의해서 사용한다.&lt;/p>
 &lt;h2 id="inplace-알고리즘">INPLACE 알고리즘&lt;/h2>
-&lt;p>&lt;code>INPLACE&lt;/code> 알고리즘은 임시 테입르로 레코드를 복사하지는 않더라도 내부적으로 테입르의 모든 레코드를 리빌드해야 하는 경우가 많다.&lt;/p>
+&lt;p>&lt;code>INPLACE&lt;/code> 알고리즘은 임시 테이블로 레코드를 복사하지는 않더라도 내부적으로 테이블의 모든 레코드를 리빌드해야 하는 경우가 많다.&lt;/p>
 &lt;p>이러한 경우 다음과 같은 과정을 거친다.&lt;/p>
 &lt;ol>
 &lt;li>스키마 변경이 지원되는 스토리지 엔진의 테이블인지 확인&lt;/li>
@@ -595,7 +700,7 @@
 &lt;/li>
 &lt;/ul>
 &lt;h2 id="온라인-ddl의-실패-케이스">온라인 DDL의 실패 케이스&lt;/h2>
-&lt;p>온라인 DDL이 &lt;code>INSTANT&lt;/code> 알고리즘을 사용하는 경우 시작과 동시에 작업이 완료되기 때문에 작업 도중 실패할 가능성은 거의 없지만, &lt;code>INPLACE&lt;/code> 알고리즘으로 실행되는 경우 내부적으로 테이블 리빌드 과정이 필요하고 최종 로그 적용 과정이 필요해서 중간에 실패할 가능성이 높은 편이다.&lt;/p>
+&lt;p>온라인 DDL이 &lt;code>INSTANT&lt;/code> 알고리즘을 사용하는 경우 시작과 동시에 작업이 완료되기 때문에 작업 도중 실패할 가능성은 거의 없지만, &lt;code>INPLACE&lt;/code> 알고리즘으로 실행되는 경우 내부적으로 테이블 리빌드 과정이 필요할 수 있고, 최종 로그 적용 과정이 필요해서 중간에 실패할 가능성이 높은 편이다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>ALTER TABLE&lt;/code> 명령이 장시간 실행되고 동시에 다른 커넥션에서 DML이 많이 실행되는 경우&lt;/li>
 &lt;li>온라인 변경 로그의 공간이 부족한 경우&lt;/li>
@@ -654,7 +759,7 @@
 &lt;li>바이너리 로그의 포맷이 로우(&lt;code>ROW&lt;/code>)일 경우 문제가 되지 않지만 문장(&lt;code>STATEMENT&lt;/code>) 기반의 복제에서는 주의가 필요하다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="join-update">JOIN UPDATE&lt;/h2>
-&lt;p>두 개 이상의 테이블을 조인해 조인된 겨로가 레코드를 변경 및 삭제하는 쿼리를 &lt;code>JOIN UPDATE&lt;/code>라고 한다.&lt;/p>
+&lt;p>두 개 이상의 테이블을 조인해 조인된 결과 레코드를 변경 및 삭제하는 쿼리를 &lt;code>JOIN UPDATE&lt;/code>라고 한다.&lt;/p>
 &lt;ul>
 &lt;li>조인된 테이블 중에서 특정 테이블의 컬럼 값을 다른 테이블의 컬럼에 업데이트해야 할 때 주로 사용한다.&lt;/li>
 &lt;li>꼭 다른 테이블의 컬럼값을 참조하지 않더라도 조인되는 양쪽 테이블에 공통으로 존재하는 레코드만 찾아서 업데이트하는 용도로도 사용할 수 있다.&lt;/li>
@@ -665,8 +770,9 @@
 &lt;li>웹 서비스 같은 OLTP 환경에서는 데드락을 유발할 가능성이 높으므로 빈번하게 사용하는 것은 피하는게 좋다.&lt;/li>
 &lt;li>배치 프로그램이나 통계용 &lt;code>UPDPATE&lt;/code> 문장에서는 유용하게 사용할 수 있다.&lt;/li>
 &lt;/ul>
-&lt;hr>
-&lt;p>&lt;code>JOIN UPDATE&lt;/code> 쿼리도 2개 이상의 테이블을 먼저 조인해야 하므로 테이블의 조인 순서에 따라 &lt;code>UPDATE&lt;/code> 문장의 성능이 달라질 수 있으므로 사용하기 전에 실행 계획을확인하는 것이 좋다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>JOIN UPDATE&lt;/code> 쿼리도 2개 이상의 테이블을 먼저 조인해야 하므로 테이블의 조인 순서에 따라 &lt;code>UPDATE&lt;/code> 문장의 성능이 달라질 수 있으므로 사용하기 전에 실행 계획을 확인하는 것이 좋다.&lt;/p>
+&lt;/blockquote>
 &lt;h3 id="파생-테이블을-사용하는-join-update">파생 테이블을 사용하는 JOIN UPDATE&lt;/h3>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
