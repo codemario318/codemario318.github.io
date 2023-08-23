@@ -1,4 +1,83 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Real MySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in Real MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 23 Aug 2023 12:57:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.7.9 스키마 조작(DDL) - 활성 트랜잭션 조회</title><link>https://codemario318.github.io/post/real-mysql/11/7/9/</link><pubDate>Wed, 23 Aug 2023 12:57:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/9/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/9/real_mysql.jpeg" alt="Featured image of post 11.7.9 스키마 조작(DDL) - 활성 트랜잭션 조회" />&lt;p>쿼리가 오랜 시간 실행되고 있는 경우도 문제지만 트랜잭션이 오랜 시간 완료되지 않고 활성 상태로 남아있는 것도 MySQL 서버의 성능에 영향을 미칠 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Real MySQL on Mario Blog</title><link>https://codemario318.github.io/categories/realmysql/</link><description>Recent content in Real MySQL on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 23 Aug 2023 13:02:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/realmysql/index.xml" rel="self" type="application/rss+xml"/><item><title>11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트</title><link>https://codemario318.github.io/post/real-mysql/11/8/</link><pubDate>Wed, 23 Aug 2023 13:02:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/8/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/8/real_mysql.jpeg" alt="Featured image of post 11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트" />&lt;p>작성된 쿼리가 얼마나 효율적이고 더 개선할 부분이 있는지 확인하려면 아래의 과정을 거친다.&lt;/p>
+&lt;ul>
+&lt;li>실행 계획을 살펴보고 문제될 만한 부분이 있는지 검토한다.&lt;/li>
+&lt;li>실행 계획에 특별히 문제될 부분이 없다면 쿼리를 직접 실행해본다.
+&lt;ul>
+&lt;li>실행 계획상 보이지 않는 부분을 확인하기 위해&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>쿼리를 직접 실행해보면서 눈으로 성을 체크할 때 여러 방해 요소가 있는데, 이러한 방해 요소를 간과하고 쿼리의 성능을 판단하는 것은 매우 위험하다.&lt;/p>
+&lt;h2 id="쿼리의-성능에-영향을-미치는-요소">쿼리의 성능에 영향을 미치는 요소&lt;/h2>
+&lt;p>직접 작성한 쿼리를 실행해 보고 성능을 판단할 때 가장 큰 변수는 서버가 가지고 있는 여러 종류의 버퍼나 캐시이다.&lt;/p>
+&lt;h3 id="운영체제의-캐시">운영체제의 캐시&lt;/h3>
+&lt;p>MySQL 서버는 운영체제의 파일 시스템 관련 기능(시스템 콜 등)을 이용해 데이터 파일을 읽어온다.&lt;/p>
+&lt;ul>
+&lt;li>일반적으로 대부분 운영체제는 한 번 읽어은 데이터를 관리하는 별도 캐시 영역에 보관했다가 다시 해당 데이터가 요청되면 디스크를 읽지 않고 캐시의 내용을 바로 MySQL 서버로 전달한다.&lt;/li>
+&lt;li>InnoDB 스토리지 엔진은 일반적으로 파일 시스템의 캐시나 버퍼를 거치지 않는 Direct I/O를 사용하므로 운영체제의 캐시가 큰 영향을 미치지는 않는다.&lt;/li>
+&lt;li>MyISAM 스토리지 엔진은 운영체제의 캐시 의존도가 높기 때문에 캐시에 따라 성능 차이가 크다.&lt;/li>
+&lt;/ul>
+&lt;p>운영체제가 관리하는 캐시나 버퍼는 공용 공간으로 MySQL 서버와 같은 응용 프로그램이 종료된 후에도 남아있을 수 있다. 따라서 운영체제가 가지고 있는 캐시나 버퍼가 전혀 없는 상태에서 쿼리의 성능을 테스트하려면 캐시 삭제 명령을 실행하고 테스트 하는 것이 좋다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## linux 기준!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## 캐스나 버퍼의 내용을 디스크와 동기화&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sync
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## 운영체제의 포함된 캐시 내용을 초기화한다.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="m">3&lt;/span> &amp;gt; /proc/sys/vm/drop_caches
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="mysql-서버의-버퍼풀innodb-버퍼풀과-myisam의-키-캐시">MySQL 서버의 버퍼풀(InnoDB 버퍼풀과 MyISAM의 키 캐시)&lt;/h3>
+&lt;p>운영 체제의 버퍼나 캐시와 마찬가지로 MySQL 서버에서도 InnoDB 버퍼풀, MyISAM 키 캐시 등으로 데이터 파일의 내용을 페이지(또는 블록) 단위로 캐시하는 기능을 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>InnoDB 버퍼풀은 인덱스 페이지와 데이터 페이지까지 캐시하며, 쓰기 작업을 위한 버퍼링 작업까지 처리한다.&lt;/li>
+&lt;li>MyISAM 키 캐시는 읽기를 위한 캐시 역할을 수행하며, 제한적으로 인덱스 변경만을 위한 버퍼 역할을 수행한다.
+&lt;ul>
+&lt;li>인덱스를 제외한 테이블 데이터는 모두 운영체제의 캐시에 의존한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>MySQL 서버가 한번 시작되면 버퍼풀과 키 캐시를 강제로 퍼지할 수 있는 방법이 없으므로 초기화 하려면 MySQL 서버를 재시작 해야한다.&lt;/p>
+&lt;p>InnoDB 버펄풀은 서버가 종료될 때 자동으로 덤프됐다가 사작될 때 자동으로 적재하므로 InnoDB 버퍼풀이 자동으로 처리도지 않게 &lt;code>innodb_buffer_pool_load_at_startup&lt;/code> 시스템 변수를 OFF로 설정한 후 재시작 해야 한다.&lt;/p>
+&lt;h3 id="독립된-mysql-서버">독립된 MySQL 서버&lt;/h3>
+&lt;p>MySQL 서버가 기동 중인 장비에 웹 서버나 다른 배치용 프로그램이 실행되고 있다면 테스트하려는 쿼리의 성능이 영향을 받는다.&lt;/p>
+&lt;ul>
+&lt;li>이와 마찬가지로 테스트 쿼리를 실행하는 클라이언트 프로그램이나 네트워크의 영향 요소도 고려해야 한다.&lt;/li>
+&lt;li>MySQL 서버가 설치된 서버에 직접 로그인해서 테스트해볼 수 있다면 이러한 요소를 쉽게 배제할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="쿼리-테스트-횟수">쿼리 테스트 횟수&lt;/h3>
+&lt;p>실제 쿼리의 성능 테스트를 MySQL 서버의 상태가 워밍업된 상태에서 진행할지 아니면 콜드 상태에서 진행할지도 고려햐야 한다.&lt;/p>
+&lt;ul>
+&lt;li>일반적으로 쿼리의 성능 테스트는 워밍업된 상태를 가정한다.&lt;/li>
+&lt;li>어느정도 사용량이 있는 서비스라면 워밍업 상태로 전환하는 데 오래 걸리지 않는다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>운영체제의 캐시나 버퍼풀, 키 캐시는 크기가 제한적이므로 쿼리에서 필요로 하는 데이터나 인덱스 페이지보다 크기가 작으면 플러시 작업과 캐시 작업이 반복해서 발생하므로 쿼리를 한 번 실행해서 나온 결과를 그대로 신뢰해서는 안된다.&lt;/p>
+&lt;ul>
+&lt;li>쿼리를 번갈아가면서 6~7회 실행한 후, 처음 한두 번의 결과는 버리고 나머지 결과의 평균값을 기준으로 비교하는 것이 좋다.
+&lt;ul>
+&lt;li>버퍼풀과 키캐시가 준비되지 않을 때가 많아 대체로 많은 시간이 걸려 편차가 클 수 있기 때문이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>이 같은 사항을 고려해 쿼리의 성능을 비교하는 것은 결국 상대적인 비교이므로 쿼리가 어떤 서버에서도 그 시간 내에 처리된다고 보장할 수는 없다.&lt;/p>
+&lt;ul>
+&lt;li>실제 서비스용 MySQL 서버에서는 동시에 여러개의 쿼리가 실행 중인 상태이다.
+&lt;ul>
+&lt;li>쿼리가 자원을 점유하기 위한 경함 등이 발생하므로 항상 테스트보다는 느린 처리 성능을 보이는 것이 일반적이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>11.7.9 스키마 조작(DDL) - 활성 트랜잭션 조회</title><link>https://codemario318.github.io/post/real-mysql/11/7/9/</link><pubDate>Wed, 23 Aug 2023 12:57:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/7/9/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/7/9/real_mysql.jpeg" alt="Featured image of post 11.7.9 스키마 조작(DDL) - 활성 트랜잭션 조회" />&lt;p>쿼리가 오랜 시간 실행되고 있는 경우도 문제지만 트랜잭션이 오랜 시간 완료되지 않고 활성 상태로 남아있는 것도 MySQL 서버의 성능에 영향을 미칠 수 있다.&lt;/p>
 &lt;p>MySQL 서버의 트랜잭션 목록은 &lt;code>information_schema.innodb_trx&lt;/code> 테이블을 통해 확인 가능하다.&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
