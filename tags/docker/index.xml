@@ -1,4 +1,352 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 24 Apr 2023 16:46:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker/5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 24 Aug 2023 12:51:03 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스 튜토리얼 - 1. Hello Minikube</title><link>https://codemario318.github.io/post/kubernetes/tutorials/1/</link><pubDate>Thu, 24 Aug 2023 12:51:03 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/tutorials/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/tutorials/1/cover.webp" alt="Featured image of post 쿠버네티스 튜토리얼 - 1. Hello Minikube" />&lt;p>Minikube는 로컬 환경에서 쿠버네티스 클러스터를 간편하게 구축하고 실행하기 위한 도구입니다.&lt;/p>
+&lt;p>단일 머신 위에서 쿠버네티스 클러스터를 실행하므로 개발, 테스트 및 학습을 위한 로컬 환경에서 매우 유용합니다.&lt;/p>
+&lt;p>minikube는 컨테이너, 가상머신 환경에서 동작하므로 이와 같은 환경을 먼저 구성해야하며, 저는 사전에 docker를 설치, 실행했습니다.&lt;/p>
+&lt;h2 id="minikube-클러스터-만들기">minikube 클러스터 만들기&lt;/h2>
+&lt;p>Homebrew를 사용하여 minikube를 간단하게 설치할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">brew install minikube
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>설치가 완료되었다면 클러스터를 시작해줍니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube start
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>명령이 정상적으로 수행되었다면 쿠버네티스 대시보드를 열어보겠습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube dashboard
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>대시보드 애드온과 프록시가 활성화되고 해당 프록시로 접속하는 기본 웹 브라우저 창이 열립니다.&lt;/p>
+&lt;blockquote>
+&lt;p>대시보드에서 디플로이먼트나 서비스와 같은 쿠버네티스 자원을 생성할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube addons &lt;span class="nb">enable&lt;/span> metrics-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>대시보드가 열리지 않는다면 애드온을 추가해보세요.&lt;/p>
+&lt;h2 id="디플로이먼트-만들기">디플로이먼트 만들기&lt;/h2>
+&lt;p>쿠버네티스 디플로이먼트는 헬스 체크를 통해 파드의 컨테이너가 종료되었다면 재시작해줍니다. 공식문서에서는 파드의 생성 및 스케일링을 관리하는 방법으로 디플로이먼트를 권장하고 있습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>쿠버네티스 파드는 관리와 네트워킹 목적으로 함께 묶여 있는 하나 이상의 컨테이너 그룹입니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>kubectl create&lt;/code> 명령을 실행하여 파드를 관리할 디플로이먼트를 만듭니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl create deployment NAME --image&lt;span class="o">=&lt;/span>image -- &lt;span class="o">[&lt;/span>COMMAND&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>args...&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl create deployment hello-node --image&lt;span class="o">=&lt;/span>registry.k8s.io/e2e-test-images/agnhost:2.39 -- /agnhost netexec --http-port&lt;span class="o">=&lt;/span>&lt;span class="m">8080&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>만들어지는 파드는 공식문서에서 제공된 Docker 이미지를 기반으로 한 컨테이너를 실행합니다.&lt;/p>
+&lt;h3 id="디플로이먼트-보기">디플로이먼트 보기&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl get deployments
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">NAME READY UP-TO-DATE AVAILABLE AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hello-node 1/1 1 1 3m38s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="파드-보기">파드 보기&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl get pods
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hello-node-67949d9db-7xxk9 1/1 Running 0 5m50s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="클러스터-이벤트-보기">클러스터 이벤트 보기&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl get events
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">LAST SEEN TYPE REASON OBJECT MESSAGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m28s Normal Scheduled pod/hello-node-67949d9db-7xxk9 Successfully assigned default/hello-node-67949d9db-7xxk9 to minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m29s Normal Pulling pod/hello-node-67949d9db-7xxk9 Pulling image &amp;#34;registry.k8s.io/e2e-test-images/agnhost:2.39&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m18s Normal Pulled pod/hello-node-67949d9db-7xxk9 Successfully pulled image &amp;#34;registry.k8s.io/e2e-test-images/agnhost:2.39&amp;#34; in 10.747873713s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m18s Normal Created pod/hello-node-67949d9db-7xxk9 Created container agnhost
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m18s Normal Started pod/hello-node-67949d9db-7xxk9 Started container agnhost
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m29s Normal SuccessfulCreate replicaset/hello-node-67949d9db Created pod: hello-node-67949d9db-7xxk9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7m29s Normal ScalingReplicaSet deployment/hello-node Scaled up replica set hello-node-67949d9db to 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal Starting node/minikube Starting kubelet.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal NodeHasSufficientMemory node/minikube Node minikube status is now: NodeHasSufficientMemory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal NodeHasNoDiskPressure node/minikube Node minikube status is now: NodeHasNoDiskPressure
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal NodeHasSufficientPID node/minikube Node minikube status is now: NodeHasSufficientPID
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal NodeAllocatableEnforced node/minikube Updated Node Allocatable limit across pods
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal Starting node/minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">57m Normal RegisteredNode node/minikube Node minikube event: Registered Node minikube in Controller
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="kubectl-환경설정-보기">kubectl 환경설정 보기&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl config view
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>해당 명령으로 환경설정을 볼 수 있는데, 다른 클러스터를 사용했다면 minikube 외 다른 설정들도 표시될 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">apiVersion: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">clusters:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- cluster:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> certificate-authority: /Users/mario/.minikube/ca.crt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> extensions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - extension:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> last-update: Thu, &lt;span class="m">24&lt;/span> Aug &lt;span class="m">2023&lt;/span> 14:45:00 KST
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> provider: minikube.sigs.k8s.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: v1.31.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: cluster_info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> server: https://127.0.0.1:64072
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">contexts:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- context:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cluster: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> extensions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - extension:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> last-update: Thu, &lt;span class="m">24&lt;/span> Aug &lt;span class="m">2023&lt;/span> 14:45:00 KST
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> provider: minikube.sigs.k8s.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: v1.31.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: context_info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> user: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">current-context: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: Config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">preferences: &lt;span class="o">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">users:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- name: minikube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> user:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> client-certificate: /Users/mario/.minikube/profiles/minikube/client.crt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> client-key: /Users/mario/.minikube/profiles/minikube/client.key
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="서비스-만들기">서비스 만들기&lt;/h2>
+&lt;p>기본적으로 파드는 쿠버네티스 클러스터 내부의 IP 주소로만 접근할 수 있기때문에 &lt;code>hello-node&lt;/code> 컨테이너를 쿠버네티스 가상 네트워크 외부에서 접근하려면 파드를 쿠버네티스 서비스로 노출해야 합니다.&lt;/p>
+&lt;p>&lt;code>kubectl expose&lt;/code> 명령으로 퍼블릭 인터넷에 파드를 노출할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl expose &lt;span class="o">(&lt;/span>-f FILENAME &lt;span class="p">|&lt;/span> TYPE NAME&lt;span class="o">)&lt;/span> &lt;span class="o">[&lt;/span>--port&lt;span class="o">=&lt;/span>port&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>--protocol&lt;span class="o">=&lt;/span>TCP&lt;span class="p">|&lt;/span>UDP&lt;span class="p">|&lt;/span>SCTP&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>--target-port&lt;span class="o">=&lt;/span>number-or-name&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>--name&lt;span class="o">=&lt;/span>name&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>--external-ip&lt;span class="o">=&lt;/span>external-ip-of-service&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>--type&lt;span class="o">=&lt;/span>type&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>여러 옵션을 사용할 수 있으며, 공식 문서에서 제공하는 명령어를 실행해봅시다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl expose deployment hello-node --type&lt;span class="o">=&lt;/span>LoadBalancer --port&lt;span class="o">=&lt;/span>&lt;span class="m">8080&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>--type=LoadBalancer&lt;/code>: 클러스터 밖의 서비스로 노출하기 원한다는 뜻 입니다.&lt;/li>
+&lt;li>이미지 내 애플리케이션 코드는 TCP 포트 8080에서만 수신합니다. &lt;code>kubectl expose&lt;/code>를 사용하여 다른 포트를 노출한 경우, 클라이언트는 다른 포트에 연결할 수 없습니다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl get services
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hello-node LoadBalancer 10.97.121.119 &amp;lt;pending&amp;gt; 8080:30180/TCP 4m44s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>로드 밸런서를 지원하는 클라우드 공급자의 경우에는 서비스에 접근할 수 있도록 외부 IP 주소가 프로비저닝 하지만, minikube에서 &lt;code>LoadBalancer&lt;/code> 타입은 &lt;strong>&lt;code>minikube service&lt;/code> 명령어를 통해서 해당 서비스를 접근&lt;/strong>할 수 있게합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube service hello-node
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|---------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| NAMESPACE | NAME | TARGET PORT | URL |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|---------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| default | hello-node | 8080 | http://192.168.49.2:30180 |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|---------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">🏃 hello-node 서비스의 터널을 시작하는 중
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| NAMESPACE | NAME | TARGET PORT | URL |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">| default | hello-node | | http://127.0.0.1:64781 |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">|-----------|------------|-------------|------------------------|
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">🎉 Opening service default/hello-node in default browser...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">❗ Because you are using a Docker driver on darwin, the terminal needs to be open to run it.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="제거하기">제거하기&lt;/h2>
+&lt;p>클러스터에서 만들어진 리소스를 제거할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">kubectl delete service hello-node
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl delete deployment hello-node
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>필요시 minikube 가상 머신을 정지하거나 살제할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube stop
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube delete
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>5. Use bind mounts</title><link>https://codemario318.github.io/post/docker/5/</link><pubDate>Mon, 24 Apr 2023 16:46:25 +0900</pubDate><guid>https://codemario318.github.io/post/docker/5/</guid><description>&lt;img src="https://codemario318.github.io/post/docker/5/docker_cover.png" alt="Featured image of post 5. Use bind mounts" />&lt;p>데이터베이스의 데이터를 영속화하기 위해 볼륨 마운트를 사용할 수 있으며, 볼륨 마운트는 어플리케이션의 데이터를 영구적으로 저장해야 할 때 좋은 선택이 될 수 있다.&lt;/p>
 &lt;p>바인드 마운트는 호스트 파일 시스템에서 디렉토리를 컨테이너로 공유하는 다른 유형의 마운트이다. 어플리케이션을 개발할 때 바인드 마운트를 사용하여 소스 코드를 컨테이너로 마운트 할 수 있다. 파일 시스템 변경 사항을 감시하고 그에 따라 대응하는 프로세스를 컨테이너에서 실행할 수 있기 때문에, 컨테이너는 파일을 저장할 때마다 즉시 코드 변경 사항을 인식한다.&lt;/p>
 &lt;p>따라서 바인드 마운트와 파일 변경 상항을 감지하고 이에 따라 원하는 동작을 수행할 수 있으며, 이번 장에서는 자동으로 애플리케이션을 다시 시작하는 도구인 nodemon을 활용해본다.&lt;/p>
 &lt;h2 id="quick-volume-type-comparisons">Quick volume type comparisons&lt;/h2>
