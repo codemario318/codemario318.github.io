@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kubernetes on Mario Blog</title><link>https://codemario318.github.io/tags/kubernetes/</link><description>Recent content in Kubernetes on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 24 Aug 2023 12:51:03 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스 튜토리얼 - 1. Hello Minikube</title><link>https://codemario318.github.io/post/kubernetes/tutorials/1/</link><pubDate>Thu, 24 Aug 2023 12:51:03 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/tutorials/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/tutorials/1/cover.webp" alt="Featured image of post 쿠버네티스 튜토리얼 - 1. Hello Minikube" />&lt;p>Minikube는 로컬 환경에서 쿠버네티스 클러스터를 간편하게 구축하고 실행하기 위한 도구입니다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>kubernetes on Mario Blog</title><link>https://codemario318.github.io/tags/kubernetes/</link><description>Recent content in kubernetes on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 24 Aug 2023 12:51:03 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스 튜토리얼 - 1. Hello Minikube</title><link>https://codemario318.github.io/post/kubernetes/tutorials/1/</link><pubDate>Thu, 24 Aug 2023 12:51:03 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/tutorials/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/tutorials/1/cover.webp" alt="Featured image of post 쿠버네티스 튜토리얼 - 1. Hello Minikube" />&lt;p>Minikube는 로컬 환경에서 쿠버네티스 클러스터를 간편하게 구축하고 실행하기 위한 도구입니다.&lt;/p>
 &lt;p>단일 머신 위에서 쿠버네티스 클러스터를 실행하므로 개발, 테스트 및 학습을 위한 로컬 환경에서 매우 유용합니다.&lt;/p>
 &lt;p>minikube는 컨테이너, 가상머신 환경에서 동작하므로 이와 같은 환경을 먼저 구성해야하며, 저는 사전에 docker를 설치, 실행했습니다.&lt;/p>
 &lt;h2 id="minikube-클러스터-만들기">minikube 클러스터 만들기&lt;/h2>
@@ -346,7 +346,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">minikube delete
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/kubernetes/5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/5/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
+&lt;/div></description></item><item><title>쿠버네티스: 5. 클러스터 아키텍처</title><link>https://codemario318.github.io/post/study/kubernetes/5/</link><pubDate>Fri, 21 Apr 2023 14:00:47 +0900</pubDate><guid>https://codemario318.github.io/post/study/kubernetes/5/</guid><description>&lt;img src="https://codemario318.github.io/post/study/kubernetes/5/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 5. 클러스터 아키텍처" />&lt;h2 id="노드">노드&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너를 파드내에 배치하고 노드에서 실행함으로 워크로드를 구동한다. 노드는 클러스터에 따라 가상 또는 물리적 머신일 수 있다. 각 노드는 컨트롤 플레인에 의해 관리되며 파드를 실행하는데 필요한 서비스를 포함한다.&lt;/p>
 &lt;p>일반적으로 클러스터에는 여러개의 노드가 있으며, 학습 또는 리소스가 제한되는 환경에서는 하나만 있을 수도 있다.&lt;/p>
 &lt;p>노드의 컴포넌트에는 &lt;code>kubelet&lt;/code>, 컨테이너 런타임 그리고 &lt;code>kube-proxy&lt;/code>가 포함된다.&lt;/p>
@@ -719,7 +719,7 @@
 &lt;/ul>
 &lt;p>테스트를 지원하고 피드벡을 제공하기 위한 정보는 &lt;a class="link" href="https://github.com/kubernetes/enhancements/issues/2400" target="_blank" rel="noopener"
 >KEP-2400&lt;/a> 및 &lt;a class="link" href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md" target="_blank" rel="noopener"
->디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/kubernetes/4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/4/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
+>디자인 제안&lt;/a>에서 찾을 수 있다.&lt;/p></description></item><item><title>쿠버네티스: 4. 쿠버네티스 오브젝트 관리</title><link>https://codemario318.github.io/post/study/kubernetes/4/</link><pubDate>Fri, 21 Apr 2023 13:57:47 +0900</pubDate><guid>https://codemario318.github.io/post/study/kubernetes/4/</guid><description>&lt;img src="https://codemario318.github.io/post/study/kubernetes/4/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 4. 쿠버네티스 오브젝트 관리" />&lt;h2 id="관리기법">관리기법&lt;/h2>
 &lt;blockquote>
 &lt;p>⛔ 쿠버네티스 오브젝트는 하나의 기법만 사용하여 관리해야 한다. 동일한 오브젝트에 대해 여러 기법을 혼용하면 오동작이 발생할 수 있다.&lt;/p>
 &lt;/blockquote>
@@ -781,7 +781,7 @@
 &lt;li>새로운 오브젝트 생성을 위한 템플릿을 제공하지 않는다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="명령형-오브젝트-구성">명령형 오브젝트 구성&lt;/h2>
-&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/kubernetes/3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/3/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
+&lt;p>kubectl 커맨드로 작업, 선택적 플래그, 파일 이름을 지정하여 실행한다.&lt;/p></description></item><item><title>쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기</title><link>https://codemario318.github.io/post/study/kubernetes/3/</link><pubDate>Fri, 21 Apr 2023 13:53:47 +0900</pubDate><guid>https://codemario318.github.io/post/study/kubernetes/3/</guid><description>&lt;img src="https://codemario318.github.io/post/study/kubernetes/3/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 3. 쿠버네티스 오브젝트 이해하기" />&lt;blockquote>
 &lt;p>쿠버네티스 오브젝트는 &lt;strong>하나의 의도를 담은 레코드&lt;/strong>이다.&lt;/p>
 &lt;/blockquote>
 &lt;p>쿠버네티스 오브젝트는 쿠버네티스 시스템에서 영속성을 가지는 오브젝트이다. 쿠버네티스는 클러스터의 상태를 나타내기 위해 &lt;code>.yaml&lt;/code>로 작성된 오브젝트에 상세 내용을 기술한다.&lt;/p>
@@ -858,8 +858,8 @@
 &lt;/ul>
 &lt;p>spec에 대한 정확한 포맷은 모든 쿠버네티스 오브젝트마다다르고, 그 오브젝트 특유의 중첩된 필드를 포함한다.&lt;/p>
 &lt;p>&lt;a class="link" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/" target="_blank" rel="noopener"
->https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/kubernetes/2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/2/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/2/kubernetes_2_1.svg"
+>https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/&lt;/a>&lt;/p></description></item><item><title>쿠버네티스: 2. 쿠버네티스 컴포넌트</title><link>https://codemario318.github.io/post/study/kubernetes/2/</link><pubDate>Fri, 21 Apr 2023 13:42:47 +0900</pubDate><guid>https://codemario318.github.io/post/study/kubernetes/2/</guid><description>&lt;img src="https://codemario318.github.io/post/study/kubernetes/2/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 2. 쿠버네티스 컴포넌트" />&lt;h2 id="쿠버네티스-클러스터">쿠버네티스 클러스터&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/study/kubernetes/2/kubernetes_2_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>컨테이너화 된 애프릴케이션을 실행하는 노드라고 하는 워커 머신의 집합으로, 모든 클러스터는 최소 한 개의 워커 노드를 가진다.&lt;/p>
@@ -939,7 +939,7 @@ loading="lazy"
 &lt;blockquote>
 &lt;p>&lt;strong>CRI란?&lt;/strong>&lt;br>
 클러스터 컴포넌트를 다시 컴파일하지 않아도 Kubelet이 다양한 컨테이너 런타임을 사용할 수 있도록 하는 플러그인 인터페이스이다.&lt;/p>
-&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/kubernetes/1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
+&lt;/blockquote></description></item><item><title>쿠버네티스: 1. 쿠버네티스란 무엇인가?</title><link>https://codemario318.github.io/post/study/kubernetes/1/</link><pubDate>Fri, 21 Apr 2023 13:19:47 +0900</pubDate><guid>https://codemario318.github.io/post/study/kubernetes/1/</guid><description>&lt;img src="https://codemario318.github.io/post/study/kubernetes/1/kubernetes_cover.webp" alt="Featured image of post 쿠버네티스: 1. 쿠버네티스란 무엇인가?" />&lt;h2 id="쿠버네티스란">쿠버네티스란?&lt;/h2>
 &lt;p>쿠버네티스는 컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있고, 확장 가능한 오픈소스 플랫폼이다.&lt;/p>
 &lt;ul>
 &lt;li>컨테이너화된 워크로드와 서비스를 관리하기 위한 이식성이 있다.&lt;/li>
@@ -974,7 +974,7 @@ Ubuntu, RHEL, CoreOS, 온-프레미스, 주요 퍼블릭 클라우드와 어디�
 &lt;/ul>
 &lt;/blockquote>
 &lt;h2 id="쿠버네티스가-왜-필요하고-무엇을-할-수-있나">쿠버네티스가 왜 필요하고 무엇을 할 수 있나&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/kubernetes/1/kubernetes_1_1.svg"
+&lt;p>&lt;img src="https://codemario318.github.io/post/study/kubernetes/1/kubernetes_1_1.svg"
 loading="lazy"
 >&lt;/p>
 &lt;p>기존 &amp;ldquo;전통적인 배포&amp;rdquo;, &amp;ldquo;가상화된 배포&amp;quot;를 거치며 &amp;ldquo;컨테이너를 통한 배포&amp;rdquo; 까지 발전해왔다.&lt;/p>
