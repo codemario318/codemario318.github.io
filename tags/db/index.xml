@@ -1,4 +1,361 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 23 Aug 2023 13:02:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트</title><link>https://codemario318.github.io/post/real-mysql/11/8/</link><pubDate>Wed, 23 Aug 2023 13:02:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/8/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/8/real_mysql.jpeg" alt="Featured image of post 11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트" />&lt;p>작성된 쿼리가 얼마나 효율적이고 더 개선할 부분이 있는지 확인하려면 아래의 과정을 거친다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DB on Mario Blog</title><link>https://codemario318.github.io/tags/db/</link><description>Recent content in DB on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 27 Aug 2023 19:54:10 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/db/index.xml" rel="self" type="application/rss+xml"/><item><title>13. 파티션</title><link>https://codemario318.github.io/post/real-mysql/13/</link><pubDate>Sun, 27 Aug 2023 19:54:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/13/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/13/real_mysql.jpeg" alt="Featured image of post 13. 파티션" />&lt;p>파티션 기능은 테이블을 논리적으로는 하나의 테이블이지만 물리적으로는 여러 개의 테이블로 분리해서 관리할 수 있게 해준다.&lt;/p>
+&lt;ul>
+&lt;li>주로 대용량 테이블을 물리적으로 여러 개의 소규모 테이블로 분산하는 목적으로 사용한다.&lt;/li>
+&lt;li>파티션 기능을 사용하더라도 어떤 쿼리를 사용하느냐에 따라 오히리 성능이 더 나빠지는 경우도 발생할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="개요">개요&lt;/h2>
+&lt;p>MySQL 파티션이 적용된 테이블에서 &lt;code>INSERT&lt;/code>나 &lt;code>SELECT&lt;/code> 같은 쿼리가 어떻게 실행되는지 이해한다면 파티션을 어떻게 사용하는 것이 가장 최적일지 쉽게 이해할 수 있다.&lt;/p>
+&lt;h3 id="파티션을-사용하는-이유">파티션을 사용하는 이유&lt;/h3>
+&lt;p>테이블의 데이터가 많아진다고 해서 무조건 파티션을 적용하는 것이 효율적인 것은 아니다.&lt;/p>
+&lt;ul>
+&lt;li>하나의 테이블이 너무 커서 인덱스의 크기가 물리적인 메모리보다 훨씬 큰 경우&lt;/li>
+&lt;li>데이터 특성상 주기적인 삭제 작업이 필요한 경우&lt;/li>
+&lt;/ul>
+&lt;h4 id="단일-insert와-단일-또는-범위-select의-빠른-처리">단일 &lt;code>INSERT&lt;/code>와 단일 또는 범위 &lt;code>SELECT&lt;/code>의 빠른 처리&lt;/h4>
+&lt;p>데이터베이스에서 인덱스는 일반적으로 &lt;code>SELECT&lt;/code>를 위한 것으로 보이지만 &lt;code>UPDATE&lt;/code>나 &lt;code>DELETE&lt;/code> 쿼리를 위해 필요한 때도 많다.&lt;/p>
+&lt;p>물론 레코드를 변경하는 쿼리를 실행하면 인덱스 변경을 위한 부가적인 작업이 발생하지만 처리 대상 레코드를 검색하려면 인덱스가 필수적이다. 하지만 인덱스가 커지면 커질수록 느려지는 단점이 있다.&lt;/p>
+&lt;p>특히 한 테이블의 인덱스 크기가 물리적으로 MySQL이 사용 가능한 메모리 공간보다 크다면 영향은 더 심각하다.&lt;/p>
+&lt;p>테이블의 데이터는 실질적인 물리 메모리보다 큰 것이 일반적이겠지만, 인덱스의 워킹 셋이 실직적인 물리 메모리보다 크다면 쿼리 처리가 상당히 느려진다.&lt;/p>
+&lt;p>파티션하지 않고 하나의 큰 테이블로 사용하면 인덱스도 커지고 그만큼 물리적인 메모리 공간도 많이 필요하므로, 파티션을 통해 데이터와 인덱스를 조각화해서 물리적 메모리를 효율적으로 사용할 수 있게 만들어준다.&lt;/p>
+&lt;h4 id="데이터의-물리적인-저장소를-분리">데이터의 물리적인 저장소를 분리&lt;/h4>
+&lt;p>데이터 파일이나 인덱스 파일이 파일 시스템에서 차지하는 공간이 크다면 그만큼 백업이나 관리 작업이 어려워진다. MySQL은 테이블의 데이터나 인덱스를 파일 단위로 관리하기 때문에 더 치명적인 문제가 될 수 있다.&lt;/p>
+&lt;p>이러한 문제는 파티션을 통해 파일의 크기를 조절하거나 파티션별 파일들이 저장될 위치나 디스크를 구분해서 지정해 해결하는 것도 가능하다.&lt;/p>
+&lt;blockquote>
+&lt;p>하지만 MySQL에서는 테이블의 파티션 단위로 인덱스를 생성하거나 파티션별로 다른 인덱스를 가지는 형태는 지원하지 않는다.&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="이력-데이터의-효율적인-관리">이력 데이터의 효율적인 관리&lt;/h4>
+&lt;p>거의 모든 애플리케이션이 로그라는 이력 데이터를 가지고 있는데, 이는 단기간에 대량으로 누적됨과 동시에 일정 기간이 지나면 쓸모가 없어진다.&lt;/p>
+&lt;p>로그 데이터는 결국 시간이 지나면 별도로 아카이빙하거나 백업한 후 삭제해버리는 것이 일반적이며, 특히 다른 데이터에 비해 라이프 사이클이 상당히 짧다.&lt;/p>
+&lt;p>로그 테이블에서 불필요해진 데이터를 백업하거나 삭제하는 작업은 일반 테이블에서는 상당히 고부하 작업에 속한다.&lt;/p>
+&lt;ul>
+&lt;li>로그 테이블을 파티션 테이블로 관리한다면 풀필요한 데이터 삭제 작업은 단순히 파티션을 추가하거나 삭제하는 방식으로 간단하고 빠르게 해결할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="mysql-파티션의-내부-처리">MySQL 파티션의 내부 처리&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_article&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">article_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">reg_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">DATETIME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">article_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reg_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">RANGE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">YEAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reg_Date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2009&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2010&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2010&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2011&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2011&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2012&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p9999&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MAXVALUE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="파티션-테이블의-레코드-insert">파티션 테이블의 레코드 INSERT&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/13/img.png"
+width="781"
+height="630"
+srcset="https://codemario318.github.io/post/real-mysql/13/img_hu02259443f28bdba87c3443dda436ec13_262309_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/13/img_hu02259443f28bdba87c3443dda436ec13_262309_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="297px"
+>&lt;/p>
+&lt;p>&lt;code>INSERT&lt;/code> 쿼리가 실행되면 MySQL 서버는 &lt;code>INSERT&lt;/code>되는 컬럼의 값 중에서 파티션 키인 &lt;code>reg_date&lt;/code> 컬럼의 값을 이용해 파티션 표현식을 평가하고, 그 결과를 이용해 레코드가 저장될 적절한 파티션을 결정한다.&lt;/p>
+&lt;p>새로 &lt;code>INSERT&lt;/code>되는 레코드를 위한 파티션이 결정되면 나머지 과정은 파티션 되지 않은 일반 테이브로가 동일하게 처리된다.&lt;/p>
+&lt;h4 id="파티션-테이블의-update">파티션 테이블의 UPDATE&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/13/img_1.png"
+width="776"
+height="627"
+srcset="https://codemario318.github.io/post/real-mysql/13/img_1_hu2b85ab154282d825fee65d01ee25bd77_296475_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/13/img_1_hu2b85ab154282d825fee65d01ee25bd77_296475_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="297px"
+>&lt;/p>
+&lt;p>&lt;code>UPDATE&lt;/code> 쿼리를 실행하려면 변경 대상 레코드가 어느 파티션에 저장돼 있는지 찾아야 하는데, 이때 &lt;code>WHERE&lt;/code> 조건에 파티션 키 컬럼이 조건으로 존재한다면 그 값을 이용해 레코드가 저장된 파티션에서 빠르게 대상 레코드를 검색할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>하지만 &lt;code>WHERE&lt;/code> 조건에 파티션 키 컬럼의 조건이 면시되지 않았다면 변경 대상 레코드를 찾기 위해 모든 파티션을 검색한다.&lt;/li>
+&lt;/ul>
+&lt;p>실제 레코드를 변경하는 작업의 절차는 &lt;code>UPDATE&lt;/code> 쿼리가 어떤 컬럼의 값을 변경하느냐에 따라 큰 차이가 생긴다.&lt;/p>
+&lt;ul>
+&lt;li>파티션 키 이외의 컬럼만 변경될 때는 파티션이 적용되지 않은 일반 테이블과 마찬가지로 컬럼 값만 변경한다.&lt;/li>
+&lt;li>파티션 키 컬럼이 변경될 때는 기존 레코드가 저장된 파티션에서 해당 레코드를 삭제하고, 변경되는 파티션 키 컬럼의 표현식을 평가하여 새로운 파티션을 결정하여 새로 저장한다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="파티션-테이블의-검색">파티션 테이블의 검색&lt;/h4>
+&lt;p>파티션 테이블을 검색할 때 성능에 크게 영향을 미치는 조건은 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>WHERE&lt;/code> 절의 조건으로 검색해야 할 파티션을 선택할 수 있는가?&lt;/li>
+&lt;li>&lt;code>WHERE&lt;/code> 절의 조건이 인덱스를 효율적으로 사용(인덱스 레인지 스캔)할 수 있는가?&lt;/li>
+&lt;/ul>
+&lt;p>파티션 테이블에서는 첫 번째 선택사항의 결과에 의해 두 번째 선택사항의 작업 내용이 달라질 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>파티션 선택 가능 + 인덱스 효율적 사용 가능
+&lt;ul>
+&lt;li>가장 효율적으로 처리 될 수 있다.&lt;/li>
+&lt;li>파티션 개수와 관계없이 검색을 위해 꼭 필요한 파티션의 인덱스만 레인지 스캔한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션 선택 불가 + 인덱스 효율적 사용 가능
+&lt;ul>
+&lt;li>모든 파티션을 대상으로 검색해야 한다.&lt;/li>
+&lt;li>각 파티션에 대해서는 인덱스 레인지 스캔을 사용할 수 있기 때문에 최종적으로 테이블에 존재하는 모든 파티션의 개수만큼 인덱스 레인지 스캔을 수행해서 검색하게된다.&lt;/li>
+&lt;li>파티션 개수 만큼의 테이블에 대해 인덱스 레인지 스캔 후 결과를 병합해서 가져오는 것 과 같다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션 선택 가능 + 인덱스 효율적 사용 불가
+&lt;ul>
+&lt;li>검색을 위해 필요한 파티션만 읽는다.&lt;/li>
+&lt;li>대상 파티션에 대해 풀 테이블 스캔을 한다.&lt;/li>
+&lt;li>각 파티션의 레코드 건수가 많다면 상당히 느리게 처리될것이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션 선택 불가 + 인덱스 효율적 사용 불가
+&lt;ul>
+&lt;li>모든 파티션에 대해 풀 테이블 스캔을 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="파티션-테이블의-인덱스-스캔과-정렬">파티션 테이블의 인덱스 스캔과 정렬&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/real-mysql/13/img_2.png"
+width="767"
+height="651"
+srcset="https://codemario318.github.io/post/real-mysql/13/img_2_hu5b28ef502089461837af29a95b981085_255105_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/real-mysql/13/img_2_hu5b28ef502089461837af29a95b981085_255105_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="282px"
+>&lt;/p>
+&lt;p>파티션 테이블에서 인덱스는 전부 로컬 인덱스에 해당한다.&lt;/p>
+&lt;ul>
+&lt;li>모든 인덱스는 파티션 단위로 생성된다.&lt;/li>
+&lt;li>파티션과 관계없이 테이블 전체 단위로 글로벌하게 하나의 통합된 인덱스는 지원하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>파티션이 되지 않는 테이블에서는 인덱스를 순서대로 읽으면 크 컬럼으로 정렬된 결과를 바로 얻을 수 있지만, 파티션된 테이블은 그렇지 않다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tb_article&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reg_userid&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;brew&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;toto&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reg_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;2009-01-01&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;2010-12-31&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reg_userid&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>MySQL 서버는 여러 파티션에 대해 인덱스 스캔을 수행할 때 각 파티션으로부터 조건에 일치하는 레코드를 정렬된 순서대로 읽으면서 우선순위 큐에 임시로 저장한다.&lt;/li>
+&lt;li>파티션 테이블에서 인덱스 스캔을 통해 레코드를 읽을 때 별도의 정렬 작업을 수행하지는 않으며, 내부적으로 큐 처리가 필요하다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="파티션-프루닝">파티션 프루닝&lt;/h4>
+&lt;p>옵티마이저에 의해 불필요한 파티션에는 전혀 접근하지 않는데, 이렇게 최적화 단계에서 필요한 파티션만 골라내고 불필요한 것들은 실행 계획에서 배제하는 것을 파티션 프루닝이라 한다.&lt;/p>
+&lt;h2 id="주의사항">주의사항&lt;/h2>
+&lt;p>파티션은 5.1 버전부터 도입되어 8.0 버전까지 많은 발전이 있었지만, 아직도 만은 제약을 지니고있다.&lt;/p>
+&lt;p>대부분 파티션의 태생적인 한계이기 때문에 MySQL 서버가 아무리 업그레이드 된다고 하더라도 여전히 가질 제약사항일 수도 있다.&lt;/p>
+&lt;h3 id="파티션의-제약-사항">파티션의 제약 사항&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_article&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">article_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kp">AUTO_INCREMENT&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">reg_date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">DATETIME&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">article_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reg_date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">RANGE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">YEAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reg_Date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2009&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2010&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2010&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2011&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p2011&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2012&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PRATITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p9999&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">LESS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">THAN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">MAXVALUE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>PARTITION BY RANGE&lt;/code> 절은 이 테이블이 레인지 파티션을 사용한다는 것을 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>스토어드 루틴이나 UDF, 사용자 변수 등을 파티션 표현식에 사용할 수 없다.&lt;/li>
+&lt;li>파티션 표현식은 일반적으로 컬럼 그 자체 또는 MySQL 내장 함수를 사용할 수 있는데, 일부 함수들은 파티션 생성은 가능하지만 프루닝을 지원하지 않을 수 있다.&lt;/li>
+&lt;li>프라이머리 키를 포함해서 테이블의 모든 유니크 인덱스는 파티션 키 컬럼을 포함해야 한다.&lt;/li>
+&lt;li>파팃녀된 테이블의 인덱스는 모두 로컬 인덱스이며, 동일 테이블에 소속된 모든 파티션은 같은 구조의 인덱스만 가질 수 있다.&lt;/li>
+&lt;li>파티션 개별로 인덱스를 변경하거나 추가할 수 없다.&lt;/li>
+&lt;li>동일 테이블에 속한 모든 파티션은 동일 스토리지 엔진만 가질 수 있다.&lt;/li>
+&lt;li>서브 파티션까지 포함하여 8192개의 파티션을 가질 수 있다.&lt;/li>
+&lt;li>파티션 생성 이후 MySQL &lt;code>sql_mode&lt;/code> 시스템 변수 변경은 데이터 파티션의 일관성을 깨뜨릴 수 있다.&lt;/li>
+&lt;li>파티션 테이블에서는 외래키를 사용할 수 없다.&lt;/li>
+&lt;li>파티션 테이블은 전문 검색 인덱스 생성이나 전문 검색 쿼리를 사용할 수 없다.&lt;/li>
+&lt;li>공간 데이터를 저장하는 컬럼 타입은 파티션 테이블에서 사용할 수 없다.&lt;/li>
+&lt;li>임시 테이블은 파티션 기능을 사용할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로 파티션 테이블을 생성할 때 가장 크게 영향을 미치는 제약 사항은 모드 유니크 인덱스에 파티션 키 컬럼이 포함돼야 한 다는 것이다.&lt;/p>
+&lt;p>파티션 표현식에는 기본적인 산술 연산자를 사용할 수 있고, 추가로 MySQL 내장 함수를 사용할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>내장 함수들을 파티션 표현시게 사용할 수 있다고 해서 모두 파티션 프루닝을 지원하는 것은 아니므로 메뉴얼을 참조하자.&lt;/li>
+&lt;/ul>
+&lt;h3 id="파티션-사용-시-주의사항">파티션 사용 시 주의사항&lt;/h3>
+&lt;p>파티션 테이블의 경우 프라이머리 키를 포함한 유니크 키에 대해서는 상당히 머리 아픈 제약사항이 있다.&lt;/p>
+&lt;p>파티션의 몾겆은 작업 범위를 좁히는 것인데, 유니크 인덱스는 중복 레코드에 대한 체크 작업 때문에 범위가 좁혀지지 않는다는 점이다.&lt;/p>
+&lt;p>MySQL 파티션은 일반 테이블과 같이 별도의 파일로 관리되는데, 이와 관련하여 서버가 조각할 수 있는 파일릐 개수와 연관된 제약도 있다.&lt;/p>
+&lt;h4 id="파티션과-유니크-키프라이머리-키-포함">파티션과 유니크 키(프라이머리 키 포함)&lt;/h4>
+&lt;p>종류와 관계없이 테이블에 유니크 인ㄷ게스가 있으면 파티션 키는 모든 유니크 인덱스의 일부 또는 모든 컬럼을 포함해야 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fb2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fb3&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 예시는 모두 잘못된 테이블 파티션을 생성하는 방법이다.&lt;/p>
+&lt;p>유니크 기에 대해 파티션 키가 제대로 설정됐는지 확인하려면 각 유니크 키에 대해 값이 주어졌을 때 해당 레코드가 어느 파티션에 저장돼 있는지 계산할 수 있어야 한다는 점을 기억하면 된다.&lt;/p>
+&lt;ul>
+&lt;li>첫 번째 쿼리는 유니크 키와 파티션 키가 전혀 연관이 없기 때문에 불가능&lt;/li>
+&lt;li>두 번째 쿼리는 첫 번째 유니크 키 컬럼인 fd1만으로 파티션 결정이 되지 않는다(fd2 컬럼도 같이 있어야 파티션 위치를 판단할 수 있다.)&lt;/li>
+&lt;li>세 번째 쿼리 또한 fd1 값 만으로 파티션 판단이 되지 않으며, 유니크 키인 fd2, fd3로도 파티션 위치를 결정할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>아래는 옳은 예시이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-mysql" data-lang="mysql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fb2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">tb_parition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">INT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="no">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd2&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="p">),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fb3&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITION&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nf">HASH&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd3&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">PARTITIONS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="파티션과-open_files_limit-시스템-변수-설정">파티션과 open_files_limit 시스템 변수 설정&lt;/h4>
+&lt;p>MySQL에서는 일반적으로 테이을 파일 단위로 관리하기 때문에 MySQL 서버에서 동시에 오픈된 파일의 개수가 상당히 많아질 수 있다.&lt;/p>
+&lt;p>이를 제한하기 위해 시스템 변수에 동시에 오픈할 수 있는 적절한 파일의 개수를 설정하는데, 파티션 되지 않은 일반 테이블은 테이블 1개당 오픈된 파일의 개수가 2~3개 수준이지만 파티션 테이블에서는 &lt;code>파티션의 개수 * 2~3&lt;/code> 개가 된다.&lt;/p>
+&lt;p>따라서 파티션을 많이 사용하는 경우 시스템 젼수를 절절히 높은 값으로 다시 설정할 필요가 있다.&lt;/p></description></item><item><title>11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트</title><link>https://codemario318.github.io/post/real-mysql/11/8/</link><pubDate>Wed, 23 Aug 2023 13:02:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/11/8/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/11/8/real_mysql.jpeg" alt="Featured image of post 11.8 쿼리 작성 및 최적화 - 쿼리 성능 테스트" />&lt;p>작성된 쿼리가 얼마나 효율적이고 더 개선할 부분이 있는지 확인하려면 아래의 과정을 거친다.&lt;/p>
 &lt;ul>
 &lt;li>실행 계획을 살펴보고 문제될 만한 부분이 있는지 검토한다.&lt;/li>
 &lt;li>실행 계획에 특별히 문제될 부분이 없다면 쿼리를 직접 실행해본다.
