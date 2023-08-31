@@ -1,4 +1,456 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 24 Aug 2023 12:51:03 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>쿠버네티스 튜토리얼 - 1. Hello Minikube</title><link>https://codemario318.github.io/post/kubernetes/tutorials/1/</link><pubDate>Thu, 24 Aug 2023 12:51:03 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/tutorials/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/tutorials/1/cover.webp" alt="Featured image of post 쿠버네티스 튜토리얼 - 1. Hello Minikube" />&lt;p>Minikube는 로컬 환경에서 쿠버네티스 클러스터를 간편하게 구축하고 실행하기 위한 도구입니다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Mario Blog</title><link>https://codemario318.github.io/tags/docker/</link><description>Recent content in Docker on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 29 Aug 2023 14:52:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>1. Docker를 이용한 컨테이너 배포</title><link>https://codemario318.github.io/post/infra/container-env/1/</link><pubDate>Tue, 29 Aug 2023 14:52:25 +0900</pubDate><guid>https://codemario318.github.io/post/infra/container-env/1/</guid><description>&lt;img src="https://codemario318.github.io/post/infra/container-env/1/cover.png" alt="Featured image of post 1. Docker를 이용한 컨테이너 배포" />&lt;p>개인적으로 해보고 싶었던 쿠버네티스를 이용하여 컨테이너 인프라 환경을 구축해보려고합니다.&lt;/p>
+&lt;p>이전 회사에서 거대한 모놀리식 구조로 운영되던 서비스를 개발 언어와 MSA 전환을 위해 꼭 필요하다고 졸라서 해보라고 허락을 받고 공부하고 있었는데 결국 퇴사를 하게 되었네요.&lt;/p>
+&lt;p>기본적인 내용들은 &lt;a class="link" href="https://product.kyobobook.co.kr/detail/S000001834629" target="_blank" rel="noopener"
+>컨테이너 인프라 환경 구축을 위한 쿠버네티스/도커&lt;/a> 책을 통해 학습하였고, 추가로 참고한 내용들은 따로 공유드리겠습니다.&lt;/p>
+&lt;p>컨테이너 인프라 환경을 구축하기 위한 첫 걸음으로 Docker를 이용하여 컨테이너에 배포하는 방법을 알아보겠습니다.&lt;/p>
+&lt;h2 id="준비">준비&lt;/h2>
+&lt;p>이전에 코프링 찍먹 해보려고 만들었던 프로젝트을 배포하는 실습을 해보겠습니다.&lt;/p>
+&lt;h3 id="도커-준비">도커 준비&lt;/h3>
+&lt;p>실습을 위해 로컬 환경에 Docker를 설치해야 합니다.&lt;/p>
+&lt;p>설치하는 방법은 다양한데 공식 문서를 따라서 차분하게 진행하시면 어렵지 않게 수행하실 수 있으므로 관련 링크만 남깁니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://docs.docker.com/desktop/install/mac-install/" target="_blank" rel="noopener"
+>Install Docker Desktop&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h3 id="프로젝트-준비">프로젝트 준비&lt;/h3>
+&lt;p>제가 찍먹을 위해 만들었던 코프링 프로젝트는 스프링 공식 가이드의 &lt;a class="link" href="https://spring.io/guides/tutorials/spring-boot-kotlin/" target="_blank" rel="noopener"
+>Building web applications with Spring Boot and Kotlin&lt;/a>입니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">mkdir blog &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nb">cd&lt;/span> blog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl https://start.spring.io/starter.zip -d &lt;span class="nv">language&lt;/span>&lt;span class="o">=&lt;/span>kotlin -d &lt;span class="nv">type&lt;/span>&lt;span class="o">=&lt;/span>gradle-project-kotlin -d &lt;span class="nv">dependencies&lt;/span>&lt;span class="o">=&lt;/span>web,mustache,jpa,h2,devtools -d &lt;span class="nv">packageName&lt;/span>&lt;span class="o">=&lt;/span>com.example.blog -d &lt;span class="nv">name&lt;/span>&lt;span class="o">=&lt;/span>Blog -o blog.zip
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 명령을 사용하셨다면 Kotlin DSL + Gradle로 빌드할 수 있는 SpringBoot 프로젝트가 아래 구조로 만들어졌을 겁니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── Dockerfile
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── HELP.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── build.gradle.kts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── gradle
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── gradlew
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── gradlew.bat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── settings.gradle.kts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── src
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>저는 가이드 문서대로 이미 구현을 한 상태라 추가 작업 없이 확인할 수 있지만, 잘 배포 되었는지 확인하기 위한 간단한 REST 컨트롤러를 만들어주겠습니다.&lt;/p>
+&lt;p>패키지 경로 내에 있다면 어떤 이름으로 만들어도 상관은 없습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-kotlin" data-lang="kotlin">&lt;span class="line">&lt;span class="cl">&lt;span class="k">package&lt;/span> &lt;span class="nn">com.example.blog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.springframework.web.bind.annotation.GetMapping&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.springframework.web.bind.annotation.RequestMapping&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.springframework.web.bind.annotation.RestController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@RestController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@RequestMapping&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;/api/hello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">HelloController&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@GetMapping&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fun&lt;/span> &lt;span class="nf">hello&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;Hello&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="네트워크-환경-준비-공유기-사용시">네트워크 환경 준비 (공유기 사용시)&lt;/h3>
+&lt;p>저와 같이 공유기를 사용한다면 외부 네트워크에서 정상 동작을 확인하기 위해 추가 설정이 필요합니다. 테스트를 환경이 공유기를 사용하지 않는다면 넘기셔도 좋습니다.&lt;/p>
+&lt;p>외부 네트워크를 통해 웹 애플리케이션에 접근하려면 애플리케이션이 배포된 서버의 IP와 웹 애플리케이션이 사용 중인 PORT 정보를 알아야 하는데, 저처럼 공유기를 사용하는 환경에서는 공유기가 IP를 할당 받게 됩니다.&lt;/p>
+&lt;blockquote>
+&lt;p>라우터(공유기 등)으로 구성된 내부 네트워크를 서브넷 이라고 하며, 서브넷 자체적으로 내부 IP를 할당하기 때문에 서브넷 내부에서 서로 통신할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>따라서 공유기에 들어온 요청을 연결된 내부 네트워크를 통해 웹 애플리케이션을 배포한 로컬 환경으로 요청을 전달해야 하는데, 이러한 처리를 포트 포워딩이라고 합니다.&lt;/p>
+&lt;p>포트 포워딩은 공유기가 받은 요청을 내부적으로 연결된 목적지에 전달하는 것이기 때문에 요청을 받는 공유기에 설정해야 하고, 대부분 공유기가 이러한 기능을 제공하고 있습니다.&lt;/p>
+&lt;p>현재 연결된 무선 인터넷의 IP 정보가 내부 IP이고, 외부 IP는 mac 기준 아래 명령으로 확인할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">curl ifconfig.me
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>공유기 관리자 페이지는 내부 IP에서 마지막이 1로 바꿔 접근하면 됩니다. 저는 같은 경우는 &lt;a class="link" href="http://192.168.0.1/" target="_blank" rel="noopener"
+>http://192.168.0.1/&lt;/a> 이었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/1/img_1.png"
+width="882"
+height="580"
+srcset="https://codemario318.github.io/post/infra/container-env/1/img_1_hu55bf77ff89b873d68649940d5fc61b8f_57370_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/1/img_1_hu55bf77ff89b873d68649940d5fc61b8f_57370_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="364px"
+>&lt;/p>
+&lt;p>IpTime 공유기는 이런 식으로 나올 텐데, 구성은 대부분 같습니다.&lt;/p>
+&lt;p>외부 IP, 내부 IP 맞춰 입력하고 외부 포트는 포트 포워딩할 대상 포트 번호를 입력하고, 내부 포트는 로컬 환경에서 배포될 컨테이너의 호스트 포트 번호를 입력하면 됩니다.&lt;/p>
+&lt;p>외부 포트 같은 경우 http 포트 번호가 80이라서 설정했는데, 8비트 정수값이라면 어떤 값이 들어가도 상관없습니다.&lt;/p>
+&lt;p>다만 브라우저를 통해 접근할 때 &lt;code>외부_IP:외부_포트&lt;/code>로 접근하시면 됩니다.&lt;/p>
+&lt;h2 id="컨테이너-빌드">컨테이너 빌드&lt;/h2>
+&lt;p>Docker 컨테이너 배포를 위해 배포하고자 하는 프로젝트를 컨테이너 이미지로 빌드해야합니다.&lt;/p>
+&lt;h3 id="프로젝트-빌드">프로젝트 빌드&lt;/h3>
+&lt;p>일반적으로 Docker 컨테이너를 빌드할 때 이미지 크기 및 빌드 시간 최적화를 위해 실행 가능한 애플리케이션만을 이미지에 포함해 빌드합니다.&lt;/p>
+&lt;p>실습 같은 Spring boot 프로젝트 같은 경우 빌드를 완료한 후 생성되는 실행 파일인 &lt;code>.jar&lt;/code> 파일만을 포함하는 것을 의미합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">./gradlew build
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>해당 명령을 실행하여 프로젝트를 빌드하면 아래와 같은 구조로 빌드 결과물들이 나옵니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── classes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── kotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── generated
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── source
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── kotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   ├── compileKotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   ├── compileTestKotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   ├── kaptGenerateStubsKotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── kaptGenerateStubsTestKotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── libs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   ├── &amp;lt;프로젝트명&amp;gt;-&amp;lt;build.gradle에 설정한 버전&amp;gt;-plain.jar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── &amp;lt;프로젝트명&amp;gt;-&amp;lt;build.gradle에 설정한 버전&amp;gt;.jar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── reports
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── tests
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── resolvedMainClassName
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── resources
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── main
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── snapshot
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── kotlin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── test-results
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── test
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── tmp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── bootJar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── jar
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── kapt3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── test
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Gradle 같은 경우 별도 설정을 하지 않았다면 &lt;code>build/libs&lt;/code> 디렉터리에 &lt;code>&amp;lt;프로젝트명&amp;gt;-&amp;lt;build.gradle에 설정한 버전&amp;gt;&lt;/code> 형태로 실행 파일을 만듭니다.&lt;/p>
+&lt;blockquote>
+&lt;p>Plain JAR는 애플리케이션 코드만을 JAR 파일로 패키징 하는 방식으로 배포되는 파일의 크기가 작지만, 실행 시에 종속성을 관리해야 하는 번거로움이 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>일반적으로 SpringBoot 애플리케이션을 빌드할 때는 Fat JAR 방식으로 종속성을 내장하여 실행 가능한 형태로 배포하므로 Fat JAR를 컨테이너 이미지에 포함하면 됩니다.&lt;/p>
+&lt;blockquote>
+&lt;p>지금은 직접 명령어를 통해서 프로젝트를 빌드하고 있지만, CI/CD 통해 변경된 내용을 반영하고 빌드해서 배포하는 과정을 자동화할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="dockerfile-작성">Dockerfile 작성&lt;/h3>
+&lt;p>Dockerfile은 Docker 컨테이너 이미지를 빌드하기 위해 필요한 명령과 필요한 환경 변수 등을 기술한 텍스트 파일입니다.&lt;/p>
+&lt;p>Docker 이미지는 실행 가능한 애플리케이션과 해당 애플리케이션을 실행하는 데 필요한 모든 환경 및 종속성을 포함하는데, Dockerfile을 통해 이미지를 어떻게 구성하고 빌드해야 하는지에 대한 명령을 정의할 수 있습니다.&lt;/p>
+&lt;p>Dockerfile을 프로젝트 최상위 디렉터리에 만들고 &lt;code>docker build&lt;/code> 명령을 실행하면 작성 내용에 맞춰 빌드 작업을 수행하게 됩니다.&lt;/p>
+&lt;p>그럼 간단하게 Dockerfile을 작성해보겠습니다. 위에서 언급한 것처럼 애플리케이션을 직접 실행할 수 있는 항목들만 컨테이너에 기술해주면 됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-dockerfile" data-lang="dockerfile">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FROM&lt;/span>&lt;span class="s"> bellsoft/liberica-runtime-container:jre-17-slim-musl&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">COPY&lt;/span> build/libs/*.jar app/app.jar&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">ENTRYPOINT&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;java&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;-jar&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="s2">&amp;#34;/app/app.jar&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Dockerfile을 해석해보면&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>FROM&lt;/code>: 베이스 이미지를 선택합니다. Ubuntu 기반 Java 17 런타임 환경 이미지인 &lt;code>bellsoft/liberica-runtime-container:jre-17-slim-musl&lt;/code>로 설정하였습니다.
+&lt;ul>
+&lt;li>베이스 이미지는 &lt;a class="link" href="https://hub.docker.com/" target="_blank" rel="noopener"
+>Docker Hub&lt;/a> 에서 찾아볼 수 있고, 저는 jre 17 중 가장 용량이 작은 이미지로 선택했습니다.&lt;/li>
+&lt;li>기본적인 환경이 구성된 이미지는 대부분 Docker Hub에서 찾을 수 있고 해당 이미지의 이미지 레이어도 확인 가능합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>COPY&lt;/code>: 호스트 시스템의 디렉터리에서 컨테이너 내부 지정 위치로 복사합니다.
+&lt;ul>
+&lt;li>Java 실행파일을 컨테이너 환경 최상위 디렉터리에 &lt;code>app.jar&lt;/code> 이름으로 복사하게 됩니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>ENTRYPOINT&lt;/code>: 컨테이너가 실행될 때 실행할 명령어를 정의합니다.
+&lt;ul>
+&lt;li>&lt;code>ENTRYPOINT&lt;/code>는 &lt;code>CMD&lt;/code>로 대체할 수도 있는데 명령어가 실행되는 방식이 조금 다릅니다. 이는 추후에 다뤄보겠습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="docker-이미지-빌드">Docker 이미지 빌드&lt;/h3>
+&lt;p>이제 Docker 이미지를 빌드해보겠습니다. 기본 사용법은 아래와 같습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker build &lt;span class="o">[&lt;/span>OPTIONS&lt;span class="o">]&lt;/span> PATH &lt;span class="p">|&lt;/span> URL &lt;span class="p">|&lt;/span> -
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>여러 옵션이 있지만 &lt;code>-t&lt;/code>(&lt;code>--tag&lt;/code>) 옵션을 사용하여 이름과 태그를 설정할 수 있습니다. &lt;code>이름:태그&lt;/code> 형식으로 작성하고, 태그는 생략될 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker build -t &amp;lt;이미지 이름:태그&amp;gt; &amp;lt;Dockerfile이 위치한 디렉터리 경로&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-zed" data-lang="zed">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Building&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">9&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">8&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">8&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FINISHED&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">internal&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">build&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kt">definition&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">from&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Dockerfile&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">transferring&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">dockerfile&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">281&lt;/span>&lt;span class="n">B&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">internal&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dockerignore&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">transferring&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">2&lt;/span>&lt;span class="n">B&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">internal&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">metadata&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">for&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nn">io/bellsoft/&lt;/span>&lt;span class="n">liberica&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">runtime&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">container&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">jre&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="err">17&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">slim&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">musl&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">6&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">auth&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nn">bellsoft/&lt;/span>&lt;span class="n">liberica&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">runtime&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">container&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">pull&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">token&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">for&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">registry&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">io&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">internal&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">build&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">transferring&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">context&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">344&lt;/span>&lt;span class="n">B&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">2&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nn">io/bellsoft/&lt;/span>&lt;span class="n">liberica&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">runtime&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">container&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">jre&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="err">17&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">slim&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">musl&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="err">95&lt;/span>&lt;span class="n">ebc03f0f27568a915cc2616a8e9f12e3eb33f4c3197c71606c186&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">6&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">resolve&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nn">io/bellsoft/&lt;/span>&lt;span class="n">liberica&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">runtime&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">container&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">jre&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="err">17&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">slim&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">musl&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="err">95&lt;/span>&lt;span class="n">ebc03f0f27568a915cc2616a8e9f12e3eb33f4c3197c71606c186&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="err">95&lt;/span>&lt;span class="n">ebc03f0f27568a915cc2616a8e9f12e3eb33f4c3197c71606c186e84096969&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">529&lt;/span>&lt;span class="n">B&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">529&lt;/span>&lt;span class="n">B&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="err">216&lt;/span>&lt;span class="n">addf7a20c81782208e43c78219ebf492c4ac44dc6ebd2fa4f04b7fe5573c9&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">77&lt;/span>&lt;span class="n">kB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">77&lt;/span>&lt;span class="n">kB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">a53839d7740238f431dd368e69ab2fde8df89f7fe7df9fc1f1bb50aa59ccd6a1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">39&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">73&lt;/span>&lt;span class="n">MB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">39&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">73&lt;/span>&lt;span class="n">MB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">5&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">extracting&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">a53839d7740238f431dd368e69ab2fde8df89f7fe7df9fc1f1bb50aa59ccd6a1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">9&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="err">2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">2&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">COPY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nn">build/libs/&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">jar&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nn">app/&lt;/span>&lt;span class="n">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">jar&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">exporting&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">exporting&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">layers&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">1&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">writing&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="err">9830437234&lt;/span>&lt;span class="n">c832dc3ad45e9833a27e89449889296bdf9ec9091f6680d648d8a8&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">naming&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nn">io/library/&lt;/span>&lt;span class="n">kt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">spring&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">edit&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">0&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">Use&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#39;&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">scan&lt;/span>&lt;span class="err">&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Snyk&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tests&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">against&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">images&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">vulnerabilities&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">and&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">learn&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">how&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">fix&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">them&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>저는 &lt;code>kt-spring-docker&lt;/code>로 이름을 설정하고 태그는 설정하지 않았습니다. 명령어를 실행하면 위와 같은 형식으로 빌드 과정을 출력합니다.&lt;/p>
+&lt;p>결과는 &lt;code>docker images&lt;/code> 명령으로 확인할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker images
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">REPOSITORY TAG IMAGE ID CREATED SIZE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kt-spring-docker-edit latest 9830437234c8 7 minutes ago 164MB
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="컨테이너-배포">컨테이너 배포&lt;/h2>
+&lt;p>컨테이너 배포를 위한 기본 명령어는 아래와 같습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker run &lt;span class="o">[&lt;/span>OPTIONS&lt;span class="o">]&lt;/span> IMAGE &lt;span class="o">[&lt;/span>COMMAND&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>ARG...&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>다양한 옵션이 존재하지만 그 중 &lt;code>-p&lt;/code>(&lt;code>--publish&lt;/code>) 옵션은 호스트 포트와 컨테이너 포트를 연결하여 컨테이너를 실행할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">docker run -p &amp;lt;호스트_포트번호:컨테이너_포트번호&amp;gt; &amp;lt;컨테이너 식별자&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">WARNING: The requested image&amp;#39;s platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> . ____ _ __ _ _
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /\\ / ___&amp;#39;_ __ _ _(_)_ __ __ _ \ \ \ \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">( ( )\___ | &amp;#39;_ | &amp;#39;_| | &amp;#39;_ \/ _` | \ \ \ \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> \\/ ___)| |_)| | | | | || (_| | ) ) ) )
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39; |____| .__|_| |_|_| |_\__, | / / / /
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> =========|_|==============|___/=/_/_/_/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> :: Spring Boot :: (v3.1.2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:41.102Z INFO 1 --- [ main] c.m.k.KotlinTutorialApplicationKt : Starting KotlinTutorialApplicationKt v0.0.1-SNAPSHOT using Java 17.0.8 with PID 1 (/app/app.jar started by root in /)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:41.124Z INFO 1 --- [ main] c.m.k.KotlinTutorialApplicationKt : No active profile set, falling back to 1 default profile: &amp;#34;default&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:46.689Z INFO 1 --- [ main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:47.122Z INFO 1 --- [ main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 375 ms. Found 2 JPA repository interfaces.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:51.800Z INFO 1 --- [ main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat initialized with port(s): 8080 (http)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:51.850Z INFO 1 --- [ main] o.apache.catalina.core.StandardService : Starting service [Tomcat]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:51.851Z INFO 1 --- [ main] o.apache.catalina.core.StandardEngine : Starting Servlet engine: [Apache Tomcat/10.1.11]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:52.320Z INFO 1 --- [ main] o.a.c.c.C.[Tomcat].[localhost].[/] : Initializing Spring embedded WebApplicationContext
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:52.334Z INFO 1 --- [ main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 10170 ms
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:53.238Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Starting...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:54.047Z INFO 1 --- [ main] com.zaxxer.hikari.pool.HikariPool : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:71313eab-1da9-46b3-bcd5-df59c1121b0b user=SA
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:54.057Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Start completed.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:54.322Z INFO 1 --- [ main] o.hibernate.jpa.internal.util.LogHelper : HHH000204: Processing PersistenceUnitInfo [name: default]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:54.538Z INFO 1 --- [ main] org.hibernate.Version : HHH000412: Hibernate ORM core version 6.2.6.Final
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:54.576Z INFO 1 --- [ main] org.hibernate.cfg.Environment : HHH000406: Using bytecode reflection optimizer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:55.140Z INFO 1 --- [ main] o.h.b.i.BytecodeProviderInitiator : HHH000021: Bytecode provider name : bytebuddy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:56.491Z INFO 1 --- [ main] o.s.o.j.p.SpringPersistenceUnitInfo : No LoadTimeWeaver setup: ignoring JPA class transformer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:29:58.111Z INFO 1 --- [ main] o.h.b.i.BytecodeProviderInitiator : HHH000021: Bytecode provider name : bytebuddy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:01.316Z INFO 1 --- [ main] o.h.e.t.j.p.i.JtaPlatformInitiator : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:01.550Z INFO 1 --- [ main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit &amp;#39;default&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:04.136Z WARN 1 --- [ main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:06.776Z INFO 1 --- [ main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat started on port(s): 8080 (http) with context path &amp;#39;&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:06.861Z INFO 1 --- [ main] c.m.k.KotlinTutorialApplicationKt : Started KotlinTutorialApplicationKt in 28.216 seconds (process running for 31.678)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:47.268Z INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/] : Initializing Spring DispatcherServlet &amp;#39;dispatcherServlet&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:47.272Z INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet : Initializing Servlet &amp;#39;dispatcherServlet&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2023-08-30T17:30:47.288Z INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet : Completed initialization in 14 ms
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>docker ps&lt;/code> 명령을 통해 현재 실행 중인 컨테이너를 확인할 수 있고, 앞서 설명해 드린 외부 IP를 통해 접근해보면 정상적으로 배포된 것을 확인할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">docker ps
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9d85dbbbf374 kt-spring-docker-edit-2 &amp;#34;java -jar /app/app.…&amp;#34; About an hour ago Up About an hour 0.0.0.0:8080-&amp;gt;8080/tcp bold_chaum
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/1/img_2.png"
+width="413"
+height="895"
+srcset="https://codemario318.github.io/post/infra/container-env/1/img_2_huad70b1356626920c39dc8d86163420b4_30925_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/1/img_2_huad70b1356626920c39dc8d86163420b4_30925_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p></description></item><item><title>쿠버네티스 튜토리얼 - 1. Hello Minikube</title><link>https://codemario318.github.io/post/kubernetes/tutorials/1/</link><pubDate>Thu, 24 Aug 2023 12:51:03 +0900</pubDate><guid>https://codemario318.github.io/post/kubernetes/tutorials/1/</guid><description>&lt;img src="https://codemario318.github.io/post/kubernetes/tutorials/1/cover.webp" alt="Featured image of post 쿠버네티스 튜토리얼 - 1. Hello Minikube" />&lt;p>Minikube는 로컬 환경에서 쿠버네티스 클러스터를 간편하게 구축하고 실행하기 위한 도구입니다.&lt;/p>
 &lt;p>단일 머신 위에서 쿠버네티스 클러스터를 실행하므로 개발, 테스트 및 학습을 위한 로컬 환경에서 매우 유용합니다.&lt;/p>
 &lt;p>minikube는 컨테이너, 가상머신 환경에서 동작하므로 이와 같은 환경을 먼저 구성해야하며, 저는 사전에 docker를 설치, 실행했습니다.&lt;/p>
 &lt;h2 id="minikube-클러스터-만들기">minikube 클러스터 만들기&lt;/h2>
