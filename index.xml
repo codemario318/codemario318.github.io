@@ -266,7 +266,7 @@
 &lt;blockquote>
 &lt;p>하나의 트랜잭션에 여러 개의 DML 쿼리들이 포함되는 경우가 존재한다면 에러가 발생한 쿼리 외에 다른 쿼리들이 예상치 못하게 함께 무시될 수 있으므로 주의해야한다.&lt;/p>
 &lt;/blockquote></description></item><item><title>1. Docker를 이용한 컨테이너 배포</title><link>https://codemario318.github.io/post/infra/container-env/1/</link><pubDate>Tue, 29 Aug 2023 14:52:25 +0900</pubDate><guid>https://codemario318.github.io/post/infra/container-env/1/</guid><description>&lt;img src="https://codemario318.github.io/post/infra/container-env/1/cover.png" alt="Featured image of post 1. Docker를 이용한 컨테이너 배포" />&lt;p>개인적으로 해보고 싶었던 쿠버네티스를 이용하여 컨테이너 인프라 환경을 구축해보려고합니다.&lt;/p>
-&lt;p>이전 회사에서 거대한 모놀리식 구조로 운영되던 서비스를 개발 언어와 MSA 전환을 위해 꼭 필요하다고 졸라서 해보라고 허락을 받고 공부하고 있었는데 결국 퇴사를 하게 되었네요.&lt;/p>
+&lt;p>이전 회사에서 거대한 모놀리식 구조로 운영되던 서비스를 회사 장기 비전인 Java 전환과 MSA 전환을 위해 꼭 필요하다고 졸라서 해보라고 허락을 받고 공부하고 있었는데 결국 퇴사를 하게 되었네요.&lt;/p>
 &lt;p>기본적인 내용들은 &lt;a class="link" href="https://product.kyobobook.co.kr/detail/S000001834629" target="_blank" rel="noopener"
 >컨테이너 인프라 환경 구축을 위한 쿠버네티스/도커&lt;/a> 책을 통해 학습하였고, 추가로 참고한 내용들은 따로 공유드리겠습니다.&lt;/p>
 &lt;p>컨테이너 인프라 환경을 구축하기 위한 첫 걸음으로 Docker를 이용하여 컨테이너에 배포하는 방법을 알아보겠습니다.&lt;/p>
