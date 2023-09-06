@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on Mario Blog</title><link>https://codemario318.github.io/tags/git/</link><description>Recent content in Git on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 31 Aug 2023 23:21:25 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>2. 깃 브랜치 전략과 CI/CD</title><link>https://codemario318.github.io/post/infra/container-env/2/</link><pubDate>Thu, 31 Aug 2023 23:21:25 +0900</pubDate><guid>https://codemario318.github.io/post/infra/container-env/2/</guid><description>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/cover.png" alt="Featured image of post 2. 깃 브랜치 전략과 CI/CD" />&lt;h2 id="개요">개요&lt;/h2>
+&lt;p>이번에는 깃 브랜치 전략을 바탕으로 깃 브랜치를 구성해보고, 이에 맞는 CI/CD를 구성해보겠습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img_6.png"
+width="611"
+height="815"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_6_hua2ce8da1c7fb282b5321cfbd81b98186_159615_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_6_hua2ce8da1c7fb282b5321cfbd81b98186_159615_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Git flow 브랜치 전략"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+>&lt;/p>
+&lt;p>이전 직장에서는 Git flow 브랜치 전략과 Gitlab flow 브랜치 전략과 유사한 방식으로 브랜치를 운용했습니다.&lt;/p>
+&lt;p>관련 문서에는 Git flow 브랜치 전략으로 구성했다고 되어있었는데, 지속적으로 사용하면서 개발자들이 편하게 느끼는 방식으로 자연스럽게 바뀐 듯 했습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img_2.png"
+width="340"
+height="380"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_2_hu37b9174b2a235d71e5adb3c528d76bd2_8951_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_2_hu37b9174b2a235d71e5adb3c528d76bd2_8951_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Gitlab CI/CD"
+class="gallery-image"
+data-flex-grow="89"
+data-flex-basis="214px"
+>&lt;/p>
+&lt;p>그리고 Gitlab CI/CD를 통해 CI/CD가 구성되어 있었는데, 서버 로직에 jQuery 뿐만 아니라 Vue 등이 한 프로젝트에 존재하는 조금 복잡한 모놀리식 구조에서 Vue를 직접 빌드해서 푸시하는 것이 너무 불편해서 관련 작업을 했었습니다.&lt;/p>
+&lt;p>CI/CD가 온프레미스 환경에서 이미 구축되어있던 운영, 테스트, 개발 환경을 유지하기 위해 깃 전환 전(3~4년 전?) SVN에서 사용하던 스크립트를 동작시키는 형태로 사용되고 있었는데 스크립트가 SPA 활용을 고려하지 않았고, 많이 복잡해서 고생했었던 기억이 나네요.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img_3.png"
+width="676"
+height="411"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_3_hu5831d2581bfa751d7cc7e64e04ff784d_81701_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_3_hu5831d2581bfa751d7cc7e64e04ff784d_81701_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Jenkins"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="394px"
+>&lt;/p>
+&lt;p>8년 동안 제대로 진행하지 못한 회사의 계획인 언어 전환을 위해 MSA로 구조를 변경해야한다는 의견을 피력했었습니다.&lt;/p>
+&lt;p>이를 위해 MSA 구조 변경을 위한 컨테이너 인프라에서 개발, 테스트, 운영 환경을 어떻게 배포해야 할까, CI/CD는 어떻게 구성하면 좋을까 고민했었는데 퇴사 기념으로 한번 정리해보고 직접 구성해보려고 합니다.&lt;/p>
+&lt;p>Gitlab CI/CD 작업할 때 자료가 많이 없어 고생했던 기억도 있고, 새로운 내용을 찍먹하기 위해 이번에는 Jenkins으로 해보겠습니다.&lt;/p>
+&lt;h2 id="개발-프로세스">개발 프로세스&lt;/h2>
+&lt;p>다시 이전 직장 이야기를 해보면 개발 프로세스는 다음과 같았습니다.(git-flow 기준으로 설명하겠습니다.)&lt;/p>
+&lt;ol>
+&lt;li>release 브랜치에서 feature 브랜치를 생성한다.
+&lt;ul>
+&lt;li>CI/CD로 온프레미스 테스트용 서버들로 feature 브랜치를 복제하고 nginx 설정 추가를 통해 개발 서버를 배포&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>feature 브랜치에서 작업한다.
+&lt;ul>
+&lt;li>개발자가 여러 명 투입되면 한 브랜치를 같이 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>feature 브랜치로 release 브랜치에 대해 MR을 만들고 개발 테스트와 선택적으로 코드 리뷰를 진행한다.&lt;/li>
+&lt;li>feature 브랜치를 통해 배포된 devlopment, staging, production 환경에서 QA를 진행한다.&lt;/li>
+&lt;li>feature 브랜치를 release 브랜치에 머지하고 release 브랜치를 이용해 devlopment, staging, production 환경에서 QA를 진행한다.
+&lt;ul>
+&lt;li>production 테스트 진행시 사용자에게 영향을 줄 수 있는 테스트는 금지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>매주 화, 목 release 브랜치를 master 브랜치와 머지한다.
+&lt;ul>
+&lt;li>CI/CD를 통해 배포&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="문제">문제&lt;/h2>
+&lt;p>위와 같은 개발 프로세스를 거치면서 아래와 같은 불편함을 느꼈습니다.&lt;/p>
+&lt;ul>
+&lt;li>작업 영역이 비슷한 경우, release 브랜치에서 발생한 이슈가 내가 작업한 부분 때문에 발생한 이슈인지, 다른 feature에서 발생한 이슈인지 확인하기 까다롭다.
+&lt;ul>
+&lt;li>작업을 최대한 겹치지 않게 배정해주시긴 했습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>release 브랜치에 새로운 feature가 머지되면 새로운 이슈가 발생하여 다른 feature에도 영향을 줄 수 있다.
+&lt;ul>
+&lt;li>충돌 처리 실수, 사이드 이펙트 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>release 브랜치에서의 QA 시나리오가 클 경우 정기 배포로 인해 충분히 검증할 시간이 부족할 수 있다.&lt;/li>
+&lt;li>feature 브랜치들이 온프레미스 환경에 배포되어 진행중인 업무가 많다면 서버의 리소스가 부족해진다.&lt;/li>
+&lt;/ul>
+&lt;p>저는 이러한 문제의 원인이 feature가 통합되는 release 브랜치라고 생각했습니다.&lt;/p>
+&lt;hr>
+&lt;p>많은 회사에서 Git flow를 채택하여 버전 별 release 환경을 구성하는 방식을 채택하고 있으며, 특히 feature 브랜치를 많이 구성해야하는 경우 이러한 선택을 통해 리스크를 줄이고 있는 것으로 보입니다.&lt;/p>
+&lt;p>개인적으로 Git flow 브랜치 전략에서 release 브랜치를 구성하는 이유는 production 버저닝이 가장 크다고 생각합니다.&lt;/p>
+&lt;p>많은 소프트웨어 제품, 라이브러리처럼 버전마다 많은 변경을 한번에 적용하고 이전 버전을 계속 사용해야 하는 경우 release를 통해 여러 장점을 취할 수 있지만 웹 서비스처럼 작은 변경 사항들을 지속적으로 빠르게 반영해야고, 이전 버전이 큰 의미가 없는 경우 이러한 버저닝이 주는 장점은 크지 않으며 오히려 부작용이 더 크다고 생각되었습니다.&lt;/p>
+&lt;p>그럼에도 불구하고 이전 직장에서 이러한 방식으로 브랜치를 구성한 이유도 납득은 됩니다.&lt;/p>
+&lt;ul>
+&lt;li>큰 모놀리식 레거시로 인해 발생하는 이슈를 release를 통해 확인할 수 있어 안심할 수 있음&lt;/li>
+&lt;li>비교적 최근까지 활용했던 SVN 개발 프로세스를 그대로 활용하기 위해&lt;/li>
+&lt;li>온프레미스 환경에 맞추어 작성된 복잡한 배포 스크립트 수정 부담&lt;/li>
+&lt;li>기존 개발자들의 학습 부담 등&lt;/li>
+&lt;/ul>
+&lt;h2 id="github-flow">Github flow&lt;/h2>
+&lt;p>Git flow와 같은 복잡한 브랜치 전략을 단순화 하기 위해 GitHub flow와 이를 기본으로 한 여러 브랜치 전략이 제안되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img_5.png"
+width="899"
+height="310"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_5_hu32b531840387ea0c7d99f8c87fd2f043_42672_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_5_hu32b531840387ea0c7d99f8c87fd2f043_42672_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Github flow 브랜치 전략"
+class="gallery-image"
+data-flex-grow="290"
+data-flex-basis="696px"
+>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img.png"
+width="680"
+height="215"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_hub4e24b09e961750363b132c6ffc9a180_42277_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_hub4e24b09e961750363b132c6ffc9a180_42277_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Trunk-Based Development"
+class="gallery-image"
+data-flex-grow="316"
+data-flex-basis="759px"
+>&lt;/p>
+&lt;p>Github flow는 Github에서 제안된 배포 전략으로 크게 아래와 같은 프로세스를 가집니다.&lt;/p>
+&lt;ol>
+&lt;li>main 브랜치를 기준으로 새로운 기능 또는 버그 수정을 개발하기 위한 브랜치 생성.&lt;/li>
+&lt;li>변경 사항을 커밋하고, 이를 Pull Request (PR)로 병합 요청.&lt;/li>
+&lt;li>PR에서 코드 검토와 논의 진행.&lt;/li>
+&lt;li>PR 승인 시 main 브랜치로 병합하고 자동 배포.&lt;/li>
+&lt;/ol>
+&lt;p>Github Flow는 단순한 구조로 버전 관리가 필요 없으면서 빠른 배포가 필요한 작은 규모의 프로젝트에서 유용하게 활용될 수 있으나 너무 단순한 구조로 인해 비교적 규모가 있는 프로젝트에서는 적합하지 않을 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>복잡한 워크플로우 지원 부족&lt;/li>
+&lt;li>긴 작업 처리의 어려움&lt;/li>
+&lt;li>명시적인 staging 환경 부재 등&lt;/li>
+&lt;/ul>
+&lt;p>이러한 단점으로 아래와 같은 경우 적용이 어려울 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>다수의 인원이 협업을 하는 경우&lt;/li>
+&lt;li>작업 수가 많은 경우 등&lt;/li>
+&lt;li>모놀리식 구조&lt;/li>
+&lt;li>Mono-repo&lt;/li>
+&lt;/ul>
+&lt;h2 id="gitlab-flow">Gitlab flow&lt;/h2>
+&lt;p>release 브랜치를 통해 feature 브랜치를 통합하는 과정이 없이 리뷰 완료 후 배로 배포되는 Github flow에서는 기존 Git 복잡함을 해소하였지만 단순한 구조로 아쉬운 부분들이 있는데, 이러한 부분들을 해소할 수 있는 브랜치 전략으로 Gitlab flow가 있습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/infra/container-env/2/img_1.png"
+width="560"
+height="618"
+srcset="https://codemario318.github.io/post/infra/container-env/2/img_1_hu11c3f8bf1da0319955b150f4042e7b59_25349_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/infra/container-env/2/img_1_hu11c3f8bf1da0319955b150f4042e7b59_25349_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Gitlab flow 브랜치 전략"
+class="gallery-image"
+data-flex-grow="90"
+data-flex-basis="217px"
+>&lt;/p>
+&lt;p>Git flow는 develop 브랜치를 기준으로 새로운 기능들이 추가되고 이러한 변경 내용들을 release 브랜치를 통해 통합되지만, Gitlab flow는 master 브랜치를 기준으로 feature 브랜치를 만들고 feature 브랜치를 통해 만들어지는 기능을 직접 반영하는 방식입니다.&lt;/p>
+&lt;p>이러한 기능 중심의 개발을 통해 릴리스 머지에서 발생하는 오버헤드를 예방할 수 있습니다.&lt;/p>
+&lt;p>feature 브랜치를 통해 개발 환경 테스트를 진행하고, master 브랜치를 통해 staging 환경에 대한 배포와 테스트를 진행하며, pre-production 브랜치를 통해 운영 환경에서의 테스트를 완료하고 실제 운영 환경으로 배포되는 흐름을 가지고 있습니다.&lt;/p>
+&lt;p>그래서 저는 Gitlab flow 브랜치 전략을 활용해서 프로세스를 구성하고, CI/CD로 테스트 환경까지 만들어보는 작업을 해보려고 합니다. 대략적인 프로세스는 다음과 같습니다.&lt;/p>
+&lt;ol>
+&lt;li>master 브랜치에서 feature 브랜치를 생성한다.
+&lt;ul>
+&lt;li>feature 브랜치를 기준으로 CI/CD를 활용하여 dev 환경을 배포한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>feature 브랜치에서 작업을 완료 후 master 브랜치에 MR를 만들고 리뷰를 진행하고 리뷰가 완료되면 master 브랜치에 머지한다.
+&lt;ul>
+&lt;li>master 기준으로 stg 환경을 배포한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>stg QA가 완료되면 master 브랜치를 pre-production 브랜치로 머지한다.
+&lt;ul>
+&lt;li>pre-production 기준으로 운영 환경을 배포한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>pre-production QA가 완료되면 실제로 배포한다.&lt;/li>
+&lt;/ol>
+&lt;h3 id="best-practices">Best practices&lt;/h3>
+&lt;p>Gitlab flow 브랜치 전략을 사용할 때 아래와 같은 그라운드 룰을 설정하고 지킬것을 권하고 있습니다.&lt;/p>
+&lt;ol>
+&lt;li>master 브랜치에 대해 직접 커밋하지 않고 꼭 feature 브랜치들을 사용하여 반영
+&lt;ul>
+&lt;li>머지 전 코드 리뷰를 쉽게 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모든 커밋에 대해 모든 테스트를 수행
+&lt;ul>
+&lt;li>master 브랜치에 존재하는 모든 기능들이 기본적으로 동작한다고 확신할 수 있어야 한다.&lt;/li>
+&lt;li>feature 브랜치에 새롭게 커밋할 때&lt;/li>
+&lt;li>master에 병합할 때&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>master 브랜치에 feature 브랜치를 머지하기 전 코드리뷰 수행&lt;/li>
+&lt;li>배포는 branch 또는 tag 기준으로 자동을 수행&lt;/li>
+&lt;li>master에 이미 반영된 커밋에 대해 rebase를 수행 X
+&lt;ul>
+&lt;li>기존 테스트와 수정 내용을 확인하기 힘들어 질 수 있다.&lt;/li>
+&lt;li>cherry pick이 힘들어질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모든 feature 브랜치의 시작과 병합 대상은 master 브랜치
+&lt;ul>
+&lt;li>길어지는 브랜치 분기를 막을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>커밋 메시지는 무슨 역할을 했는지 표현해야함.&lt;/li>
+&lt;li>핫픽스는 master 먼저 반영할 것&lt;/li>
+&lt;/ol></description></item></channel></rss>
