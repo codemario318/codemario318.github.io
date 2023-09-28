@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 20 Sep 2023 15:25:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>1. 디자인 패턴 소개와 전략 패턴</title><link>https://codemario318.github.io/post/head-first/1/</link><pubDate>Wed, 20 Sep 2023 15:25:08 +0900</pubDate><guid>https://codemario318.github.io/post/head-first/1/</guid><description>&lt;img src="https://codemario318.github.io/post/head-first/1/cover.png" alt="Featured image of post 1. 디자인 패턴 소개와 전략 패턴" />&lt;h2 id="디자인-패턴-만나기">디자인 패턴 만나기&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 20 Sep 2023 15:25:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>1. 디자인 패턴 소개와 전략 패턴</title><link>https://codemario318.github.io/post/gof/1/</link><pubDate>Wed, 20 Sep 2023 15:25:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/1/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/1/cover.png" alt="Featured image of post 1. 디자인 패턴 소개와 전략 패턴" />&lt;h2 id="디자인-패턴-만나기">디자인 패턴 만나기&lt;/h2>
 &lt;blockquote>
 &lt;p>&lt;strong>누군가가 이미 우리의 문제를 해결해 놓았다.&lt;/strong>&lt;/p>
 &lt;/blockquote>
@@ -185,7 +185,7 @@ display()
 &lt;li>클래스의 행동을 변경하고 확장하기 쉬운 구조를 갖추고자 할 때&lt;/li>
 &lt;li>코드 중복을 방지하고 재사용성을 높힐때&lt;/li>
 &lt;/ul>
-&lt;h3 id="구성">구성&lt;/h3>
+&lt;h3 id="구조">구조&lt;/h3>
 &lt;ol>
 &lt;li>전략(Strategy): 다양한 알고리즘 또는 동작을 나타내는 인터페이스 또는 추상 클래스
 &lt;ul>
