@@ -386,7 +386,7 @@ ForecastDisplay ..> Observer
 &lt;li>ForecastDisplay: 측정치를 바탕으로 기상 예보를 화면에 보여줄 디스플레이 요소&lt;/li>
 &lt;li>ThirdPartyDisplay: 새롭게 구현될 디스플레이 요소&amp;hellip;&lt;/li>
 &lt;/ul>
-&lt;h2 id="디자인-도구상자-안데-들어가야-할-도구들">디자인 도구상자 안데 들어가야 할 도구들&lt;/h2>
+&lt;h2 id="디자인-도구상자-안에-들어가야-할-도구들">디자인 도구상자 안에 들어가야 할 도구들&lt;/h2>
 &lt;ul>
 &lt;li>객체지향 기초
 &lt;ul>
