@@ -1,4 +1,485 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>헤드 퍼스트 디자인 패턴 on Mario Blog</title><link>https://codemario318.github.io/categories/headfirstdesignpatterns/</link><description>Recent content in 헤드 퍼스트 디자인 패턴 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 27 Sep 2023 13:09:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/headfirstdesignpatterns/index.xml" rel="self" type="application/rss+xml"/><item><title>2. 옵저버 패턴</title><link>https://codemario318.github.io/post/gof/2/</link><pubDate>Wed, 27 Sep 2023 13:09:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/2/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/2/cover.png" alt="Featured image of post 2. 옵저버 패턴" />&lt;p>옵저버 패턴은 중요한 일이 일어났을 때 객체에게 새 소식을 알려 줄 수 있는 패턴이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>헤드 퍼스트 디자인 패턴 on Mario Blog</title><link>https://codemario318.github.io/categories/headfirstdesignpatterns/</link><description>Recent content in 헤드 퍼스트 디자인 패턴 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 02 Oct 2023 14:29:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/headfirstdesignpatterns/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 데코레이터 패턴</title><link>https://codemario318.github.io/post/gof/3/</link><pubDate>Mon, 02 Oct 2023 14:29:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/3/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/3/cover.png" alt="Featured image of post 3. 데코레이터 패턴" />&lt;p>데코레이터 패턴은 객체 작성이라는 형식으로 실행 중에 클래스를 꾸미는 방법이다.&lt;/p>
+&lt;p>데코레이터 패턴을 활용하면 기존 클래스 코드를 바꾸지 않고도 객체에 새로운 임무를 추가할 수 있다.&lt;/p>
+&lt;h2 id="데코레이터-패턴">데코레이터 패턴&lt;/h2>
+&lt;p>데코레이터 패턴은 기존 코드를 건드리지 않고 확장으로 새로운 행동을 추가하는 것이 목적이다. 이를 통해 새로운 기능을 추가할 때 급변하는 주변 환경에 작 적응하는 유연하고 튼튼한 디자인을 만들 수 있다.&lt;/p>
+&lt;h3 id="ocpopen-close-principle-살펴보기">OCP(Open-Close Principle) 살펴보기&lt;/h3>
+&lt;blockquote>
+&lt;p>클래스는 확장에는 열려있어야 하지만 변경에는 닫혀 있어야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>확정에는 열려있고 변경에는 닫혀있다는 것은 모순처럼 보일 수 있으나 코드를 변경하지 않아도 시스템을 확장하게 해 주는 객체지향 기법은 많다.(ex. 옵저버 패턴)&lt;/p>
+&lt;p>데코레이터 패턴도 이 중 하나로 확장하려고 코드를 직접 수정하는 일을 방지하는 방법을 제공한다.&lt;/p>
+&lt;blockquote>
+&lt;p>모든 부분에서 OCP를 준수하는 것은 불가능하다.&lt;br>
+OCP를 준수하는 객체지향 디자인을 만들려면 많은 노력이 필요하고, 디자인의 모든 부분을 깔끔하게 정돈할 만큼 여유가 있는 상황도 흔치 않다(굳이 그렇게 할 필요가 없다).&lt;br>
+따라서 디자인한 것 중에서 가장 바뀔 가능성이 높은 부분을 중점적으로 살펴보고 OCP를 적용하는 방법이 가장 좋다.&lt;/p>
+&lt;/blockquote>
+&lt;p>코드에서 확장해야 할 부분을 선택할 때는 세심한 주의가 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>무조건 OCP를 적용한다면 쓸데없는 일을 하며 시간을 낭비할 수 있다.&lt;/li>
+&lt;li>필요 이상으로 복잡하고 이해하기 힘든 코드를 만드렉 될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="데코레이터-패턴-살펴보기">데코레이터 패턴 살펴보기&lt;/h3>
+&lt;p>이후 예시에서 설명할 스타버즈에서 음료 가격과 첨가물 가격을 합해 총 가격을 산출하는 방법은 좋은 방법이 아니었다.&lt;/p>
+&lt;ul>
+&lt;li>클래스가 매우 많아진다.&lt;/li>
+&lt;li>일부 서브클래스에는 적합하지 않은 기능을 추가해야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>일단 기본 단위에서 시작하여 추가되는 요소들로 최소 단위를 장식(decorate)하는 방법을 고려할 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>가장 기본이 되는 객체를 가져온다.&lt;/li>
+&lt;li>추가되는 요소들로 장식한다.&lt;/li>
+&lt;li>최종 결과물을 만들어내는 메소드를 호출한다.
+&lt;ul>
+&lt;li>추가 요소들의 결과를 만드는 일은 해당 객체에게 위임한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>데코레이터 패턴은 위와 같은 방식을 추가되는 요소 객체로 래핑하는 방식으로 구현한다.&lt;/p>
+&lt;ul>
+&lt;li>데코레이터의 슈퍼클래스는 자신이 장식하고 있는 객체의 슈퍼클래스와 같다.&lt;/li>
+&lt;li>한 객체를 여러개의 데코레이터로 감쌀 수 있다.&lt;/li>
+&lt;li>데코레이터는 자신이 감싸고 있는 객체와 같은 슈퍼클래스를 가지고 있기에 원래 객체가 들어갈 자리에 데코레이터 객체를 넣어도 상관없다.&lt;/li>
+&lt;li>&lt;strong>데코레이터는 자신이 장식하고 있는 객체에게 어떤 행동을 위임하는 일 말고도 추가 작업을 수행할 수 있다.&lt;/strong>&lt;/li>
+&lt;li>객체는 언제든 감쌀 수 있으므로 실행 중에 필요한 데코레이터를 마음대로 적용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="데코레이터-패턴의-정의">데코레이터 패턴의 정의&lt;/h3>
+&lt;blockquote>
+&lt;p>데코레이터 패턴으로 객체에 추가 요소를 동적으로 더할 수 있다.&lt;br>
+데코레이터를 사용하면 서브클래스를 만들 때보다 훨씬 유연하게 기능을 확장할 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;pre class="mermaid">classDiagram
+class Component {
+methodA()
+methodB()
+}
+class ConcreteComponent {
+methodA()
+methodB()
+}
+class Decorator {
+Component wrappedObj
+methodA()
+methodB()
+}
+class ConcreteDecoratorA {
+methodA()
+methodB()
+newBehavior()
+}
+class ConcreteDecoratorB {
+Object newState
+methodA()
+methodB()
+newBehavior()
+}
+Component &lt;-- ConcreteComponent
+Component &lt;-- Decorator
+Component &lt;.. Decorator : 구성 요소
+Decorator &lt;-- ConcreteDecoratorA
+Decorator &lt;-- ConcreteDecoratorB
+&lt;/pre>
+&lt;ul>
+&lt;li>Component: 각 구성 요소는 직접 쓰일 수 있고 데코레이터에 감싸여 쓰일 수도 있다.&lt;/li>
+&lt;li>ConcreteComponent: 새로운 행동을 동적으로 추가한다.&lt;/li>
+&lt;li>Decorator: 자신이 장식할 구성 요소와 같은 인터페이스 또는 추상 클래스를 구현한다.
+&lt;ul>
+&lt;li>각 데코레이터 안에는 Component 객체가 들어있어야 하므로 구성 요소의 레퍼런스를 포함한 인스턴스 변수가 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>ConcreteDecorator: 데코레이터가 감싸고 있는 Component 객체용 인스턴스 변수가 있으며 Component의 상태를 확장할 수 있다.
+&lt;ul>
+&lt;li>데코레이터가 사로운 메소드를 추가할 수도 있으나 일반적으로 새로운 메소드를 추가하는 대신 Component에 원래 있던 메소드를 별도의 작업으로 처리하여 새로운 기능을 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="데코레이터의-상속과-구성">데코레이터의 상속과 구성&lt;/h3>
+&lt;p>데코레이터에서는 전략 패턴처럼 구성을 이용하여 행동을 분리하지 않고, 데코레이터로 감싸는 객체의 형식과 같게 구성하여, 상속을 통해 형식을 맞추게 된다.&lt;/p>
+&lt;ul>
+&lt;li>상속으로 행동을 물려받지 않고, 어떠한 구성 요소를 가지고 데코레이터를 만들 때 새로운 행동을 추가한다.
+&lt;ul>
+&lt;li>추상 클래스, 인터페이스 등으로 형식을 맞추고 상속을 통해 행동을 구현하도록 하여 구성을 이용하게 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데코레이터를 감싸기 위해 만든 인스턴스 변수에 저장되는 데코레이터에 행동을 구현하여 할당하는 방식으로 구성을 이용한다.&lt;/li>
+&lt;li>객체의 구성(인스턴스 변수로 다른 객체를 저장하는 방식)을 이용하고 있으므로, 데코레이터가 다양하게 추가되어도 유연성을 잃지 않을 수 있게 된다.
+&lt;ul>
+&lt;li>상속만 써야 했다면 행동이 컴파일 시 슈퍼클래스에서 받은 것과 코드로 오버라이드 한 것만 쓸수 있게 정적으로 결정되어 버린다.&lt;/li>
+&lt;li>데코레이터가 감싼 데코레이터의 동작을 구현하는 것으로 구성을 활용하면 실행 중에 원하는 데코레이터를 마음대로 조합해서 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="데코레이터의-단점">데코레이터의 단점&lt;/h3>
+&lt;p>&lt;strong>java.io 패키지&lt;/strong>&lt;/p>
+&lt;p>&lt;code>java.io&lt;/code> 패키지는 파일에서 데이터를 읽어오는 스트림에 기능을 더하는 데코레이터를 사용하는 객체로 구성되어 있어 굉장히 많은 클래스가 있다.&lt;/p>
+&lt;p>추상 데코레이터 클래스(추상 구성 요소) 역할을 수행하는 &lt;code>InputStream&lt;/code>을 꾸미는 &lt;code>FilterInputStream&lt;/code>와 &lt;code>FilterInputStream&lt;/code>를 꾸미는 &lt;code>BufferedInputStream&lt;/code>, &lt;code>ZipInputStream&lt;/code> 을 꾸미는 형식으로 계속 확장하는 방식으로 설계되어 있다.&lt;/p>
+&lt;pre class="mermaid">flowchart BT
+a[InputStream]
+aa[FileInputStream]
+b[StringBufferInputStream]
+c[ByteArrayInputStream]
+d[FilterInputStream]
+e[PushbackInputStream]
+f[BufferedInputStream]
+g[DataInputStream]
+h[InflatorInputStream]
+i[ZipInputStream]
+i --> h
+e --> d
+f --> d
+g --> d
+h --> d
+aa --> a
+b --> a
+c --> a
+d --> a
+&lt;/pre>
+&lt;p>결과적으로 만들어져 있는 많은 클래스들이 &lt;code>InputSteram&lt;/code>을 감싸 주는 래퍼 클래스로 작동하게 된다.&lt;/p>
+&lt;hr>
+&lt;ol>
+&lt;li>
+&lt;p>잡다한 클래스가 너무 많아진다.&lt;/p>
+&lt;ul>
+&lt;li>데코레이터가 어떤 식으로 작동하는지 이해하면 다른 사람이 구현한 데코레이터 패턴을 활용해도 개발하기 쉽다.
+&lt;ul>
+&lt;li>잘 모든다면 활용하기 어렵다.&lt;/li>
+&lt;li>클래스가 어떤 식으로 구성되어 있는지를 먼저 파악해야 사용하기 쉽다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>특정 형식에 의존하는 코드에 데코레이터 패턴을 적용하면 엉망이 될 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>데코레이터의 장점인 &lt;strong>데코레이터를 끼워 넣어도 클라이언트는 데코레이터를 사용하고 있다는 사실을 전혀 알 수 없다&lt;/strong>는 장점을 누릴 수 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>구성 요소를 초기화하는 데 필요한 코드가 훨씬 복잡해진다.&lt;/p>
+&lt;ul>
+&lt;li>구성 요소 인스턴스만 만든다고 끊나지 않고 많은 데코레이터로 감싸야 하는 경우가 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>구상 구성 요소로 어떤 작업을 처리하는 코드에 데코레이터 패턴을 적용하면 코드가 제대로 작동하지 않고, 반대로 추상 구성 요소로 돌아가는 코드에는 데코레이터 패턴을 적용해야만 제대로된 결과를 얻을 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>구상 구성 요소로 돌아가는 코드를 만들어야 한다면 데코레이터 패턴 사용을 다시 한번 생각해봐야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>데코레이터 패턴을 쓰면 관리해야 할 객체가 늘어나므로 실수할 가능성도 높아질 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>실제로는 팩토리나 빌더 같은 다른 패턴으로 데코레이터를 만들고 사용하게된다.&lt;/li>
+&lt;li>이러한 패턴을 배운다면 데코레이터로 장식된 구상 구성 요소는 캡슐화가 잘 되므로 실수할 가능성을 줄이게된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="초대형-커피-전문점-스타버즈">초대형 커피 전문점, 스타버즈&lt;/h2>
+&lt;h3 id="최초-주문-시스템">최초 주문 시스템&lt;/h3>
+&lt;pre class="mermaid">classDiagram
+class Beverage {
+description
+getDescription()
+cost()
+}
+class HouseBlend {
+cost()
+}
+class DarkRoast {
+cost()
+}
+class Decaf {
+cost()
+}
+class Espresso {
+cost()
+}
+Beverage &lt;-- HouseBlend
+Beverage &lt;-- DarkRoast
+Beverage &lt;-- Decaf
+Beverage &lt;-- Espresso
+&lt;/pre>
+&lt;ul>
+&lt;li>Beverage: 음료를 나타내는 추상 클래스
+&lt;ul>
+&lt;li>매장에서 판매되는 모든 음료는 이 클래스의 서브클라스임&lt;/li>
+&lt;li>description: 각 서브클래스에서 설정되는 음료 설명&lt;/li>
+&lt;li>cost(): 추상메소드로서 서브클래스에서 구현해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="상속을-이용한-개선">상속을 이용한 개선&lt;/h3>
+&lt;p>고객이 커피를 주문할 때 우유나 두유, 모카 등 추가 항목을 얹기도 하므로 그때마다 가격이 올라가야한다.&lt;/p>
+&lt;p>각각에 대응하는 서브클래스를 만드는 방법도 있지만, 인스턴스 변수와 슈퍼클래스 상속을 통해 개선될 수 있다.&lt;/p>
+&lt;pre class="mermaid">classDiagram
+class Beverage {
+description
++milk
++soy
++mocha
++whip
+getDescription()
+cost()
++has...()
++set...()
+}
+class HouseBlend {
+cost()
+}
+class DarkRoast {
+cost()
+}
+class Decaf {
+cost()
+}
+class Espresso {
+cost()
+}
+Beverage &lt;-- HouseBlend
+Beverage &lt;-- DarkRoast
+Beverage &lt;-- Decaf
+Beverage &lt;-- Espresso
+&lt;/pre>
+&lt;h3 id="상속을-이용한-개선의-문제점">상속을 이용한 개선의 문제점&lt;/h3>
+&lt;p>각각 옵션에 대응하는 서브클래스를 만드는 방법보다는 나은 방법이지만 여전히 문제점은 존재한다.&lt;/p>
+&lt;ul>
+&lt;li>첨가물 가격이 바뀔 때마다 기존 코드를 수정해야한다.&lt;/li>
+&lt;li>첨가물의 종류가 많아지면 새로운 메소드를 추가해야 하고, 슈퍼클래스의 cost() 메소드도 고쳐야한다.&lt;/li>
+&lt;li>특정 첨가물이 들어가면 안되는 음료가 추가된다면 막는 작업이 필요하다. 등&lt;/li>
+&lt;/ul>
+&lt;h3 id="데코레이터-패턴-적용하기">데코레이터 패턴 적용하기&lt;/h3>
+&lt;p>다크로스트에 모카, 휘핑 추가를 수행하게 될 경우 아래와 같은 과정을 거쳐야한다.&lt;/p>
+&lt;ol>
+&lt;li>DarkRoast 객체에서 시작한다.&lt;/li>
+&lt;li>Mocha 객체를 만들고 그 객체로 DarkRoast 객체를 감싼다.&lt;/li>
+&lt;li>Whip 데코레이터를 만들어 Mocha를 감싼다.&lt;/li>
+&lt;li>가격을 계산한다.
+&lt;ul>
+&lt;li>가장 바깥쪽에 있는 데코레이터인 Whip의 cost()를 호출한다.&lt;/li>
+&lt;li>Whip은 장식하고 있는 객체에게 가격 계산을 위임하고, 가격이 구해지면 계산된 가격에 휘핑크림의 가격을 더한 다음 결과값을 리턴한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="berverage-클래스-장식하기">Berverage 클래스 장식하기&lt;/h3>
+&lt;pre class="mermaid">classDiagram
+class Beverage {
+description
+getDescription()
+cost()
+}
+class HouseBlend {
+cost()
+}
+class DarkRoast {
+cost()
+}
+class Decaf {
+cost()
+}
+class Espresso {
+cost()
+}
+Beverage &lt;-- HouseBlend
+Beverage &lt;-- DarkRoast
+Beverage &lt;-- Decaf
+Beverage &lt;-- Espresso
+class CondimentDecorator {
+getDescription()
+}
+Beverage &lt;-- CondimentDecorator
+Beverage &lt;.. CondimentDecorator : 구성 요소
+class Milk {
+Beverage beverage
+cost()
+getDescription()
+}
+class Mocha {
+Beverage beverage
+cost()
+getDescription()
+}
+class Soy {
+Beverage beverage
+cost()
+getDescription()
+}
+class Whip {
+Beverage beverage
+cost()
+getDescription()
+}
+CondimentDecorator &lt;-- Milk
+CondimentDecorator &lt;-- Mocha
+CondimentDecorator &lt;-- Soy
+CondimentDecorator &lt;-- Whip
+&lt;/pre>
+&lt;h3 id="커피-주문-시스템-코드-만들기">커피 주문 시스템 코드 만들기&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Beverage&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">description&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;제목 없음&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getDescription&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">description&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">cost&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Beverage 객체가 들어갈 자리에 들어갈 수 있어야 하므로 Beverage 클래스를 확장한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">CondimentDecorator&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Beverage&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 데코레이터가 감쌀 음료를 나타내는 Beverage 객체를 지정한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 음료를 지정할 때는 데코레이터에서 어떤 음료든 감쌀 수 있도록 슈퍼 클래스 유형을 이용한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Beverage&lt;/span> &lt;span class="n">beverage&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getDescription&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Beverage 객체를 확장하여 기본 음료를 만든다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Espresso&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Beverage&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Espresso&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">description&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;에스프레소&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@java.lang.Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">cost&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mf">1.99&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * CondimentDecorator를 확장하여 데코레이터를 만든다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Mocha&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">CondimentDecorator&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 감싸고자 하는 음료를 저장하는 데코레이터 인스턴스 변수를 초기화 한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * @param beverage
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Mocha&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Beverage&lt;/span> &lt;span class="n">beverage&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">beverage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">beverage&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@java.lang.Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getDescription&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">beverage&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getDescription&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;, 모카&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@java.lang.Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="nf">cost&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">beverage&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">cost&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">.20&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="핵심-정리">핵심 정리&lt;/h2>
+&lt;ul>
+&lt;li>객체지향 원칙
+&lt;ul>
+&lt;li>+ 클래스는 확장에는 열려있어야 하지만 변경에는 닫혀 있어야 한다(OCP).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>객체지향 패턴
+&lt;ul>
+&lt;li>+ 데코레이터 패턴
+&lt;ul>
+&lt;li>객체에 추가 요소를 동적으로 더할 수 있다.&lt;/li>
+&lt;li>서브클래스를 만들 때보다 훨씬 유연하게 기능을 확장할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>디자인의 유연성 면에서 보면 상속으로 확장하는 일은 별로 좋은 선택은 아니다.&lt;/li>
+&lt;li>기존 코드 수정 없이 행동을 확장해야 하는 상황도 있다.&lt;/li>
+&lt;li>구성과 위임으로 실행 중에 새로운 행동을 추가할 수 있다.&lt;/li>
+&lt;li>상속 대신 데코레이터 패턴으로 행동을 확장할 수 있다.&lt;/li>
+&lt;li>데코레이터 패턴은 구상 구성 요소를 감싸 주는 데코레이터를 사용한다.&lt;/li>
+&lt;li>데코레이터 클래스의 형식은 그 클래스가 감싸는 클래스 형식을 반영한다.
+&lt;ul>
+&lt;li>상속이나 인터페이스 구현으로 자신이 감쌀 클래스와 같은 형식을 가진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데코레이터는 자기가 감싸고 있는 구성 요소의 새로운 기능을 더함으로써 행동을 확장한다.&lt;/li>
+&lt;li>구성 요소를 감싸는 데코레이터의 개수에는 제한이 없다.&lt;/li>
+&lt;li>구성 요소의 클라이언트는 데코레이터의 존재를 알 수 없다.
+&lt;ul>
+&lt;li>클라이언트가 구성 요소의 구체적인 형식에 의존하는 경우는 예외&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데코레이터 패턴을 사용하면 자잘한 객체가 매우 많이 추가될 수 있다.
+&lt;ul>
+&lt;li>데코레이터를 너무 많이 사용하면 코드가 필요 이상으로 복잡해진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>2. 옵저버 패턴</title><link>https://codemario318.github.io/post/gof/2/</link><pubDate>Wed, 27 Sep 2023 13:09:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/2/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/2/cover.png" alt="Featured image of post 2. 옵저버 패턴" />&lt;p>옵저버 패턴은 중요한 일이 일어났을 때 객체에게 새 소식을 알려 줄 수 있는 패턴이다.&lt;/p>
 &lt;p>일대 다 관계나 느슨한 결합같은 개념을 통해 구성되며 자주 사용되는 패턴 중 하나이다.&lt;/p>
 &lt;h2 id="옵저버-패턴">옵저버 패턴&lt;/h2>
 &lt;blockquote>
