@@ -301,7 +301,7 @@
 &lt;p>MySQL 8.0.18/5.7.28 버전부터는 GTID 기반이면서 &lt;code>SOURCE_AUTO_POSITION&lt;/code> 옵션을 사용하는 경우에 대해서 이러한 작업이 자동으로 생략되도록 갯너되었다.&lt;/p></description></item><item><title>16.7.2 복제 고급 설정 - 멀티 스레드 복제</title><link>https://codemario318.github.io/post/real-mysql/16/7/2/</link><pubDate>Sat, 16 Sep 2023 17:44:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/16/7/2/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/16/7/2/real_mysql.jpeg" alt="Featured image of post 16.7.2 복제 고급 설정 - 멀티 스레드 복제" />&lt;p>MySQL 복제에서는 레플리카 서버에서 소스 서버로부터 복제된 트랜잭션들을 하나의 스레드가 아닌 여러 스레드로 처리할 수 있게 하는 멀티 스레드 복제 기능을 제공한다.&lt;/p>
 &lt;p>소스 서버에서는 여러 세션에서 실행된 DML 쿼리들이 동시에 처리되는데, 소스 서버에서 짧은 시간 동안 다량의 DML 쿼리가 실행되는 경우 MySQL 5.6 버전 미만의 레플리카 서버에서는 하나의 스레드가 모든 트랜잭션을 처리하므로 복제 동기화에 지연이 발생한다.&lt;/p>
 &lt;p>또한 하나의 스레드로만 복제가 동기화 되는것은 멀티코어 CPU가 장착된 서버를 사용하는 환경에서는 서버의 자원을 충분히 활용하지 못하는 비효율적인 방식이었다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a[Relay Log]-->b([Coordinator Thread])
 subgraph Worker 1
 direction LR
@@ -361,7 +361,7 @@ b-->g
 &lt;li>여러 개의 데이터베이스가 있다면 레플리카 서버에서는 데이터베이스 개수 만큼 워커 스레드 수를 설정하는 것이 좋다.&lt;/li>
 &lt;/ul>
 &lt;p>코디네이터 스레드는 릴레이 로그 파일에서 이벤트를 읽어 데이터베이스 단위로 분리하고 각 워커 스레드에게 이벤트들을 할당한다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a[트랜잭션 3: UPDATE DB3&lt;br>UPDATE DB1&lt;br>트랜잭션 2: UPDATE DB2&lt;br>트랜잭션 3: UPDATE DB1]
 b([코디네이터 스레드])
 c([워커 스레드 1&lt;br>1. UPDATE DB1&lt;br>트랜잭션 1])
@@ -413,7 +413,7 @@ b-->e
 &lt;/ul>
 &lt;h3 id="바이너리-로그-그룹-커밋">바이너리 로그 그룹 커밋&lt;/h3>
 &lt;p>MySQL 5.5 버전까지는 InnoDB 스토리지 엔진에서 한 시점에 하나의 트랜잭션만 커밋될 수 있었으며, 바이너리 로그에 트랜잭션을 기록하고 디스크와 동기화하는 부분도 마찬가지로 여러 트랜잭션이 동시에 진행될 수 없었다.&lt;/p>
-&lt;pre class="mermaid">sequenceDiagram
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
 클라이언트->>MySQL: COMMIT;
 MySQL->>스토리지 엔진: prepare;
 MySQL->>바이너리 로그: write;
@@ -515,7 +515,7 @@ data-flex-basis="703px"
 &lt;li>같은 시점에 커밋 처리가 시작된 트랜잭션들은 동일한 &lt;code>commit_seq_no&lt;/code> 값을 가지며, 복제된 트랜잭션들의 해당 값을 바탕으로 같은 값을 가진 트랜잭션들을 병렬로 수행한다.&lt;/li>
 &lt;/ul>
 &lt;p>병렬 처리 기준인 &lt;code>commit_seq_no&lt;/code> 값이 앞서 커밋된 트랜잭션 순번 값에 해당하므로 이 방식을 Commit-parent 기반 방식이라고 한다.&lt;/p>
-&lt;pre class="mermaid">sequenceDiagram
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
 0->>1:Tx1 C=0;
 1->>2:Tx2 C=1;
 2->>3:Tx3 C=2;
@@ -554,7 +554,7 @@ data-flex-basis="703px"
 &lt;ul>
 &lt;li>실행하려는 트랜잭션의 last_committed &amp;lt; 현재 실행중인 트랜잭션들이 가지는 가장 작은 sequence_number&lt;/li>
 &lt;/ul>
-&lt;pre class="mermaid">sequenceDiagram
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
 0->>1:Tx1 C=0, S=1;
 1->>2:Tx2 C=1, S=2;
 2->>3:Tx3 C=2, S=3;
@@ -809,7 +809,7 @@ data-flex-basis="703px"
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div></description></item><item><title>16.6 복제 - 복제 토폴로지</title><link>https://codemario318.github.io/post/real-mysql/16/6/</link><pubDate>Thu, 07 Sep 2023 12:47:10 +0900</pubDate><guid>https://codemario318.github.io/post/real-mysql/16/6/</guid><description>&lt;img src="https://codemario318.github.io/post/real-mysql/16/6/real_mysql.jpeg" alt="Featured image of post 16.6 복제 - 복제 토폴로지" />&lt;h2 id="싱글-레플리카-복제-구성">싱글 레플리카 복제 구성&lt;/h2>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a([웹 서버])
 b[(소스 서버)]
 c[(레플리카 서버)]
@@ -822,7 +822,7 @@ b-->c
 &lt;p>이 같은 형태에서 애플리케이션 서버가 레플리카 서버에서도 서비스용 읽기 쿼리를 실행한다고 하면 레플리카 서버에 문제가 발생한 경우 서비스 장애 상황이 도래할 수 있다.&lt;/p>
 &lt;p>이렇게 소스 서버와 레플리카 서버가 일대일로 구성된 형태에서는 레플리카 서버를 정말 예비용 서버로서만 사용하는 게 제일 적합하다.&lt;/p>
 &lt;h2 id="멀티-레플리카-복제-구성">멀티 레플리카 복제 구성&lt;/h2>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a([웹 서버])
 b[(소스 서버)]
 c[(레플리카 서버 1)]
@@ -837,7 +837,7 @@ b-->d
 &lt;p>이렇게 증가된 쿼리 요청은 대부분의 경우 쓰기보다는 읽기 요청이 더 많으므로 사용자는 멀티 레플리카 형태로 복제 구성을 전환해 읽기 요청 처리를 분산시킬 수 있다.&lt;/p>
 &lt;p>서비스의 읽기 요청 처리를 분산하는 용도로 사용하는 경우 레플리카 서버 한 대는 예비용으로 남겨두는 것이 좋다.&lt;/p>
 &lt;h2 id="체인-복제-구성">체인 복제 구성&lt;/h2>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a([웹 서버])
 b[(소스 서버 1)]
 c[(레플리카 서버 1-1)]
@@ -861,7 +861,7 @@ f-. 읽기 .-> h
 &lt;p>이러한 경우 &lt;code>레플리카 서버 1-3 / 소스 서버 2&lt;/code> 형태로 소스 서버가 해야 할 바이너리 로그 배포 역할을 새로운 MySQL 서버로 넘길 수 있다.&lt;/p>
 &lt;h3 id="체인-복제-구성을-이용한-서버-교체">체인 복제 구성을 이용한 서버 교체&lt;/h3>
 &lt;p>이 복제 형태는 MySQL 서버를 업그레이드하거나 장비를 일괄 교체할 때도 사용될 수 있다.&lt;/p>
-&lt;pre class="mermaid">flowchart
+&lt;pre class="mermaid" style="text-align: center;">flowchart
 subgraph 구 장비
 direction LR
 a([웹 서버])
@@ -875,7 +875,7 @@ b-->d
 end
 &lt;/pre>
 &lt;p>위와 같은 구 장비를 신 장비로 교체하기 위해 아래와 같이 새로운 장비를 구성한다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph 구 장비
 direction LR
 a([웹 서버])
@@ -898,7 +898,7 @@ e-->g
 end
 &lt;/pre>
 &lt;p>위와 같이 복제를 구성하여 기존 구 장비에서 진행되는 복제를 통해 같이 동기화 될 수 있게 구성한다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph 구 장비
 direction LR
 a([웹 서버])
@@ -922,7 +922,7 @@ e-->g
 end
 &lt;/pre>
 &lt;p>복제가 완료되면 구 장비 그룹 서버를 모두 복제 그룹에서 제외시킨다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph 신 장비
 direction LR
 a([웹 서버])
@@ -941,7 +941,7 @@ end
 &lt;/ul>
 &lt;h2 id="듀얼-소스-복제-구성">듀얼 소스 복제 구성&lt;/h2>
 &lt;p>듀얼 소스 복제 구성은 두 개의 MySQL 서버가 서로 소스 서버이자 레플리카 서버로 구성되어 있는 형태이다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a([웹 서버])
 b[(소스/레플리카 서버 1)]
 c[(소스/레플리카 서버 2)]
@@ -986,7 +986,7 @@ b&lt;-->c
 &lt;p>ACTIVE-PASSIVE 형태라도동시에 쓰기 요청이 유입된다면 발생한다.&lt;/p>
 &lt;h2 id="멀티-소스-복제-구성">멀티 소스 복제 구성&lt;/h2>
 &lt;p>멀티 소스 복제 구성은 하나의 레플리카 서버가 둘 이상의 소스 서버를 갖는 형태를 말한다.&lt;/p>
-&lt;pre class="mermaid">flowchart TD
+&lt;pre class="mermaid" style="text-align: center;">flowchart TD
 a[(소스 서버 1)]
 b[(소스 서버 2)]
 c[(소스 서버 3)]
@@ -4323,7 +4323,7 @@ data-flex-basis="282px"
 &lt;/ul>
 &lt;h2 id="쿼리-각-절의-실행-순서">쿼리 각 절의 실행 순서&lt;/h2>
 &lt;p>윈도우 함수를 사용하는 쿼리의 결과에 보여지는 레코드는 &lt;code>FROM&lt;/code>절과 &lt;code>WHERE&lt;/code> 절, &lt;code>GROUP BY&lt;/code>와 &lt;code>HAVING&lt;/code> 절에 의해 결정되고, 그 이후 윈도우 함수가 실행된다.&lt;/p>
-&lt;pre class="mermaid">flowchart TB
+&lt;pre class="mermaid" style="text-align: center;">flowchart TB
 subgraph S1 [윈도우 함수 이전에 실행]
 direction LR
 A(WHERE) ~~~
@@ -5785,7 +5785,7 @@ S1 --> S2 --> S3
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>SELECT&lt;/code> 쿼리에서 어느 절이 먼저 실행될지 예측하지 못할 때가 있는데, 어느 절이 먼저 실행되는지 모른다면 처리 내용, 처리 결과를 예측할 수 없다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph FIRST ["WHERE 적용 및 조인 실행"]
 direction TB
 A(드라이빙 테이블)
@@ -5795,7 +5795,7 @@ end
 FIRST --> D("GROUP BY") --> E("DISTINCT") --> F("HAVING 조건 적용") --> G("ORDER BY") --> H("LIMIT")
 &lt;/pre>
 &lt;p>대부분 위 순서대로 쿼리가 실행된다. 또한 SQL에는 &lt;code>ORDER BY&lt;/code>나 &lt;code>GROUP BY&lt;/code> 절이 있더라도 인덱스를 이용해 처리할 때는 그 단계 자체가 불필요하므로 생략된다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph FIRST ["WHERE 적용"]
 A(드라이빙 테이블)
 end
@@ -5872,7 +5872,7 @@ FIRST --> G("ORDER BY") --> SECOND --> H("LIMIT")
 &lt;h3 id="where">WHERE&lt;/h3>
 &lt;p>&lt;code>WHERE&lt;/code> 조건이 인덱스를 사용하는 방법은 크게 작업 범위 결정 조건과 체크 조건 두 가지 방식으로 구분할 수 있다.&lt;/p>
 &lt;p>그 중 작업 범위 결정 조건은 동등 비교 조건이나 &lt;code>IN&lt;/code>으로 구성된 조건에 사용된 컬럼들이 인덱스의 컬럼 구성과 좌측에서부터 비교했을 때 얼마나 일치하는가에 따라 달라진다.&lt;/p>
-&lt;pre class="mermaid">flowchart TB
+&lt;pre class="mermaid" style="text-align: center;">flowchart TB
 subgraph SA [인덱스 컬럼 순서]
 direction LR
 saa(COL_1) ~~~ sab(COL_2) ~~~ sac(COL_3) ~~~ sad(COL_4)
@@ -5934,7 +5934,7 @@ SA ~~~ SB
 &lt;h3 id="group-by">GROUP BY&lt;/h3>
 &lt;p>&lt;code>GROUP BY&lt;/code> 절의 각 컬럼은 비교 연산자를 가지지 않으므로 작업 범위 결정 조건이나 체크 조건과 같이 구분해서 생각할 필요는 없다.&lt;/p>
 &lt;p>쿼리에 &lt;code>GROUP BY&lt;/code>가 사용될 때 명시된 컬럼의 순서가 인덱스를 구성하는 컬럼의 순서와 같으면 인덱스를 사용할 수 있다.&lt;/p>
-&lt;pre class="mermaid">flowchart TB
+&lt;pre class="mermaid" style="text-align: center;">flowchart TB
 subgraph SA [인덱스 컬럼 순서]
 direction LR
 saa(COL_1) --> sab(COL_2) --> sac(COL_3) --> sad(COL_4)
@@ -6115,7 +6115,7 @@ SA ~~~ SB
 &lt;li>비교 조건에 사용된 컬럼과 &lt;code>ORDER BY&lt;/code> 절의 컬럼의 중복은 상관 없다.&lt;/li>
 &lt;li>중간에 빠지는 컬럼이 있으면 모두 인덱스를 사용할 수 없어 주로 &lt;code>WHERE&lt;/code>절만 인덱스를 활용한다.&lt;/li>
 &lt;/ul>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 subgraph SAB [" "]
 direction TB
 SA ~~~ SB
@@ -6274,7 +6274,7 @@ SAB ~~~ SC ~~~ SDE
 &lt;li>&lt;code>GROUP BY&lt;/code> 절이 인덱스를 사용할 수 있는가?&lt;/li>
 &lt;li>&lt;code>GROUP BY&lt;/code> 절과 &lt;code>ORDER BY&lt;/code> 절이 동시에 인덱스를 사용할 수 있는가?&lt;/li>
 &lt;/ol>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 A(START) -->|Y| B{WHERE}
 B -->|Y| C{GROUP BY}
 B -->|N| D{GROUP BY}

@@ -47,7 +47,7 @@ OCP를 준수하는 객체지향 디자인을 만들려면 많은 노력이 필�
 &lt;p>데코레이터 패턴으로 객체에 추가 요소를 동적으로 더할 수 있다.&lt;br>
 데코레이터를 사용하면 서브클래스를 만들 때보다 훨씬 유연하게 기능을 확장할 수 있다.&lt;/p>
 &lt;/blockquote>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Component {
 methodA()
 methodB()
@@ -112,7 +112,7 @@ Decorator &lt;-- ConcreteDecoratorB
 &lt;p>&lt;strong>java.io 패키지&lt;/strong>&lt;/p>
 &lt;p>&lt;code>java.io&lt;/code> 패키지는 파일에서 데이터를 읽어오는 스트림에 기능을 더하는 데코레이터를 사용하는 객체로 구성되어 있어 굉장히 많은 클래스가 있다.&lt;/p>
 &lt;p>추상 데코레이터 클래스(추상 구성 요소) 역할을 수행하는 &lt;code>InputStream&lt;/code>을 꾸미는 &lt;code>FilterInputStream&lt;/code>와 &lt;code>FilterInputStream&lt;/code>를 꾸미는 &lt;code>BufferedInputStream&lt;/code>, &lt;code>ZipInputStream&lt;/code> 을 꾸미는 형식으로 계속 확장하는 방식으로 설계되어 있다.&lt;/p>
-&lt;pre class="mermaid">flowchart BT
+&lt;pre class="mermaid" style="text-align: center;">flowchart BT
 a[InputStream]
 aa[FileInputStream]
 b[StringBufferInputStream]
@@ -175,7 +175,7 @@ d --> a
 &lt;/ol>
 &lt;h2 id="초대형-커피-전문점-스타버즈">초대형 커피 전문점, 스타버즈&lt;/h2>
 &lt;h3 id="최초-주문-시스템">최초 주문 시스템&lt;/h3>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Beverage {
 description
 getDescription()
@@ -210,7 +210,7 @@ Beverage &lt;-- Espresso
 &lt;h3 id="상속을-이용한-개선">상속을 이용한 개선&lt;/h3>
 &lt;p>고객이 커피를 주문할 때 우유나 두유, 모카 등 추가 항목을 얹기도 하므로 그때마다 가격이 올라가야한다.&lt;/p>
 &lt;p>각각에 대응하는 서브클래스를 만드는 방법도 있지만, 인스턴스 변수와 슈퍼클래스 상속을 통해 개선될 수 있다.&lt;/p>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Beverage {
 description
 +milk
@@ -260,7 +260,7 @@ Beverage &lt;-- Espresso
 &lt;/li>
 &lt;/ol>
 &lt;h3 id="berverage-클래스-장식하기">Berverage 클래스 장식하기&lt;/h3>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Beverage {
 description
 getDescription()
@@ -485,7 +485,7 @@ CondimentDecorator &lt;-- Whip
 &lt;blockquote>
 &lt;p>옵저버 패턴은 주제(Subject), 옵저버(observer)로 구성된다.&lt;/p>
 &lt;/blockquote>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a((주제 객체))
 subgraph 옵저버 객체
 b((객체 1))
@@ -513,7 +513,7 @@ a-.->d
 &lt;li>보통 주제 인터페이스와 옵저버 인터페이스가 들어있는 클래스 디자인으로 구현한다.&lt;/li>
 &lt;/ul>
 &lt;h3 id="옵저버-패턴의-구조">옵저버 패턴의 구조&lt;/h3>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 direction LR
 class Subject {
 &lt;&lt; interface >>
@@ -690,7 +690,7 @@ Subject &lt;.. ConcreteSubject
 &lt;/ul>
 &lt;h2 id="기상-모니터링-애플리케이션">기상 모니터링 애플리케이션&lt;/h2>
 &lt;h3 id="요구-사항-분석">요구 사항 분석&lt;/h3>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a((습도 센서))
 b((온도 센서))
 c((기압 센서))
@@ -720,7 +720,7 @@ e-.화면에 표시.->f
 &lt;/ul>
 &lt;h3 id="구현-목표">구현 목표&lt;/h3>
 &lt;p>디스플레이를 구현하고 새로운 값이 들어올 때마다(&lt;code>measurementsChanged()&lt;/code> 호출 시) &lt;code>WeatherData&lt;/code>에서 디스플레이를 업데이트 해야한다.&lt;/p>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 direction RL
 class WeatherData {
 getTemperature()
@@ -805,7 +805,7 @@ note for WeatherData "기상 관측값 갱신시 measurementsChanged() 호출"
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="기상-스테이션-설계하기">기상 스테이션 설계하기&lt;/h3>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 direction LR
 class Subject {
 &lt;&lt; interface >>
@@ -1030,7 +1030,7 @@ ForecastDisplay ..> Observer
 &lt;li>각 클래스의 집합에는 각각의 행동을 구현한 것을 전부 집어넣는다.&lt;/li>
 &lt;/ol>
 &lt;p>변화하는 기능을 슈퍼클래스에서 모두 분리하여 각 행동을 나타낼 클래스 집합을 새로 만들어야 한다.&lt;/p>
-&lt;pre class="mermaid">flowchart LR
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
 a((슈퍼클래스))-->b
 a-->c
 subgraph 달라지는 기능
@@ -1055,7 +1055,7 @@ end
 &lt;/ul>
 &lt;h3 id="행동-통합하기">행동 통합하기&lt;/h3>
 &lt;p>특정 행동을 슈퍼클래스 또는 서브클래스에서 정의한 메소드를 써서 구현하지 않고 다른 클래스에 위임한다.&lt;/p>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Duck {
 + FlyBehavior flyBehavior
 + QuackBehavior quackBehavior
@@ -1117,7 +1117,7 @@ display()
 &lt;/li>
 &lt;/ol>
 &lt;h3 id="캡슐화된-행동-살펴보기">캡슐화된 행동 살펴보기&lt;/h3>
-&lt;pre class="mermaid">classDiagram
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
 class Duck {
 FlyBehavior flyBehavior
 QuackBehavior quackBehavior

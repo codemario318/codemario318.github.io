@@ -4,7 +4,7 @@
 >Real MySQL 8.0 학습 자료&lt;/a>를 바탕으로 확인해보겠습니다.&lt;/p>
 &lt;h2 id="테이블-구조">테이블 구조&lt;/h2>
 &lt;p>예시로 사용되는 테이블의 구조는 아래와 같습니다.&lt;/p>
-&lt;pre class="mermaid">erDiagram
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
 EMPLOYEES ||--o{ DEPT_MANAGER: ""
 EMPLOYEES {
 emp_no int pk
