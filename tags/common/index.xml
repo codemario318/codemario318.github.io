@@ -1,4 +1,745 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/tags/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 02 Oct 2023 14:29:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/common/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 데코레이터 패턴</title><link>https://codemario318.github.io/post/gof/3/</link><pubDate>Mon, 02 Oct 2023 14:29:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/3/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/3/cover.png" alt="Featured image of post 3. 데코레이터 패턴" />&lt;p>데코레이터 패턴은 객체 작성이라는 형식으로 실행 중에 클래스를 꾸미는 방법이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/tags/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 29 Oct 2023 13:29:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/common/index.xml" rel="self" type="application/rss+xml"/><item><title>4. 팩토리 패턴</title><link>https://codemario318.github.io/post/gof/4/</link><pubDate>Sun, 29 Oct 2023 13:29:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/4/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/4/cover.png" alt="Featured image of post 4. 팩토리 패턴" />&lt;blockquote>
+&lt;p>느슨한 결합으로 객체지향 디자인을 만들어봅시다.&lt;/p>
+&lt;/blockquote>
+&lt;p>팩토리 패턴은 객체를 생성하는 부분을 분리하여 캡슐화 하는 방식으로 유연성과 확장성이 뛰어난 구조를 제공한다.&lt;/p>
+&lt;h2 id="팩토리">팩토리&lt;/h2>
+&lt;p>객체의 인스턴스를 만드는 작업이 항상 공개되어야 하는 것은 아니며, 오히려 모든 것을 공개했을때 결합 문제가 발생할 수 있다.&lt;/p>
+&lt;p>팩토리 패턴은 불필요한 의존성을 없애서 결합 문제를 해결하는데 도움을 줄 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>new&lt;/code>를 사용하면 구상 클래스의 인스턴스가 만들어진다.&lt;/p>
+&lt;p>인터페이스나 추상클래스 같은 상위 개념으로 타입을 선언한다고 하더라도, 결과적으로 구상클래스(하위 개념)을 할당하기 때문에 특정 구현에 의존된다고 볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>구상 클래스를 바탕으로 코딩하면 나중에 코드를 수정해야 할 가능성이 커지고, 유연성이 떨어진다.&lt;/li>
+&lt;/ul>
+&lt;p>여러 구상 클래스가 있고 특정 상황에서 선택하여 만들어야 할 상황이라면 아래와 같은 코드를 만들어야한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 1장 예시 SimDuck 참조 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Duck&lt;/span> &lt;span class="n">duck&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">picnic&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">duck&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">MallardDuck&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">hunting&lt;/span>&lt;span class="o">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">duck&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">DecoyDuck&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">inBathTub&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">duck&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">RubberDuck&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이런 코드를 변경하거나 확장해야 할 때는 코드를 다시 확인하고 새로운 코드를 추가하거나 기존 코드를 제거해야 한다.&lt;/p>
+&lt;p>따라서 이런한 방식으로 만들면 관리와 갱신이 어려워지고 오류가 생길 가능성도 커진다.&lt;/p>
+&lt;h3 id="근본-원인">근본 원인&lt;/h3>
+&lt;p>&lt;code>new&lt;/code> 연산자로 오브젝트를 만들때 문제가 발생하는 근본적인 원인은 &lt;strong>변화&lt;/strong> 때문이다.&lt;/p>
+&lt;p>인터페이스에 맞춰 코딩하면 시스템에서 일어날 수 있는 여러 변화에 대응할 수 있는 이유는 어떤 클래스든 특정 인터페이스만 구현하면 사용할 수 있는 &lt;strong>다형성&lt;/strong> 덕뿐이다.&lt;/p>
+&lt;p>이와 반대로 구상 클래스를 많이 사용하면 &lt;strong>변경에 닫혀있기 때문에&lt;/strong> 새로운 구상 클래스가 추가될 때마다 즉, 변화할 때마다 코드를 고쳐야 하므로 많은 문제가 생길 수 있다.&lt;/p>
+&lt;p>이 때문에 새로운 구상 형식을 써서 확장해야 할 때는 어떻게 해서든 다시 &lt;strong>열 수 있게 만들어야 하며&lt;/strong>, 결과적으로 구상 클래스의 인스턴스 생성 부분을 분리해야 한다.&lt;/p>
+&lt;p>이렇게 분리되어 &lt;strong>객체 생성을 전담하는 영역을 팩토리&lt;/strong>라고 한다.&lt;/p>
+&lt;h2 id="의존성-뒤집기-원칙">의존성 뒤집기 원칙&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>디자인 원칙&lt;/strong>&lt;br>
+추상화된 것에 의존하게 만들고 구상 클래스에 의존하지 않게 만든다.&lt;/p>
+&lt;/blockquote>
+&lt;p>의존성 뒤집기 원칙은 고수준 구성 요소가 저수준 구성 요소에 의존하면 안되며, 항상 추상화에 의존하게 만들어야 한다는 것을 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>구현보다는 인터페이스에 맞춰 프로그래밍한다라는 원칙과 유사한 점이 많지만 의존성 뒤집기 원칙에서는 추상화를 더 많이 강조한다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>개발에서 고수준과 저수준의 기준은 기계가 이해할 수 있는가를 기준으로 설명하며, 기계쪽에 가까울수록 저수준을 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>즉, 추상 클래스와 인터페이스 등을 이용한 추상화된 개념일수록 고수준이고, 컴퓨터가 해석해서 실행하게되는 코드 부분(구상 클래스)에 가까울수록 저수준이다.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+a([특정 기능을 선택해야하는 요소])
+a --> b([기능 A])
+a --> c([기능 B])
+a --> d([기능 C])
+a --> e([기능 D])
+&lt;/pre>
+&lt;p>팩토리 형식의 구현에서 위와 같이 고수준 구성 요소에서 분기를 통해 특정 구상 클래스를 직접 선택하는 형태는 저수준 요소에 의존하고 있기 때문에 구상 클래스의 종류가 추가되거나, 구상 클래스의 구현이 바뀐다면 의존하고있는 고수준 요소의 수정이 필요하다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart BT
+a([특정 기능을 선택해야하는 요소])
+f([기능 추상화])
+b([기능 A]) --> f
+c([기능 B]) --> f
+d([기능 C]) --> f
+e([기능 D]) --> f
+f &lt;--> a
+&lt;/pre>
+&lt;p>따라서 분기를 통해 특정 구상 클래스를 선택해야 하는 구현을 피할 수 없다면 의존성 뒤집기를 통해 구상 클래스들의 공통되는 부분들을 모아 상위 요소(인터페이스, 추상 클래스)를 만들어 의존하게 팩토리를 구성하고, 해당 기능이 필요한 요소에서 만들어진 팩토리를 의존하도록 하는 방식을 제안하고 있다.&lt;/p>
+&lt;h3 id="의존성-뒤집기-원칙을-지키는-방법">의존성 뒤집기 원칙을 지키는 방법&lt;/h3>
+&lt;p>다음 가이드라인을 따르면 의존성 뒤집기 원칙에 위배되는 객체지향 디자인을 피하는데 도움이된다.&lt;/p>
+&lt;ul>
+&lt;li>변수에 구상 클래스의 레퍼런스를 저장하지 않는다.
+&lt;ul>
+&lt;li>&lt;code>new&lt;/code> 연산자를 사용하면 구상 클래스의 레퍼런스를 사용하게된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>구상 클래스에서 유도된 클래스를 만들지 않는다.
+&lt;ul>
+&lt;li>구상클래스에서 유도된 클래스를 만들면 특정 구상 클래스에 의존하게된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>베이스 클래스에 이미 구현되어 있는 메소드를 오버라이드하지 않는다.
+&lt;ul>
+&lt;li>베이스 클래스가 제대로 추상화되지 않는다. 모든 서브클래스에서 공유할 수 있는 것만 정리가 필요하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="간단한-팩토리">간단한 팩토리&lt;/h2>
+&lt;blockquote>
+&lt;p>간단한 팩토리(Simple Factory)는 디자인 패턴이라기 보다는 프로그래밍에서 자주 쓰이는 &lt;strong>관용구&lt;/strong>에 가깝다.&lt;/p>
+&lt;/blockquote>
+&lt;p>간단한 팩토리는 단순히 객체 생성 부분을 전담한다.&lt;/p>
+&lt;ul>
+&lt;li>객체 생성 부분은 공통으로 사용될 수 있기 때문에 팩토리로 캡슐화해 놓으면 구현을 변경할 때 팩토리 하나만 고치면 된다.&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Client {
+useProduct()
+}
+class SimpleProductFactory {
+createProduct()
+}
+class Product {
+&lt;&lt; interface >>
+action()*
+}
+class ConcreteProductA {
+action()
+}
+class ConcreteProductB {
+action()
+}
+class ConcreteProductC {
+action()
+}
+Client ..|> SimpleProductFactory
+SimpleProductFactory ..> Product
+Product &lt;|-- ConcreteProductA
+Product &lt;|-- ConcreteProductB
+Product &lt;|-- ConcreteProductC
+&lt;/pre>
+&lt;ul>
+&lt;li>Client: 팩토리를 사용하는 클라이언트
+&lt;ul>
+&lt;li>팩토리를 통해 Product의 구상 클래스 오브젝트를 받음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>SimplePizzaFactory: Product 객체를 참조하는 팩토리
+&lt;ul>
+&lt;li>유일하게 구상 Product 클래스를 직접 참조함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Product: 팩토리에서 생산하는 구상 클래스들의 인터페이스&lt;/li>
+&lt;li>ConcreteProduct: 팩토리에서 생산하는 제품에 해당하는 구상 클래스
+&lt;ul>
+&lt;li>Product 인터페이스를 구현해야 한다.&lt;/li>
+&lt;li>구상 클래스여야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="최첨단-피자-가게의-문제">최첨단 피자 가게의 문제&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Pizza&lt;/span> &lt;span class="nf">orderPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pizza&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 인스턴스를 만드는 구상 클래스를 선택
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">CheesePizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;greek&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">GreekPizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;pepperoni&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">PepperoniPizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">prepare&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">bake&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">cut&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">box&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>orderPizza()&lt;/code>에서 가장 문제가 되는 부분은 &lt;strong>인스턴스를 만드는 구상 클래스를 선택하는 부분&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>위 코드에서 피자 가게의 메뉴를 변경하려면 직접 코드를 수정해야한다. 즉 변경에 닫혀있지 않다.&lt;/li>
+&lt;/ul>
+&lt;p>변경되는 부분인 객체 생성 영역을 별도로 분리할 수 있다.&lt;/p>
+&lt;h3 id="최첨단-피자-가게에-적용">최첨단 피자 가게에 적용&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">SimplePizzaFactory&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">createPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">CheesePizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;greek&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">GreekPizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;pepperoni&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">PepperoniPizza&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="n">Exeption&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PizzaStore&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SimplePizzaFactory&lt;/span> &lt;span class="n">factory&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">orderPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pizza&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">factory&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">createPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">prepare&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">bake&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">cut&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">box&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="팩토리-메소드-패턴">팩토리 메소드 패턴&lt;/h2>
+&lt;blockquote>
+&lt;p>팩토리 메소드 패턴(Factory Method Pattern)에서는 객체를 생성할 때 필요한 인터페이스를 만든다.&lt;br>
+어떤 클래스의 인스턴스를 만들지는 서브 클래스에서 결정하기 때문에 클래스 인스턴스 만드는 일을 서브 클래스에게 맡기게 된다.&lt;/p>
+&lt;/blockquote>
+&lt;p>모든 팩토리 패턴은 객체 생성을 캡슐화한다.&lt;/p>
+&lt;p>팩토리 메소드 패턴은 팩토리를 별도 클래스로 분리하지 않고 &lt;strong>생산 클래스 내부에 인터페이스로 팩토리 형식을 구현하도록 하여 객체 생성을 전담하는 방식으로 캡슐화를 수행&lt;/strong>한다.&lt;/p>
+&lt;ul>
+&lt;li>팩토리가 필요한 요소에서 자신의 메소드를 이용하여 팩토리를 구성하는 방식&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Creator {
+&lt;&lt; abstract >>
+factoryMethod()*
+anOperation()
+}
+class ConcreteCreator {
+factoryMethod()
+}
+class Product {
+&lt;&lt; abstract >>
+}
+class ConcreteProduct
+Product &lt;|-- ConcreteProduct
+Creator &lt;|-- ConcreteCreator
+ConcreteCreator ..|> ConcreteProduct
+&lt;/pre>
+&lt;ul>
+&lt;li>Creator: 추상 클래스로 제품으로 원하는 일을 할 때 필요한 모든 메소드가 구현됨
+&lt;ul>
+&lt;li>하지만 제품을 만들어 주는 팩토리 메소드는 추상 메소드로 정의되어 있을 뿐 구현되어 있지 않음.&lt;/li>
+&lt;li>추상 메소드인 &lt;code>factoryMethod()&lt;/code>을 서브클래스에서 직접 구현해야함.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>ConcreteCreator: 실제로 제품을 생산하는 &lt;code>factoryMetFhod()&lt;/code>를 구현
+&lt;ul>
+&lt;li>구상 클래스 인스턴스를 만드는 일을 책임진다.&lt;/li>
+&lt;li>실제 제품을 만드는 방법을 알고 있는 클래스는 이 클래스 뿐이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Product: 제품 클래스로 모두 똑같은 인터페이스를 구현해야 함
+&lt;ul>
+&lt;li>그 제품을 사용할 클래스에서 구상 클래스가 아닌 인터페이스의 레퍼런스로 객체를 참조하게 만들 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Creator&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Product&lt;/span> &lt;span class="nf">anOperation&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Product&lt;/span> &lt;span class="n">product&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">product&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">factoryMethod&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* somethimg */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">product&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="n">Product&lt;/span> &lt;span class="nf">factoryMethod&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Creator 추상 클래스에서 추상 메소드로 팩토리 메소드용 인터페이스(&lt;code>factoryMethod()&lt;/code>)를 제공한다.&lt;/p>
+&lt;p>Creator 추상 클래스에 구현되어 있는 다른 메소드는 팩토리 메소드에 의해 생산된 제품으로 필요한 작업을 처리한다. 팩토리 메소드가 추상 메소드로 선언되었기 때문에 실제 팩토리 메소드를 구현하고 객체 인스턴스를 만드는 일은 서브클래스에서만 할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>팩토리 메소드를 추상 메소드로 선언해서 서브클래스가 객체 생성을 책임지도록 한다.
+&lt;ul>
+&lt;li>팩토리 메소드는 클라이언트에서 실제로 생성되는 구상 객체가 무엇인지 알 수 없게 만드는 역할도 겸하게된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>팩토리 메소드는 특정 객체를 리턴하며, 그 객체는 보통 슈퍼클래스가 정의한 메소드 내에서 쓰인다.&lt;/li>
+&lt;li>매개변수로 만들 객체의 종류를 선택하게 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>생산자 추상 클래스가 실제 생산될 인스턴스를 전혀 알 수 없고, 사용하는 서브클래스에 따라 생산되는 객체 인스턴스가 정해지기 때문에, 어떤 클래스의 인스턴스를 만들지를 서브클래스에서 결정한다고 표현한다.&lt;/p>
+&lt;h3 id="병렬-클래스-계층구조">병렬 클래스 계층구조&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction TD
+namespace 생산자 클래스 {
+class Creator {
+&lt;&lt; abstract >>
+create()* Product
+useProduct()
+}
+class ConcreteCreatorA {
+create() Product
+}
+class ConcreteCreatorB {
+create() Product
+}
+}
+namespace 제품 클래스 {
+class Product {
+&lt;&lt; abstract >>
+}
+class ConcreteProductA1
+class ConcreteProductA2
+class ConcreteProductB1
+class ConcreteProductB2
+}
+Creator &lt;|-- ConcreteCreatorA
+Creator &lt;|-- ConcreteCreatorB
+Product &lt;|-- ConcreteProductA1
+Product &lt;|-- ConcreteProductB1
+ConcreteProductA1 .. ConcreteProductA2
+ConcreteProductB1 .. ConcreteProductB2
+ConcreteCreatorA &lt;--> ConcreteProductA1
+ConcreteCreatorB &lt;--> ConcreteProductB1
+ConcreteCreatorA &lt;--> ConcreteProductA2
+ConcreteCreatorB &lt;--> ConcreteProductB2
+&lt;/pre>
+&lt;ul>
+&lt;li>Creator: 서브클래스에서 객체를 생산하려고 구현하는 팩토리 메소드의 추상 클래스
+&lt;ul>
+&lt;li>제품 클래스의 객체는 클래스의 서브클래스로 만들어지므로 생산자 자체는 어떤 구상 제품 클래스가 만들어질지 미리 알 수 없다.&lt;/li>
+&lt;li>생산자 클래스에 추상 제품 크래스에 의존하는 코드가 들어있을 때도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>ConcreteCreator: 팩토리 메소드로 해당 메소드에서 객체를 생산하는 구상 생산자.&lt;/li>
+&lt;li>Product: 팩토리가 생산하게 될 제품의 인터페이스&lt;/li>
+&lt;li>ConcreteProduct: 팩토리가 생산하게 될 제품&lt;/li>
+&lt;/ul>
+&lt;p>구상 제품은 구상 생산자가 만들어야 할 많은 제품들이고, 구상 생산자 팩토리 메소드를 이용해 많은 구상 제품들 중 필요한 제품을 선택하게 된다.&lt;/p>
+&lt;p>이처럼 특정 구상 생산자가 팩토리 메소드로 특정 제품군을 만드는 모든 방법을 캡슐화 되어있게되는 병렬 클래스 계층 구조를 가지게 된다.&lt;/p>
+&lt;h3 id="간단한-팩토리와-차이점">간단한 팩토리와 차이점&lt;/h3>
+&lt;p>간단한 팩토리는 특정 생산자에서만 사용할 수 있는 반면, 팩토리 메소드 패턴은 더 유연하고 재사용 가능한 설계를 할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>생산자 클래스의 서브 클래스로 어떤 구상 제품을 만들지 결정하기 때문에 생성하는 제품을 마음대로 변경하기 쉽다.&lt;/li>
+&lt;li>추상 클래스의 내부 메소드 구현을 통해 동작을 일반화하여 여러 번 재사용이 가능한 프레임워크를 만들 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="피자-가게-프레임워크-만들기">피자 가게 프레임워크 만들기&lt;/h3>
+&lt;p>팩토리 메소드 패턴을 통해 다양한 팩토리를 구성할 수 있고, 이를 통해 특색있는 피자 가게 지점을 만들 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;span class="lnt">89
+&lt;/span>&lt;span class="lnt">90
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Pizza&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">dough&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">sauce&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">List&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">toppings&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ArrayList&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">prepare&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;준비중: &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;도우 만들기...&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;소스 뿌리기...&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;토핑 올리기:&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">topping&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">toppings&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34; &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">topping&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">bake&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;굽기&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">cut&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;자르기&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">box&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;담기&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">getName&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">NYStyleCheesePizza&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">NYStyleCheesePizza&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;뉴욕 스타일 치즈 피자&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dough&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;씬 크러스트&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sauce&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;마리나라&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">toppings&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">add&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;레지아노 치즈&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ChicagoStyleCheesePizza&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">NYStyleCheesePizza&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;시카고 스타일 치즈 피자&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dough&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;두꺼운 크러스트&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sauce&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;플럼 토마토&amp;#34;&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">toppings&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">add&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;모짜렐라 치즈&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@java.lang.Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">cut&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;네모난 모양으로 자르기&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">PizzaStore&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">orderPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pizza&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cratePizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">prepare&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">bake&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">cut&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pizza&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">box&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">pizza&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">createPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">NYPizzaStore&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">PizzaStore&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">createPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">item&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">NYStyleCheesePizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ChicagoPizzaStore&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">PizzaStore&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pizza&lt;/span> &lt;span class="nf">createPizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">item&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ChicagoStyleCheesePizza&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;cheese&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="추상-팩토리-패턴">추상 팩토리 패턴&lt;/h2>
+&lt;blockquote>
+&lt;p>구상 클래스에 의존하지 않고도 서로 연관되거나 의존적인 객체로 이루어진 제품군을 생산하는 인터페이스를 제공한다.&lt;br>
+구상 클래스는 서브클래스에서 만들게된다.&lt;/p>
+&lt;/blockquote>
+&lt;p>추상 팩토리 패턴을 사용하면 클라이언트에서 추상 인터페이스로 일련의 제품을 공급받을수 있다.&lt;/p>
+&lt;p>이때, 실제로 어떤 제품이 생산되는지는 전혀 알 필요가 없다. 따라서 클라이언트와 팩토리에서 생산되는 제품을 분리할 수 있게된다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction TD
+class Client {
+}
+class AbstractFactory {
+&lt;&lt; interface >>
+CreateProductA()*
+CreateProductB()*
+}
+class ConcreteFactory1 {
+CreateProductA()
+CreateProductB()
+}
+class ConcreteFactory2 {
+CreateProductA()
+CreateProductB()
+}
+class AbstractProductA {
+&lt;&lt; interface >>
+}
+class ProductA1 {
+}
+class ProductA2 {
+}
+class AbstractProductB {
+&lt;&lt; interface >>
+}
+class ProductB1 {
+}
+class ProductB2 {
+}
+Client --> AbstractFactory
+Client --> AbstractProductA
+Client --> AbstractProductB
+AbstractFactory &lt;|-- ConcreteFactory1
+AbstractFactory &lt;|-- ConcreteFactory2
+AbstractProductA &lt;|-- ProductA1
+AbstractProductA &lt;|-- ProductA2
+AbstractProductB &lt;|-- ProductB1
+AbstractProductB &lt;|-- ProductB2
+ConcreteFactory1 --> ProductA1
+ConcreteFactory1 --> ProductB1
+ConcreteFactory2 --> ProductA2
+ConcreteFactory2 --> ProductB2
+&lt;/pre>
+&lt;p>추상 팩토리가 일련의 제품을 만드는 데 쓰이는 인터페이스를 정의하려고 만들어졌기 때문에 추상 팩토리 패턴의 메소드가 팩토리 메소드로 구현되는 경우도 종종 있다.&lt;/p>
+&lt;p>해당 인터페이스에 있는 각 메소드는 구상 제품을 생산하는 일을 맡고, 추상 팩토리의 서브클래스를 만들어서 각 메소드의 구현을 제공하게된다.&lt;/p>
+&lt;h2 id="팩토리-패턴-활용법">팩토리 패턴 활용법&lt;/h2>
+&lt;p>어떤 패턴을 쓰든 객체 생성을 캡슐화해서 애플리케이션의 결함을 느슨하게 만드록, 특정 구현에 덜 의존하도록 만들 수 있다.&lt;/p>
+&lt;p>팩토리 메소드 패턴, 추상 팩토리 패턴 모두 애플리케이션을 특정 구현으로부터 분리하는 역할을 하지만 방법이 다르기때문에 용도에 맞게 활용한다.&lt;/p>
+&lt;ul>
+&lt;li>팩토리 메소드 패턴: 클라이언트 코드와 인스턴스를 만들어야 할 구상 클래스를 분리시켜야 할 때 유용하다.
+&lt;ul>
+&lt;li>클래스를 써서 제품을 만든다.
+&lt;ul>
+&lt;li>상속을 이용하여 객체를 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>서브클래스로 객체를 만들기 위해 클래스를 확장하고 팩토리 메소드를 오버라이드해야 한다.
+&lt;ul>
+&lt;li>자신이 사용할 추상 형식만 알면 되므로 클라이언트와 구상 형식을 분리하게된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>한 가지 제품만 생산하므로 복잡한 인터페이스도 필요하지 않고 메소드도 하나만 있으면 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>추상 팩토리 패턴: 클라이언트에서 서로 연관된 일련의 제품을 만들어야 할 때, 즉 제품군을 만들어야 할 때 활용하기 좋다.
+&lt;ul>
+&lt;li>객체를 써서 제품을 만든다.
+&lt;ul>
+&lt;li>객체 구성(composition)을 이용하여 객체를 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>제품군을 만드는 추상 형식을 제공하고 제품이 생상되는 방법을 이 형식의 서브클래스에서 정의한다.
+&lt;ul>
+&lt;li>팩토리를 사용하려면 인스턴스를 만든 다음 추상 형식을 써서 만든 코드에 전달하는 방식으로 클라이언트와 구상 제품을 분리한다.&lt;/li>
+&lt;li>제품군에 제품을 추가하는 드으이 관련 제품을 확대해야 할 경우에 인터페이스를 바꿔야한다.&lt;/li>
+&lt;li>많은 제품들을 포함하는 제품 군을 생성하기 때문에 인터페이스가 아주 큰 편이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="디자인-도구상자-안에-들어가야할-도구들">디자인 도구상자 안에 들어가야할 도구들&lt;/h2>
+&lt;ul>
+&lt;li>객체지향 원칙
+&lt;ul>
+&lt;li>추상화된 것에 의존하게 만드록 구상 클래스에 의존하지 않게 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>추상 팩토리 패턴
+&lt;ul>
+&lt;li>구상 클래스에 의존하지 않고도 서로 연관되거나 의존적인 객체로 이루어진 제품군을 생성하는 인터페이스를 제공한다.&lt;/li>
+&lt;li>구상 클래스는 서브클래스에서 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>팩토리 메소드 패턴
+&lt;ul>
+&lt;li>객체를 생성할 때 필요한 인터페이스를 만든다.&lt;/li>
+&lt;li>어떤 클래스의 인스턴스를 만들지는 서브클래스에서 결정한다.&lt;/li>
+&lt;li>팩토리 메소드를 사용하면 인스턴스 만드는 일을 서브클래스에 맡길 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="핵심-정리">핵심 정리&lt;/h2>
+&lt;ul>
+&lt;li>팩토리를 쓰면 객체 생성을 캡슐화할 수 있다.&lt;/li>
+&lt;li>간단한 팩토리는 엄밀하게 말해서 디자인 패턴은 아니지만, 클라이언트와 구상 클래스를 분리하는 간단한 기법으로 활용할 수 있다.&lt;/li>
+&lt;li>팩토리 메소드 패턴은 상속을 활용한다.
+&lt;ul>
+&lt;li>객체 생성을 서브클래스에게 맡기고, 서브클래스는 팩토리 메소드를 구현해서 객체를 생산한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>추상 팩토리 패턴은 객체 구성을 활용한다.
+&lt;ul>
+&lt;li>팩토리 인터페이스에서 선언한 메소드에서 객체 생성이 구현된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모든 팩토리 패턴은 애플리케이션의 구상 클래스 의존성을 줄여줌으로써 느슨한 결합을 도와준다.&lt;/li>
+&lt;li>팩토리 메소드 패턴은 특정 클래스에서 인스턴스를 만드는 일을 서브클래스에게 넘긴다.&lt;/li>
+&lt;li>추상 팩토리 패턴은 구상 클래스에 직접 의존하지 않고도 서로 관련된 객체로 이루어진 제품군을 만드는 용도로 쓰인다.&lt;/li>
+&lt;li>의존성 뒤집기 윈칙을 따르면 구상 형식 의존을 피하고 추상화를 지향할 수 있다.&lt;/li>
+&lt;li>팩토리는 구상 클래스가 아닌 추상 클래스와 인터페이스에 맞춰서 코딩할 수 있게 해주는 강력한 기법이다.&lt;/li>
+&lt;/ul></description></item><item><title>3. 데코레이터 패턴</title><link>https://codemario318.github.io/post/gof/3/</link><pubDate>Mon, 02 Oct 2023 14:29:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/3/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/3/cover.png" alt="Featured image of post 3. 데코레이터 패턴" />&lt;p>데코레이터 패턴은 객체 작성이라는 형식으로 실행 중에 클래스를 꾸미는 방법이다.&lt;/p>
 &lt;p>데코레이터 패턴을 활용하면 기존 클래스 코드를 바꾸지 않고도 객체에 새로운 임무를 추가할 수 있다.&lt;/p>
 &lt;h2 id="데코레이터-패턴">데코레이터 패턴&lt;/h2>
 &lt;p>데코레이터 패턴은 기존 코드를 건드리지 않고 확장으로 새로운 행동을 추가하는 것이 목적이다. 이를 통해 새로운 기능을 추가할 때 급변하는 주변 환경에 작 적응하는 유연하고 튼튼한 디자인을 만들 수 있다.&lt;/p>
