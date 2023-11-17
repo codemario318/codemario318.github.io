@@ -1,0 +1,315 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="헤드 퍼스트 디자인 패턴"><title>7. 어댑터 패턴과 퍼사드 패턴</title><link rel=canonical href=https://codemario318.github.io/post/gof/7/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="7. 어댑터 패턴과 퍼사드 패턴"><meta property="og:description" content="헤드 퍼스트 디자인 패턴"><meta property="og:url" content="https://codemario318.github.io/post/gof/7/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Common"><meta property="article:published_time" content="2023-11-16T09:55:08+09:00"><meta property="article:modified_time" content="2023-11-16T09:55:08+09:00"><meta property="og:image" content="https://codemario318.github.io/post/gof/7/cover.png"><meta name=twitter:title content="7. 어댑터 패턴과 퍼사드 패턴"><meta name=twitter:description content="헤드 퍼스트 디자인 패턴"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/gof/7/cover.png"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>7</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#어댑터-패턴>어댑터 패턴</a><ol><li><a href=#왜-어댑터-패턴일까>왜 어댑터 패턴일까?</a></li><li><a href=#어댑터-패턴의-정의>어댑터 패턴의 정의</a></li><li><a href=#클래스-어댑터>클래스 어댑터</a></li><li><a href=#enumeration을-iterator에-적응시키기>Enumeration을 Iterator에 적응시키기</a></li><li><a href=#데코레이터-패턴과-어댑터-패턴>데코레이터 패턴과 어댑터 패턴</a></li></ol></li><li><a href=#퍼사드-패턴>퍼사드 패턴</a><ol><li><a href=#활용>활용</a></li></ol></li><li><a href=#최소-지식-원칙>최소 지식 원칙</a><ol><li><a href=#친구를-만들지-않고-다른-객체에-영향력-행사하기>친구를 만들지 않고 다른 객체에 영향력 행사하기</a></li><li><a href=#절친에게만-메소드-호출하기>절친에게만 메소드 호출하기</a></li><li><a href=#퍼사드-패턴과-최소-지식-원칙>퍼사드 패턴과 최소 지식 원칙</a></li></ol></li><li><a href=#정리>정리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/gof/7/><img src=/post/gof/7/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_800x0_resize_box_3.png srcset="/post/gof/7/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_800x0_resize_box_3.png 800w, /post/gof/7/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_1600x0_resize_box_3.png 1600w" width=800 height=966 loading=lazy alt="Featured image of post 7. 어댑터 패턴과 퍼사드 패턴"></a></div><div class=article-details><header class=article-category><a href=/categories/headfirstdesignpatterns/>헤드 퍼스트 디자인 패턴</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/gof/7/>7. 어댑터 패턴과 퍼사드 패턴</a></h2><h3 class=article-subtitle>헤드 퍼스트 디자인 패턴</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/11/16</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>9 minute read</time></div></footer></div></header><section class=article-content><blockquote><p>특정 인터페이스가 필요한 디자인을 다른 인터페이스를 구현하는 클래스에서 필요할 때(호환되지 않는 인터페이스를 사용해야 할 때), 어댑터 패턴을 이용하면 실제와 다른 인터페이스를 가진 것 처럼 보이게 만들 수 있다.</p><p>여기에 더해 퍼사드 패턴을 이용하면 객체를 감싸서 인터페이스를 단순화할 수 있다.</p></blockquote><h2 id=어댑터-패턴>어댑터 패턴</h2><h3 id=왜-어댑터-패턴일까>왜 어댑터 패턴일까?</h3><p><img src=/post/gof/7/img_2.png width=800 height=800 srcset="/post/gof/7/img_2_huc80e37d3d0f5cf4565d390d280862a1a_85635_480x0_resize_box_3.png 480w, /post/gof/7/img_2_huc80e37d3d0f5cf4565d390d280862a1a_85635_1024x0_resize_box_3.png 1024w" loading=lazy alt="US Standard Socket AC" class=gallery-image data-flex-grow=100 data-flex-basis=240px>
+<img src=/post/gof/7/img.png width=600 height=600 srcset="/post/gof/7/img_huaf94fd04b2f1b9ec15deb9bc444237f1_196342_480x0_resize_box_3.png 480w, /post/gof/7/img_huaf94fd04b2f1b9ec15deb9bc444237f1_196342_1024x0_resize_box_3.png 1024w" loading=lazy alt="JAJU 여행용 멀티 어댑터(그레이)" class=gallery-image data-flex-grow=100 data-flex-basis=240px></p><p>어댑터 패턴에서 의미하는 어댑터(Adaptor)는 흔히 볼 수 있는 AC 전원 어댑터에 사용되는 의미와 같다.</p><p>AC 전원 어댑터는 다른 규격의 플러그를 필요로하는 소켓에 사용할 수 있게 해주는 역할을 하는데, 객체지향 어댑터는 클라이언트에서 사용해야하는 인터페이스를(플러그)를 사용할 수 있는 인터페이스(소켓)에 맞는 형태로 적응시키는 역할을 수행한다.</p><h3 id=어댑터-패턴의-정의>어댑터 패턴의 정의</h3><blockquote><p>**어댑터 패턴(Adapter Pattern)**은 인터페이스가 호환되지 않아 같이 쓸 수 없었던 클래스를 특정 클래스 인터페이스를 클라이언트에서 요구하는 다른 인터페이스로 변환하여 사용할 수 있게 도와준다.</p></blockquote><p>어댑터 패턴을 사용하면 호환되지 않는 인터페이스를 사용하는 클라이언트를 그대로 활용할 수 있다.</p><ul><li>클라이언트와 구현된 인터페이스를 분리할 수 있다.</li><li>변경 내역이 어댑터에 캡슐화되므로 나중에 인터페이스가 바뀌더라도 클라이언트를 바꿀 필요가 없다.</li></ul><pre class=mermaid style=text-align:center>classDiagram
+    direction LR
+    class Client { }
+    class Target {
+        << interface >>
+        request()*
+    }
+    class Adapter {
+        request()
+    }
+    class Adaptee {
+        specificRequest()
+    }
+    Client-->Target
+    Target<..Adapter
+    Adapter-->Adaptee
+</pre><ul><li>클라이언트는 타깃 인터페이스만 볼 수 있다.</li><li>어댑터에서 타깃 인터페이스를 구현한다.</li><li>어댑터는 어댑티로 <strong>구성</strong>되어있다.</li><li>모든 요청은 어댑티에 위임된다.</li></ul><p>어댑터는 여러 객체지향 원칙을 반영하고 있다.</p><ul><li>어댑티를 새로 바뀐 인터페이스로 감쌀 때는 객체 구성(composition)을 사용한다.<ul><li>이러한 접근으로 어댑티의 모든 서브클래스에 어댑터를 쓸 수 있다.</li></ul></li><li>클라이언트를 특정 구현이 아닌 인터페이스에 연결한다.<ul><li>서로 다른 백엔드 클래스로 변환시키는 여러 어댑터를 사용할 수도 있다.</li><li>인터페이스를 기준으로 구현하므로 타깃 인터페이스만 제대로 유지한다면 나중에 다른 구현을 추가하는 것도 가능하다.</li></ul></li></ul><h3 id=클래스-어댑터>클래스 어댑터</h3><p>어댑터 패턴은 객체 어댑터와 클래스 어댑터로 두 종류가 있다.</p><ul><li>클래스 어댑터는 다중 상속이 가능해야 구현할 수 있다.</li></ul><p>클래스 어댑터는 타깃과 어댑티 모두 <strong>서브클래스</strong>로 만들어서 사용하고, 객체 어댑터는 <strong>구성</strong>으로 어댑티에 요청을 전달한다.</p><pre class=mermaid style=text-align:center>classDiagram
+    direction LR
+    class Client { }
+    class Target {
+        request()
+    }
+    class Adapter {
+        request()
+    }
+    class Adaptee {
+        specificRequest()
+    }
+    Client-->Target
+    Adapter--|>Target
+    Adapter--|>Adaptee
+</pre><p><strong>객체 어댑터</strong></p><ul><li>구성을 사용하므로 어댑티 클래스와 그 서브클래스에 대해서도 어댑터 역할을 할 수 있다.</li><li>구성을 사용하므로 어댑티한테 필요한 일을 시키는 코드만 만들면 되므로 코드를 많이 쓸 필요가 없다.</li><li>구성을 사용하므로 유연성을 최대한 확보할 수 있다.</li><li>어댑터 코드에 어떤 행동을 추가하면 그 어댑터 코드는 어댑티 클래스와 더불어 모든 서브클래스에 그대로 적용된다.</li></ul><p><strong>클래스 어댑터</strong></p><ul><li>특정 어댑티 클래스에만 적용할 수 있지만, 어댑티 전체를 다시 구현하지 않아도 된다는 장점이 있다.</li><li>서브클래스라서 어댑티의 행동을 오버라이드할 수 있으므로 코드 분량을 줄일 수 있다.</li><li>메소드를 빠르게 오버라이드 할 수 있다.</li></ul><h3 id=enumeration을-iterator에-적응시키기>Enumeration을 Iterator에 적응시키기</h3><p><strong>Enumeration</strong></p><pre class=mermaid style=text-align:center>classDiagram
+    class Enumeration {
+        << interface >>
+        hasMoreElements()*
+        nextElement()*
+    }
+</pre><p>자바의 초기 컬렉션 형식(Vector, Stack, Hashtable)은 <code>Enumeration</code>을 반환하는 <code>elements()</code> 메소드가 구현되어 있었는데, <code>Enumeration</code> 인터페이스를 사용하면 컬렉션의 각 항목이 어떻게 관리되는지 신경 쓸 필요 없이 컬렉션의 모든 항목에 접근할 수 있다.</p><p><strong>Iterator</strong></p><pre class=mermaid style=text-align:center>classDiagram
+    class Iterator {
+        << interface >>
+        hasNext()*
+        next()*
+        remove()*
+    }
+</pre><p>최근에는 컬렉션에 있는 일련의 항목에 접근하고, 그 항목을 제거할 수 있게 해주는 <code>Iterator</code> 인터페이스를 사용하기 시작했다.</p><p><code>Enumeration</code> 인터페이스를 사용하는 구형 코드를 다뤄야 할 때도 있지만 새로운 코드를 만들 때는 <code>Iterator</code>만 사용하는 게 좋다. 이럴 때 어댑터 패턴을 사용할 수 있다.</p><p><strong>어댑터 디자인하기</strong></p><p>타깃 인터페이스를 구현하고, 어댑티 객체로 구성된 어댑터를 구현해야한다.</p><pre class=mermaid style=text-align:center>classDiagram
+    direction TB
+  class Enumeration {
+    << interface >>
+    hasMoreElements()*
+    nextElement()*
+  }
+
+  class EnumerationIterator {
+    hasNext()
+    next()
+    remove()
+  }
+
+  class Iterator {
+    << interface >>
+    hasNext()*
+    next()*
+    remove()*
+  }
+  
+  Iterator <|.. EnumerationIterator
+  Enumeration <|-- EnumerationIterator
+</pre><p><code>hasNext()</code>와 <code>next()</code> 메소드는 타깃에서 어댑티로 바로 연결되지만 <code>remove()</code> 메소드는 제공하지 않으므로 별도 구현이 필요하다.</p><p><strong><code>remove()</code> 메소드 처리하기</strong></p><p>결론적으로 어댑터 차원에서 완벽하게 작동하는 <code>remove()</code> 메소드 구현 방법은 없다.</p><p>그나마 가장 좋은 방법은 런타임 예외를 던지는 것 이다.</p><p>이러한 상황을 대비하여 <code>Iterator</code> 인터페이스를 디자인 한 사람들은 <code>UnsupportedOperationExcetpion</code>을 지원하도록 구현하였다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span> <span class=kd>class</span> <span class=nc>EnumerationIterator</span> <span class=kd>implements</span> <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>Object</span><span class=o>&gt;</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>EnumerationIterator</span><span class=o>&lt;?&gt;</span> <span class=n>enumeration</span><span class=o>;</span>  
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>EnumerationIterator</span><span class=o>(</span><span class=n>Enumeration</span><span class=o>&lt;?&gt;</span> <span class=n>enumeration</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>.</span><span class=na>enumeration</span> <span class=o>=</span> <span class=n>enumeration</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>hasNext</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>enumeration</span><span class=o>.</span><span class=na>hasMoreElements</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Object</span> <span class=nf>next</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>enumeration</span><span class=o>.</span><span class=na>nextElement</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>remove</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=데코레이터-패턴과-어댑터-패턴>데코레이터 패턴과 어댑터 패턴</h3><p>데코레이터 패턴과 어댑터 패턴은 모두 구조적 패턴(Structural pattern)에 속하는데, 기존 클래스들을 조합하여 새로운 기능을 제공하거나 인터페이스를 맞추는 데 사용할 수 있지만, 목적과 사용되는 상황에서 차이가 있다.</p><p><strong>데코레이터 패턴</strong></p><p>데코레이터 패턴은 객체에 동적으로 새로운 책임을 추가하거나 객체를 감싸서 행동을 확장하는 패턴이다.</p><ul><li>상속을 통해 기능을 확장하는 대신 객체를 감싸는 방식으로 기능을 추가하게된다.</li><li>클라이언트에게는 원래의 객체와 데코레이터로 감싼 객체를 동일하게 다루도록 한다.</li></ul><p><strong>어댑터 패턴</strong></p><p>어댑터 패턴은 서로 다른 인터페이스를 가진 두 클래스를 함께 동작하도록 만들어주는 패턴이다.</p><ul><li>기존의 코드를 수정하지 않고 새로운 인터페이스를 제공한다.</li><li>클라이언트 코드가 새로운 인터페이스를 사용할 수 있게 한다.</li></ul><h2 id=퍼사드-패턴>퍼사드 패턴</h2><blockquote><p>퍼사드 패턴은 서브시스템에 있는 일련의 인터페이스를 통합 인터페이스로 묶어준다.<br>또한 고수준 인터페이스도 정의하므로 서브시스템을 더 편리하게 사용할 수 있다.</p></blockquote><p>퍼사드 패턴은 하나 이상의 클래스 인터페이스를 깔끔하면서도 효과적인 퍼사드(facade)로 덮어 인터페이스를 단순하게 바꾸기 위해 인터페이스를 변경한다.</p><ul><li>쓰기 쉬운 인터페이스를 제공하는 퍼사드 클래스를 구현함으로써 복잡한 시스템을 훨씬 편리하게 사용할 수 있다.</li><li>퍼사드는 인터페이스를 단순하게 만들고 클라이언트와 구성 요소로 이루어진 서브시스템을 분리하는 역할도 수행할 수 있다.</li></ul><p>퍼사드와 어댑터는 모두 여러 개의 클래스를 감쌀 수 있지만 퍼사드는 인터페이스를 단순하게 만드는 용도로 쓰이는 반면, 어댑터는 인터페이스를 다른 인터페이스로 변환하는 용도로 쓰인다.</p><h3 id=활용>활용</h3><p>퍼사드 패턴을 사용하려면 어떤 서브시스템에 속한 일련의 복잡한 클래스를 단순하게 바꿔서 통합한 클래스를 만들어야 한다.</p><ul><li>다른 패턴과 달리 퍼사드 패턴은 복잡한 추상화가 필요 없으므로 상당히 단순한 편이다.</li></ul><p>퍼사드 패턴을 사용하면 클라이언트와 서브시스템이 서로 긴밀하게 연결되지 않아도 되고, 다음 최소 지식 원칙을 준수하는데도 도움을 준다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 서브시스템 클래스
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>class</span> <span class=nc>CPU</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>processData</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Processing data by CPU&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Memory</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>load</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Loading data into memory&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>HardDrive</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>readData</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Reading data from hard drive&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 퍼사드 클래스
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>class</span> <span class=nc>ComputerFacade</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>CPU</span> <span class=n>cpu</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>Memory</span> <span class=n>memory</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>HardDrive</span> <span class=n>hardDrive</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>ComputerFacade</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>.</span><span class=na>cpu</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CPU</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>.</span><span class=na>memory</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Memory</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>.</span><span class=na>hardDrive</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HardDrive</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>start</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Starting computer&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cpu</span><span class=o>.</span><span class=na>processData</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>memory</span><span class=o>.</span><span class=na>load</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>hardDrive</span><span class=o>.</span><span class=na>readData</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Computer started&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>shutDown</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Shutting down computer&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 여러 서브시스템을 종료하는 로직
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Computer shut down&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 클라이언트 코드
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Main</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>ComputerFacade</span> <span class=n>computer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ComputerFacade</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>computer</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 클라이언트는 퍼사드를 통해서만 컴퓨터를 다룰 수 있음
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>computer</span><span class=o>.</span><span class=na>shutDown</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=최소-지식-원칙>최소 지식 원칙</h2><blockquote><p>객체 사이의 상호작용은 될 수 있으면 아주 가까운 <strong>친구</strong>사이에만 허용하는 편이 좋다.</p></blockquote><p>시스템을 디자인할 때 어떤 객체든 그 객체와 상호작용을 하는 클래스의 개수와 상호작용 방식에 주의를 기울여야 한다.</p><ul><li>이 원칙을 잘 따르면 여러 클래스가 복잡하게 얽혀 있어 시스템의 한 부분을 변경했을 때 다른 부분까지 줄줄이 고쳐야 하는 상황을 미리 방지할 수 있다.</li><li>여러 클래스가 서로 복잡하게 의존하고 있다면 관리하기도 힘들고, 이해하기 어려운 불안정한 시스템이 만들어진다.</li></ul><h3 id=친구를-만들지-않고-다른-객체에-영향력-행사하기>친구를 만들지 않고 다른 객체에 영향력 행사하기</h3><p>최소 지식 원칙은 친구를 만들지 않는 4개의 가이드라인을 제시한다.</p><ul><li>객체 자체</li><li>메소드에 매개변수로 전달된 객체</li><li>메소드를 생성하거나 인스턴스를 만든 객체</li><li>객체에 속하는 구성 요소</li></ul><p>메소드를 호출한 결과로 리턴받은 객체에 들어있는 메소드를 호출하면 다른 객체의 일부분에 요청하게되고, 직접적으로 알고 지내는 객체의 수가 늘어난다.</p><p>이 상황에서 최소 지식 원칙을 따르려면 객체가 대신 요청하도록 만드러야하며, 이를 통해 객체의 한 구성 요소를 알고 지낼 필요가 없어진다.</p><p><strong>원칙을 따르지 않는 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span> <span class=kt>float</span> <span class=nf>getTemp</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Thermometer</span> <span class=n>thermometer</span> <span class=o>=</span> <span class=n>station</span><span class=o>.</span><span class=na>getThermometer</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>thermometer</span><span class=o>.</span><span class=na>getTemperature</span><span class=o>();</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>원칙을 따르는 경우</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span> <span class=kt>float</span> <span class=nf>getTemp</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>station</span><span class=o>.</span><span class=na>getTemperature</span><span class=o>();</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>최소 지식 원칙을 적용해서 <code>thermometer</code>에게 요청을 전달하는 메소드를 <code>station</code> 클래스에 추가하여 의존해야하는 클래스의 개수를 줄일 수 있다.</p><h3 id=절친에게만-메소드-호출하기>절친에게만 메소드 호출하기</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Car</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 구성 요소의 메소드는 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>Engine</span> <span class=n>engine</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span>  
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>Car</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ...      
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>start</span><span class=o>(</span><span class=n>Key</span> <span class=n>key</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 새로운 객체를 생성
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// 이 객체의 메소드는 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>Doors</span> <span class=n>doors</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Doors</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 매개변수로 전달된 객체의 메소드는 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kt>boolean</span> <span class=n>authorized</span> <span class=o>=</span> <span class=n>key</span><span class=o>.</span><span class=na>turns</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=o>(</span><span class=n>authorized</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 구성 요소의 메소드를 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>engine</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 객체 내의 있는 메소드는 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>updateDashboardDisplay</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 직접 생성하거나 인스턴스를 만든 객체의 메소드는 호출해도 좋음
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>doors</span><span class=o>.</span><span class=na>lock</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>updateDashboardDisplay</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 디스플레이 갱신
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>최소 지식 원칙을 잘 따르면 객체 사이의 의존성을 줄일 수 있으며 소프트웨어 관리가 더 편해진다.</p><p>하지만 적용하다 보면 메소드 호출을 처리하는 래퍼 클래스를 더 만들어야 할 수도 있으며 이에 따라 시스템이 복잡해지고, 개발 시간도 늘어나고, 성능도 떨어질 수 있다.</p><h3 id=퍼사드-패턴과-최소-지식-원칙>퍼사드 패턴과 최소 지식 원칙</h3><ul><li>퍼사드 패턴에서 클라이언트의 친구는 퍼사드 클래스 하나 뿐이다.</li></ul><h2 id=정리>정리</h2><p><strong>어댑터 패턴</strong></p><ul><li>특정 클래스 인터페이스를 클라이언트에서 요구하는 다른 인터페이스로 변환한다.</li><li>인터페이스가 호환되지 않아 같이 쓸 수 없었던 클래스를 사용할 수 있게 도와준다.</li></ul><p><strong>퍼사드 패턴</strong></p><ul><li><p>서브시스템에 있는 일련의 인터페이스를 통합 인터페이스로 묶어준다.</p></li><li><p>고수준 인터페이스도 정의하므로 서브시스템을 더 편리하게 사용할 수 있다.</p></li><li><p>기존 클래스를 사용하려고 하는데 인터페이스가 맞지 않으면 어댑터를 쓴다.</p></li><li><p>큰 인터페이스와 여러 인터페이스를 단순하게 바꾸거나 통합해야 하면 퍼사드를 쓴다.</p></li><li><p>어댑터는 인터페이스를 클라이언트에서 원하는 인터페이스로 바꾸는 역할을 한다.</p></li><li><p>퍼사드는 클라이언트를 복잡한 서브시스템과 분리하는 역할을 한다.</p></li><li><p>어댑터를 구현할 때는 타깃 인터페이스의 크기와 구조에 따라 코딩해야 할 분량이 결정된다.</p></li><li><p>퍼사드 패턴에서는 서브시스템으로 퍼사드를 만들고 진짜 작업은 서브클래스에 맡긴다.</p></li><li><p>어댑터 패턴에는 객체 어댑터 패턴과 클래스 어댑터 패턴이 있으며, 클래스 어댑터를 쓰러면 다중 상속이 가능해야 한다.</p></li><li><p>한 서브시스템에 퍼사드를 여러개 만들어도 된다.</p></li><li><p>어댑터는 객체를 감싸서 인터페이스를 바꾸는 용도로, 데코레이터는 객체를 감싸서 새로운 행동을 추가하는 용도로, 퍼사드는 일련의 객체를 감싸서 단순하게 만드는 용도로 쓰인다.</p></li></ul></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/common/>Common</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://product.kyobobook.co.kr/detail/S000001810483 target=_blank rel=noopener><div class=article-details><h2 class=article-title>헤드 퍼스트 디자인 패턴</h2><footer class=article-time>교보 문고</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/gof/6/><div class=article-image><img src=/post/gof/6/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 6. 커맨드 패턴 - 호출 캡슐화하기" data-key=gof/6 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>6. 커맨드 패턴 - 호출 캡슐화하기</h2></div></a></article><article class=has-image><a href=/post/gof/5/><div class=article-image><img src=/post/gof/5/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 5. 싱글턴 패턴" data-key=gof/5 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>5. 싱글턴 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/4/><div class=article-image><img src=/post/gof/4/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 4. 팩토리 패턴" data-key=gof/4 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>4. 팩토리 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/3/><div class=article-image><img src=/post/gof/3/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 3. 데코레이터 패턴" data-key=gof/3 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>3. 데코레이터 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/2/><div class=article-image><img src=/post/gof/2/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 2. 옵저버 패턴" data-key=gof/2 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>2. 옵저버 패턴</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
