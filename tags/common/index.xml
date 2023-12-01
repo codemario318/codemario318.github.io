@@ -1,4 +1,212 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/tags/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 21 Nov 2023 06:37:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/common/index.xml" rel="self" type="application/rss+xml"/><item><title>8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴</title><link>https://codemario318.github.io/post/gof/8/</link><pubDate>Tue, 21 Nov 2023 06:37:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/8/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/8/cover.png" alt="Featured image of post 8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/tags/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 01 Dec 2023 11:42:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/common/index.xml" rel="self" type="application/rss+xml"/><item><title>9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴</title><link>https://codemario318.github.io/post/gof/9/</link><pubDate>Fri, 01 Dec 2023 11:42:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/9/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/9/cover.png" alt="Featured image of post 9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴" />&lt;blockquote>
+&lt;p>객체를 컬렉션에 추가하는 방법은 정말 다양하고, 클라이언트가 컬렉션에 들어있는 모든 객체에 일일이 접근하고 싶어하는 날이 올 것이다.&lt;br>
+그런 날이 오더라도 클라이언트에게 전부 보여 줄 필요는 없으며, 객체 저장 방식을 보여 주지 않으면서도 클라이언트가 객체에 일일이 접근할 수 있게 해줄 수 있다.&lt;br>
+그리고 한 방에 멋진 자료 구조를 만들 수 있는, 객체들로 구성된 슈퍼 컬렉션을 제공할 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="반복자-패턴">반복자 패턴&lt;/h2>
+&lt;p>반복자(iterator) 패턴은 컬렉션의 요소를 순차적으로 접근할 수 있는 방법을 제공하여 반복을 캡슐화한다.&lt;/p>
+&lt;p>이 패턴을 통해 컬렉션의 내부 표현 방식에 독립적으로 요소에 접근할 수 있으며, 클라이언트 코드는 컬렉션 내부 구조의 세부 사항을 알 필요가 없게된다.&lt;/p>
+&lt;p>&lt;strong>효과&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>컬렉션 객체의 모든 항목에 접근하는 방식이 통일되므로 종류에 관계 없이 모든 집합체에 사용할 수 있는 다형적인 코드를 만들 수 있다.&lt;/li>
+&lt;li>모든 항목에 일일이 접글ㄴ하는 작업을 컬렉션 객체가 아닌 반복자 객체가 맡게된다.
+&lt;ul>
+&lt;li>집합체의 인터페이스와 구현이 간단해지고 집합체는 객체 컬렉션 관리에만 전념할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="구조-알아보기">구조 알아보기&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction LR
+class Aggregate {
+&lt;&lt; interface >>
+createIterator()* Iterator
+}
+class ConcreateAggregate {
+createIterator()
+}
+class Iterator {
+&lt;&lt; interface >>
+hasNext()* Boolean
+next()* Object
+remove()* void
+}
+class ConcreateIterator {
+hasNext()
+next()
+remove()
+}
+class Client {
+}
+Aggregate &lt;|.. ConcreateAggregate
+Iterator &lt;|.. ConcreateIterator
+Aggregate &lt;|-- Client
+Client --|> Iterator
+ConcreateAggregate --|> ConcreateIterator
+&lt;/pre>
+&lt;ul>
+&lt;li>&lt;code>Aggregate&lt;/code>
+&lt;ul>
+&lt;li>인터페이스를 통해 클라이언와 객체 컬렉션의 구현을 분리할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Iterator&lt;/code>
+&lt;ul>
+&lt;li>모든 반복자가 구현해야 하는 인터페이스를 제공한다.&lt;/li>
+&lt;li>컬렉션에 들어있는 원소에 돌아가면서 접근할 수 있게 해 주는 메소드를 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>ConcreteAggregate&lt;/code>
+&lt;ul>
+&lt;li>객체 컬렉션이 들어있다.&lt;/li>
+&lt;li>그 안에 들어있는 컬렉션을 &lt;code>Iterator&lt;/code>로 리턴하는 메소드를 구현한다.&lt;/li>
+&lt;li>모든 &lt;code>ConcreteAggregate&lt;/code>는 그 안에 있는 객체 컬렉션을 대상으로 돌아가며 반복 작업을 처리할 수 있게 해주는 &lt;code>ConcreteIterator&lt;/code>의 인스턴스를 만들 수 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>ConcreteIterator&lt;/code>
+&lt;ul>
+&lt;li>반복 작업 중에 현재 위치를 관리를 담당한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="단일-역할-원칙">단일 역할 원칙&lt;/h3>
+&lt;blockquote>
+&lt;p>어떤 클래스에서 맡고 있는 모든 역할은 나중에 코드 변화를 불러올 수 있다.&lt;br>
+즉 역할이 2개 이상 있으면 바뀔 수 있는 부분이 2개 이상이 된다는 의미이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>집합체 내부 컬렉션 관련 기능과 반복자용 메소드 관련 기능을 전부 구현한다면 2가지 이유로 클래스가 바뀔 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>컬렉션이 어떤 이유로 변경&lt;/li>
+&lt;li>반복자 관련 기능이 변경&lt;/li>
+&lt;/ul>
+&lt;p>이러한 이유로 &lt;strong>어떤 클래스가 바뀌는 이유는 하나 뿐이어야 한다&lt;/strong>.&lt;/p>
+&lt;p>&lt;strong>응집도(cohesion)&lt;/strong>&lt;br>
+클래스 또는 모듈이 특정 목적이나 역할을 얼마나 일관되게 지원하는지를 나타내는 척도이다.&lt;/p>
+&lt;ul>
+&lt;li>응집도가 높다는 것은 서로 연관된 기능이 묶여있다는 것을 의미&lt;/li>
+&lt;li>응집도가 낮다는 것은 서로 상관없는 기능들이 묶여있다는 것을 의미&lt;/li>
+&lt;/ul>
+&lt;h3 id="java-iterable-인터페이스-알아보기">Java Iterable 인터페이스 알아보기&lt;/h3>
+&lt;p>자바의 모든 컬렉션 유형에서 &lt;code>Iterable&lt;/code> 인터페이스르 구현한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Iterable {
+&lt;&lt; interface >>
+iterator()* Iterator
++forEach()*
++spliterator()*
+}
+class Iterator {
+&lt;&lt; interface >>
+hasNext()* Boolean
+next()* Object
++remove()* void
+}
+class Collection {
+&lt;&lt; interface >>
+add()*
+addAll()*
+clear()*
+contains()*
+containsAll()*
+equals()*
+hashCode()*
+isEmpty()*
+iterator()*
+remove()*
+removeAll()*
+retainAll()*
+size()*
+toArray()*
+}
+Iterable &lt;|-- Collection
+&lt;/pre>
+&lt;ul>
+&lt;li>어떤 클래스에서 &lt;code>Iterable&lt;/code>을 구현한다면 그 클래스는 &lt;code>iterator()&lt;/code> 메소드르 구현한다.&lt;/li>
+&lt;li>메소드는 &lt;code>Iterator&lt;/code> 인터페이스를 구현하는 반복자를 반환한다.&lt;/li>
+&lt;li>이 인터페이스는 컬렉션에 있는 항목을 대상으로 반복 작업을 수행하는 방법을 제공하는 &lt;code>forEach()&lt;/code> 메소드가 기본으로 포함된다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="컴포지트-패턴">컴포지트 패턴&lt;/h2>
+&lt;p>컴포지트 패턴(Composite Pattern)은 객체들을 트리 구조로 구성하여 개별 객체와 복합 객체(그룹화된 객체)를 동일하게 다룰 수 있도록 하는 구조적인 디자인 패턴 중 하나이다.&lt;/p>
+&lt;p>이 패턴을 사용하면 클라이언트 코드가 단일 객체와 복합 객체를 구별하지 않고 일관된 방식으로 다룰 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>객체의 구성과 개별 객체를 노드로 가지는 트리 형태의 객체 구조를 만들 수 있다.&lt;/li>
+&lt;li>이런 복합 구조를 사용하면 복합 객체와 개별 객체를 대상으로 똑같은 작업을 적용할 수 있다.
+&lt;ul>
+&lt;li>복합 객체와 개별 객체를 구분할 필요가 거의 없어진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Client {
+}
+class Component {
+&lt;&lt; abstract >>
+operation()*
+add(Component)*
+remove(Component)*
+getChild(int)*
+}
+class Leaf {
+operation()
+}
+class Composite {
+operation()
+add(Component)
+remove(Component)
+getChild(int)
+}
+Client --> Component
+Component &lt;|-- Leaf
+Component &lt;|-- Composite
+Component &lt;-- Composite
+&lt;/pre>
+&lt;p>컴포지트 패턴은 한 클래스에서 계층구조를 관리하는 일과 관련 작업을 처리하는 일 2가지 역할을 수행한다.&lt;/p>
+&lt;p>컴포지트 패턴은 단일 역할 원칙을 깨는 대신 투명성을 확보하는 패턴이라고 할 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>투명성(transparency)&lt;/strong>&lt;br>
+&lt;code>Component&lt;/code> 인터페이스에 자식들을 관리하는 기능과 잎으로써의 기능을 전부 넣어서 클라이언트가 복합 객체와 잎을 똑같은 방식으로 처리할 수 있도록 만들 수 있다.&lt;br>
+이를 통해 어떤 원소가 복합 객체인지 잎인지가 클라이언트에게 투명하게 보인다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>Component&lt;/code> 클래스에는 두 종류의 기능이 모두 들어있다 보니 안전성은 약간 떨어진다.&lt;/p>
+&lt;p>이런 문제는 디자인상의 결정 사항에 속하며, 다른 방향으로 디자인해서 여러 역할을 서로 다른 인터페이스로 분리할 수도 있다.&lt;/p>
+&lt;ul>
+&lt;li>어떤 원소에 부적절한 메소드를 호출하는 일이 일어나지 않을 것이고, 컴파일 중 혹은 실행 중 문제가 생기는 일을 예방할 수 있다.&lt;/li>
+&lt;li>그 대신 투명성이 떨어지게 되고, 코드에서 조건문이라든가 &lt;code>instanceof&lt;/code> 연산자 같은 걸 써야한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="정리">정리&lt;/h2>
+&lt;ul>
+&lt;li>반복자 패턴
+&lt;ul>
+&lt;li>컬렉션의 구현 방법을 노출하지 않으면서 집합체 내의 모든 항복에 접근하는 방법을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>컴포지트 패턴
+&lt;ul>
+&lt;li>객체를 트리 구조로 구성해서 부분-전체 계층 구조를 구현한다.&lt;/li>
+&lt;li>클라이언트에서 개별 객체와 복합 객체를 똑같은 방법으로 다룰 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>반복자를 사용하면 내부 구조를 드러내지 않으면서도 클라이언트가 컬렉션 안에 들어있는 모든 원소에 접근하도록 할 수 있다.&lt;/li>
+&lt;li>반복자 패턴을 사용하면 집합체를 대상으로 하는 반복 작업을 별도의 객체로 캡슐화할 수 있다.&lt;/li>
+&lt;li>반복자 패턴을 사용하면 컬렉션에 있는 모든 데이터를 대상으로 반복 작업을 하는 역할을 컬렉션에서 분리할 수 있다.&lt;/li>
+&lt;li>반복자 패턴을 쓰면 반복 작업에 똑같은 인터페이스를 적용할 수 있으므로 집합체에 있는 객체를 활용하는 코드를 만들 때 다형성을 활용할 수 있다.&lt;/li>
+&lt;li>한 클래스에는 될 수 있으면 한가지 역할만 부여하는 것이 좋다.&lt;/li>
+&lt;li>컴포지트 패턴은 개별 객체와 복합 객체를 모두 담아 둘 수 있는 구조를 제공한다.&lt;/li>
+&lt;li>컴포지트 패턴을 사용하면 클라이언트가 개별 객체와 복합 객체를 똑같은 방법으로 다룰 수 있다.&lt;/li>
+&lt;li>복합 구조에 들어있는 것을 구성 요소라고 부른다.
+&lt;ul>
+&lt;li>구성 요소에는 복합 객체와 잎 객체가 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>컴포지트 패턴을 적용할 때는 여러 장단점을 고려해야 한다.
+&lt;ul>
+&lt;li>상황에 따라 투명성과 안정성 사이에서 적절한 균형을 찾아야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴</title><link>https://codemario318.github.io/post/gof/8/</link><pubDate>Tue, 21 Nov 2023 06:37:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/8/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/8/cover.png" alt="Featured image of post 8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴" />&lt;blockquote>
 &lt;p>탬플랫 메소드 패턴(Template Method Pattern)은 알고리즘의 골격을 정의한다.&lt;br>
 템플릿 메소드를 사용하면 알고리즘의 일부 단계를 서브클래스에서 구현할 수 있으며, 알고리즘의 구조는 그대로 유지하면서 알고리즘의 특정 단계를 서브클래스에서 재정의할 수도 있다.&lt;/p>
 &lt;/blockquote>
