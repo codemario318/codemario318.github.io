@@ -1,4 +1,213 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 01 Dec 2023 11:42:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴</title><link>https://codemario318.github.io/post/gof/9/</link><pubDate>Fri, 01 Dec 2023 11:42:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/9/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/9/cover.png" alt="Featured image of post 9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 05 Dec 2023 15:48:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>10. 객체의 상태 바꾸기 - 상태 패턴</title><link>https://codemario318.github.io/post/gof/10/</link><pubDate>Tue, 05 Dec 2023 15:48:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/10/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/10/cover.png" alt="Featured image of post 10. 객체의 상태 바꾸기 - 상태 패턴" />&lt;blockquote>
+&lt;p>전략 패턴과 상태 패턴은 쌍둥이이다.&lt;br>
+전략 패턴은 알고리즘을 바꾸어 사용하는 반면 상태 패턴은 내부 상태를 바꿈으로써 객체가 행동을 바꿀 수 있도록 도와준다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="상태-기계">상태 기계&lt;/h2>
+&lt;p>상태 기계(State Machine)는 객체나 시스템이 다양한 상태를 가지고 있고, 특정 이벤트에 의해 이 상태가 변하는 시스템을 나타내는 모델이다.&lt;/p>
+&lt;p>상태 기계는 상태, 이벤트, 전이(Transition), 동작(Action) 등의 개념을 포함하며, 객체나 시스템이 특정 상태에서 다른 상태로 전환되는 것을 관리한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>상태(State)&lt;/strong>: 시스템이나 객체가 가질 수 있는 다양한 상태를 나타낸다.
+&lt;ul>
+&lt;li>각 상태는 특정 시점에서 시스템이 어떤 동작을 수행하고 있는지를 표현한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>이벤트(Event)&lt;/strong>: 상태 전이를 유발하는 외부나 내부에서 발생하는 사건이나 신호를 나타낸다.
+&lt;ul>
+&lt;li>이벤트는 특정 상태에서만 발생하거나 처리될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>전이(Transition)&lt;/strong>: 상태 간 전환을 정의한다.
+&lt;ul>
+&lt;li>특정 상태에서 특정 이벤트가 발생하면 어떤 다음 사앹로 전환되어야 하는지를 정의한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>동작(Action)&lt;/strong>: 상태 전이가 발생할 때 수행되는 특정 동자이나 처리를 나타낸다.
+&lt;ul>
+&lt;li>각 전이에는 연관된 동작이 정의될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>상태 기계는 주로 시스템의 복잡한 동작을 모델링하고 이해하기 쉽게 만들기 위해 사용된다.&lt;/p>
+&lt;p>소프트웨어 개발에서는 상태 기계를 사용하여 객체의 동작을 상태에 따라 효과적으로 제어할 수 있다.&lt;/p>
+&lt;p>상태 기계는 **유한 상태 기계(Finite State Machine, FSM)**로 불리기도 하며, 이는 상태의 수가 유한하다는 특성을 강조한 용어이다.&lt;/p>
+&lt;h3 id="뽑기-기계-상태-다이어그램">뽑기 기계 상태 다이어그램&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+s([시작])
+a((동전 있음))
+b((동전 없음))
+c((알맹이 판매))
+d((알맹이 매진))
+e{알맹이 개수 > 0}
+s-->a
+a-- 동전 반환 -->b
+b-- 동전 투입 -->a
+a-- 손잡이 돌림 --> c
+c-- 알맹이 내보냄 -->e
+e-- Y -->b
+e-- N --> d
+&lt;/pre>
+&lt;ul>
+&lt;li>동전 있음, 없음, 알맹이 판매, 매진이 상태&lt;/li>
+&lt;li>손잡이 돌임, 동전 투입, 알맹이 내보냄, 동전 반환 행동을 인터페이스라고 할 수 있음&lt;/li>
+&lt;li>행동들을 실행할 때 상태가 변경됨&lt;/li>
+&lt;li>알맹이를 꺼내는 행동은 기계 내에서 자체적으로 진행하는 행동에 가까움&lt;/li>
+&lt;/ul>
+&lt;h2 id="상태-패턴">상태 패턴&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>상태 패턴&lt;/strong>을 사용하면 객체의 내부 상태가 바뀜에 따라 객체의 행동을 바꿀 수 있다.&lt;br>
+&amp;ldquo;마치 객체의 클래스가 바뀌는 것과 같이&amp;rdquo;&lt;/p>
+&lt;/blockquote>
+&lt;p>상태 패턴은 상태를 별도의 클래스로 캡슐화한 다음 현재 상태를 나타내는 객체에게 행동을 위임하므로 내부 상태가 바뀔 때 행동이 달라진다.&lt;/p>
+&lt;p>또한 클래스가 구성으로 여러 상태 객체를 바꿔가며 사용하게되므로, 클라이언트 관점에서 현재 사용하는 객체의 행동이 완전히 달라져 마치 객체의 클래스가 바뀌는 것과 같은 결과를 얻을 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Context {
+request()
+}
+class State {
+&lt;&lt; interface >>
+handle()*
+}
+class ConcreteStateA {
+handle()
+}
+class ConcreteStateB {
+handle()
+}
+Context --> State
+State &lt;|-- ConcreteStateA
+State &lt;|-- ConcreteStateB
+&lt;/pre>
+&lt;ul>
+&lt;li>&lt;code>Context&lt;/code>: &lt;code>request()&lt;/code>를 통해 상태의 &lt;code>handle()&lt;/code>을 호출한다.&lt;/li>
+&lt;li>&lt;code>State&lt;/code>: 모든 구상 상태 클래스의 공통 인터페이스를 정의한다.
+&lt;ul>
+&lt;li>모든 상태 클래스에서 같은 인터페이스를 구현하므로 바뀌 가면서 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>ConcreteState&lt;/code>: &lt;code>Context&lt;/code>로 부터 전달된 요청을 자기 나름의 방식으로 구현하여 처리한다.
+&lt;ul>
+&lt;li>이를 통해 &lt;code>Context&lt;/code>에서 상태를 바꿀 때마다 행동도 바뀌게 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>상태 패턴은 객체의 내부 상태에 따라 수행되는 객체의 행위를 상태 객체로 캡슐화하고, 객체의 상태를 표현하고 있는 클래스를 정의하여 상태에 따라 객체의 행동을 변경할 수 있도록 한다.&lt;/p>
+&lt;p>이를 통해 객체의 상태를 변경할 때마다 직접 조건문이다 &lt;code>switch&lt;/code>문을 사용하는 대신, 상태에게 해당 행동을 위임하여 코드의 유지보수성과 확장성을 향상시킨다.&lt;/p>
+&lt;h3 id="특징">특징&lt;/h3>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>새로운 상태를 추가하거나 상태를 변경할 때 기존 코드를 건드리지 않고 확장이 가능하다.&lt;/li>
+&lt;li>상태와 관련된 코드가 상태 객체에 캡슐화되어 있어 코드가 더 간결하고 읽기 쉬워진다.&lt;/li>
+&lt;li>상태 전환 로직이 각 상태에 캡슐화 되어있어 유지보수가 용이하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>상태가 많을 경우 클래스의 수가 급격히 증가할 수 있고, 상태 간의 전이 로직이 복잡해질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="전략-패턴과의-차이점">전략 패턴과의 차이점&lt;/h3>
+&lt;p>전략 패턴과 상태 패턴 모두 객체 간의 알고리즘을 정의하고, 이를 동적으로 교환할 수 있게 하는 구조적 디자인 패턴이지만, 목적과 사용 시나리오에서 차이가 있다.&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>목적&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>전략 패턴
+&lt;ul>
+&lt;li>알고리즘의 변형이나 여러 알고리즘 중 하나를 선택해야할 때 사용&lt;/li>
+&lt;li>주로 알고리즘이나 전략 간의 상호 교환이 필요한 경우 적합&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 패턴
+&lt;ul>
+&lt;li>객체의 내부 상태에 따라 행동이 달라져야 할 때 사용&lt;/li>
+&lt;li>객체가 상태에 따라 직접적으로 행동을 변경해야 하는 경우 유용함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>&lt;strong>관리 대상&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>전략 패턴
+&lt;ul>
+&lt;li>알고리즘, 전략, 행동을 캡슐화&lt;/li>
+&lt;li>객체가 특정 행동을 수행하는 데 사용되는 알고리즘을 변경하고 싶을 때 적용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 패턴
+&lt;ul>
+&lt;li>객체의 내부 상태를 캡슐화&lt;/li>
+&lt;li>객체가 내부 상태에 따라 행동을 변경하고 싶을 때 적용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>&lt;strong>구조적 차이&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>전략 패턴
+&lt;ul>
+&lt;li>&lt;code>Context&lt;/code>는 &lt;code>Strategy&lt;/code> 인터페이스를 가지며, 여러 &lt;code>ConreteStrategy&lt;/code>를 가진다.&lt;/li>
+&lt;li>&lt;code>Context&lt;/code>는 전략을 동적으로 교환할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 패턴
+&lt;ul>
+&lt;li>&lt;code>Context&lt;/code>는 &lt;code>State&lt;/code> 인터페이스를 가지며, 여러 &lt;code>ConcreteState&lt;/code>를 가진다.&lt;/li>
+&lt;li>&lt;code>Context&lt;/code>는 전략을 동적으로 교환할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol start="4">
+&lt;li>&lt;strong>전이&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>전략 패턴
+&lt;ul>
+&lt;li>전략이 변경되면 &lt;code>Context&lt;/code>는 완전히 다른 알고리즘으로 전환된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 패턴
+&lt;ul>
+&lt;li>상태가 변경되면 &lt;code>Context&lt;/code>의 행동이 변경되지만, 전체 시스템이 완전히 다른 상태로 이동하는 것은 아니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol start="5">
+&lt;li>예시&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>전략 패턴
+&lt;ul>
+&lt;li>정렬 알고리즘을 선택하는 경우&lt;/li>
+&lt;li>결제 시스템에서 여러 결제 전략 중 하나를 선택하는 경우&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 패턴
+&lt;ul>
+&lt;li>자동판매기의 동작을 모델링하는 경우&lt;/li>
+&lt;li>객체가 다양한 상태에 있을 때 각 상태에 따라 다른 행동을 하는 경우&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="정리">정리&lt;/h2>
+&lt;ul>
+&lt;li>상태 패턴: 클래스에서 상태를 관리해야 한다면 상태 패턴을 써서 상태를 캡슐화 할 수 있다.
+&lt;ul>
+&lt;li>내부 상태가 바뀜에 따라 객체의 행동이 바뀔 수 있도록 해준다&lt;/li>
+&lt;li>마치 객체의 클래스가 바뀌는 것 같은 결과를 얻을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>상태 패턴을 사용하면 내부 상태를 바탕으로 여러 가지 서로 다른 행동을 사용할 수 있다.&lt;/li>
+&lt;li>상태 패턴을 사용하면 프로시저형 상태 기계를 쓸 때와는 달리 각 상태를 클래스로 표현한다.&lt;/li>
+&lt;li>&lt;code>Context&lt;/code> 객체는 형재 상태에게 행동을 위임한다.&lt;/li>
+&lt;li>각 상태를 클래스로 캡슐화해서 나중에 변경해야 하는내용을 국지화할 수 있다.&lt;/li>
+&lt;li>상태 패턴과 전략 패턴의 클래스 다이어그램은 똑같지만 용도는 다르다.&lt;/li>
+&lt;li>전략 패턴에서 &lt;code>Context&lt;/code>의 내부 상태가 바뀜에 따라 객체가 알아서 행동을 바꿀 수 있도록 할 수 있다.&lt;/li>
+&lt;li>상태 전환은 &lt;code>State&lt;/code> 클래스로 제어할 수도 있고, &lt;code>Context&lt;/code> 클래스로 제어할 수도 있다.&lt;/li>
+&lt;li>&lt;code>State&lt;/code> 클래스를 여러 &lt;code>Context&lt;/code> 객체의 인스턴스에서 공유하도록 디자인할 수도 있다.&lt;/li>
+&lt;/ul></description></item><item><title>9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴</title><link>https://codemario318.github.io/post/gof/9/</link><pubDate>Fri, 01 Dec 2023 11:42:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/9/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/9/cover.png" alt="Featured image of post 9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴" />&lt;blockquote>
 &lt;p>객체를 컬렉션에 추가하는 방법은 정말 다양하고, 클라이언트가 컬렉션에 들어있는 모든 객체에 일일이 접근하고 싶어하는 날이 올 것이다.&lt;br>
 그런 날이 오더라도 클라이언트에게 전부 보여 줄 필요는 없으며, 객체 저장 방식을 보여 주지 않으면서도 클라이언트가 객체에 일일이 접근할 수 있게 해줄 수 있다.&lt;br>
 그리고 한 방에 멋진 자료 구조를 만들 수 있는, 객체들로 구성된 슈퍼 컬렉션을 제공할 수 있다.&lt;/p>
