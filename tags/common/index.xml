@@ -90,7 +90,7 @@ State &lt;|-- ConcreteStateB
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>상태 패턴은 객체의 내부 상태에 따라 수행되는 객체의 행위를 상태 객체로 캡슐화하고, 객체의 상태를 표현하고 있는 클래스를 정의하여 상태에 따라 객체의 행동을 변경할 수 있도록 한다.&lt;/p>
+&lt;p>상태 패턴은 객체의 내부 상태에 따라 수행되는 객체의 행위를 상태 객체로 캡슐화하여 객체의 상태를 표현하고 있는 클래스를 정의하고 상태에 따라 객체의 행동을 변경할 수 있도록 한다.&lt;/p>
 &lt;p>이를 통해 객체의 상태를 변경할 때마다 직접 조건문이다 &lt;code>switch&lt;/code>문을 사용하는 대신, 상태에게 해당 행동을 위임하여 코드의 유지보수성과 확장성을 향상시킨다.&lt;/p>
 &lt;h3 id="특징">특징&lt;/h3>
 &lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
@@ -172,7 +172,7 @@ State &lt;|-- ConcreteStateB
 &lt;/li>
 &lt;/ul>
 &lt;ol start="5">
-&lt;li>예시&lt;/li>
+&lt;li>&lt;strong>예시&lt;/strong>&lt;/li>
 &lt;/ol>
 &lt;ul>
 &lt;li>전략 패턴
