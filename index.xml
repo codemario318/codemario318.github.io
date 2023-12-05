@@ -18,10 +18,10 @@
 &lt;/li>
 &lt;li>&lt;strong>전이(Transition)&lt;/strong>: 상태 간 전환을 정의한다.
 &lt;ul>
-&lt;li>특정 상태에서 특정 이벤트가 발생하면 어떤 다음 사앹로 전환되어야 하는지를 정의한다.&lt;/li>
+&lt;li>특정 상태에서 특정 이벤트가 발생하면 어떤 다음 상태로 전환되어야 하는지를 정의한다.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>동작(Action)&lt;/strong>: 상태 전이가 발생할 때 수행되는 특정 동자이나 처리를 나타낸다.
+&lt;li>&lt;strong>동작(Action)&lt;/strong>: 상태 전이가 발생할 때 수행되는 특정 동작이나 처리를 나타낸다.
 &lt;ul>
 &lt;li>각 전이에는 연관된 동작이 정의될 수 있다.&lt;/li>
 &lt;/ul>
