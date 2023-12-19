@@ -1,0 +1,345 @@
+User-agent: *
+
+Disallow: /
+
+Disallow: /post/gof/10/
+
+Disallow: /categories/
+
+Disallow: /tags/common/
+
+Disallow: /post/
+
+Disallow: /tags/
+
+Disallow: /categories/headfirstdesignpatterns/
+
+Disallow: /post/gof/9/
+
+Disallow: /post/gof/8/
+
+Disallow: /post/gof/7/
+
+Disallow: /post/gof/6/
+
+Disallow: /post/gof/5/
+
+Disallow: /post/gof/4/
+
+Disallow: /post/gof/3/
+
+Disallow: /post/gof/2/
+
+Disallow: /post/gof/1/
+
+Disallow: /post/real-mysql/16/7/4/
+
+Disallow: /tags/db/
+
+Disallow: /tags/mysql/
+
+Disallow: /categories/realmysql/
+
+Disallow: /post/real-mysql/16/7/3/
+
+Disallow: /post/real-mysql/16/7/2/
+
+Disallow: /post/real-mysql/16/7/1/
+
+Disallow: /post/real-mysql/16/6/
+
+Disallow: /post/real-mysql/16/5/
+
+Disallow: /post/infra/container-env/2/
+
+Disallow: /tags/git/
+
+Disallow: /categories/infra/
+
+Disallow: /tags/jenkins/
+
+Disallow: /post/real-mysql/16/2/
+
+Disallow: /post/infra/container-env/1/
+
+Disallow: /tags/docker/
+
+Disallow: /post/real-mysql/16/1/
+
+Disallow: /post/real-mysql/13/3/
+
+Disallow: /post/real-mysql/13/2/
+
+Disallow: /post/real-mysql/13/
+
+Disallow: /tags/kubernetes/
+
+Disallow: /post/kubernetes/tutorials/1/
+
+Disallow: /post/real-mysql/11/8/
+
+Disallow: /post/real-mysql/11/7/9/
+
+Disallow: /post/real-mysql/11/7/8/
+
+Disallow: /post/real-mysql/11/7/7/
+
+Disallow: /post/real-mysql/11/7/6/
+
+Disallow: /post/real-mysql/11/7/5/
+
+Disallow: /post/real-mysql/11/7/4/
+
+Disallow: /post/real-mysql/11/7/3/
+
+Disallow: /post/real-mysql/11/7/2/
+
+Disallow: /post/real-mysql/11/7/1/
+
+Disallow: /post/real-mysql/11/6/
+
+Disallow: /post/real-mysql/11/5/
+
+Disallow: /post/real-mysql/11/4/5/
+
+Disallow: /post/real-mysql/11/4/4/
+
+Disallow: /post/real-mysql/11/4/3/
+
+Disallow: /post/real-mysql/11/4/2/
+
+Disallow: /categories/db/
+
+Disallow: /post/db/where-on/
+
+Disallow: /post/real-mysql/11/4/1/
+
+Disallow: /post/real-mysql/10/3/2/
+
+Disallow: /post/real-mysql/10/3/1/
+
+Disallow: /post/real_mysql/10/2/
+
+Disallow: /post/real_mysql/10/1/
+
+Disallow: /post/real-mysql/9/4/
+
+Disallow: /post/real-mysql/9/3/2/
+
+Disallow: /post/real-mysql/9/3/1/
+
+Disallow: /post/real-mysql/9/2/2/
+
+Disallow: /post/real-mysql/9/2/1/
+
+Disallow: /post/real-mysql/9/1/
+
+Disallow: /post/ps/kakao/2023/1/
+
+Disallow: /tags/kakao/
+
+Disallow: /categories/problemsolving/
+
+Disallow: /tags/python/
+
+Disallow: /post/real-mysql/8/4/
+
+Disallow: /post/real-mysql/8/3/
+
+Disallow: /post/real-mysql/8/2/
+
+Disallow: /post/real-mysql/8/1/
+
+Disallow: /post/real-mysql/7/
+
+Disallow: /post/real-mysql/6/
+
+Disallow: /post/toy-mario/0/auth/1/
+
+Disallow: /tags/kotlin/
+
+Disallow: /categories/project/
+
+Disallow: /tags/springboot/
+
+Disallow: /tags/toymario/
+
+Disallow: /post/toy-mario/0/auth/0/
+
+Disallow: /post/toy-mario/0/1/
+
+Disallow: /post/docker/5/
+
+Disallow: /post/docker/4/
+
+Disallow: /post/docker/3/
+
+Disallow: /post/docker/2/
+
+Disallow: /post/real-mysql/5/3/
+
+Disallow: /post/real-mysql/5/2/
+
+Disallow: /post/real-mysql/5/1/
+
+Disallow: /post/docker/1/
+
+Disallow: /post/study/kubernetes/5/
+
+Disallow: /post/study/kubernetes/4/
+
+Disallow: /post/study/kubernetes/3/
+
+Disallow: /post/study/kubernetes/2/
+
+Disallow: /post/study/kubernetes/1/
+
+Disallow: /categories/cleancode/
+
+Disallow: /post/clean-code/15/
+
+Disallow: /post/clean-code/17/
+
+Disallow: /post/clean-code/14/
+
+Disallow: /post/clean-code/12/
+
+Disallow: /post/clean-code/10/
+
+Disallow: /post/clean-code/9/
+
+Disallow: /post/clean-code/7/
+
+Disallow: /post/clean-code/6/
+
+Disallow: /post/clean-code/3/
+
+Disallow: /post/clean-code/1/
+
+Disallow: /categories/golang/
+
+Disallow: /post/golang/13/
+
+Disallow: /post/golang/12/
+
+Disallow: /post/golang/11/
+
+Disallow: /post/golang/10/
+
+Disallow: /post/golang/9/
+
+Disallow: /post/golang/8/
+
+Disallow: /post/golang/7/
+
+Disallow: /post/golang/6/
+
+Disallow: /post/golang/5/
+
+Disallow: /post/golang/4/
+
+Disallow: /post/golang/3/
+
+Disallow: /post/golang/2/
+
+Disallow: /post/golang/1/
+
+Disallow: /categories/frontend/
+
+Disallow: /tags/javascript/
+
+Disallow: /tags/vue/
+
+Disallow: /post/vue3/
+
+Disallow: /tags/browser/
+
+Disallow: /tags/web/
+
+Disallow: /post/rendering_optimize/
+
+Disallow: /post/crp_optimize/
+
+Disallow: /post/browser/
+
+Disallow: /categories/data/
+
+Disallow: /post/message_queue/
+
+Disallow: /tags/server/
+
+Disallow: /tags/typescript/
+
+Disallow: /post/typescript/tutorial/2/
+
+Disallow: /post/typescript/tutorial/1/1/
+
+Disallow: /post/typescript/tutorial/1/2/
+
+Disallow: /categories/backend/
+
+Disallow: /tags/java/
+
+Disallow: /tags/jvm/
+
+Disallow: /post/jvm_gc/
+
+Disallow: /post/jvm/
+
+Disallow: /tags/backend/
+
+Disallow: /categories/common/
+
+Disallow: /post/python_cover/
+
+Disallow: /tags/data/
+
+Disallow: /post/elasticsearch/
+
+Disallow: /tags/search/
+
+Disallow: /post/search_engine/
+
+Disallow: /tags/mq/
+
+Disallow: /post/messaging_system/
+
+Disallow: /tags/nosql/
+
+Disallow: /post/nosql/
+
+Disallow: /tags/basic/
+
+Disallow: /post/nginx_vs_apache/
+
+Disallow: /post/web/
+
+Disallow: /tags/frontend/
+
+Disallow: /post/js_closure/
+
+Disallow: /post/js_this/
+
+Disallow: /post/js_hoisting/
+
+Disallow: /post/docker/0/
+
+Disallow: /tags/infra/
+
+Disallow: /post/real-mysql/4/4/
+
+Disallow: /post/real-mysql/4/3/
+
+Disallow: /post/real-mysql/4_2_3/
+
+Disallow: /post/real_mysql_4/2/2/
+
+Disallow: /post/real-mysql/4/2/1/
+
+Disallow: /post/real-mysql/4/1/
+
+Disallow: /archives/
+
+Disallow: /page/
+
+Disallow: /search/
