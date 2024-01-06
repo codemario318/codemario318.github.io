@@ -1,0 +1,292 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="헤드 퍼스트 디자인 패턴"><title>11. 객체 접근 제어하기 - 프록시 패턴</title><link rel=canonical href=https://codemario318.github.io/post/gof/11/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="11. 객체 접근 제어하기 - 프록시 패턴"><meta property="og:description" content="헤드 퍼스트 디자인 패턴"><meta property="og:url" content="https://codemario318.github.io/post/gof/11/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="디자인 패턴"><meta property="article:tag" content="Design Pattern"><meta property="article:tag" content="GoF"><meta property="article:tag" content="헤드 퍼스트 디자인 패턴"><meta property="article:tag" content="Head First Design Pattern"><meta property="article:tag" content="프록시"><meta property="article:tag" content="Proxy"><meta property="article:tag" content="원격 프록시"><meta property="article:tag" content="Remote Proxy"><meta property="article:tag" content="가상 프록시"><meta property="article:tag" content="Virtual Proxy"><meta property="article:tag" content="보호 프록시"><meta property="article:tag" content="Protection Proxy"><meta property="article:published_time" content="2023-12-29T10:22:08+09:00"><meta property="article:modified_time" content="2023-12-29T10:22:08+09:00"><meta property="og:image" content="https://codemario318.github.io/post/gof/11/cover.png"><meta name=twitter:title content="11. 객체 접근 제어하기 - 프록시 패턴"><meta name=twitter:description content="헤드 퍼스트 디자인 패턴"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/gof/11/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#프록시-패턴이란>프록시 패턴이란?</a><ol><li><a href=#구조>구조</a></li></ol></li><li><a href=#원격-프록시>원격 프록시</a><ol><li><a href=#java-rmiremote-method-invocation>Java RMI(Remote Method Invocation)</a></li></ol></li><li><a href=#가상-프록시>가상 프록시</a></li><li><a href=#원격-프록시와-가상-프록시의-차이>원격 프록시와 가상 프록시의 차이</a></li><li><a href=#보호-프록시>보호 프록시</a></li><li><a href=#정리>정리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/gof/11/><img src=/post/gof/11/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_800x0_resize_box_3.png srcset="/post/gof/11/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_800x0_resize_box_3.png 800w, /post/gof/11/cover_hu5fe9e632d31d6204170abf166c9a2927_244577_1600x0_resize_box_3.png 1600w" width=800 height=966 loading=lazy alt="Featured image of post 11. 객체 접근 제어하기 - 프록시 패턴"></a></div><div class=article-details><header class=article-category><a href=/categories/headfirstdesignpatterns/>헤드 퍼스트 디자인 패턴</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/gof/11/>11. 객체 접근 제어하기 - 프록시 패턴</a></h2><h3 class=article-subtitle>헤드 퍼스트 디자인 패턴</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2023/12/29</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>8 minute read</time></div></footer></div></header><section class=article-content><blockquote><p>프록시 패턴은 특정 객체로의 접근을 제어하는 대리인(특정 객체를 대변하는 객체)를 제공한다.</p></blockquote><h2 id=프록시-패턴이란>프록시 패턴이란?</h2><p>프록시 패턴은 한 객체가 다른 객체에 대한 인터페이스 역할을 수행하여 접근을 제어하거나 대리 역할을 수행하는 디자인 패턴이다.</p><p>접근을 제어하는 방법을 달리하여 여러 변형이 존재한다.</p><ul><li>원격 프록시(Remote Proxy)<ul><li>원격 객체에 대한 로컬 표현을 제공하여, 원격 서버에 있는 객체에 쉽게 접근할 수 있도록 한다.</li></ul></li><li>가상 프록시(Virtual Proxy)<ul><li>객체의 생성 및 초기화에 비용이 많이 들 때, 객체가 실제로 필요한 시점까지 생성을 지연시키는 가상 객체를 제공한다.</li></ul></li><li>보호 프록시(Protection Proxy)<ul><li>객체에 대한 접근을 제어하여, 특정 사용자나 클라이언트에 대한 권한 검사를 수행한다.</li></ul></li><li>캐싱 프록시(Caching Proxy)<ul><li>이전에 수행한 연산 결과를 캐시하여 동일한 요청에 대한 성능을 향상시킨다.</li></ul></li></ul><p>프록시 패턴을 사용하면 원격 객체, 생성하기 힘든 객체, 보안이 중요한 객체와 같은 다른 객체로의 접근을 제어하는 대리인 객체를 만들 수 있다.</p><p>이를 통해 복잡한 시스템에서 객체 간의 통신과 상호작용을 조절하고 향상시키는 데 유용하게 사용될 수 있다.</p><h3 id=구조>구조</h3><pre class=mermaid style=text-align:center>classDiagram
+    class Subject {
+        << interface >>
+        request()*
+    }
+    
+    class RealSubject {
+        request()
+    }
+    
+    class Proxy {
+        request()
+    }
+    
+    Subject <|.. RealSubject
+    Subject <|.. Proxy
+    Proxy --> RealSubject : subject
+</pre><ul><li><code>Subject</code>(주체)<ul><li>실제 서비스를 제공하는 객체를 나타내는 인터페이스를 정의한다.</li></ul></li><li><code>RealSubject</code>(실제 주체)<ul><li><code>Subject</code>의 실제 구현을 제공하는 클래스</li><li>이 객체에 대한 접근을 제어하거나 비용이 많이 드는 작업을 수행한다.</li></ul></li><li><code>Proxy</code>(프록시)<ul><li><code>Subject</code>와 동일한 인터페이스를 구현하며, <code>RealSubject</code>에 대한 참조를 가지고 있다.</li><li>실제 서비스 객체에 대한 접근을 제어하거나 추가적인 기능을 제공한다.</li></ul></li></ul><p><code>RealSubject</code>와 <code>Proxy</code>는 <code>Subject</code> 인터페이스를 구현하므로 <code>RealSubject</code>가 들어가야 할 자리에 <code>Proxy</code>를 대신 넣을 수 있다.</p><p>진짜 작업은 <code>RealSubject</code> 객체가 처리하며, <code>Proxy</code>는 이 객체의 대변인 역할을 하면서 <code>RealSubject</code>로의 접근을 제어하게된다.</p><p><code>Proxy</code>는 <code>RealSubject</code>의 레퍼런스를 포함하며(직법 생성하거나 제거하기도 함) 클라이언트는 항상 <code>Proxy</code>를 통해 데이터를 주고받게 된다.</p><h2 id=원격-프록시>원격 프록시</h2><p>원격 프록시는 대리인의 어떤 메소드를 호출하면 원격 객체에게 해당 메소드 호출을 전달하는 원격 객체의 <strong>로컬 대리인</strong> 역할을 하게된다.</p><blockquote><p>클라이언트 객체는 원격 객체의 메소드 호출을 하는 것처럼 행동하지만 실제로는 로컬 힙에 들어있는 프록시 객체의 메소드를 호출하며, 프록시에서 네트워크 통신과 관련된 저수준 작업을 처래히준다.</p></blockquote><p>원격 프록시(Remote Proxy)는 클라이언트와 서버 사이에서 객체에 대한 원격 액세스를 제공하며, 객체의 메서드 호출을 원격으로 전달하여 실행하는 데 중접을 둔다.</p><pre class=mermaid style=text-align:center>flowchart LR
+    subgraph 원격
+      a((클라이언트)) -- "request()" -->
+      b((프록시))
+    end
+    
+    subgraph 실제
+      c((RealSubject))
+    end
+    
+    b -. "request()" .-> c
+</pre><ol><li>원격 객체 엑세스<ul><li>클라이언트가 로컬이 아닌 다른 컴퓨터에 위치한 객체에 액세스해야 할 때, 원격 프록시를 사용하여 해당 객체에 접근한다.</li></ul></li><li>보안 및 권한 제어<ul><li>원격 프록시를 사용하여 원격 객체에 대한 접근을 제어하고, 보안 및 권한 검사를 수행할 수 있다.</li></ul></li><li>프록시 패턴의 응용<ul><li>일반적인 프록시 패턴에서 원격 프록시를 사용하여 클라이언트와 실제 객체 사이의 중각 매개체로서 동작하게 할 수 있다.</li></ul></li></ol><h3 id=java-rmiremote-method-invocation>Java RMI(Remote Method Invocation)</h3><p>원격 프록시는 <code>Java</code>의 <strong>RMI</strong>와 같은 기술을 사용하여 구현될 수 있다.</p><p>클라이언트는 로컬에서 마치 객체를 다루는 것처럼 원격 프록시를 사용하여 원격 객체의 메서드를 호출할 수 있다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 예시: 원격 프록시 인터페이스
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kn>import</span> <span class=nn>java.rmi.Remote</span><span class=o>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>java.rmi.RemoteException</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 표식용(Maker) Remote 인터페이스를 확장하여 인터페이스가 원격 호출을 지원한다는 사실을 알린다.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>MyRemoteInterface</span> <span class=kd>extends</span> <span class=n>Remote</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 모든 원격 메소드 호출은 위험이 따르며 모든 메소드에 RemoteException을 선언하여 클라이언트에서 예외를 처리할 수 있도록 한다.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>void</span> <span class=nf>myRemoteMethod</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>RemoteException</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 원격 메소드의 인자와 리턴값은 반드시 원시 형식(primitive) 또는 Serializable 형식으로 선언해야한다.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>String</span> <span class=nf>sayHello</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>RemoteException</span><span class=o>;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 예시: 원격 프록시 구현
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kn>import</span> <span class=nn>java.rmi.RemoteException</span><span class=o>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>java.rmi.server.UnicastRemoteObject</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MyRemoteObject</span> <span class=kd>extends</span> <span class=n>UnicastRemoteObject</span> <span class=kd>implements</span> <span class=n>MyRemoteInterface</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>protected</span> <span class=nf>MyRemoteObject</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>RemoteException</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>super</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>myRemoteMethod</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>RemoteException</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 실제 원격 메서드 구현
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Executing remote method&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=가상-프록시>가상 프록시</h2><p>가상 프록시는 프록시 패턴의 한 종류로, 객체의 생성 및 초기화에 비용이 많이 들 때, 실제로 객체가 필요한 시점까지 객체를 생성하지 않고 대리 객체를 사용하는 패턴이다.</p><p>이를 통해 성능 향상 및 자원 절약이 가능하며, 사용자는 가상 프록시를 통해 실제 객체에 접근할 수 있다.</p><pre class=mermaid style=text-align:center>flowchart LR
+    a((클라이언트)) -- "request()" --> 
+    b((프록시)) -->
+    c((RealSubject))
+</pre><ol><li>비용이 많이 드는 객체 생성</li></ol><ul><li>객체의 생성이나 초기화에 많은 비용이 들 때, 해당 객체를 실제로 사용하기 직전까지 객체를 생성하지 않고 대리 객체를 사용하여 필요한 경우에만 생성한다.</li></ul><ol start=2><li>느린 초기화 작업<ul><li>객체의 초기화 작업이 느리게 수행되는 경우, 초기화 작업이 완료된 후에만 실제 객체를 생성하도록 하는 가상 프록시를 사용하여 지연 로딩을 구현할 수 있다.</li></ul></li><li>자원 소모 최적화<ul><li>자원을 효율적으로 관리하기 위해 필요할 때만 실제 객체를 생성하고 사용하는 경우, 가상 프록시를 적용하여 자원 소모를 최적화 할 수 있다.</li></ul></li></ol><p>가상 프록시는 실제 객체를 나타내는 인터페이스를 정의하고, 이 인터페이스를 구현하는 가상 프록시 클래스를 만들어 사용하게 된다.</p><p>이를 통해 실제 객체의 생성 및 초기화를 지연시킨다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 예시: 가상 프록시 인터페이스
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>RealObject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>performOperation</span><span class=o>();</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 예시: 실제 객체 구현
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>class</span> <span class=nc>RealObjectImpl</span> <span class=kd>implements</span> <span class=n>RealObject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>RealObjectImpl</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 객체 생성 및 초기화 작업
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>performOperation</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 실제 객체의 동작
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Performing operation&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 예시: 가상 프록시 구현
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>class</span> <span class=nc>VirtualProxy</span> <span class=kd>implements</span> <span class=n>RealObject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>RealObjectImpl</span> <span class=n>realObject</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>performOperation</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 필요할 때만 실제 객체 생성
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=o>(</span><span class=n>realObject</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>realObject</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RealObjectImpl</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 가상 프록시를 통해 실제 객체의 동작 호출
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>realObject</span><span class=o>.</span><span class=na>performOperation</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=원격-프록시와-가상-프록시의-차이>원격 프록시와 가상 프록시의 차이</h2><p>원격 프록시와 가상 프록시는 둘 다 프록시 패턴의 변셩으로, 객체 간의 통신을 지원하거나 객체의 생성 및 초기화를 최적화하기 위해 상용된다.</p><p>그러나 각각의 주된 목적과 사용 시나리오가 다르기 때문에 차이가 있다.</p><ol><li>목적<ul><li>원격 프록시:<ul><li>분산 시스템에서 객체 간의 통신을 가능케 하는 것이 목적이다.</li><li>클라이언트와 서버 간의 통신을 원활하게 하기 위해 객체를 원격으로 호출하고 사용한다.</li></ul></li><li>가상 프록시:<ul><li>객체의 생성 및 초기화에 대한 비용을 최적화한다.</li><li>필요한 시점까지 실제 객체를 생성하지 않고 가상적인 대리 객체를 사용함으로 성능을 향상시키는 것이 목적이다.</li></ul></li></ul></li><li>활용<ul><li>원격 프록시<ul><li>객체가 서로 다른 주소 공간에 위치해 있을 때 사용된다.</li><li>객체의 메서드를 원격으로 호출하여 분산 시스템에서 투명한 원격 접근을 제공한다.</li></ul></li><li>가상 프록시<ul><li>객체의 생성이나 초기화에 비용이 많이 들거나, 초기화를 지연시켜야 할 때 사용된다.</li><li>필요한 시점에만 실제 객체를 상성하여 자원을 효율적으로 활용할 수 있다.</li></ul></li></ul></li><li>구현 방식<ul><li>원격 프록시<ul><li>원격 객체 간의 통신을 위해 원격 메서드 호출을 지원하는 기술을 활용한다.</li><li>ex) Java RMI</li></ul></li><li>가상 프록시<ul><li>객체의 생성 및 초기화를 지연시키는 방식으로 구현된다.</li><li>필요할 때만 실제 객체를 생성하고 사용한다.</li></ul></li></ul></li><li>주요 특징<ul><li>원격 프록시<ul><li>분산 환경에서의 통신에 중점을 두고, 보안, 효율성 투명성 등을 고려해야한다.</li></ul></li><li>가상 프록시<ul><li>객체의 생성 및 초기화 비용을 최적화한다.</li><li>필요한 시점까지 실제 객체를 생성하지 않고 가상적인 대리 객체를 사용하여 성능을 개선한다.</li></ul></li></ul></li></ol><p>원격 프록시는 주로 분산 시스템에서의 객체 간 통신을 위해 사용되고, 가상 프록시는 객체의 생성과 초기화에 대한 비용을 최적화하기 위해 사용한다.</p><h2 id=보호-프록시>보호 프록시</h2><p>보호 프록시는 주로 객체에 대한 접근을 제어하고 보호하는 데 사용된다.</p><p>이 패턴은 객체에 대한 클라이언트의 엑세스를 제한하거나, 특정한 권한 검사를 수행하여 보안을 강화할 수 있다.</p><ol><li>접근 제어<ul><li>특정 객체에 대한 접근을 제한하거나 허용하기 위해 클라이언트의 요청을 검사하고 필요한 권한 검사를 수행한다.</li><li>ex) 파일, 데이터베이스 등</li></ul></li><li>보안 강화<ul><li>객체에 직접적으로 접근하는 것을 방지하여 보안을 강화한다.</li><li>실제 객체에 직접 접근하는 대신, 보호 프록시를 통해 간접적으로만 객체에 접근할 수 있다.</li></ul></li><li>캐싱 및 성능 최적화<ul><li>객체에 대한 엑세스를 제어하는 동시에, 캐싱과 같은 성능 최적화 기법을 적용하여 불필요한 작업을 줄일 수 있다.</li></ul></li></ol><pre class=mermaid style=text-align:center>classDiagram
+    class Subject {
+        << interface >>
+        *request()
+    }
+    
+    class RealSubject {
+        request()
+    }
+    
+    class Proxy {
+        request()
+    }
+    
+    class InvocationHandler {
+        << interface >>
+        *invoke()
+    }
+    
+    class ConcreteInvocationHandler {
+        invoke()
+    }
+
+    Subject <|-- RealSubject
+    Subject <|-- Proxy
+    
+    InvocationHandler <|-- ConcreteInvocationHandler
+</pre><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 보호 프록시 인터페이스
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Subject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>request</span><span class=o>();</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 실제 객체
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>class</span> <span class=nc>RealSubject</span> <span class=kd>implements</span> <span class=n>Subject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>request</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;RealSubject: Handling request.&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 보호 프록시
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Proxy</span> <span class=kd>implements</span> <span class=n>Subject</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>RealSubject</span> <span class=n>realSubject</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>String</span> <span class=n>accessCode</span><span class=o>;</span> <span class=c1>// 예시로 권한 코드를 사용
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=nf>Proxy</span><span class=o>(</span><span class=n>String</span> <span class=n>accessCode</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>.</span><span class=na>accessCode</span> <span class=o>=</span> <span class=n>accessCode</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@Override</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>request</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=o>(</span><span class=n>authenticate</span><span class=o>())</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=o>(</span><span class=n>realSubject</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>realSubject</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RealSubject</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>            <span class=o>}</span>
+</span></span><span class=line><span class=cl>            <span class=n>realSubject</span><span class=o>.</span><span class=na>request</span><span class=o>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&#34;Access denied. Authentication failed.&#34;</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>boolean</span> <span class=nf>authenticate</span><span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 권한 검사 로직
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>return</span> <span class=s>&#34;1234&#34;</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=n>accessCode</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=정리>정리</h2><ul><li>프록시 패턴<ul><li>특정 객체로의 접근을 제어하는 대리인을 제공한다.</li></ul></li></ul><hr><ul><li>프록시 패턴을 사용하면 어떤 객체의 대리인을 내세워서 클라이언트의 접근을 제어할 수 있다.</li><li>원격 프록시는 클라이언트와 원격 객체 사이의 데이터 전달을 관리해준다.</li><li>가상 프록시는 인스턴스를 만드는 데 많은 비용이 드는 객체로의 접근을 제어한다.</li><li>보호 프록시는 호출하는 족의 권한에 따라서 객체에 있는 메소드로의 접근을 제어한다.</li><li>그 외에도 캐싱 프록시, 동기화 프록시, 방화벽 프록시, 지연 복사 프록시와 같이 다양한 변형된 프록시 패턴이 있다.</li><li>프록시 패턴의 구조는 데코레이터 패턴의 구조와 비슷하지만 그 용도는 다르다.</li><li>데코레이터 패턴은 객체에 행동을 추가하지만 프록시 패턴은 접근을 제어한다.</li><li>자바에 내장된 프록시 지원 기능을 사용하면 동적 프록시 클래스를 만들어서 원하는 핸들러에서 호출을 처리하도록 할 수 있다.</li><li>다른 래퍼를 쓸 때와 마찬가지로 프록시를 쓰면 디자인에 포함되는 클래스와 객체의 수가 늘어난다.</li></ul></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/>디자인 패턴</a>
+<a href=/tags/design-pattern/>Design Pattern</a>
+<a href=/tags/gof/>GoF</a>
+<a href=/tags/%ED%97%A4%EB%93%9C-%ED%8D%BC%EC%8A%A4%ED%8A%B8-%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/>헤드 퍼스트 디자인 패턴</a>
+<a href=/tags/head-first-design-pattern/>Head First Design Pattern</a>
+<a href=/tags/%ED%94%84%EB%A1%9D%EC%8B%9C/>프록시</a>
+<a href=/tags/proxy/>Proxy</a>
+<a href=/tags/%EC%9B%90%EA%B2%A9-%ED%94%84%EB%A1%9D%EC%8B%9C/>원격 프록시</a>
+<a href=/tags/remote-proxy/>Remote Proxy</a>
+<a href=/tags/%EA%B0%80%EC%83%81-%ED%94%84%EB%A1%9D%EC%8B%9C/>가상 프록시</a>
+<a href=/tags/virtual-proxy/>Virtual Proxy</a>
+<a href=/tags/%EB%B3%B4%ED%98%B8-%ED%94%84%EB%A1%9D%EC%8B%9C/>보호 프록시</a>
+<a href=/tags/protection-proxy/>Protection Proxy</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://product.kyobobook.co.kr/detail/S000001810483 target=_blank rel=noopener><div class=article-details><h2 class=article-title>헤드 퍼스트 디자인 패턴</h2><footer class=article-time>교보 문고</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/gof/10/><div class=article-image><img src=/post/gof/10/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 10. 객체의 상태 바꾸기 - 상태 패턴" data-key=gof/10 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>10. 객체의 상태 바꾸기 - 상태 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/9/><div class=article-image><img src=/post/gof/9/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴" data-key=gof/9 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>9. 컬렉션 잘 관리하기 - 반복자 패턴과 컴포지트 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/8/><div class=article-image><img src=/post/gof/8/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴" data-key=gof/8 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>8. 알고리즘 캡슐화하기 - 탬플릿 메소드 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/7/><div class=article-image><img src=/post/gof/7/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 7. 어댑터 패턴과 퍼사드 패턴" data-key=gof/7 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>7. 어댑터 패턴과 퍼사드 패턴</h2></div></a></article><article class=has-image><a href=/post/gof/6/><div class=article-image><img src=/post/gof/6/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 6. 커맨드 패턴 - 호출 캡슐화하기" data-key=gof/6 data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>6. 커맨드 패턴 - 호출 캡슐화하기</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

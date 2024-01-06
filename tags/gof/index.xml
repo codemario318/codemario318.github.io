@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>GoF on Mario Blog</title><link>https://codemario318.github.io/tags/gof/</link><description>Recent content in GoF on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 29 Dec 2023 10:22:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/gof/index.xml" rel="self" type="application/rss+xml"/><item><title>11. 객체 접근 제어하기 - 프록시 패턴</title><link>https://codemario318.github.io/post/gof/11/</link><pubDate>Fri, 29 Dec 2023 10:22:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/11/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/11/cover.png" alt="Featured image of post 11. 객체 접근 제어하기 - 프록시 패턴" />&lt;blockquote>
+&lt;p>프록시 패턴은 특정 객체로의 접근을 제어하는 대리인(특정 객체를 대변하는 객체)를 제공한다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="프록시-패턴이란">프록시 패턴이란?&lt;/h2>
+&lt;p>프록시 패턴은 한 객체가 다른 객체에 대한 인터페이스 역할을 수행하여 접근을 제어하거나 대리 역할을 수행하는 디자인 패턴이다.&lt;/p>
+&lt;p>접근을 제어하는 방법을 달리하여 여러 변형이 존재한다.&lt;/p>
+&lt;ul>
+&lt;li>원격 프록시(Remote Proxy)
+&lt;ul>
+&lt;li>원격 객체에 대한 로컬 표현을 제공하여, 원격 서버에 있는 객체에 쉽게 접근할 수 있도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가상 프록시(Virtual Proxy)
+&lt;ul>
+&lt;li>객체의 생성 및 초기화에 비용이 많이 들 때, 객체가 실제로 필요한 시점까지 생성을 지연시키는 가상 객체를 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>보호 프록시(Protection Proxy)
+&lt;ul>
+&lt;li>객체에 대한 접근을 제어하여, 특정 사용자나 클라이언트에 대한 권한 검사를 수행한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>캐싱 프록시(Caching Proxy)
+&lt;ul>
+&lt;li>이전에 수행한 연산 결과를 캐시하여 동일한 요청에 대한 성능을 향상시킨다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>프록시 패턴을 사용하면 원격 객체, 생성하기 힘든 객체, 보안이 중요한 객체와 같은 다른 객체로의 접근을 제어하는 대리인 객체를 만들 수 있다.&lt;/p>
+&lt;p>이를 통해 복잡한 시스템에서 객체 간의 통신과 상호작용을 조절하고 향상시키는 데 유용하게 사용될 수 있다.&lt;/p>
+&lt;h3 id="구조">구조&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Subject {
+&lt;&lt; interface >>
+request()*
+}
+class RealSubject {
+request()
+}
+class Proxy {
+request()
+}
+Subject &lt;|.. RealSubject
+Subject &lt;|.. Proxy
+Proxy --> RealSubject : subject
+&lt;/pre>
+&lt;ul>
+&lt;li>&lt;code>Subject&lt;/code>(주체)
+&lt;ul>
+&lt;li>실제 서비스를 제공하는 객체를 나타내는 인터페이스를 정의한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>RealSubject&lt;/code>(실제 주체)
+&lt;ul>
+&lt;li>&lt;code>Subject&lt;/code>의 실제 구현을 제공하는 클래스&lt;/li>
+&lt;li>이 객체에 대한 접근을 제어하거나 비용이 많이 드는 작업을 수행한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Proxy&lt;/code>(프록시)
+&lt;ul>
+&lt;li>&lt;code>Subject&lt;/code>와 동일한 인터페이스를 구현하며, &lt;code>RealSubject&lt;/code>에 대한 참조를 가지고 있다.&lt;/li>
+&lt;li>실제 서비스 객체에 대한 접근을 제어하거나 추가적인 기능을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>RealSubject&lt;/code>와 &lt;code>Proxy&lt;/code>는 &lt;code>Subject&lt;/code> 인터페이스를 구현하므로 &lt;code>RealSubject&lt;/code>가 들어가야 할 자리에 &lt;code>Proxy&lt;/code>를 대신 넣을 수 있다.&lt;/p>
+&lt;p>진짜 작업은 &lt;code>RealSubject&lt;/code> 객체가 처리하며, &lt;code>Proxy&lt;/code>는 이 객체의 대변인 역할을 하면서 &lt;code>RealSubject&lt;/code>로의 접근을 제어하게된다.&lt;/p>
+&lt;p>&lt;code>Proxy&lt;/code>는 &lt;code>RealSubject&lt;/code>의 레퍼런스를 포함하며(직법 생성하거나 제거하기도 함) 클라이언트는 항상 &lt;code>Proxy&lt;/code>를 통해 데이터를 주고받게 된다.&lt;/p>
+&lt;h2 id="원격-프록시">원격 프록시&lt;/h2>
+&lt;p>원격 프록시는 대리인의 어떤 메소드를 호출하면 원격 객체에게 해당 메소드 호출을 전달하는 원격 객체의 &lt;strong>로컬 대리인&lt;/strong> 역할을 하게된다.&lt;/p>
+&lt;blockquote>
+&lt;p>클라이언트 객체는 원격 객체의 메소드 호출을 하는 것처럼 행동하지만 실제로는 로컬 힙에 들어있는 프록시 객체의 메소드를 호출하며, 프록시에서 네트워크 통신과 관련된 저수준 작업을 처래히준다.&lt;/p>
+&lt;/blockquote>
+&lt;p>원격 프록시(Remote Proxy)는 클라이언트와 서버 사이에서 객체에 대한 원격 액세스를 제공하며, 객체의 메서드 호출을 원격으로 전달하여 실행하는 데 중접을 둔다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+subgraph 원격
+a((클라이언트)) -- "request()" -->
+b((프록시))
+end
+subgraph 실제
+c((RealSubject))
+end
+b -. "request()" .-> c
+&lt;/pre>
+&lt;ol>
+&lt;li>원격 객체 엑세스
+&lt;ul>
+&lt;li>클라이언트가 로컬이 아닌 다른 컴퓨터에 위치한 객체에 액세스해야 할 때, 원격 프록시를 사용하여 해당 객체에 접근한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>보안 및 권한 제어
+&lt;ul>
+&lt;li>원격 프록시를 사용하여 원격 객체에 대한 접근을 제어하고, 보안 및 권한 검사를 수행할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>프록시 패턴의 응용
+&lt;ul>
+&lt;li>일반적인 프록시 패턴에서 원격 프록시를 사용하여 클라이언트와 실제 객체 사이의 중각 매개체로서 동작하게 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="java-rmiremote-method-invocation">Java RMI(Remote Method Invocation)&lt;/h3>
+&lt;p>원격 프록시는 &lt;code>Java&lt;/code>의 &lt;strong>RMI&lt;/strong>와 같은 기술을 사용하여 구현될 수 있다.&lt;/p>
+&lt;p>클라이언트는 로컬에서 마치 객체를 다루는 것처럼 원격 프록시를 사용하여 원격 객체의 메서드를 호출할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 예시: 원격 프록시 인터페이스
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="nn">java.rmi.Remote&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">java.rmi.RemoteException&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 표식용(Maker) Remote 인터페이스를 확장하여 인터페이스가 원격 호출을 지원한다는 사실을 알린다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">MyRemoteInterface&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Remote&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 모든 원격 메소드 호출은 위험이 따르며 모든 메소드에 RemoteException을 선언하여 클라이언트에서 예외를 처리할 수 있도록 한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">myRemoteMethod&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">RemoteException&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 원격 메소드의 인자와 리턴값은 반드시 원시 형식(primitive) 또는 Serializable 형식으로 선언해야한다.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="nf">sayHello&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">RemoteException&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 예시: 원격 프록시 구현
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kn">import&lt;/span> &lt;span class="nn">java.rmi.RemoteException&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">java.rmi.server.UnicastRemoteObject&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">MyRemoteObject&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">UnicastRemoteObject&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">MyRemoteInterface&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="nf">MyRemoteObject&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">RemoteException&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">super&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">myRemoteMethod&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">RemoteException&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 실제 원격 메서드 구현
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Executing remote method&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="가상-프록시">가상 프록시&lt;/h2>
+&lt;p>가상 프록시는 프록시 패턴의 한 종류로, 객체의 생성 및 초기화에 비용이 많이 들 때, 실제로 객체가 필요한 시점까지 객체를 생성하지 않고 대리 객체를 사용하는 패턴이다.&lt;/p>
+&lt;p>이를 통해 성능 향상 및 자원 절약이 가능하며, 사용자는 가상 프록시를 통해 실제 객체에 접근할 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+a((클라이언트)) -- "request()" -->
+b((프록시)) -->
+c((RealSubject))
+&lt;/pre>
+&lt;ol>
+&lt;li>비용이 많이 드는 객체 생성&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>객체의 생성이나 초기화에 많은 비용이 들 때, 해당 객체를 실제로 사용하기 직전까지 객체를 생성하지 않고 대리 객체를 사용하여 필요한 경우에만 생성한다.&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>느린 초기화 작업
+&lt;ul>
+&lt;li>객체의 초기화 작업이 느리게 수행되는 경우, 초기화 작업이 완료된 후에만 실제 객체를 생성하도록 하는 가상 프록시를 사용하여 지연 로딩을 구현할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>자원 소모 최적화
+&lt;ul>
+&lt;li>자원을 효율적으로 관리하기 위해 필요할 때만 실제 객체를 생성하고 사용하는 경우, 가상 프록시를 적용하여 자원 소모를 최적화 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>가상 프록시는 실제 객체를 나타내는 인터페이스를 정의하고, 이 인터페이스를 구현하는 가상 프록시 클래스를 만들어 사용하게 된다.&lt;/p>
+&lt;p>이를 통해 실제 객체의 생성 및 초기화를 지연시킨다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 예시: 가상 프록시 인터페이스
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">RealObject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">performOperation&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 예시: 실제 객체 구현
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">RealObjectImpl&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">RealObject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">RealObjectImpl&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 객체 생성 및 초기화 작업
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">performOperation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 실제 객체의 동작
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Performing operation&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 예시: 가상 프록시 구현
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">VirtualProxy&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">RealObject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">RealObjectImpl&lt;/span> &lt;span class="n">realObject&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">performOperation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 필요할 때만 실제 객체 생성
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">realObject&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">realObject&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">RealObjectImpl&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 가상 프록시를 통해 실제 객체의 동작 호출
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">realObject&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">performOperation&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="원격-프록시와-가상-프록시의-차이">원격 프록시와 가상 프록시의 차이&lt;/h2>
+&lt;p>원격 프록시와 가상 프록시는 둘 다 프록시 패턴의 변셩으로, 객체 간의 통신을 지원하거나 객체의 생성 및 초기화를 최적화하기 위해 상용된다.&lt;/p>
+&lt;p>그러나 각각의 주된 목적과 사용 시나리오가 다르기 때문에 차이가 있다.&lt;/p>
+&lt;ol>
+&lt;li>목적
+&lt;ul>
+&lt;li>원격 프록시:
+&lt;ul>
+&lt;li>분산 시스템에서 객체 간의 통신을 가능케 하는 것이 목적이다.&lt;/li>
+&lt;li>클라이언트와 서버 간의 통신을 원활하게 하기 위해 객체를 원격으로 호출하고 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가상 프록시:
+&lt;ul>
+&lt;li>객체의 생성 및 초기화에 대한 비용을 최적화한다.&lt;/li>
+&lt;li>필요한 시점까지 실제 객체를 생성하지 않고 가상적인 대리 객체를 사용함으로 성능을 향상시키는 것이 목적이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>활용
+&lt;ul>
+&lt;li>원격 프록시
+&lt;ul>
+&lt;li>객체가 서로 다른 주소 공간에 위치해 있을 때 사용된다.&lt;/li>
+&lt;li>객체의 메서드를 원격으로 호출하여 분산 시스템에서 투명한 원격 접근을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가상 프록시
+&lt;ul>
+&lt;li>객체의 생성이나 초기화에 비용이 많이 들거나, 초기화를 지연시켜야 할 때 사용된다.&lt;/li>
+&lt;li>필요한 시점에만 실제 객체를 상성하여 자원을 효율적으로 활용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>구현 방식
+&lt;ul>
+&lt;li>원격 프록시
+&lt;ul>
+&lt;li>원격 객체 간의 통신을 위해 원격 메서드 호출을 지원하는 기술을 활용한다.&lt;/li>
+&lt;li>ex) Java RMI&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가상 프록시
+&lt;ul>
+&lt;li>객체의 생성 및 초기화를 지연시키는 방식으로 구현된다.&lt;/li>
+&lt;li>필요할 때만 실제 객체를 생성하고 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>주요 특징
+&lt;ul>
+&lt;li>원격 프록시
+&lt;ul>
+&lt;li>분산 환경에서의 통신에 중점을 두고, 보안, 효율성 투명성 등을 고려해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가상 프록시
+&lt;ul>
+&lt;li>객체의 생성 및 초기화 비용을 최적화한다.&lt;/li>
+&lt;li>필요한 시점까지 실제 객체를 생성하지 않고 가상적인 대리 객체를 사용하여 성능을 개선한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>원격 프록시는 주로 분산 시스템에서의 객체 간 통신을 위해 사용되고, 가상 프록시는 객체의 생성과 초기화에 대한 비용을 최적화하기 위해 사용한다.&lt;/p>
+&lt;h2 id="보호-프록시">보호 프록시&lt;/h2>
+&lt;p>보호 프록시는 주로 객체에 대한 접근을 제어하고 보호하는 데 사용된다.&lt;/p>
+&lt;p>이 패턴은 객체에 대한 클라이언트의 엑세스를 제한하거나, 특정한 권한 검사를 수행하여 보안을 강화할 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>접근 제어
+&lt;ul>
+&lt;li>특정 객체에 대한 접근을 제한하거나 허용하기 위해 클라이언트의 요청을 검사하고 필요한 권한 검사를 수행한다.&lt;/li>
+&lt;li>ex) 파일, 데이터베이스 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>보안 강화
+&lt;ul>
+&lt;li>객체에 직접적으로 접근하는 것을 방지하여 보안을 강화한다.&lt;/li>
+&lt;li>실제 객체에 직접 접근하는 대신, 보호 프록시를 통해 간접적으로만 객체에 접근할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>캐싱 및 성능 최적화
+&lt;ul>
+&lt;li>객체에 대한 엑세스를 제어하는 동시에, 캐싱과 같은 성능 최적화 기법을 적용하여 불필요한 작업을 줄일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Subject {
+&lt;&lt; interface >>
+*request()
+}
+class RealSubject {
+request()
+}
+class Proxy {
+request()
+}
+class InvocationHandler {
+&lt;&lt; interface >>
+*invoke()
+}
+class ConcreteInvocationHandler {
+invoke()
+}
+Subject &lt;|-- RealSubject
+Subject &lt;|-- Proxy
+InvocationHandler &lt;|-- ConcreteInvocationHandler
+&lt;/pre>
+&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 보호 프록시 인터페이스
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Subject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">request&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 실제 객체
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">RealSubject&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Subject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">request&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;RealSubject: Handling request.&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 보호 프록시
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Proxy&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Subject&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">RealSubject&lt;/span> &lt;span class="n">realSubject&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">accessCode&lt;/span>&lt;span class="o">;&lt;/span> &lt;span class="c1">// 예시로 권한 코드를 사용
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Proxy&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">accessCode&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">accessCode&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">accessCode&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">request&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">authenticate&lt;/span>&lt;span class="o">())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">realSubject&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">realSubject&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">RealSubject&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">realSubject&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">request&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Access denied. Authentication failed.&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">boolean&lt;/span> &lt;span class="nf">authenticate&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 권한 검사 로직
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="s">&amp;#34;1234&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">accessCode&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="정리">정리&lt;/h2>
+&lt;ul>
+&lt;li>프록시 패턴
+&lt;ul>
+&lt;li>특정 객체로의 접근을 제어하는 대리인을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>프록시 패턴을 사용하면 어떤 객체의 대리인을 내세워서 클라이언트의 접근을 제어할 수 있다.&lt;/li>
+&lt;li>원격 프록시는 클라이언트와 원격 객체 사이의 데이터 전달을 관리해준다.&lt;/li>
+&lt;li>가상 프록시는 인스턴스를 만드는 데 많은 비용이 드는 객체로의 접근을 제어한다.&lt;/li>
+&lt;li>보호 프록시는 호출하는 족의 권한에 따라서 객체에 있는 메소드로의 접근을 제어한다.&lt;/li>
+&lt;li>그 외에도 캐싱 프록시, 동기화 프록시, 방화벽 프록시, 지연 복사 프록시와 같이 다양한 변형된 프록시 패턴이 있다.&lt;/li>
+&lt;li>프록시 패턴의 구조는 데코레이터 패턴의 구조와 비슷하지만 그 용도는 다르다.&lt;/li>
+&lt;li>데코레이터 패턴은 객체에 행동을 추가하지만 프록시 패턴은 접근을 제어한다.&lt;/li>
+&lt;li>자바에 내장된 프록시 지원 기능을 사용하면 동적 프록시 클래스를 만들어서 원하는 핸들러에서 호출을 처리하도록 할 수 있다.&lt;/li>
+&lt;li>다른 래퍼를 쓸 때와 마찬가지로 프록시를 쓰면 디자인에 포함되는 클래스와 객체의 수가 늘어난다.&lt;/li>
+&lt;/ul></description></item></channel></rss>

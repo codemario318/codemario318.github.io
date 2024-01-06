@@ -2,17 +2,45 @@ User-agent: *
 
 Allow: /
 
-Allow: /post/gof/10/
+Allow: /post/gof/11/
 
 Allow: /categories/
 
-Allow: /tags/common/
+Allow: /tags/design-pattern/
+
+Allow: /tags/gof/
+
+Allow: /tags/head-first-design-pattern/
 
 Allow: /post/
 
+Allow: /tags/protection-proxy/
+
+Allow: /tags/proxy/
+
+Allow: /tags/remote-proxy/
+
 Allow: /tags/
 
+Allow: /tags/virtual-proxy/
+
+Allow: /tags/%EA%B0%80%EC%83%81-%ED%94%84%EB%A1%9D%EC%8B%9C/
+
+Allow: /tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/
+
+Allow: /tags/%EB%B3%B4%ED%98%B8-%ED%94%84%EB%A1%9D%EC%8B%9C/
+
+Allow: /tags/%EC%9B%90%EA%B2%A9-%ED%94%84%EB%A1%9D%EC%8B%9C/
+
+Allow: /tags/%ED%94%84%EB%A1%9D%EC%8B%9C/
+
+Allow: /tags/%ED%97%A4%EB%93%9C-%ED%8D%BC%EC%8A%A4%ED%8A%B8-%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/
+
 Allow: /categories/headfirstdesignpatterns/
+
+Allow: /post/gof/10/
+
+Allow: /tags/common/
 
 Allow: /post/gof/9/
 
