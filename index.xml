@@ -1,4 +1,148 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 29 Dec 2023 10:22:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>11. 객체 접근 제어하기 - 프록시 패턴</title><link>https://codemario318.github.io/post/gof/11/</link><pubDate>Fri, 29 Dec 2023 10:22:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/11/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/11/cover.png" alt="Featured image of post 11. 객체 접근 제어하기 - 프록시 패턴" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 17 Jan 2024 14:20:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>12. 패턴을 모아 패턴 만들기 - 복합 패턴</title><link>https://codemario318.github.io/post/gof/12/</link><pubDate>Wed, 17 Jan 2024 14:20:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/12/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/12/cover.png" alt="Featured image of post 12. 패턴을 모아 패턴 만들기 - 복합 패턴" />&lt;blockquote>
+&lt;p>복합 패턴은 두 개 이상의 디자인 패턴이 특정 상황이나 문제 해결에 협력하여 사용될 때를 나타낸다. 여러 디자인 패턴을 조합하여 더 복잡하고 효과적인 구조를 만들 수 있다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="mvcmodel-view-controller-패턴">MVC(Model-View-Controller) 패턴&lt;/h2>
+&lt;blockquote>
+&lt;p>MVC 패턴은 독립된 모델, 뷰, 컨트롤러 컴포넌트들의 상호 작용으로 의존도를 줄이는 것이 목표인 아키텍처이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://codemario318.github.io/post/gof/12/img.png"
+width="2000"
+height="1500"
+srcset="https://codemario318.github.io/post/gof/12/img_hu040b7460756f37c0fda093bce986d6e5_92342_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/gof/12/img_hu040b7460756f37c0fda093bce986d6e5_92342_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MVC - MDN Web Docs"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>MVC 패턴은 모델-뷰-컨트롤러의 세 가지 주요 컴포넌트로 소프트웨어를 구성하는 패턴이다.&lt;/p>
+&lt;p>사용자 인터페이스를 효과적으로 설계하고 관리하기 위해 고안되었다.&lt;/p>
+&lt;p>각 컴포넌트는 특정한 역할을 수행하며, 이들 간의 역할 분리를 통해 유지보수성과 확장성을 향상시킨다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Model&lt;/strong>
+&lt;ul>
+&lt;li>애플리케이션의 데이터와 비즈니스 로직을 나타낸다.&lt;/li>
+&lt;li>데이터의 상태를 저장하고, 데이터에 대한 조작 및 처리를 담당한다.&lt;/li>
+&lt;li>뷰나 컨트롤러와 직접적으로 상호 작용하지 않으며, 변경이 발생하면 등록된 옵저버들에게 상태 변경을 통지한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>View&lt;/strong>
+&lt;ul>
+&lt;li>사용자에게 정보를 표시하는 역할을 수행한다.&lt;/li>
+&lt;li>모델의 데이터를 시각적으로 펴현하며, 사용자의 입력을 받아 컨트롤러에 전달한다.&lt;/li>
+&lt;li>모델과 직접적인 관련이 없으며, 모델의 상태 변화를 감지하여 업데이트된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Controller&lt;/strong>
+&lt;ul>
+&lt;li>사용자의 입력을 받아 모델을 업데이트하거나 뷰를 업데이트하는 역할을 수행한다.&lt;/li>
+&lt;li>사용자의 액션에 응답하여 모델의 데이터를 갱신하고, 변경된 데이터에 대한 뷰의 업데이트를 처리한다.&lt;/li>
+&lt;li>모델과 뷰 간의 통신 다리 역할을 하며, 강한 결합을 방지하여 유연성을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>MVC 패턴의 핵심 아이디어는 각 컴포넌트가 서로 독립적으로 동작하도록 하는 것이다.&lt;/p>
+&lt;p>이를 통해 코드의 재사용성이 증가하고, 유지보수 및 확정이 용이해진다. 또한 사용자 인터페이스의 변화가 다른 부분에 미치는 영향을 최소화하여 유연하게 대처할 수 있도록 한다.&lt;/p>
+&lt;p>MVC 패턴은 주로 GUI 프레임워크나 웹 애플리케이션 등 사용자 인터페이스를 개발하는 데 적용되는데, 이를 통해 각 부분을 독립적으로 개발하고 테스트 할 수 있다는 장점을 제공한다.&lt;/p>
+&lt;h3 id="모델-뷰-컨트롤러에-사용되는-패턴-알아보기">모델-뷰-컨트롤러에 사용되는 패턴 알아보기&lt;/h3>
+&lt;p>MVC는 여러 개의 패턴이 함께 적용되어 완성된 하나의 디자인이다.&lt;/p>
+&lt;p>&lt;strong>옵저버 패턴&lt;/strong>&lt;/p>
+&lt;p>MVC 패턴에서 모델과 뷰 간의 통신은 주로 옵저버 패턴을 기반으로 한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+view1[/뷰 1/]
+model1[["모델(옵저버블)"]]
+subgraph 옵저버
+controller{{컨트롤러}}
+view2[/뷰 1/]
+view3[/뷰 2/]
+end
+view1--"옵저버 등록"-->model1
+model1--"상태 변경"-->controller
+model1--"상태 변경"-->view2
+model1--"상태 변경"-->view3
+&lt;/pre>
+&lt;ul>
+&lt;li>모델의 상태 변경 시, 등록된 뷰들에게 자동으로 알림을 보내어 뷰를 업데이트한다.&lt;/li>
+&lt;li>뷰와 모델간의 강한 결합을 피하면서 상태 변화를 효율적으로 전파할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>모델은 옵저버 패턴을 써서 상태가 변경되었을 때 그 모델과 연관된 객체들에게 연락한다.&lt;/p>
+&lt;p>옵저버 패턴을 사용하여 모델을 뷰와 컨트롤러로부터 완전히 독립 시킬 수 있으며, 이를 통해 한 모델에서 서로 다른 뷰를 사용할 수도 있고, 여러 개의 뷰를 동시에 사용하는 것도 가능하다.&lt;/p>
+&lt;p>&lt;strong>전략 패턴&lt;/strong>&lt;/p>
+&lt;p>컨트롤러는 사용자의 입력을 받아 처리하는 부분이며, 뷰와 컨트롤러는 고전적인 전략 패턴으로 구현되어 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+v[/뷰/]
+c1{{컨트롤러 1}}
+c2{{컨트롤러 2}}
+v-->c1
+v-->c2
+&lt;/pre>
+&lt;ul>
+&lt;li>뷰 객체를 여러 전략을 써서 설정할 수 있으며, 컨트롤러가 전략을 제공한다.&lt;/li>
+&lt;li>여러 입력 전략을 정의하고, 컨트롤러가 이 중 하나를 선택하여 사용자 입력에 대응하게 된다.
+&lt;ul>
+&lt;li>컨트롤러를 바꾸면 뷰의 행동도 바꿀 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>뷰는 애플리케이션의 겉모습에만 신경 쓰고, 인터페이스의 행동을 결정하는 일은 모두 컨트롤러에게 맡긴다.&lt;/li>
+&lt;/ul>
+&lt;p>사용자가 요청한 내역을 처리하기 위해 모델에 요청하는 부분을 컨트롤러가 담당하게 되어, 뷰를 모델로부터 분리하는 데에도 도움이 된다.&lt;/p>
+&lt;p>&lt;strong>컴포지트 패턴&lt;/strong>&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+v[/뷰/]
+r(((GUI)))
+v--paint-->r
+&lt;/pre>
+&lt;ul>
+&lt;li>뷰를 구성하는 요소들을 효과적으로 처리하기 위해 컴포지트 패턴을 활용한다.&lt;/li>
+&lt;li>복합 뷰는 여러 단을 뷰와 하위 복합 뷰로 구성될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>컨트롤러가 뷰에게 화면을 갱신해 달라고 요청했을 때, 최상위 뷰 구성 요소에게만 화면을 갱신하라고 전달하면 컴포지트 패턴이 알아서 처리하게 된다.&lt;/p>
+&lt;p>&lt;strong>그 외 적용된 패턴&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>커맨드 패턴
+&lt;ul>
+&lt;li>사용자의 액션에 따라 컨트롤러는 모델의 데이터를 변경하거나 뷰를 업데이트 해야한다.&lt;/li>
+&lt;li>커맨드 패턴은 액션을 캡슐화하여 객체로 나타내고, 컨트롤러가 이 객체를 통해 액션을 수행할 수 있도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>팩토리 메소드 패턴
+&lt;ul>
+&lt;li>뷰나 컨트롤러를 생성하는 데 팩토리 메소드 패턴을 사용할 수 있다.&lt;/li>
+&lt;li>특정 뷰 또는 컨트롤러의 생성을 서브 클래스에서 결정하도록 하는 패턴으로, 유연성을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데코레이터 패턴
+&lt;ul>
+&lt;li>뷰의 추가적인 기능을 동적으로 확장하고 싶을 때 데코레이터 패턴을 사용할 수 있다.&lt;/li>
+&lt;li>뷰를 감싸는 데코레이터를 사용하여 런타임에 새로운 기능을 추가하거나 변경할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>싱글톤 패턴
+&lt;ul>
+&lt;li>MVC 패턴에서 모델이나 컨트롤러는 주로 싱글톤 패턴을 사용하여 단일 인스턴스로 유지된다.&lt;/li>
+&lt;li>애플리케이션 전역에서 해당 객체에 접근이 필요한 경우 사용된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="핵심-정리">핵심 정리&lt;/h2>
+&lt;ul>
+&lt;li>복합 패턴
+&lt;ul>
+&lt;li>2개 이상의 패턴을 결합해서 일반적으로 자주 등장하는 문제들의 해법을 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>모델-뷰-컨트롤러(MVC)는 옵저버, 전략, 컴포지트 패턴으로 이루어진 복합 패턴이다.&lt;/li>
+&lt;li>모델은 옵저버 패턴을 사용해서 의존성을 없애면서도 옵저버들에게 자신의 상태가 변경되었음을 알릴 수 있다.&lt;/li>
+&lt;li>컨트롤러는 뷰의 전략 객체이다. 뷰는 컨트롤러를 바꿔서 또 다른 행동을 할 수 있다.&lt;/li>
+&lt;li>뷰는 컴포지트 패턴을 사용해서 사용자 인터페이스를 구현한다. 보통 패널이나 프레임, 버튼과 같은 중첩된 구성 요소로 이루어진다.&lt;/li>
+&lt;li>모델, 뷰, 컨트롤러는 3가지 패턴으로 서로 느슨하게 결합되므로 깔금하면서도 유연한 구현이 가능해진다.&lt;/li>
+&lt;li>새로운 모델을 기존의 뷰와 컨트롤러에 연결해서 쓸 때는 어댑터 패턴을 활용하면 된다.&lt;/li>
+&lt;li>MVC는 웹에도 적용된다.&lt;/li>
+&lt;li>클라이언트-서버 애플리케이션 구조에 MVC를 적응시켜 주는 다양한 웹 MVC 프레임워크가 있다.&lt;/li>
+&lt;/ul></description></item><item><title>11. 객체 접근 제어하기 - 프록시 패턴</title><link>https://codemario318.github.io/post/gof/11/</link><pubDate>Fri, 29 Dec 2023 10:22:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/11/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/11/cover.png" alt="Featured image of post 11. 객체 접근 제어하기 - 프록시 패턴" />&lt;blockquote>
 &lt;p>프록시 패턴은 특정 객체로의 접근을 제어하는 대리인(특정 객체를 대변하는 객체)를 제공한다.&lt;/p>
 &lt;/blockquote>
 &lt;h2 id="프록시-패턴이란">프록시 패턴이란?&lt;/h2>
