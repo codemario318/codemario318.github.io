@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bridge Pattern on Mario Blog</title><link>https://codemario318.github.io/tags/bridge-pattern/</link><description>Recent content in Bridge Pattern on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 24 Jan 2024 15:48:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/bridge-pattern/index.xml" rel="self" type="application/rss+xml"/><item><title>14. 다양한 패턴 빠르게 알아보기 - 브리지 패턴</title><link>https://codemario318.github.io/post/gof/14/bridge/</link><pubDate>Wed, 24 Jan 2024 15:48:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/14/bridge/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/14/bridge/cover.png" alt="Featured image of post 14. 다양한 패턴 빠르게 알아보기 - 브리지 패턴" />&lt;h2 id="브리지bridge-패턴">브리지(Bridge) 패턴&lt;/h2>
+&lt;p>구현과 더불어 추상화 부분까지 변경해야 한다면 브리지 패턴을 사용한다.&lt;/p>
+&lt;p>브리지 패턴은 객체 지향 프로그래밍에서 사용되는 디자인 패턴 중 하나로, 추상화와 구현을 분리하여 두 부분이 독립적으로 변화할 수 있도록 하는 구조를 제공한다.&lt;/p>
+&lt;p>이를 통해 시스템의 확정성을 높이고, 추상화와 구현의 결합도를 낮춘다.&lt;/p>
+&lt;h2 id="구성-요소">구성 요소&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/gof/14/bridge/img.png"
+width="635"
+height="345"
+srcset="https://codemario318.github.io/post/gof/14/bridge/img_hue0e89c8af9f0b5404b72cff67b4b07b0_177330_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/gof/14/bridge/img_hue0e89c8af9f0b5404b72cff67b4b07b0_177330_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="브리지 패턴 구조"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="441px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>추상화(Abstraction)&lt;/strong>
+&lt;ul>
+&lt;li>클라이언트가 사용하는 인터페이스를 정의한다.&lt;/li>
+&lt;li>추상화는 구현에 대한 참조를 가지며, 클라이언트는 이 추상화를 통해 구현에 접근한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>구현자(Implementor)&lt;/strong>
+&lt;ul>
+&lt;li>추상화의 구현을 위한 인터페이스를 정의한다.&lt;/li>
+&lt;li>구현을 위한 메소드들을 선언하는데, 이들 메소드는 구체적인 구현 클래스에서 구현된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>정제된 추상화(Refined Abstraction)&lt;/strong>
+&lt;ul>
+&lt;li>추상화의 하위 클래스로, 추가적인 기능을 제공하거나 확장할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>구현자 구현(Concrete Implementor)&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Implementor&lt;/code>의 구현 클래스로, 실제로 구현이 이루어진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="예시-간단한-도형-그리기">예시: 간단한 도형 그리기&lt;/h2>
+&lt;p>이 구현에서는 도형과 그리기 도구가 각각 추상화와 구현을 나타내며, 브리지 패턴을 통해 두 부분을 분리한다.&lt;/p>
+&lt;p>클라이언트는 도형을 생성하고 원하는 그리기 도구를 지정할 수 있어, 새로운 도형이나 그리기 도구를 추가하더라도 기존 코드에 영향을 덜 주고 시스템을 확장할 수 있다.&lt;/p>
+&lt;p>&lt;strong>Abstraction: 도형&lt;/strong>&lt;/p>
+&lt;p>도형을 나타내는 추상 클래스로서, 그리기 도구와 연결됨&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="n">DrawingAPI&lt;/span> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">protected&lt;/span> &lt;span class="nf">Shape&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">DrawingAPI&lt;/span> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">drawingAPI&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">abstract&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">draw&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>Refined Abstraction: Circle 및 Square&lt;/strong>&lt;/p>
+&lt;p>도형의 구체적인 형태를 나타내는 클래스로서, 추상화된 도형을 확장한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Circle&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Circle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">DrawingAPI&lt;/span> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">super&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">radius&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">draw&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">drawCircle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Square&lt;/span> &lt;span class="kd">extends&lt;/span> &lt;span class="n">Shape&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">Square&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">DrawingAPI&lt;/span> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">super&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">side&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">draw&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">drawingAPI&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">drawSquare&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>Implementor: DrawingAPI&lt;/strong>&lt;/p>
+&lt;p>그리기 도구를 나타내는 인터페이스로서, 실제 구현은 구체적인 구현 클래스에서 이루어진다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">DrawingAPI&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawCircle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawSquare&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>Concrete Implementor: DrawingAPI1 및 DrawingAPI2&lt;/strong>&lt;/p>
+&lt;p>&lt;code>DrawingAPI&lt;/code>를 구현한 구체적인 클래스로서, 실제로 그리기 동작을 수행&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">DrawingAPI1&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">DrawingAPI&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawCircle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;API1 - Drawing Circle at (&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;, &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;) with radius &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawSquare&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;API1 - Drawing Square at (&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;, &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;) with side &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">DrawingAPI2&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">DrawingAPI&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawCircle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;API2 - Drawing Circle at (&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;, &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;) with radius &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">radius&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">drawSquare&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;API2 - Drawing Square at (&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;, &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;) with side &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">side&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="특징">특징&lt;/h2>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ol>
+&lt;li>분리된 추상화와 구현&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>추상화와 구현을 분리하여 두 부분이 독립적으로 변화할 수 있다록 한다.&lt;/li>
+&lt;li>이를 통해 코드의 확장성과 유지보수성을 향상시킬 수 있다.&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>유연한 확장&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>새로운 추상화나 구현을 추가하는 데 있어 기존 코드에 영향을 최소화 할 수 있다.&lt;/li>
+&lt;li>새로운 기능이나 클래스를 도입할 때 유연하게 대응할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>복잡성 감소&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>각각의 변경이 다른 부분에 미치는 영향을 최소화하므로 코드를 이해하고 유지보수하는 데 도움을 줄 수 있다.&lt;/li>
+&lt;/ul>
+&lt;ol start="4">
+&lt;li>다형성 강화&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>추상화와 구현 사이의 느슨한 결합을 제공하므로, 다양한 형태의 추상화와 구현을 조합하여 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ol>
+&lt;li>복잡성 증가
+&lt;ul>
+&lt;li>추가적인 클래스와 인터페이스를 도입하여 시스템을 구현하므로, 간단한 시스템에서는 과도한 복잡성을 초래할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>설계 과정에서 추가 비용
+&lt;ul>
+&lt;li>초기 설계 단계에서 브리지 패턴을 도입하는 데 추가적인 비용이 발생할 수 있다.&lt;/li>
+&lt;li>특히 간단한 시스템에서는 이를 도입하는 것이 과도할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>인터페이스 수 증가&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>구현자와 추상화에 대한 인터페이스가 각각 존재하므로, 클래스 수가 증가할 수 있다.&lt;/li>
+&lt;li>이로 인해 코드 베이스의 관리를 어렵게 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="정리">정리&lt;/h2>
+&lt;p>브리지 패턴은 시스템이 확장이나 변경이 빈번하게 발생하는 경우에 유용하지만 간단한 시스템에서는 추가적인 복잡성이나 비용이 필요할 수 있으므로 상황에 맞게 적용해야한다.&lt;/p></description></item></channel></rss>

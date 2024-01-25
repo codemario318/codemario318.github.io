@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>플라이웨이트 패턴 on Mario Blog</title><link>https://codemario318.github.io/tags/%ED%94%8C%EB%9D%BC%EC%9D%B4%EC%9B%A8%EC%9D%B4%ED%8A%B8-%ED%8C%A8%ED%84%B4/</link><description>Recent content in 플라이웨이트 패턴 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 25 Jan 2024 19:39:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%ED%94%8C%EB%9D%BC%EC%9D%B4%EC%9B%A8%EC%9D%B4%ED%8A%B8-%ED%8C%A8%ED%84%B4/index.xml" rel="self" type="application/rss+xml"/><item><title>14. 다양한 패턴 빠르게 알아보기 - 플라이웨이트 패턴</title><link>https://codemario318.github.io/post/gof/15/flyweight/</link><pubDate>Thu, 25 Jan 2024 19:39:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/15/flyweight/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/15/flyweight/cover.png" alt="Featured image of post 14. 다양한 패턴 빠르게 알아보기 - 플라이웨이트 패턴" />&lt;h2 id="플라이웨이트flyweight-패턴">플라이웨이트(Flyweight) 패턴&lt;/h2>
+&lt;p>어떤 클래스의 인스턴스 하나로 여러 개의 &lt;strong>가상 인스턴스&lt;/strong>를 제공하고 싶다면 플라이웨이트 패턴을 사용한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/gof/15/flyweight/img.png"
+width="1280"
+height="661"
+srcset="https://codemario318.github.io/post/gof/15/flyweight/img_hub4acb2f1197803468f55304ad61d2721_68839_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/gof/15/flyweight/img_hub4acb2f1197803468f55304ad61d2721_68839_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="플라이웨이트 패턴 구조"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="464px"
+>&lt;/p>
+&lt;p>플라이 웨이트 패턴은 여러 객체가 공유되어야 하는 대상을 효과적으로 처리하는 구조적 디자인 패턴이다.&lt;/p>
+&lt;p>이 패턴은 객체의 중복된 인스턴스를 피하고 메모리를 절약하면서 객체의 공유 가능성을 지원한다.&lt;/p>
+&lt;p>어떤 클래스의 인스턴스가 아주 많이 필요하지만 모두 똑같은 방식으로 제어해야 할 때 유용하게 쓰인다.&lt;/p>
+&lt;h2 id="구성-요소">구성 요소&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Flyweight&lt;/strong>
+&lt;ul>
+&lt;li>인스턴스를 공유할 수 있도록 만드는 인터페이스 또는 추상 클래스&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>ConcreteFlyweight&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Flyweight&lt;/code> 인터페이스를 구현하여 공유 가능한 객체&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>UnsharedConcreteFlyweight&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Flyweight&lt;/code>를 구현하지만, 공유되지 않는 경우의 객체&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>FlyweightFactory&lt;/strong>:
+&lt;ul>
+&lt;li>&lt;code>Flyweight&lt;/code> 객체를 생성하고 관리하는 역할 수행&lt;/li>
+&lt;li>객체를 공유하고, 이미 생성된 객체를 반환&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Client&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Flyweight&lt;/code> 객체를 사용하는 클라이언트 코드&lt;/li>
+&lt;li>팩토리를 통애 이미 생성된 객체를 얻어옴&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="예시">예시&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Flyweight 인터페이스
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Flyweight&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">operation&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ConcreteFlyweight 구현
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ConcreteFlyweight&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Flyweight&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">String&lt;/span> &lt;span class="n">sharedState&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="nf">ConcreteFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">sharedState&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">sharedState&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sharedState&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">operation&lt;/span>&lt;span class="o">()&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;ConcreteFlyweight: &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">sharedState&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// FlyweightFactory
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">FlyweightFactory&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">Map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">Flyweight&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">flyweights&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">HashMap&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="n">Flyweight&lt;/span> &lt;span class="nf">getFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span> &lt;span class="n">key&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(!&lt;/span>&lt;span class="n">flyweights&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">containsKey&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">flyweights&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">put&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ConcreteFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">flyweights&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Client
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Client&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">FlyweightFactory&lt;/span> &lt;span class="n">factory&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">FlyweightFactory&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Flyweight&lt;/span> &lt;span class="n">flyweight1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">factory&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Flyweight&lt;/span> &lt;span class="n">flyweight2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">factory&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;B&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Flyweight&lt;/span> &lt;span class="n">flyweight3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">factory&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getFlyweight&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;A&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">flyweight1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">operation&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="c1">// ConcreteFlyweight: A
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">flyweight2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">operation&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="c1">// ConcreteFlyweight: B
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">flyweight3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">operation&lt;/span>&lt;span class="o">();&lt;/span> &lt;span class="c1">// ConcreteFlyweight: A (이미 생성된 객체 공유)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="특징">특징&lt;/h2>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>실행 시에 객체 인스턴스의 개수를 줄여서 메모리를 절약할 수 있다.&lt;/li>
+&lt;li>여러 가상 객체의 상태를 한곳에 모아 둘 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>특정 인스턴스만 다른 인스턴스와 다르게 행동하게 할 수 없다.&lt;/li>
+&lt;li>플라이 웨이트 객체가 공유되므로, 한 객체의 상태를 변경하면 다른 객체에도 영향을 미칠 수 있다.&lt;/li>
+&lt;/ul></description></item></channel></rss>
