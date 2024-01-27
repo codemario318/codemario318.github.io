@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Visitor Pattern on Mario Blog</title><link>https://codemario318.github.io/tags/visitor-pattern/</link><description>Recent content in Visitor Pattern on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 27 Jan 2024 09:36:08 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/visitor-pattern/index.xml" rel="self" type="application/rss+xml"/><item><title>14. 다양한 패턴 빠르게 알아보기 - 비지터 패턴</title><link>https://codemario318.github.io/post/gof/15/visitor/</link><pubDate>Sat, 27 Jan 2024 09:36:08 +0900</pubDate><guid>https://codemario318.github.io/post/gof/15/visitor/</guid><description>&lt;img src="https://codemario318.github.io/post/gof/15/visitor/cover.png" alt="Featured image of post 14. 다양한 패턴 빠르게 알아보기 - 비지터 패턴" />&lt;h2 id="비지터visitor-패턴">비지터(Visitor) 패턴&lt;/h2>
+&lt;p>다양한 객체에 새로운 기능을 추가해야 하는데 캡슐화가 별로 중요하지 않다면 비지터 패턴을 쓴다.&lt;/p>
+&lt;p>비지터 패턴은 객체 구조를 정의하고, 이 구조를 기반으로 알고리즘을 캡슐화하여 새로운 알고리즘을 추가할 때 기존 코드를 수정하지 않고 확장하는 디자인 패턴 중 하나이다.&lt;/p>
+&lt;p>주로 데이터 구조와 처리를 분리하여 새로운 처리를 쉽게 추가하고 확장할 수 있도록 한다.&lt;/p>
+&lt;h2 id="특징">특징&lt;/h2>
+&lt;ul>
+&lt;li>알고리즘 분리
+&lt;ul>
+&lt;li>알고리즘을 객체 구조에서 분리하여 캡슐화하고, 각 알고리즘을 방문자(Visitor)로 정의한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>확장성 향상
+&lt;ul>
+&lt;li>새로운 알고리즘을 추가할 때 기존 코드를 수정하지 않고 확장할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="구조">구조&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/gof/15/visitor/img.png"
+width="1120"
+height="508"
+srcset="https://codemario318.github.io/post/gof/15/visitor/img_hu5149d1a48abda587777500871583b2a9_64533_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/gof/15/visitor/img_hu5149d1a48abda587777500871583b2a9_64533_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="비지터 패턴 구조"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="529px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Visitor(방문자)&lt;/strong>
+&lt;ul>
+&lt;li>객체 구조를 방문하여 각 구조에 대한 알고리즘을 수행하는 인터페이스를 정의한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>ConcreteVisitor&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Visitor&lt;/code> 인터페이스를 구현하고, 실제 알고리즘을 구현한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Element(요소)&lt;/strong>
+&lt;ul>
+&lt;li>방문자가 방문하는 객체의 언터페이스를 정의한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>ConcreteElement&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>Element&lt;/code> 인터페이스를 구현하고, 방문자의 방문을 받아들이는 메서드를 구현한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>ObjectStructure(객체 구조)&lt;/strong>
+&lt;ul>
+&lt;li>여러 요소를 포함하는 객체 구조를 정의하고, 방문자를 받아들이는 메서드를 제공한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="예시">예시&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Visitor
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Visitor&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ConcreteElementA&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ConcreteElementB&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ConcreteVisitor
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ConcreteVisitor&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Visitor&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ConcreteElementA&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Visit ConcreteElementA&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">ConcreteElementB&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Visit ConcreteElementB&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Element
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="nc">Element&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Visitor&lt;/span> &lt;span class="n">visitor&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ConcreteElement
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ConcreteElementA&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Element&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Visitor&lt;/span> &lt;span class="n">visitor&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">visitor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ConcreteElement
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ConcreteElementB&lt;/span> &lt;span class="kd">implements&lt;/span> &lt;span class="n">Element&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nd">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Visitor&lt;/span> &lt;span class="n">visitor&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">visitor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">visit&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ObjectStructure
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">ObjectStructure&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">private&lt;/span> &lt;span class="n">List&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Element&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">elements&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ArrayList&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">addElement&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Element&lt;/span> &lt;span class="n">element&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">elements&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">add&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">element&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">Visitor&lt;/span> &lt;span class="n">visitor&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">Element&lt;/span> &lt;span class="n">element&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">elements&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">element&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">visitor&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Client
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">public&lt;/span> &lt;span class="kd">class&lt;/span> &lt;span class="nc">Client&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">public&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ObjectStructure&lt;/span> &lt;span class="n">objectStructure&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ObjectStructure&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">objectStructure&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">addElement&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">ConcreteElementA&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">objectStructure&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">addElement&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">ConcreteElementB&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Visitor&lt;/span> &lt;span class="n">visitor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">ConcreteVisitor&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">objectStructure&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">accept&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">visitor&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="장단점">장단점&lt;/h2>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>알고리즘 추가의 용이성
+&lt;ul>
+&lt;li>새로운 알고리즘을 추가하거나 기존 알고리즘을 수정할 때, 기존 코드를 건드리지 않고 확장할 수 있다.&lt;/li>
+&lt;li>비교적 손쉽게 새로운 기능을 추가할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>구조와 알고리즘의 분리
+&lt;ul>
+&lt;li>비지터가 수행하는 기능과 관련된 코드를 한곳에 모아 둘 수 있다.&lt;/li>
+&lt;li>객체 구조와 알고리즘을 분리하여 코드를 보다 모듈화하고 유지보수성을 높일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>캡슐화 불가능
+&lt;ul>
+&lt;li>비지터를 사용하면 복합 클래스의 캡슐화가 깨진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>구조 변경 어려움
+&lt;ul>
+&lt;li>컬렉션 내의 모든 항목에 접근하는 트래버서(클라이언트)가 있으므로 복합 구조를 변경하기가 더 어려워진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>클래스 증가
+&lt;ul>
+&lt;li>새로운 요소나 알고리즘을 추가할 때마다 클래스의 수가 늘어난다.&lt;/li>
+&lt;li>이로 인해 클래스의 수가 많아지면 유지보수가 어려워질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>
