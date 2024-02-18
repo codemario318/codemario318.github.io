@@ -4,15 +4,25 @@ Allow: /
 
 Allow: /post/clean-architecture/1/
 
+Allow: /tags/architecture/
+
 Allow: /categories/
 
 Allow: /tags/clean-architecture/
 
 Allow: /categories/common/
 
+Allow: /tags/design/
+
 Allow: /post/
 
 Allow: /tags/
+
+Allow: /tags/%EC%84%A4%EA%B3%84/
+
+Allow: /tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+
+Allow: /tags/%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
 
 Allow: /post/gof/15/visitor/
 
