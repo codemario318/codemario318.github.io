@@ -1,4 +1,438 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 20 Feb 2024 20:33:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>4. 구조적 프로그래밍</title><link>https://codemario318.github.io/post/clean-architecture/4/</link><pubDate>Tue, 20 Feb 2024 20:33:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/4/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/4/cover.png" alt="Featured image of post 4. 구조적 프로그래밍" />&lt;p>구조적 프로그래밍(Structured Programming)은 프로그래밍의 한 접근 방법으로, 프로그램을 작성할 때 제어 흐름을 구조화하여 코드를 보다 이해하기 쉽고 유지 보수하기 쉽게 만들려는 것을 중점으로한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 25 Feb 2024 20:36:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>6. 함수형 프로그래밍</title><link>https://codemario318.github.io/post/clean-architecture/6/</link><pubDate>Sun, 25 Feb 2024 20:36:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/6/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/6/cover.png" alt="Featured image of post 6. 함수형 프로그래밍" />&lt;p>함수형 프로그래밍이라는 개념은 프로그래밍 그 자체보다 앞서 등장했다.&lt;/p>
+&lt;p>이 패러다임에서 핵심이 되는 기반은 람다(Lambda) 계산법으로 안론조 처치가 1930년대에 발명했다.&lt;/p>
+&lt;h2 id="불변성과-아키텍처">불변성과 아키텍처&lt;/h2>
+&lt;p>일반적인 언어들과 달리 함수형 언어에서는 변수가 한번 초기화되면 절대로 변경되지 않는다.&lt;/p>
+&lt;p>가변 변수로 인해 경합 조건, 교착상태 조건, 동시 업데이트 문제가 발생하는데, 만약 어떠한 변수도 갱신되지 않는다면 경합 조건이나 동시 업데이트 문제가 발생하지 않는다.&lt;/p>
+&lt;p>락(lock)이 가변적이지 않다면 교착상태도 일어나지 않는다.&lt;/p>
+&lt;p>동시성 애플리케이션에서 마주치는 모든 문제, 즉 다수의 스레드와 프로세스를 사용하는 애플리케이션에서 마주치는 모든 문제는 가변 변수가 없다면 절대로 생기지 않는다.&lt;/p>
+&lt;p>불변성은 저장 공간이 무한하고 프로세서의 속도가 무한히 빠르다면 보장 가능하지만 그럴 수 없으므로 어느정도 타협이 필요하다.&lt;/p>
+&lt;h2 id="가변셩의-분리">가변셩의 분리&lt;/h2>
+&lt;p>불변성과 관련하여 가장 주요한 타협 중 하나는 애플리케이션 또는 애플리케이션 내부의 서비스를 가변 컴포넌트와 불변 컴포넌트로 분리하는 일이다.&lt;/p>
+&lt;p>불변 컴포넌트에서는 순수하게 함수형 방식으로만 작업이 처리되며, 어떤 가변 변수도 사용되지 않는다.&lt;/p>
+&lt;p>불변 컴포넌트는 변수의 상태를 변경할 수 있는, 죽 순수 함수형 컴포넌트가 아닌 하나 이상의 다른 컴포넌트와 서로 통신한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/6/img.png"
+width="574"
+height="396"
+srcset="https://codemario318.github.io/post/clean-architecture/6/img_hu99e785152b719343990f143a06772634_81872_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/6/img_hu99e785152b719343990f143a06772634_81872_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="상태 변경과 트랜잭션 메모리"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/p>
+&lt;p>상태 변경은 컴포넌트를 갖가지 동시성 문제에 노출하는 꼴이므로, 흔히 트랜잭션 메모리와 같은 실천법을 사용하여 동시 업데이트와 경합 조건 문제로부터 가변 변수를 보호한다.&lt;/p>
+&lt;p>트랜잭션 메모리는 트랜잭션을 사용하거나 도는 재시도 기법을 통해 변수를 보호한다.&lt;/p>
+&lt;p>애플리케이션을 제대로 구조화하려면 변수를 변경하는 컴포넌트와 변경하지 않는 컴포넌트를 분리해야한다.&lt;/p>
+&lt;p>그리고 이렇게 분리하려면 가변 변수들을 보호하는 적절한 수단을 동원해 뒷받침해야한다.&lt;/p>
+&lt;p>현명한 아키텍트라면 가능한 한 많은 처리를 불변 컴포넌트로 옮겨야 하고, 가변 컴포넌트에서는 가능한 한 많은 코드를 빼내야 한다.&lt;/p>
+&lt;h2 id="이벤트-소싱">이벤트 소싱&lt;/h2>
+&lt;p>이벤트 소싱은 상태가 아닌 트랜잭션을 저장하자는 전략이다.&lt;/p>
+&lt;p>상태가 필요해지면 단순히 상태의 시작점부터 모든 트랜잭션을 처리한다.&lt;/p>
+&lt;p>이 전략은 많은 저장 공간을 필요로 하지만 현재는 저장 공간을 충분히 확보할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 저장소에서 삭제되거나 변경되는 것이 하나도 없으므로, 결과적으로 애플리케이션은 CRUD가 아닌 그저 CR만 수행한다.&lt;/li>
+&lt;li>데이터 저장소에서 변경과 삭제가 전혀 발생하지 않으므로 동시 없데이트 문제 또한 일어나지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>저장 공간과 처리 능력이 충분하면 완전한 불변성을 갖도록 만들 수 있고, 따라서 완전한 함수형으로 만들 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>버전 관리 시스템이 정확히 이방식으로 동작한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;ul>
+&lt;li>구조적 프로그래밍은 제어흐름의 직접적인 전환에 부과되는 규율이다.&lt;/li>
+&lt;li>객체 지향 프로그래밍은 제어흐름의 간접적인 전환에 부과되는 규율이다.&lt;/li>
+&lt;li>함수형 프로그래밍은 변수 할당에 부과되는 규율이다.&lt;/li>
+&lt;/ul>
+&lt;p>세 패러다임 모두 무언가를 하지 못하게 제한하고 있으며, 코드를 작성하는 방식의 형태를 한정시킨다.&lt;/p>
+&lt;p>지난 반세기 동안 우리가 배운 것은 &lt;strong>해서는 안되는 것&lt;/strong>에 대해서이다.&lt;/p>
+&lt;p>도구는 달라졌고 소프트웨어도 변했지만, 소프트웨어는 순차, 분기, 반복 참조로 구성된다는 것은 변하지 않았다.&lt;/p></description></item><item><title>5. 객체 지향 프로그래밍</title><link>https://codemario318.github.io/post/clean-architecture/5/</link><pubDate>Sun, 25 Feb 2024 17:46:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/5/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/5/cover.png" alt="Featured image of post 5. 객체 지향 프로그래밍" />&lt;p>좋은 아키텍처를 만드는 일은 객체 지향 설계 원칙을 이해하고 응용하는 데서 출발한다.&lt;/p>
+&lt;h2 id="object-oriented란-무엇인가">Object Oriented란 무엇인가?&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>데이터와 함수의 조합&lt;/strong>
+&lt;ul>
+&lt;li>대체로 이런 방식으로 많이 설명되지만 만족스러운 대답은 아니다.&lt;/li>
+&lt;li>&lt;code>o.f()&lt;/code>가 &lt;code>f(o)&lt;/code>와 다르다는 의미를 내포한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>실제 세계를 모델링하는 새로운 방법&lt;/strong>
+&lt;ul>
+&lt;li>얼버무리는 수준에 지나지 않는다. 의도가 불분명하며, 정의가 너무 모호하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>캡슐화, 상속, 다형성
+&lt;ul>
+&lt;li>세가지 개념을 적절하게 조합한 것&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="캡슐화encapsulation">캡슐화(Encapsulation)?&lt;/h2>
+&lt;p>OO를 정의하는 요소 중 하나로 캡슐화를 언급하는 이유는 데이터와 함수를 쉽고 효과적으로 캡슐화하는 방법을 OO 언어가 제공하기 때문이다.&lt;/p>
+&lt;p>이를 통해 데이터와 함수가 응집력 있게 구성된 집단을 서로 구분할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>private&lt;/code>, &lt;code>public&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>하지만 이러한 개념은 OO에만 국한된 것은 아니다.&lt;/p>
+&lt;p>&lt;strong>point.h&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">makePoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">double&lt;/span> &lt;span class="nf">distance&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>point.c&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;point.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;math.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">makepoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">double&lt;/span> &lt;span class="nf">distance&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">p1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">p2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">p1&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">p2&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">dy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">p1&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">p2&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nf">sqrt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dy&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dy&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 예시에서 &lt;code>point.h&lt;/code>를 사용하는 측에서 &lt;code>struct Point&lt;/code>의 멤버에 접근할 방법이 전혀 없다.&lt;/p>
+&lt;ul>
+&lt;li>사용자는 &lt;code>makePoint()&lt;/code> 함수와 &lt;code>distance()&lt;/code> 함수를 호출할 수는 있지만, &lt;code>Point&lt;/code> 구조체의 데이터 구조와 함수가 어떻게 구현되었는지에 대해서는 조금도 알지 못한다.&lt;/li>
+&lt;/ul>
+&lt;p>이것이 완벽한 캡슐화이며, OO가 아닌 언어에서도 충분히 가능하다.&lt;/p>
+&lt;p>오히려 OO를 지원하는 언어들이 캡슐화를 훼손하고 있는 경우가 많아 언어에 &lt;code>public&lt;/code>, &lt;code>private&lt;/code>, &lt;code>protected&lt;/code> 키워드를 도입하여 불완전한 캡슐화를 보완한다.&lt;/p>
+&lt;ul>
+&lt;li>C++는 컴파일러가 클래스의 인스턴스 크기를 알아야하는 기술적인 이유로 클래스의 멤버변수를 해당 클래스의 헤더파일에 선언해야하고, 이로인해 사용측에서 멤버변수의 존재를 알게된다.&lt;/li>
+&lt;li>자바, C#은 헤더와 구현체를 분리하는 방식을 버렸다. 이로인해 클래스 선언과 정의를 구분하는게 불가능하다.&lt;/li>
+&lt;/ul>
+&lt;p>이 때문에 OO가 강력한 캡슐화에 의존한다는 정의는 받아들이기 힘들며, 대부분의 OO를 제공하는 언어들이 실제로는 C언어에서 누렸던 완벽한 캡슐화를 약화시켰다.&lt;/p>
+&lt;ul>
+&lt;li>많은 언어가 캡슐화를 거의 강제하지 않는다.&lt;/li>
+&lt;li>OO 프로그래밍은 프로그래머가 캡슐화를 우회하지 않을 것 이라는 믿음을 기반으로 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="상속">상속?&lt;/h2>
+&lt;p>OO 언어가 더 나은 캡슐화를 제공하지는 못했지만, 상속만큼은 확실히 제공했다.&lt;/p>
+&lt;p>하지만 상속이란 단순히 어떤 변수와 함수를 하나의 유효 범위로 묶어 재정의하는 일에 불과하다.&lt;/p>
+&lt;p>&lt;strong>namedPoint.h&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">makeNamedPoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">setName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">getName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>namedPoint.c&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;NamedPoint.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">makeNmaedPoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">double&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">double&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">p&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">setName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">np&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">getName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">NmaedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>main.c&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;point.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;namedPoint.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">ac&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">**&lt;/span> &lt;span class="n">av&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">origin&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">makeNamedPoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;origin&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">NamedPoint&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">upperRight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">makeNamedPoint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;upperRight&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;distance=%f&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">distance&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">origin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// namedPoint를 point로 쓰고있음
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="n">Point&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">upperRight&lt;/span> &lt;span class="c1">// namedPoint를 point로 쓰고있음
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>main&lt;/code> 프로그램을 살펴보면 &lt;code>NamedPoint&lt;/code> 데이터 구조가 &lt;code>Point&lt;/code> 데이터 구조로부터 파생된 구조인 것 처럼 동작한다는 사실을 볼 수 있다.&lt;/p>
+&lt;p>이처럼 눈속임처럼 보이는 방식은 OO가 출현하기 이전부터 프로그래머가 흔히 사용했던 기법이다. 실제로 C++은 이 방법을 이용해 단일 상속을 구현하였다.&lt;/p>
+&lt;p>OO 언어가 고안되기 훨씬 이전에도 상속과 비슷한 기법이 사용되었지만, 상속만큼 편리한 방식은 절대 아니다.&lt;/p>
+&lt;p>따라서 OO 언어가 완전히 새로운 개념을 만들지는 못했지만, 상당히 편리한 방식으로 제공했다고 볼 수 있다.&lt;/p>
+&lt;h2 id="다형성">다형성?&lt;/h2>
+&lt;p>OO 언어가 있기 이전에도 다형성을 표현할 수 있었다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">copy&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">getchar&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">EOF&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">putchar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>getchar()&lt;/code>는 &lt;code>STDIN&lt;/code>에서 문자를 읽고, &lt;code>putchar()&lt;/code>는 &lt;code>STDOUT&lt;/code>으로 문자를 쓴다.&lt;/p>
+&lt;p>&lt;code>STDIN&lt;/code>과 &lt;code>STDOUT&lt;/code>은 다양한 장치가 될 수 있기 때문에 이러한 함수는 다형적(Polymorphic)이다.&lt;/p>
+&lt;p>유닉스 운영체제의 경우 모든 입출력 장치 드라이버가 다섯 가지 표준 함수를 제공할 것을 요구한다&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>open&lt;/code>, &lt;code>close&lt;/code>, &lt;code>read&lt;/code>, &lt;code>write&lt;/code>, &lt;code>seek&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>FILE&lt;/code> 데이터 구조는 이들 다섯 함수를 가리키는 포인터들을 포함한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">FILE&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">open&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">close&lt;/span>&lt;span class="p">)();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">read&lt;/span>&lt;span class="p">)();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">seek&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">long&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>입출력 드라이버에서는 이들 함수를 아래와 같이 전의하며, &lt;code>FILE&lt;/code> 데이터 구조를 함수에 대한 주소와 함께 로드한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;file.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/* ... */&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">close&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/* ... */&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">read&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/* ... */&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">seek&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">long&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/* ... */&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">FILE&lt;/span> &lt;span class="n">console&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="n">open&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">close&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">read&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">write&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">seek&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>STDIN&lt;/code>을 &lt;code>FILE*&lt;/code>로 선언하면 콘솔 데이터 구조를 가리키므로, &lt;code>getchar()&lt;/code>는 아래와 같은 방식으로 구현할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">extern&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">FILE&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">STDIN&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">getchar&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">STDIN&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="nf">read&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>다시말해 &lt;code>getchar()&lt;/code>는 &lt;code>STDIN&lt;/code>으로 참초되는 &lt;code>FILE&lt;/code> 데이터 구조의 &lt;code>read&lt;/code> 포인터가 가르키는 함수를 단순히 호출할 뿐이다.&lt;/p>
+&lt;p>이처럼 단순한 기법이 모든 OO가 지는 다형성이 근간이 되며, 즉 함수를 가리키는 포인터를 응용한 것이 다형성이고 OO가 새롭게 만든 개념이 아니다.&lt;/p>
+&lt;p>하지만, OO 언어는 좀 더 안전하고 편리하게 사용할 수 있게 해준다.&lt;/p>
+&lt;ul>
+&lt;li>함수 포인터를 사용하기 위한 관례들을 없애 실수할 위험이 없다.&lt;/li>
+&lt;/ul>
+&lt;p>OO는 제어흐름을 간점적으로 전환하는 규칙을 부과한다고 결론 지을 수 있다. (??)&lt;/p>
+&lt;h3 id="다형성이-가진-힘">다형성이 가진 힘&lt;/h3>
+&lt;p>복사 프로그램 예제에서 새로운 입출력 장치가 생겨도 프로그램의 아무런 변경이 필요하지 않다.&lt;/p>
+&lt;ul>
+&lt;li>복사 프로그램의 소스 코드는 입출력 드라이버의 소스 코드에 의존하지 않기 때문이다.&lt;/li>
+&lt;li>입출력 드라이버가 &lt;code>FILE&lt;/code>에 정의된 다섯가지 표준 함수를 구현한다면, 복사 프로그램에서는 어떠한 입출력 드라이버도 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>플러그인 아키텍처(Plugin architecture)&lt;/strong>&lt;/p>
+&lt;p>플러그인 아키텍처는 이처럼 입출력 장치 독립성을 지원하기 위해 만들어졌고, 등장 이후 거의 모든 운영체제에서 구현되었다.&lt;/p>
+&lt;p>그런데도 대다수의 프로그래머는 함수 포인터의 위험함 때문에 이러한 개념을 확장하여 적용하지 않았는데, OO의 등장으로 언제 어디서든 플러그인 아키텍처를 적용할 수 있게 되었다.&lt;/p>
+&lt;h3 id="의존성-역전">의존성 역전&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/5/img_1.png"
+width="437"
+height="218"
+srcset="https://codemario318.github.io/post/clean-architecture/5/img_1_hu9d7ba88c223125c910483171079777bc_7404_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/5/img_1_hu9d7ba88c223125c910483171079777bc_7404_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="소스 코드 의존성 vs. 제어흐름"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="481px"
+>&lt;/p>
+&lt;p>다형성을 안전하고 편리하게 적용할 수 있기 전에는 &lt;code>main&lt;/code> 함수가 고수준 함수를 호출하고, 고수준 함수는 다시 중간 수준 함수를, 중간 수준 함수는 저수준 함수를 호출한다.&lt;/p>
+&lt;p>이로인해 소스 코드 의존성의 방향은 반드시 제어흐름을 따르게 된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/5/img.png"
+width="694"
+height="280"
+srcset="https://codemario318.github.io/post/clean-architecture/5/img_hu57338117272e8a2dea8d6af8f8d33249_6758_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/5/img_hu57338117272e8a2dea8d6af8f8d33249_6758_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="의존성 역전"
+class="gallery-image"
+data-flex-grow="247"
+data-flex-basis="594px"
+>&lt;/p>
+&lt;p>하지만 다형성을 활용하면 의존성의 방향이 바뀐다.&lt;/p>
+&lt;p>&lt;code>HL1&lt;/code> 모듈은 &lt;code>ML1&lt;/code> 모듈의 &lt;code>F()&lt;/code> 함수를 호출한다. 하지만 &lt;code>ML1&lt;/code>과 &lt;code>I&lt;/code> 인터페이스 사이의 소스 코드 의존성(상속 관계)이 제어흐름과는 반대이다.&lt;/p>
+&lt;p>이는 의존성 역전(Dependency inversion)이라고 부르며, 소프트웨어 아키텍처 관점에서 이러한 현상은 &lt;strong>소스 코드 의존성을 어디에서든 역전시킬 수 있다는 뜻&lt;/strong>이기도 하다.&lt;/p>
+&lt;p>이러한 접근법을 사용한다면, OO 언어로 개발된 시스템을 다루는 소프트웨어 아키텍트는 시스템의 소스 코드 의존성 전부에 대한 방향을 결정할 수 있는 절대적인 권한을 가지게 된다.&lt;/p>
+&lt;ul>
+&lt;li>소스 코드 의존성이 제어흐름의 방향과 일치되도록 제한되지 않는다.&lt;/li>
+&lt;li>호출하는 모듈이든 호출 받는 모듈이든 관계없이 소스 코드 의존성을 원하는 방향으로 설정할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/5/img_3.png"
+width="1024"
+height="249"
+srcset="https://codemario318.github.io/post/clean-architecture/5/img_3_hued8899400c7beef5f29f65994b9e40d6_214660_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/5/img_3_hued8899400c7beef5f29f65994b9e40d6_214660_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="411"
+data-flex-basis="986px"
+>&lt;/p>
+&lt;p>위 와 같은 경우 업무 규칙이 데이터베이스와 UI에 의존하는 대신에, 시스템의 소스코드 의존성을 반대로 배치하여 데이터베이스와 UI가 업무 규칙에 의존하게 만들 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>UI와 데이터베이스가 업무 규칙의 플러그인이 된다는 뜻이다.&lt;/li>
+&lt;li>업무 규칙의 소스 코드에서는 UI나 데이터베이스를 호출하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>결과적으로 업무 규칙, UI, 데이터베이스는 세 가지로 분리된 컴포넌트 또는 배포 가능한 단위로 컴파일할 수 있고, 의존하지 않기 때문에 각 컴포넌트들을 독립적으로 배포할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>특정 컴포넌트의 소스 코드가 변경되면, 해당 코드가 포함된 컴포넌트만 다시 배포한다.&lt;/li>
+&lt;li>이를 배포 독립성(Independent deployability)이라고 한다.&lt;/li>
+&lt;li>시스템의 모듈을 독립적으로 배포할 수 있게 되면, 다른 팀에서 각 모듈을 독립적으로 개발할 수 있고, 이것을 개발 독립성 이라 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>소프트웨어 아키텍트 관점에서 OO란 다형성을 이용하여 전체 시스템의 모든 소스코드 의존성에 대한 절대적인 제어 권한을 획득할 수 있는 능력이다.&lt;/p>
+&lt;p>OO를 사용하면 아키텍트는 플러그인 아키텍처를 구성할 수 있고, 이를 통해 고수준의 전책을 포함하는 모듈은 저수순의 세부사항을 포함하는 모듈에 대해 독립성을 보장할 수 있다.&lt;/p>
+&lt;p>저수준의 세부사항은 중요도가 낮은 플러그인 모듈로 만들 수 있고, 고수준의 정책을 포함하는 모듈과는 독립적으로 개발하고 배포할 수 있다.&lt;/p></description></item><item><title>4. 구조적 프로그래밍</title><link>https://codemario318.github.io/post/clean-architecture/4/</link><pubDate>Tue, 20 Feb 2024 20:33:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/4/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/4/cover.png" alt="Featured image of post 4. 구조적 프로그래밍" />&lt;p>구조적 프로그래밍(Structured Programming)은 프로그래밍의 한 접근 방법으로, 프로그램을 작성할 때 제어 흐름을 구조화하여 코드를 보다 이해하기 쉽고 유지 보수하기 쉽게 만들려는 것을 중점으로한다.&lt;/p>
 &lt;p>구조적 프로그래밍은 프로그래밍 분야에서 중요한 발전 중 하나로, 초기 프로그래밍 방법론이 가진 한계(복잡성, 프로그래밍 실수, 소프트웨어 신뢰성 등)를 극복하고자 탄생하였다.&lt;/p>
 &lt;h2 id="goto문의-해로움">&lt;code>goto&lt;/code>문의 해로움&lt;/h2>
 &lt;p>구조적 프로그래밍을 발견한 데이크스트라는 프로그래밍은 어렵고, 프로그래머는 프로그래밍을 잘하지 못한다고 생각하였는제 아래와 같은 이유가 원인이라고 생각했다.&lt;/p>
