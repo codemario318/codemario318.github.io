@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>SRP on Mario Blog</title><link>https://codemario318.github.io/tags/srp/</link><description>Recent content in SRP on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 29 Feb 2024 16:27:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/srp/index.xml" rel="self" type="application/rss+xml"/><item><title>7. 단일 책임 원칙</title><link>https://codemario318.github.io/post/clean-architecture/7/</link><pubDate>Thu, 29 Feb 2024 16:27:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/7/cover.png" alt="Featured image of post 7. 단일 책임 원칙" />&lt;h2 id="solid">SOLID&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>SOLID 원칙&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>함수와 데이터 구조를 클래스로 배치하는 방법&lt;/li>
+&lt;li>클래스를 서로 결합하는 방법&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>좋은 소프트웨어 시스템은 깔끔한 코드(Clean Code)를 전제한다.&lt;/p>
+&lt;p>하지만 깔끔한 코드를 사용한다고 하더라도 아키텍처가 좋지 못하다면 좋은 소프트웨어 시스템을 만들 수 없기 때문에 깔끔한 코드로 좋은 아키텍처를 정의하는 원칙이 필요하다.&lt;/p>
+&lt;p>SOLID 원칙의 목적은 &lt;strong>중간 수준의 소프트웨어 구조&lt;/strong>가 아래와 같도록 만드는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>변경에 유연&lt;/li>
+&lt;li>이해하기 쉬움&lt;/li>
+&lt;li>많은 소프트웨어 시스템에 사용될 수 있는 컴포넌트의 기반&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>중간 수준&lt;/strong>의미는?&lt;br>
+프로그래머가 이들 원칙을 &lt;strong>모듈 수준&lt;/strong>에서 작업할 때 적용할 수 있다.&lt;br>
+코드 수준보다는 조금 더 상위에서 적용되며 모듈과 컴포넌트 내부에서 사용되는 소프트웨어 구조를 정의하는 데 도움을 준다.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;strong>SRP: Single Responsibility Principle, 단일 책임 원칙&lt;/strong>
+&lt;ul>
+&lt;li>콘웨이(Conway) 법칙
+&lt;ul>
+&lt;li>조직이 설계한 시스템은 해당 조직의 커뮤니케이션 구조를 반영한다.&lt;/li>
+&lt;li>조직의 내부 구조와 상호 작용 방식은 그 조직이 개발하는 소프트웨어의 구조와 유사해진다.&lt;/li>
+&lt;li>조직 내에 분산된 팀이 서로 간의 교류가 원할하지 않을 경우 개발하는 소프트웨어도 모듈화 인터페이스 설계에 문제가 발생한다.&lt;/li>
+&lt;li>따름 정리:
+&lt;ul>
+&lt;li>특정한 제한을 둔 조직 구조가 특정한 형태의 소프트웨어 아키텍처를 유도한다.&lt;/li>
+&lt;li>특정한 형테의 조직 구조가 특정한 형태의 소프트웨어 아키텍처를 촉진하거나 제한할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>따라서 각 소프트웨어의 모듈은 변경의 이유가 하나여야만 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>OCP: Open-Closed Principle, 개방 폐쇠 원칙&lt;/strong>
+&lt;ul>
+&lt;li>기존 코드를 수정하기보다는 반드시 새로운 코드를 추가하는 방식으로 시스템의 행위를 변경할 수 있도록 설계해야만 시스템을 쉽게 변경할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>LSP: Liskov Substitution Principle, 리스코프 치환 원칙&lt;/strong>
+&lt;ul>
+&lt;li>상호 대체 가능한 구성요소를 이용해 소프트웨어 시스템을 만들 수 있으려면, 구성요소는 반드시 서로 치환 가능해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>ISP: Interface Segregation Principle, 인터페이스 분리 원칙&lt;/strong>
+&lt;ul>
+&lt;li>사용하지 않은 것에 의존하지 않아야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>DIP: Dependency Inversion Principle, 의존성 역전 원칙&lt;/strong>
+&lt;ul>
+&lt;li>고수준 정책을 구현하는 코드는 저수준 세보사항을 구현하는 코드에 절대로 의존해서는 안된다.&lt;/li>
+&lt;li>세부사항이 정책에 의존해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="srp-단일-책임-원칙">SRP: 단일 책임 원칙&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>단일 모듈은 변경의 이유가 하나, 오직 하나뿐이어야 한다.&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;p>소프트웨어 시스템은 사용자와 이해관계자를 만족시키기 위해 변경된다.&lt;/p>
+&lt;p>따라서 SRP가 말하는 변경의 이유는 **사용자와 이해관계자 집단(액터, Actor)**을 의미하며, 이러한 관점에서 단일 책임 원칙은 다음과 같이 말할 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>하나의 모듈은 한의 액터에 대해서만 책임져야 한다&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>모듈이란?&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>소스 파일&lt;/li>
+&lt;li>단순히 함수와 데이터 구조로 음집된 집합&lt;/li>
+&lt;/ul>
+&lt;p>단일 액터를 책임지는 코드르 함께 묶어주는 힘이 바로 &lt;strong>응집성 Cohesion&lt;/strong>이다.&lt;/p>
+&lt;h3 id="징후-1-우발적-중복">징후 1: 우발적 중복&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Employee {
+calculatePay()
+reportHours()
+save()
+}
+&lt;/pre>
+&lt;ul>
+&lt;li>&lt;code>calculatePay()&lt;/code>
+&lt;ul>
+&lt;li>회계팀에서 기능을 정의&lt;/li>
+&lt;li>CFO 보고를 위해 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>reportHours()&lt;/code>
+&lt;ul>
+&lt;li>인사팀에서 기능을 정의하고 사용&lt;/li>
+&lt;li>COO 보고를 위해 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>save()&lt;/code>
+&lt;ul>
+&lt;li>DBA가 기능을 정의&lt;/li>
+&lt;li>CTO 보고를 위해 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>Employee&lt;/code> 클래스는 서로 매우 다른 액터를 책임지기 때문에 SRP를 위반하게 된다.&lt;/p>
+&lt;p>&lt;code>Employee&lt;/code>는 단일 클래스 내의 각각 다른 액터를 책임지는 메서드들로 인해 액터간의 결합이 발생하였고, 이러한 결합으로 인해 의존하는 무언가에 영향을 줄 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart TD
+a[calculatePay]
+b[reportHours]
+c[regularHours]
+a --> c
+b --> c
+&lt;/pre>
+&lt;p>위 처럼 &lt;code>calculatePay&lt;/code>와 &lt;code>reportHours&lt;/code> 메소드의 시간 계산 코드 중복을 피하기 위해 &lt;code>regularHours&lt;/code> 메소드를 추가했다고 가정하고, &lt;code>calculatePay&lt;/code>의 정책 변경으로 인해 &lt;code>reqularHours&lt;/code> 메소드를 일부 변경했다.&lt;/p>
+&lt;p>이러한 경우 해당 메소드와 연관된 액터가 CFO, COO 둘이지만, CFO의 요구사항으로 변경되었기 때문에 변경을 원하지 않는 COO의 기능에도 영향을 미치게 되는데, 관심사가 달라 의존 관계를 확인하기 어려워 확인이 누락이 될 수 있다.&lt;/p>
+&lt;p>(이로인해 &lt;code>reportHours&lt;/code> 메소드에서는 이러한 변경으로 인해 잘못된 결과를 얻을 수 있다.)&lt;/p>
+&lt;p>결과적으로 이러한 문제는 &lt;strong>서로 다른 액터가 의존하는 코드를 너무 가까이 배치&lt;/strong>했기 때문에 발생한 문제이며, SRP는 이러한 문제를 &lt;strong>서로 다른 액터가 의존하는 코드를 서로 분리&lt;/strong>하여 예방하라고 말하고 있다.&lt;/p>
+&lt;h3 id="징후-2-병합">징후 2: 병합&lt;/h3>
+&lt;p>메서드가 서로 다른 액터를 책임진다면 병합이 발생할 가능성이 확실히 더 높아진다.&lt;/p>
+&lt;p>많은 사람이 서로 다른 목적으로 동일한 소스 파일을 변경하는 경우에 발생한다.&lt;/p>
+&lt;ul>
+&lt;li>다른 목적으로 인해 같은 코드를 변경할 가능성이 높아지고 이로인해 변경사항이 충돌할 여지가 많다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 문제는 서로 다른 액터를 뒷받침하는 코드를 서로 분리하는 것으로 이러한 문제를 벗어날 수 있다.&lt;/p>
+&lt;h3 id="해결책">해결책&lt;/h3>
+&lt;p>이 문제의 해결책은 다양하지만, 모두 메서드를 각기 다른 클래스로 이동시키는 것은 공통적으로 포함한다.&lt;/p>
+&lt;p>가장 확실한 해결책은 데이터와 메서드를 분리하는 방식으로, 아무런 메서드가 없는 데이터 구조인 &lt;code>EmployeeData&lt;/code> 클래스를 만들어 세 개의 클래스가 공유하도록 만든다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction LR
+class EmployeeData {
+datas...
+}
+class PayCalculator {
+calculatePay()
+}
+class HourReporter {
+reportHours()
+}
+class EmployeeSaver {
+saveEmployee()
+}
+PayCalculator --> EmployeeData
+HourReporter --> EmployeeData
+EmployeeSaver --> EmployeeData
+&lt;/pre>
+&lt;p>세 클래스는 서로의 존재를 모르기 때문에 &lt;strong>우연한 중복&lt;/strong>을 피할 수 있다.&lt;/p>
+&lt;p>위 방식은 개발자가 세 가지 클래스를 인스턴스화하고 추적해야 한다는 단점이 있는데, 퍼사드 패턴을 활용하여 개선이 가능하다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction LR
+class EmployeeFacade {
+calculatePay()
+reportHours()
+save()
+}
+class EmployeeData {
+datas...
+}
+class PayCalculator {
+calculatePay()
+}
+class HourReporter {
+reportHours()
+}
+class EmployeeSaver {
+saveEmployee()
+}
+EmployeeFacade --> PayCalculator
+EmployeeFacade --> HourReporter
+EmployeeFacade --> EmployeeSaver
+PayCalculator --> EmployeeData
+HourReporter --> EmployeeData
+EmployeeSaver --> EmployeeData
+&lt;/pre>
+&lt;p>중요한 업무 규칙을 데이터와 가깝게 배치하는 방식을 원한다면 아래와 같이 구성할 수도 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction LR
+class Employee {
+employeeData
+calculatePay()
+reportHours()
+save()
+}
+class HourReporter {
+reportHours()
+}
+class EmployeeSaver {
+saveEmployee()
+}
+Employee --> HourReporter
+Employee --> EmployeeSaver
+&lt;/pre>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>단일 책임 원칙은 &lt;strong>메서드와 클래스 수준의 원칙&lt;/strong>이다.&lt;/p>
+&lt;p>하지만 이보다 상위 두 수준에서도 다른 형태로 다시 등장한다.&lt;/p>
+&lt;ul>
+&lt;li>컴포넌트 수준: 공통 폐쇄 원칙(Common Closure Principle)&lt;/li>
+&lt;li>아키텍처 수준: 아키텍쳐 경계(Architectural Boundaray)의 생성을 책임지는 변경의 축(Axis of Change)&lt;/li>
+&lt;/ul></description></item></channel></rss>

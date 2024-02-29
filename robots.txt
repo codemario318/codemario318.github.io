@@ -2,7 +2,7 @@ User-agent: *
 
 Allow: /
 
-Allow: /post/clean-architecture/6/
+Allow: /post/clean-architecture/7/
 
 Allow: /tags/architecture/
 
@@ -14,11 +14,13 @@ Allow: /categories/common/
 
 Allow: /tags/design/
 
-Allow: /tags/fp/
-
-Allow: /tags/functional-programming/
-
 Allow: /post/
+
+Allow: /tags/single-responsibility-principle/
+
+Allow: /tags/solid-%EB%8B%A8%EC%9D%BC-%EC%B1%85%EC%9E%84-%EC%9B%90%EC%B9%99/
+
+Allow: /tags/srp/
 
 Allow: /tags/
 
@@ -27,6 +29,12 @@ Allow: /tags/%EC%84%A4%EA%B3%84/
 Allow: /tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
 
 Allow: /tags/%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+
+Allow: /post/clean-architecture/6/
+
+Allow: /tags/fp/
+
+Allow: /tags/functional-programming/
 
 Allow: /tags/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/
 
