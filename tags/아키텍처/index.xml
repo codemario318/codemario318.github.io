@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>아키텍처 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/</link><description>Recent content in 아키텍처 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 29 Feb 2024 16:27:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/index.xml" rel="self" type="application/rss+xml"/><item><title>7. 단일 책임 원칙</title><link>https://codemario318.github.io/post/clean-architecture/7/</link><pubDate>Thu, 29 Feb 2024 16:27:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/7/cover.png" alt="Featured image of post 7. 단일 책임 원칙" />&lt;h2 id="solid">SOLID&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>아키텍처 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/</link><description>Recent content in 아키텍처 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 01 Mar 2024 09:06:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/index.xml" rel="self" type="application/rss+xml"/><item><title>8. 개방 폐쇄 원칙</title><link>https://codemario318.github.io/post/clean-architecture/8/</link><pubDate>Fri, 01 Mar 2024 09:06:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/8/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/8/cover.png" alt="Featured image of post 8. 개방 폐쇄 원칙" />&lt;blockquote>
+&lt;p>소프트웨어 개체(Artifact)는 확장에는 열려 있어야 하고, 변경에는 닫혀 있어야 한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>개방 폐쇄 원칙은 소프트웨어 개체의 행위는 확장할 수 있어야 하지만, 이때 개체를 변경해서는 안된다는 원칙이다.&lt;/p>
+&lt;p>요구사항을 살짝 확장하는 데 소프트웨어를 많이 수정해야 한다면, 그 소프트웨어 시스템을 설계한 아키텍트는 엄청난 실패에 맞닥뜨린 것이다.&lt;/p>
+&lt;p>OCP는 클래스와 모듈을 설계할 때 도움이 되는 원칙으로 알려져 있지만, &lt;strong>아키텍처 컴포넌트 수준에서 고려할 때 훨씬 중요한 의미를 가진다.&lt;/strong>&lt;/p>
+&lt;h2 id="사고-실험-재무제표-시스템">사고 실험: 재무제표 시스템&lt;/h2>
+&lt;p>&lt;strong>요구사항&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>웹 페이지에 표시되는 데이터는 스크롤할 수 있음&lt;/li>
+&lt;li>음수는 빨간색으로 출력&lt;/li>
+&lt;li>추가 요구 사항: 동일한 정보를 보고서 형태로 변환해서 흑백 프린터로 출력 가능
+&lt;ul>
+&lt;li>페이지 번호가 제대로 메겨져 있어야 함&lt;/li>
+&lt;li>페이지마다 적절한 머리글과 바닥글 있어야 함&lt;/li>
+&lt;li>표의 각 열에는 레이블이 있어야 함&lt;/li>
+&lt;li>음수는 괄호로 감싸야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>소프트웨어 아키텍처가 훌륭하다면 추가 요구사항에 따라 변경되는 코드의 양이 가능한 최소화 될 것이다.(이상적인 변경량은 0)&lt;/p>
+&lt;p>이러한 경우 &lt;strong>서로 다른 목적으로 변경되는 요소를 적절하게 분리&lt;/strong>하고(단일 책임 원칙), 이들 &lt;strong>요소 사이의 의존성을 체계화&lt;/strong>함으로(의존성 역전 원칙) 변경량을 최소화 할 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+a[재무 데이터]
+b((재무 분석기))
+c[보고서용 재무 데이터]
+d((보고서를 웹에 표시))
+e((보고서를 프린터로 출력))
+a --> b
+b --> c
+c --> d
+c --> e
+&lt;/pre>
+&lt;ul>
+&lt;li>보고서 생성이 두 개의 책임으로 분리 &amp;gt; 웹, 프린터
+&lt;ul>
+&lt;li>책임을 분리했다면, 책임 중 하나에서 변경이 발생하더라도 다른 하나는 변경되지 않도록 의존성도 확실히 조직화 해야한다.&lt;/li>
+&lt;li>행위가 확장될 때 변경이 발생하지 않음을 보장해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 목적을 달성하려면 &lt;strong>처리과정을 클래스 단위로 분할&lt;/strong>, &lt;strong>컴포넌트 단위로 구분&lt;/strong>해야 한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/8/img_1.png"
+width="1596"
+height="1320"
+srcset="https://codemario318.github.io/post/clean-architecture/8/img_1_hu67afed36bbb285aef637bc2b5de4e81c_785295_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/8/img_1_hu67afed36bbb285aef637bc2b5de4e81c_785295_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="290px"
+>&lt;/p>
+&lt;ul>
+&lt;li>모든 의존성이 소스 코드 의존성을 나타낸다.
+&lt;ul>
+&lt;li>&lt;code>FinancialDataMapper&lt;/code>는 구현 관계를 통해 &lt;code>FinancialDataGateway&lt;/code>를 알고 있지만, &lt;code>FinancialDataGateway&lt;/code>는 &lt;code>FinancialDataMapper&lt;/code>에 대해 알지 못한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>이중선은 화살표와 오직 한 방향으로만 교차한다.
+&lt;ul>
+&lt;li>모든 컴포넌트 관계는 단 방향으로 이루어진다.&lt;/li>
+&lt;li>화살표는 변경으로부터 보호하려는 컴포넌트를 향하도록 그려진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/8/img.png"
+width="1734"
+height="918"
+srcset="https://codemario318.github.io/post/clean-architecture/8/img_hua4d495848552290f72309b8d34290664_326621_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/8/img_hua4d495848552290f72309b8d34290664_326621_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="453px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>A 컴포넌트에서 발생한 변경으로부터 B 컴포넌트를 보호하려면 반드시 A 컴포넌트가 B 컴포넌트에 의존해야한다.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;code>Presenter&lt;/code>에서 발생한 변경으로부터 &lt;code>Controller&lt;/code>를 보호&lt;/li>
+&lt;li>&lt;code>View&lt;/code>에서 발생한 변경으로부터 &lt;code>Presenter&lt;/code>를 보호&lt;/li>
+&lt;li>&lt;code>Interactor&lt;/code>는 다른 모든 것에서 발생한 변경으로부터 보호&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>Interactor&lt;/code>는 변경 폐쇄 원칙을 가장 잘 준수하는 곳에 위치하고 있는데, 이는 &lt;code>Interactor&lt;/code>가 애플리케이션에서 가장 높은 수준의 정책, 가장 중요한 문제를 담당하고 있기 때문이다.&lt;/p>
+&lt;p>보호의 계층구조는 &lt;strong>수준 level&lt;/strong>이라는 개념을 바탕으로 구성되어야하며, 높은 수준일수록(세부 구현과 멀 수록) 변경에 대해 강력한 보호가 필요하다.&lt;/p>
+&lt;p>아키텍처 수준에서 개방 폐쇄 원칙은 아키텍트는 기능이 어떻게, 왜, 언제 발생하는지에 따라서 기능을 분리하고, 분리한 기능을 컴포넌트의 계층구조로 조직화한다.&lt;/p>
+&lt;p>컴포넌트 계층구조를 이와 같이 조족화하면 저수준 컴포넌트에서 발생한 변경으로부터 고수준 컴포넌트를 보호할 수 있다.&lt;/p>
+&lt;h2 id="방향성-제어">방향성 제어&lt;/h2>
+&lt;p>&lt;code>FinancialDataGateway&lt;/code> 인터페이스는 &lt;code>Interactor&lt;/code> 컴포넌트에서 &lt;code>Database&lt;/code> 컴포넌트의 의존성을 역전시키기 위해 &lt;code>FinancialReportGenerator&lt;/code>와 &lt;code>FinancialDataMapper&lt;/code> 사이에 위치한다.&lt;/p>
+&lt;p>&lt;code>FinancialDataGateway&lt;/code> 인터페이스가 없었다면 의존성이 &lt;code>Interactor&lt;/code> 컴포넌트에서 &lt;code>Database&lt;/code> 컴포넌트로 바로 향하게된다.&lt;/p>
+&lt;h2 id="정보-은닉">정보 은닉&lt;/h2>
+&lt;p>&lt;code>FinancialReportRequester&lt;/code> 인터페이스는 &lt;code>FinancialReportController&lt;/code>가 &lt;code>Interactor&lt;/code> 내부에 대해 너무 많이 알지 못하도록 막기 위해서 존재한다.&lt;/p>
+&lt;ul>
+&lt;li>인터페이스가 없었다면 &lt;code>Controller&lt;/code>는 &lt;code>FinancialEntities&lt;/code>에 대해 추이 종속성(Transitive dependency)을 가지게 된다.&lt;/li>
+&lt;li>추이 종속성을 가지게 되면, 소프트웨어 엔티티는 **&amp;lsquo;자신이 직접 사용하지 않는 요소에는 절대로 의존해서는 안 된다.&amp;rsquo;**는 소프트웨어 원칙을 위반하게 된다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>Controller&lt;/code>에서 발생한 변경으로부터 &lt;code>Interactor&lt;/code>를 보호하는 일의 우선순위가 가장 높지만, 반대로 &lt;code>Interactor&lt;/code>에서 발생한 변경으로 부터 &lt;code>Controller&lt;/code>도 보호되길 바라기 때문에 &lt;code>Interactor&lt;/code> 내부를 은닉한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>추이 종속성(Transitive dependency)&lt;/strong>&lt;/p>
+&lt;p>클래스 A가 클래스 B에 의존하고, 클래스 B가 클래스 C에 의존한다면, 클래스 A는 클래스 C에 의존하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>클래스 이외의 소프트웨어의 모든 엔티티에도 동일하게 적용된다.&lt;/li>
+&lt;li>클래스 의존성이 순환적이라면, 모든 클래스가 서로 의존하게 되는 문제가 있다.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>개방 폐쇄 원칙은 아키텍처를 떠받치는 원동력 중 하나다. OCP의 목표는 &lt;strong>시스템을 확장하기 쉬운 동시에 변경으로 인해 시스템이 너무 많은 영향을 받지 않도록 하는데 있다.&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>시스템을 컴포넌트 단위로 분리한다.&lt;/li>
+&lt;li>저수준 컴포넌트에서 발생한 변경으로부터 고수준 컴포넌트를 보호할 수 있는 형태의 의존성 계층구조가 만들어지도록 한다.&lt;/li>
+&lt;/ul></description></item><item><title>7. 단일 책임 원칙</title><link>https://codemario318.github.io/post/clean-architecture/7/</link><pubDate>Thu, 29 Feb 2024 16:27:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/7/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/7/cover.png" alt="Featured image of post 7. 단일 책임 원칙" />&lt;h2 id="solid">SOLID&lt;/h2>
 &lt;blockquote>
 &lt;p>&lt;strong>SOLID 원칙&lt;/strong>&lt;/p>
 &lt;ul>
