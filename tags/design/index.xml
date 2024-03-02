@@ -1,4 +1,139 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Design on Mario Blog</title><link>https://codemario318.github.io/tags/design/</link><description>Recent content in Design on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 01 Mar 2024 09:06:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/design/index.xml" rel="self" type="application/rss+xml"/><item><title>8. 개방 폐쇄 원칙</title><link>https://codemario318.github.io/post/clean-architecture/8/</link><pubDate>Fri, 01 Mar 2024 09:06:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/8/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/8/cover.png" alt="Featured image of post 8. 개방 폐쇄 원칙" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Design on Mario Blog</title><link>https://codemario318.github.io/tags/design/</link><description>Recent content in Design on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 02 Mar 2024 16:20:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/design/index.xml" rel="self" type="application/rss+xml"/><item><title>9. LSP: 리스코프 치환 원칙</title><link>https://codemario318.github.io/post/clean-architecture/9/</link><pubDate>Sat, 02 Mar 2024 16:20:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/9/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/9/cover.png" alt="Featured image of post 9. LSP: 리스코프 치환 원칙" />&lt;blockquote>
+&lt;p>&lt;strong>하위 타입(Subtype)&lt;/strong>&lt;br>
+&lt;code>S&lt;/code>타입의 객체 &lt;code>o1&lt;/code> 각각에 대응하는 &lt;code>T&lt;/code>타입 객체 &lt;code>o2&lt;/code>가 있고, &lt;code>T&lt;/code>타입을 이용해서 정의한 모든 프로그램 &lt;code>P&lt;/code>에서 &lt;code>o2&lt;/code>의 자리에 &lt;code>o1&lt;/code>을 치환하더라도 &lt;code>P&lt;/code>의 행위가 변하지 않는다면, &lt;code>S&lt;/code>는 &lt;code>T&lt;/code>의 하위 타입이다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="상속을-사용하도록-가이드하기">상속을 사용하도록 가이드하기&lt;/h2>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+class Billing {
+}
+class License {
+&lt;&lt; interface >>
+calcFee()
+}
+class PersonalLicense {
+}
+class BusinessLicense {
+users
+}
+Billing --> License
+License &lt;|-- PersonalLicense
+License &lt;|-- BusinessLicense
+&lt;/pre>
+&lt;p>&lt;code>Billing&lt;/code> 애플리케이션의 행위가 &lt;code>License&lt;/code>타입 중 무엇을 사용하는지에 전혀 의존하지 않이 때문에, 이들 하위 타입은 모두 &lt;code>License&lt;/code> 타입을 치환할 수 있으므로 위 설계는 리스코프 치환 원칙을 준수한다.&lt;/p>
+&lt;h2 id="정사각형직사각형-문제">정사각형/직사각형 문제&lt;/h2>
+&lt;p>리스코프 치환 원칙을 위반하는 전형적인 문제로 유명한 정사각형/직사각형 문제가 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">classDiagram
+direction LR
+class User {
+}
+class Rectangle {
+H, W
+setH()
+setW()
+}
+class Square {
+setSide()
+}
+User --> Rectangle
+Rectangle &lt;|-- Square
+&lt;/pre>
+&lt;p>위 예제에서 &lt;code>Rectangle&lt;/code>의 높이와 너비는 서로 독립적으로 변경될 수 있는 반면, &lt;code>Square&lt;/code>의 높이와 너비는 반드시 함께 변경되므로 &lt;code>Square&lt;/code>는 &lt;code>Rectangle&lt;/code>의 하위 타입으로는 부적합하다.&lt;/p>
+&lt;p>이러한 경우 &lt;code>User&lt;/code>는 대화하고 있는 상대가 &lt;code>Rectangle&lt;/code> 이라고 생각하므로 혼동이 생길 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Rectangle&lt;/span> &lt;span class="n">r&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setW&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setH&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">area&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 경우 &lt;code>...&lt;/code>에 &lt;code>Square&lt;/code>를 생성한다면(치환한다면), &lt;code>assert&lt;/code>문은 실패하게된다.&lt;/p>
+&lt;hr>
+&lt;p>이러한 형태의 리스코프 치환 원칙 위반을 막기 위한 유일한 방법은 검사하는 메커니즘을 &lt;code>User&lt;/code>에 추가하는 것 인데, &lt;code>User&lt;/code>의 행위가 사용하는 타입에 의존하게 되므로, 결국 타입을 서로 치환할 수 없게 된다.&lt;/p>
+&lt;h2 id="lsp와-아키텍처">LSP와 아키텍처&lt;/h2>
+&lt;p>LSP는 상속을 사용하도록 가이드하는 방법 정도로 간주 되었으나, 시간이 지나면서 LSP는 &lt;strong>인터페이스와 구현체에도 적용되는 더 광범위한 소프트웨어 설계 원칙으로 변모해왔다.&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>인터페이스&lt;/strong>&lt;/p>
+&lt;p>위에서 말하는 인터페이스는 여러 의미로 해석 가능하다.&lt;/p>
+&lt;ul>
+&lt;li>인터페이스 하나와 이를 구현하는 여러 개의 클래스&lt;/li>
+&lt;li>동일한 메서드 시그니처를 공유하는 여러 개의 클래스&lt;/li>
+&lt;li>동일한 REST 인터페이스에 응답하는 서비스 집단&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>잘 정의된 인터페이스와 그 인터페이스의 구현체끼리의 상호 치환 가능성에 기대는 사용자들이 존재하기 때문에 대부분의 상황에서 LSP를 적용할 수 있다.&lt;/p>
+&lt;h2 id="lsp-위배-사례-택시-파견-서비스">LSP 위배 사례: 택시 파견 서비스&lt;/h2>
+&lt;p>&lt;strong>요구사항&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>고객이 어느 택시업체인지는 신경쓰지 않고 자신의 상황에 가장 적합한 택시를 찾는다.&lt;/li>
+&lt;li>택시를 결정하면, 시스템은 REST 서비스를 통해 선택된 택시를 고객 위치로 파견한다.
+&lt;ul>
+&lt;li>URI가 운전기사 데이터베이스에 저장되어 있다.&lt;/li>
+&lt;li>URI 정보를 이용하여 해당 기사를 고객 위치로 파견한다.&lt;/li>
+&lt;li>ex) Bob의 URI: &lt;code>purplecab.com/driver/Bob&lt;/code>&lt;/li>
+&lt;li>요청 예시&lt;/li>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">purplecab.com/driver/Bob
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /picupAddress/24 Maple St.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /pickupTime/153
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /destination/ORD
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 서비스를 만들 때 다양한 택시업체에서 동일한 REST 인터페이스를 반드시 준수하도록 만들어야한다.&lt;/p>
+&lt;p>만약 택시업체 ACME에서 &lt;code>destination&lt;/code> 필드를 &lt;code>dest&lt;/code>로 축약해서 사용했다고 가정하면, 해당 예외 사항을 처리하는 로직을 추가해야만 한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">driver&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">getDispatchUri&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">startWith&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;acme.com&amp;#34;&lt;/span>&lt;span class="p">))...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&amp;ldquo;acme&amp;quot;라는 단어를 코드 자체에 추가하면, 끔찍할 뿐만 아니라 이해할 수도 없는 온갖 종류의 에러가 발생할 여지를 만들게 된다.&lt;/li>
+&lt;li>새로운 택시업체 추가시 또 다른 if문이 필요할 수 있다.&lt;/li>
+&lt;li>위와 같은 버그를 방지하기 위해 &lt;strong>설정용 데이터베이스&lt;/strong>를 이용하는 파견 명령 생성 모듈을 만들어야 할 수도 있다.
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>URI&lt;/th>
+&lt;th>Dispatch Format&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Acme.com&lt;/td>
+&lt;td>/pickupAddress/%s/pickupTime/%s/dest/%s&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>*.*&lt;/td>
+&lt;td>/pickupAddress/%s/pickupTime/%s/destination/%s&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;li>REST 서비스들의 인터페이스가 서로 치환 가능하지 않다는 사실을 처리하는 중요하고 복잡한 매커니즘을 추가해야 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>LSP는 아키텍처 수준까지 확장할 수 있고, 반드시 확장해야만 한다.&lt;/p>
+&lt;p>치환 가능성을 조금이라도 위배하면 시스템 아키텍처가 오염되어 상당량의 별도 메커니즘을 추가해야 할 수 있기 때문이다.&lt;/p></description></item><item><title>8. 개방 폐쇄 원칙</title><link>https://codemario318.github.io/post/clean-architecture/8/</link><pubDate>Fri, 01 Mar 2024 09:06:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/8/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/8/cover.png" alt="Featured image of post 8. 개방 폐쇄 원칙" />&lt;blockquote>
 &lt;p>소프트웨어 개체(Artifact)는 확장에는 열려 있어야 하고, 변경에는 닫혀 있어야 한다.&lt;/p>
 &lt;/blockquote>
 &lt;p>개방 폐쇄 원칙은 소프트웨어 개체의 행위는 확장할 수 있어야 하지만, 이때 개체를 변경해서는 안된다는 원칙이다.&lt;/p>
