@@ -2,7 +2,7 @@ User-agent: *
 
 Allow: /
 
-Allow: /post/clean-architecture/10/
+Allow: /post/clean-architecture/11/
 
 Allow: /tags/architecture/
 
@@ -12,11 +12,11 @@ Allow: /tags/clean-architecture/
 
 Allow: /categories/common/
 
+Allow: /tags/dependency-inversion-principle/
+
 Allow: /tags/design/
 
-Allow: /tags/interface-segregation-principle/
-
-Allow: /tags/isp/
+Allow: /tags/dip/
 
 Allow: /post/
 
@@ -28,9 +28,17 @@ Allow: /tags/%EC%84%A4%EA%B3%84/
 
 Allow: /tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
 
-Allow: /tags/%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EB%B6%84%EB%A6%AC-%EC%9B%90%EC%B9%99/
+Allow: /tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%97%AD%EC%A0%84-%EC%9B%90%EC%B9%99/
 
 Allow: /tags/%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+
+Allow: /post/clean-architecture/10/
+
+Allow: /tags/interface-segregation-principle/
+
+Allow: /tags/isp/
+
+Allow: /tags/%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EB%B6%84%EB%A6%AC-%EC%9B%90%EC%B9%99/
 
 Allow: /post/clean-architecture/9/
 
