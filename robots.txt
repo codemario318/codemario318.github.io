@@ -2,7 +2,7 @@ User-agent: *
 
 Allow: /
 
-Allow: /post/clean-architecture/11/
+Allow: /post/clean-architecture/12/
 
 Allow: /tags/architecture/
 
@@ -12,25 +12,43 @@ Allow: /tags/clean-architecture/
 
 Allow: /categories/common/
 
-Allow: /tags/dependency-inversion-principle/
+Allow: /tags/component-cohesion/
+
+Allow: /tags/component-coupling/
+
+Allow: /tags/component-principles/
+
+Allow: /tags/components/
 
 Allow: /tags/design/
 
-Allow: /tags/dip/
-
 Allow: /post/
 
-Allow: /tags/solid/
-
 Allow: /tags/
+
+Allow: /tags/%EA%B2%B0%ED%95%A9/
 
 Allow: /tags/%EC%84%A4%EA%B3%84/
 
 Allow: /tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
 
-Allow: /tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%97%AD%EC%A0%84-%EC%9B%90%EC%B9%99/
+Allow: /tags/%EC%9D%91%EC%A7%91%EB%8F%84/
+
+Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8/
+
+Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%9B%90%EC%B9%99/
 
 Allow: /tags/%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+
+Allow: /post/clean-architecture/11/
+
+Allow: /tags/dependency-inversion-principle/
+
+Allow: /tags/dip/
+
+Allow: /tags/solid/
+
+Allow: /tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%97%AD%EC%A0%84-%EC%9B%90%EC%B9%99/
 
 Allow: /post/clean-architecture/10/
 
