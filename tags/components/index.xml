@@ -562,8 +562,8 @@ data-flex-basis="354px"
 &lt;h2 id="결론">결론&lt;/h2>
 &lt;p>과거에는 응집도를 &amp;lsquo;모듈은 단 하나의 기능만 수행해야한다.&amp;lsquo;는 속성 정도로 훌씬 단순했다.&lt;/p>
 &lt;p>하지만 컴포넌트 응집도에 관한 세 가지 원칙은 응집도가 가질 수 있는 훨씬 복잡한 다양성을 설명해 준다.&lt;/p>
-&lt;p>어느 클래스들을 묶어서 컴포넌트로 만들지 결정할 때, 재사용성과 개발 가능성이라는 상충하는 힘을 고려하여 애플리케이션의 요구에 맞게 균현을 잡는 일은 중요하다.&lt;/p>
-&lt;p>이 균형점은 거의 항상 유동적이므로 컴포넌트를 구성하는 방식도 조금씩 프트러지고 또 진화해야한다.&lt;/p></description></item><item><title>12. 컴포넌트</title><link>https://codemario318.github.io/post/clean-architecture/12/</link><pubDate>Thu, 07 Mar 2024 14:21:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/12/cover.png" alt="Featured image of post 12. 컴포넌트" />&lt;blockquote>
+&lt;p>어느 클래스들을 묶어서 컴포넌트로 만들지 결정할 때, 재사용성과 개발 가능성이라는 상충하는 힘을 고려하여 애플리케이션의 요구에 맞게 균형을 잡는 일은 중요하다.&lt;/p>
+&lt;p>이 균형점은 거의 항상 유동적이므로 컴포넌트를 구성하는 방식도 조금씩 흐트러지고 또 진화해야한다.&lt;/p></description></item><item><title>12. 컴포넌트</title><link>https://codemario318.github.io/post/clean-architecture/12/</link><pubDate>Thu, 07 Mar 2024 14:21:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/12/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/12/cover.png" alt="Featured image of post 12. 컴포넌트" />&lt;blockquote>
 &lt;p>SOLID 원칙이 벽과 방에 벽돌을 배치하는 방법을 알려준다면, 컴포넌트 원칙은 빌딩에 방을 배치하는 방법을 설명한다.&lt;/p>
 &lt;p>큰 빌딩과 마찬가지로 대규모 소프트웨어 시스템은 작은 컴포넌트들로 만들어지므로, 컴포넌트가 무엇인지, 구성하는 요소는 무엇인지 알아보고, 컴포넌트를 결합하여 시스탬을 구성하는 방법에 대해 논의한다.&lt;/p>
 &lt;/blockquote>
