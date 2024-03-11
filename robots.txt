@@ -3,7 +3,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/14/
+Allow: /post/clean-architecture/14/
 
 
 
@@ -27,7 +27,7 @@ User-agent: *
 
 
 
-    Allow: /post/
+Allow: /post/
 
 
 
@@ -55,7 +55,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/13/
+Allow: /post/clean-architecture/13/
 
 
 
@@ -77,7 +77,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/12/
+Allow: /post/clean-architecture/12/
 
 
 
@@ -85,7 +85,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/11/
+Allow: /post/clean-architecture/11/
 
 
 
@@ -97,7 +97,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/10/
+Allow: /post/clean-architecture/10/
 
 
 
@@ -107,7 +107,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/9/
+Allow: /post/clean-architecture/9/
 
 
 
@@ -117,7 +117,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/8/
+Allow: /post/clean-architecture/8/
 
 
 
@@ -127,7 +127,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/7/
+Allow: /post/clean-architecture/7/
 
 
 
@@ -137,7 +137,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/6/
+Allow: /post/clean-architecture/6/
 
 
 
@@ -147,7 +147,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/5/
+Allow: /post/clean-architecture/5/
 
 
 
@@ -157,7 +157,7 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/4/
+Allow: /post/clean-architecture/4/
 
 
 
@@ -165,25 +165,25 @@ User-agent: *
 
 
 
-    Allow: /post/clean-architecture/3/
+Allow: /post/clean-architecture/3/
 
 
 
 
 
-    Allow: /post/clean-architecture/2/
+Allow: /post/clean-architecture/2/
 
 
 
-    Allow: /post/clean-architecture/1/
+Allow: /post/clean-architecture/1/
 
 
 
-    Allow: /post/gof/15/visitor/
+Allow: /post/gof/15/visitor/
 
 
 
-    Allow: /post/gof/15/prototype/
+Allow: /post/gof/15/prototype/
 
 
 
@@ -207,7 +207,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/15/memento/
+Allow: /post/gof/15/memento/
 
 
 
@@ -215,7 +215,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/15/mediator/
+Allow: /post/gof/15/mediator/
 
 
 
@@ -223,7 +223,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/15/interpreter/
+Allow: /post/gof/15/interpreter/
 
 
 
@@ -231,7 +231,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/15/flyweight/
+Allow: /post/gof/15/flyweight/
 
 
 
@@ -239,7 +239,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/15/chain-of-responsibility/
+Allow: /post/gof/15/chain-of-responsibility/
 
 
 
@@ -247,7 +247,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/14/builder/
+Allow: /post/gof/14/builder/
 
 
 
@@ -255,7 +255,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/14/bridge/
+Allow: /post/gof/14/bridge/
 
 
 
@@ -265,11 +265,11 @@ User-agent: *
 
 
 
-    Allow: /post/gof/13/
+Allow: /post/gof/13/
 
 
 
-    Allow: /post/gof/12/
+Allow: /post/gof/12/
 
 
 
@@ -277,7 +277,7 @@ User-agent: *
 
 
 
-    Allow: /post/gof/11/
+Allow: /post/gof/11/
 
 
 
@@ -297,49 +297,49 @@ User-agent: *
 
 
 
-    Allow: /post/gof/10/
+Allow: /post/gof/10/
 
 
 
 
 
-    Allow: /post/gof/9/
+Allow: /post/gof/9/
 
 
 
-    Allow: /post/gof/8/
+Allow: /post/gof/8/
 
 
 
-    Allow: /post/gof/7/
+Allow: /post/gof/7/
 
 
 
-    Allow: /post/gof/6/
+Allow: /post/gof/6/
 
 
 
-    Allow: /post/gof/5/
+Allow: /post/gof/5/
 
 
 
-    Allow: /post/gof/4/
+Allow: /post/gof/4/
 
 
 
-    Allow: /post/gof/3/
+Allow: /post/gof/3/
 
 
 
-    Allow: /post/gof/2/
+Allow: /post/gof/2/
 
 
 
-    Allow: /post/gof/1/
+Allow: /post/gof/1/
 
 
 
-    Allow: /post/real-mysql/16/7/4/
+Allow: /post/real-mysql/16/7/4/
 
 
 
@@ -349,27 +349,27 @@ User-agent: *
 
 
 
-    Allow: /post/real-mysql/16/7/3/
+Allow: /post/real-mysql/16/7/3/
 
 
 
-    Allow: /post/real-mysql/16/7/2/
+Allow: /post/real-mysql/16/7/2/
 
 
 
-    Allow: /post/real-mysql/16/7/1/
+Allow: /post/real-mysql/16/7/1/
 
 
 
-    Allow: /post/real-mysql/16/6/
+Allow: /post/real-mysql/16/6/
 
 
 
-    Allow: /post/real-mysql/16/5/
+Allow: /post/real-mysql/16/5/
 
 
 
-    Allow: /post/infra/container-env/2/
+Allow: /post/infra/container-env/2/
 
 
 
@@ -379,153 +379,153 @@ User-agent: *
 
 
 
-    Allow: /post/real-mysql/16/2/
+Allow: /post/real-mysql/16/2/
 
 
 
-    Allow: /post/infra/container-env/1/
+Allow: /post/infra/container-env/1/
 
 
 
 
 
-    Allow: /post/real-mysql/16/1/
+Allow: /post/real-mysql/16/1/
 
 
 
-    Allow: /post/real-mysql/13/3/
+Allow: /post/real-mysql/13/3/
 
 
 
-    Allow: /post/real-mysql/13/2/
+Allow: /post/real-mysql/13/2/
 
 
 
-    Allow: /post/real-mysql/13/
+Allow: /post/real-mysql/13/
 
 
 
 
 
-    Allow: /post/kubernetes/tutorials/1/
+Allow: /post/kubernetes/tutorials/1/
 
 
 
-    Allow: /post/real-mysql/11/8/
+Allow: /post/real-mysql/11/8/
 
 
 
-    Allow: /post/real-mysql/11/7/9/
+Allow: /post/real-mysql/11/7/9/
 
 
 
-    Allow: /post/real-mysql/11/7/8/
+Allow: /post/real-mysql/11/7/8/
 
 
 
-    Allow: /post/real-mysql/11/7/7/
+Allow: /post/real-mysql/11/7/7/
 
 
 
-    Allow: /post/real-mysql/11/7/6/
+Allow: /post/real-mysql/11/7/6/
 
 
 
-    Allow: /post/real-mysql/11/7/5/
+Allow: /post/real-mysql/11/7/5/
 
 
 
-    Allow: /post/real-mysql/11/7/4/
+Allow: /post/real-mysql/11/7/4/
 
 
 
-    Allow: /post/real-mysql/11/7/3/
+Allow: /post/real-mysql/11/7/3/
 
 
 
-    Allow: /post/real-mysql/11/7/2/
+Allow: /post/real-mysql/11/7/2/
 
 
 
-    Allow: /post/real-mysql/11/7/1/
+Allow: /post/real-mysql/11/7/1/
 
 
 
-    Allow: /post/real-mysql/11/6/
+Allow: /post/real-mysql/11/6/
 
 
 
-    Allow: /post/real-mysql/11/5/
+Allow: /post/real-mysql/11/5/
 
 
 
-    Allow: /post/real-mysql/11/4/5/
+Allow: /post/real-mysql/11/4/5/
 
 
 
-    Allow: /post/real-mysql/11/4/4/
+Allow: /post/real-mysql/11/4/4/
 
 
 
-    Allow: /post/real-mysql/11/4/3/
+Allow: /post/real-mysql/11/4/3/
 
 
 
-    Allow: /post/real-mysql/11/4/2/
+Allow: /post/real-mysql/11/4/2/
 
 
 
 
 
-    Allow: /post/db/where-on/
+Allow: /post/db/where-on/
 
 
 
-    Allow: /post/real-mysql/11/4/1/
+Allow: /post/real-mysql/11/4/1/
 
 
 
-    Allow: /post/real-mysql/10/3/2/
+Allow: /post/real-mysql/10/3/2/
 
 
 
-    Allow: /post/real-mysql/10/3/1/
+Allow: /post/real-mysql/10/3/1/
 
 
 
-    Allow: /post/real_mysql/10/2/
+Allow: /post/real_mysql/10/2/
 
 
 
-    Allow: /post/real_mysql/10/1/
+Allow: /post/real_mysql/10/1/
 
 
 
-    Allow: /post/real-mysql/9/4/
+Allow: /post/real-mysql/9/4/
 
 
 
-    Allow: /post/real-mysql/9/3/2/
+Allow: /post/real-mysql/9/3/2/
 
 
 
-    Allow: /post/real-mysql/9/3/1/
+Allow: /post/real-mysql/9/3/1/
 
 
 
-    Allow: /post/real-mysql/9/2/2/
+Allow: /post/real-mysql/9/2/2/
 
 
 
-    Allow: /post/real-mysql/9/2/1/
+Allow: /post/real-mysql/9/2/1/
 
 
 
-    Allow: /post/real-mysql/9/1/
+Allow: /post/real-mysql/9/1/
 
 
 
-    Allow: /post/ps/kakao/2023/1/
+Allow: /post/ps/kakao/2023/1/
 
 
 
@@ -535,31 +535,31 @@ User-agent: *
 
 
 
-    Allow: /post/real-mysql/8/4/
+Allow: /post/real-mysql/8/4/
 
 
 
-    Allow: /post/real-mysql/8/3/
+Allow: /post/real-mysql/8/3/
 
 
 
-    Allow: /post/real-mysql/8/2/
+Allow: /post/real-mysql/8/2/
 
 
 
-    Allow: /post/real-mysql/8/1/
+Allow: /post/real-mysql/8/1/
 
 
 
-    Allow: /post/real-mysql/7/
+Allow: /post/real-mysql/7/
 
 
 
-    Allow: /post/real-mysql/6/
+Allow: /post/real-mysql/6/
 
 
 
-    Allow: /post/toy-mario/0/auth/1/
+Allow: /post/toy-mario/0/auth/1/
 
 
 
@@ -571,159 +571,159 @@ User-agent: *
 
 
 
-    Allow: /post/toy-mario/0/auth/0/
+Allow: /post/toy-mario/0/auth/0/
 
 
 
-    Allow: /post/toy-mario/0/1/
+Allow: /post/toy-mario/0/1/
 
 
 
-    Allow: /post/docker/5/
+Allow: /post/docker/5/
 
 
 
-    Allow: /post/docker/4/
+Allow: /post/docker/4/
 
 
 
-    Allow: /post/docker/3/
+Allow: /post/docker/3/
 
 
 
-    Allow: /post/docker/2/
+Allow: /post/docker/2/
 
 
 
-    Allow: /post/real-mysql/5/3/
+Allow: /post/real-mysql/5/3/
 
 
 
-    Allow: /post/real-mysql/5/2/
+Allow: /post/real-mysql/5/2/
 
 
 
-    Allow: /post/real-mysql/5/1/
+Allow: /post/real-mysql/5/1/
 
 
 
-    Allow: /post/docker/1/
+Allow: /post/docker/1/
 
 
 
-    Allow: /post/study/kubernetes/5/
+Allow: /post/study/kubernetes/5/
 
 
 
-    Allow: /post/study/kubernetes/4/
+Allow: /post/study/kubernetes/4/
 
 
 
-    Allow: /post/study/kubernetes/3/
+Allow: /post/study/kubernetes/3/
 
 
 
-    Allow: /post/study/kubernetes/2/
+Allow: /post/study/kubernetes/2/
 
 
 
-    Allow: /post/study/kubernetes/1/
+Allow: /post/study/kubernetes/1/
 
 
 
 
 
-    Allow: /post/clean-code/15/
+Allow: /post/clean-code/15/
 
 
 
-    Allow: /post/clean-code/17/
+Allow: /post/clean-code/17/
 
 
 
-    Allow: /post/clean-code/14/
+Allow: /post/clean-code/14/
 
 
 
-    Allow: /post/clean-code/12/
+Allow: /post/clean-code/12/
 
 
 
-    Allow: /post/clean-code/10/
+Allow: /post/clean-code/10/
 
 
 
-    Allow: /post/clean-code/9/
+Allow: /post/clean-code/9/
 
 
 
-    Allow: /post/clean-code/7/
+Allow: /post/clean-code/7/
 
 
 
-    Allow: /post/clean-code/6/
+Allow: /post/clean-code/6/
 
 
 
-    Allow: /post/clean-code/3/
+Allow: /post/clean-code/3/
 
 
 
-    Allow: /post/clean-code/1/
+Allow: /post/clean-code/1/
 
 
 
 
 
-    Allow: /post/golang/13/
+Allow: /post/golang/13/
 
 
 
-    Allow: /post/golang/12/
+Allow: /post/golang/12/
 
 
 
-    Allow: /post/golang/11/
+Allow: /post/golang/11/
 
 
 
-    Allow: /post/golang/10/
+Allow: /post/golang/10/
 
 
 
-    Allow: /post/golang/9/
+Allow: /post/golang/9/
 
 
 
-    Allow: /post/golang/8/
+Allow: /post/golang/8/
 
 
 
-    Allow: /post/golang/7/
+Allow: /post/golang/7/
 
 
 
-    Allow: /post/golang/6/
+Allow: /post/golang/6/
 
 
 
-    Allow: /post/golang/5/
+Allow: /post/golang/5/
 
 
 
-    Allow: /post/golang/4/
+Allow: /post/golang/4/
 
 
 
-    Allow: /post/golang/3/
+Allow: /post/golang/3/
 
 
 
-    Allow: /post/golang/2/
+Allow: /post/golang/2/
 
 
 
-    Allow: /post/golang/1/
+Allow: /post/golang/1/
 
 
 
@@ -733,7 +733,7 @@ User-agent: *
 
 
 
-    Allow: /post/vue3/
+Allow: /post/vue3/
 
 
 
@@ -741,21 +741,21 @@ User-agent: *
 
 
 
-    Allow: /post/rendering_optimize/
+Allow: /post/rendering_optimize/
 
 
 
-    Allow: /post/crp_optimize/
+Allow: /post/crp_optimize/
 
 
 
-    Allow: /post/browser/
+Allow: /post/browser/
 
 
 
 
 
-    Allow: /post/message_queue/
+Allow: /post/message_queue/
 
 
 
@@ -763,15 +763,15 @@ User-agent: *
 
 
 
-    Allow: /post/typescript/tutorial/2/
+Allow: /post/typescript/tutorial/2/
 
 
 
-    Allow: /post/typescript/tutorial/1/1/
+Allow: /post/typescript/tutorial/1/1/
 
 
 
-    Allow: /post/typescript/tutorial/1/2/
+Allow: /post/typescript/tutorial/1/2/
 
 
 
@@ -781,95 +781,95 @@ User-agent: *
 
 
 
-    Allow: /post/jvm_gc/
+Allow: /post/jvm_gc/
 
 
 
-    Allow: /post/jvm/
+Allow: /post/jvm/
 
 
 
 
 
-    Allow: /post/python_cover/
+Allow: /post/python_cover/
 
 
 
 
 
-    Allow: /post/elasticsearch/
+Allow: /post/elasticsearch/
 
 
 
 
 
-    Allow: /post/search_engine/
+Allow: /post/search_engine/
 
 
 
 
 
-    Allow: /post/messaging_system/
+Allow: /post/messaging_system/
 
 
 
 
 
-    Allow: /post/nosql/
+Allow: /post/nosql/
 
 
 
 
 
-    Allow: /post/nginx_vs_apache/
+Allow: /post/nginx_vs_apache/
 
 
 
-    Allow: /post/web/
+Allow: /post/web/
 
 
 
 
 
-    Allow: /post/js_closure/
+Allow: /post/js_closure/
 
 
 
-    Allow: /post/js_this/
+Allow: /post/js_this/
 
 
 
-    Allow: /post/js_hoisting/
+Allow: /post/js_hoisting/
 
 
 
-    Allow: /post/docker/0/
+Allow: /post/docker/0/
 
 
 
 
 
-    Allow: /post/real-mysql/4/4/
+Allow: /post/real-mysql/4/4/
 
 
 
-    Allow: /post/real-mysql/4/3/
+Allow: /post/real-mysql/4/3/
 
 
 
-    Allow: /post/real-mysql/4_2_3/
+Allow: /post/real-mysql/4_2_3/
 
 
 
-    Allow: /post/real_mysql_4/2/2/
+Allow: /post/real_mysql_4/2/2/
 
 
 
-    Allow: /post/real-mysql/4/2/1/
+Allow: /post/real-mysql/4/2/1/
 
 
 
-    Allow: /post/real-mysql/4/1/
+Allow: /post/real-mysql/4/1/
 
 
 
