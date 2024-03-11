@@ -1,579 +1,579 @@
 User-agent: *
 
-Allow: /
+    
 
-Allow: /post/clean-architecture/14/
+    
 
-Allow: /tags/acyclic-dependencies-principle/
+    
 
-Allow: /tags/adp/
+    
 
-Allow: /tags/architecture/
+    
 
-Allow: /categories/
+    
 
-Allow: /tags/clean-architecture/
+    
 
-Allow: /categories/common/
+    
 
-Allow: /tags/component-coupling/
+    
 
-Allow: /tags/component-principles/
+    
 
-Allow: /tags/components/
+    
 
-Allow: /tags/design/
+    
 
-Allow: /post/
+    
 
-Allow: /tags/sap/
+    
 
-Allow: /tags/sdp/
+    
 
-Allow: /tags/
+    
 
-Allow: /tags/%EC%84%A4%EA%B3%84/
+    
 
-Allow: /tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+    
 
-Allow: /tags/%EC%95%88%EC%A0%95%EB%90%9C-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%EC%95%88%EC%A0%95%EB%90%9C-%EC%B6%94%EC%83%81%ED%99%94-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EB%B9%84%EC%88%9C%ED%99%98-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8/
+    
 
-Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EA%B2%B0%ED%95%A9/
+    
 
-Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/
+    
 
-Allow: /post/clean-architecture/13/
+    
 
-Allow: /tags/ccp/
+    
 
-Allow: /tags/common-closure-principle/
+    
 
-Allow: /tags/common-reuse-principle/
+    
 
-Allow: /tags/component-cohesion/
+    
 
-Allow: /tags/crp/
+    
 
-Allow: /tags/rep/
+    
 
-Allow: /tags/%EA%B3%B5%ED%86%B5-%EC%9E%AC%EC%82%AC%EC%9A%A9-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%EA%B3%B5%ED%86%B5-%ED%8F%90%EC%87%84-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /tags/%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%9D%91%EC%A7%91%EB%8F%84/
+    
 
-Allow: /post/clean-architecture/12/
+    
 
-Allow: /tags/%EA%B2%B0%ED%95%A9/
+    
 
-Allow: /tags/%EC%9D%91%EC%A7%91%EB%8F%84/
+    
 
-Allow: /post/clean-architecture/11/
+    
 
-Allow: /tags/dependency-inversion-principle/
+    
 
-Allow: /tags/dip/
+    
 
-Allow: /tags/solid/
+    
 
-Allow: /tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%97%AD%EC%A0%84-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /post/clean-architecture/10/
+    
 
-Allow: /tags/interface-segregation-principle/
+    
 
-Allow: /tags/isp/
+    
 
-Allow: /tags/%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EB%B6%84%EB%A6%AC-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /post/clean-architecture/9/
+    
 
-Allow: /tags/liskov-substitution-principle/
+    
 
-Allow: /tags/lsp/
+    
 
-Allow: /tags/%EB%A6%AC%EC%8A%A4%EC%BD%94%ED%94%84-%EC%B9%98%ED%99%98-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /post/clean-architecture/8/
+    
 
-Allow: /tags/ocp/
+    
 
-Allow: /tags/open-closed-principle/
+    
 
-Allow: /tags/%EA%B0%9C%EB%B0%A9-%ED%8F%90%EC%87%84-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /post/clean-architecture/7/
+    
 
-Allow: /tags/single-responsibility-principle/
+    
 
-Allow: /tags/srp/
+    
 
-Allow: /tags/%EB%8B%A8%EC%9D%BC-%EC%B1%85%EC%9E%84-%EC%9B%90%EC%B9%99/
+    
 
-Allow: /post/clean-architecture/6/
+    
 
-Allow: /tags/fp/
+    
 
-Allow: /tags/functional-programming/
+    
 
-Allow: /tags/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/
+    
 
-Allow: /post/clean-architecture/5/
+    
 
-Allow: /tags/object-oriented-programming/
+    
 
-Allow: /tags/oop/
+    
 
-Allow: /tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/
+    
 
-Allow: /post/clean-architecture/4/
+    
 
-Allow: /tags/structured-programming/
+    
 
-Allow: /tags/%EA%B5%AC%EC%A1%B0%EC%A0%81-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/
+    
 
-Allow: /post/clean-architecture/3/
+    
 
-Allow: /tags/%EA%B0%9D%EC%B2%B4-%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/
+    
 
-Allow: /post/clean-architecture/2/
+    
 
-Allow: /post/clean-architecture/1/
+    
 
-Allow: /post/gof/15/visitor/
+    
 
-Allow: /post/gof/15/prototype/
+    
 
-Allow: /tags/design-pattern/
+    
 
-Allow: /tags/gof/
+    
 
-Allow: /tags/head-first-design-pattern/
+    
 
-Allow: /tags/prototype-pattern/
+    
 
-Allow: /tags/visitor-pattern/
+    
 
-Allow: /tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /tags/%EB%B9%84%EC%A7%80%ED%84%B0-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /tags/%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /tags/%ED%97%A4%EB%93%9C-%ED%8D%BC%EC%8A%A4%ED%8A%B8-%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /categories/headfirstdesignpatterns/
+    
 
-Allow: /post/gof/15/memento/
+    
 
-Allow: /tags/memento-pattern/
+    
 
-Allow: /tags/%EB%A9%94%EB%A9%98%ED%86%A0-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/15/mediator/
+    
 
-Allow: /tags/mediator-pattern/
+    
 
-Allow: /tags/%EC%A4%91%EC%9E%AC%EC%9E%90-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/15/interpreter/
+    
 
-Allow: /tags/interpreter-pattern/
+    
 
-Allow: /tags/%EC%9D%B8%ED%84%B0%ED%94%84%EB%A6%AC%ED%84%B0-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/15/flyweight/
+    
 
-Allow: /tags/flyweight-pattern/
+    
 
-Allow: /tags/%ED%94%8C%EB%9D%BC%EC%9D%B4%EC%9B%A8%EC%9D%B4%ED%8A%B8-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/15/chain-of-responsibility/
+    
 
-Allow: /tags/chain-of-responsibility-pattern/
+    
 
-Allow: /tags/%EC%B1%85%EC%9E%84-%EC%97%B0%EC%87%84-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/14/builder/
+    
 
-Allow: /tags/builder-pattern/
+    
 
-Allow: /tags/%EB%B9%8C%EB%8D%94-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/14/bridge/
+    
 
-Allow: /tags/bridge-pattern/
+    
 
-Allow: /tags/%EB%B8%8C%EB%A6%AC%EC%A7%80-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /tags/%EB%B8%8C%EB%A6%BF%EC%A7%80-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/13/
+    
 
-Allow: /post/gof/12/
+    
 
-Allow: /tags/mvc/
+    
 
-Allow: /tags/%EB%B3%B5%ED%95%A9-%ED%8C%A8%ED%84%B4/
+    
 
-Allow: /post/gof/11/
+    
 
-Allow: /tags/protection-proxy/
+    
 
-Allow: /tags/proxy/
+    
 
-Allow: /tags/remote-proxy/
+    
 
-Allow: /tags/virtual-proxy/
+    
 
-Allow: /tags/%EA%B0%80%EC%83%81-%ED%94%84%EB%A1%9D%EC%8B%9C/
+    
 
-Allow: /tags/%EB%B3%B4%ED%98%B8-%ED%94%84%EB%A1%9D%EC%8B%9C/
+    
 
-Allow: /tags/%EC%9B%90%EA%B2%A9-%ED%94%84%EB%A1%9D%EC%8B%9C/
+    
 
-Allow: /tags/%ED%94%84%EB%A1%9D%EC%8B%9C/
+    
 
-Allow: /post/gof/10/
+    
 
-Allow: /tags/common/
+    
 
-Allow: /post/gof/9/
+    
 
-Allow: /post/gof/8/
+    
 
-Allow: /post/gof/7/
+    
 
-Allow: /post/gof/6/
+    
 
-Allow: /post/gof/5/
+    
 
-Allow: /post/gof/4/
+    
 
-Allow: /post/gof/3/
+    
 
-Allow: /post/gof/2/
+    
 
-Allow: /post/gof/1/
+    
 
-Allow: /post/real-mysql/16/7/4/
+    
 
-Allow: /tags/db/
+    
 
-Allow: /tags/mysql/
+    
 
-Allow: /categories/realmysql/
+    
 
-Allow: /post/real-mysql/16/7/3/
+    
 
-Allow: /post/real-mysql/16/7/2/
+    
 
-Allow: /post/real-mysql/16/7/1/
+    
 
-Allow: /post/real-mysql/16/6/
+    
 
-Allow: /post/real-mysql/16/5/
+    
 
-Allow: /post/infra/container-env/2/
+    
 
-Allow: /tags/git/
+    
 
-Allow: /categories/infra/
+    
 
-Allow: /tags/jenkins/
+    
 
-Allow: /post/real-mysql/16/2/
+    
 
-Allow: /post/infra/container-env/1/
+    
 
-Allow: /tags/docker/
+    
 
-Allow: /post/real-mysql/16/1/
+    
 
-Allow: /post/real-mysql/13/3/
+    
 
-Allow: /post/real-mysql/13/2/
+    
 
-Allow: /post/real-mysql/13/
+    
 
-Allow: /tags/kubernetes/
+    
 
-Allow: /post/kubernetes/tutorials/1/
+    
 
-Allow: /post/real-mysql/11/8/
+    
 
-Allow: /post/real-mysql/11/7/9/
+    
 
-Allow: /post/real-mysql/11/7/8/
+    
 
-Allow: /post/real-mysql/11/7/7/
+    
 
-Allow: /post/real-mysql/11/7/6/
+    
 
-Allow: /post/real-mysql/11/7/5/
+    
 
-Allow: /post/real-mysql/11/7/4/
+    
 
-Allow: /post/real-mysql/11/7/3/
+    
 
-Allow: /post/real-mysql/11/7/2/
+    
 
-Allow: /post/real-mysql/11/7/1/
+    
 
-Allow: /post/real-mysql/11/6/
+    
 
-Allow: /post/real-mysql/11/5/
+    
 
-Allow: /post/real-mysql/11/4/5/
+    
 
-Allow: /post/real-mysql/11/4/4/
+    
 
-Allow: /post/real-mysql/11/4/3/
+    
 
-Allow: /post/real-mysql/11/4/2/
+    
 
-Allow: /categories/db/
+    
 
-Allow: /post/db/where-on/
+    
 
-Allow: /post/real-mysql/11/4/1/
+    
 
-Allow: /post/real-mysql/10/3/2/
+    
 
-Allow: /post/real-mysql/10/3/1/
+    
 
-Allow: /post/real_mysql/10/2/
+    
 
-Allow: /post/real_mysql/10/1/
+    
 
-Allow: /post/real-mysql/9/4/
+    
 
-Allow: /post/real-mysql/9/3/2/
+    
 
-Allow: /post/real-mysql/9/3/1/
+    
 
-Allow: /post/real-mysql/9/2/2/
+    
 
-Allow: /post/real-mysql/9/2/1/
+    
 
-Allow: /post/real-mysql/9/1/
+    
 
-Allow: /post/ps/kakao/2023/1/
+    
 
-Allow: /tags/kakao/
+    
 
-Allow: /categories/problemsolving/
+    
 
-Allow: /tags/python/
+    
 
-Allow: /post/real-mysql/8/4/
+    
 
-Allow: /post/real-mysql/8/3/
+    
 
-Allow: /post/real-mysql/8/2/
+    
 
-Allow: /post/real-mysql/8/1/
+    
 
-Allow: /post/real-mysql/7/
+    
 
-Allow: /post/real-mysql/6/
+    
 
-Allow: /post/toy-mario/0/auth/1/
+    
 
-Allow: /tags/kotlin/
+    
 
-Allow: /categories/project/
+    
 
-Allow: /tags/springboot/
+    
 
-Allow: /tags/toymario/
+    
 
-Allow: /post/toy-mario/0/auth/0/
+    
 
-Allow: /post/toy-mario/0/1/
+    
 
-Allow: /post/docker/5/
+    
 
-Allow: /post/docker/4/
+    
 
-Allow: /post/docker/3/
+    
 
-Allow: /post/docker/2/
+    
 
-Allow: /post/real-mysql/5/3/
+    
 
-Allow: /post/real-mysql/5/2/
+    
 
-Allow: /post/real-mysql/5/1/
+    
 
-Allow: /post/docker/1/
+    
 
-Allow: /post/study/kubernetes/5/
+    
 
-Allow: /post/study/kubernetes/4/
+    
 
-Allow: /post/study/kubernetes/3/
+    
 
-Allow: /post/study/kubernetes/2/
+    
 
-Allow: /post/study/kubernetes/1/
+    
 
-Allow: /categories/cleancode/
+    
 
-Allow: /post/clean-code/15/
+    
 
-Allow: /post/clean-code/17/
+    
 
-Allow: /post/clean-code/14/
+    
 
-Allow: /post/clean-code/12/
+    
 
-Allow: /post/clean-code/10/
+    
 
-Allow: /post/clean-code/9/
+    
 
-Allow: /post/clean-code/7/
+    
 
-Allow: /post/clean-code/6/
+    
 
-Allow: /post/clean-code/3/
+    
 
-Allow: /post/clean-code/1/
+    
 
-Allow: /categories/golang/
+    
 
-Allow: /post/golang/13/
+    
 
-Allow: /post/golang/12/
+    
 
-Allow: /post/golang/11/
+    
 
-Allow: /post/golang/10/
+    
 
-Allow: /post/golang/9/
+    
 
-Allow: /post/golang/8/
+    
 
-Allow: /post/golang/7/
+    
 
-Allow: /post/golang/6/
+    
 
-Allow: /post/golang/5/
+    
 
-Allow: /post/golang/4/
+    
 
-Allow: /post/golang/3/
+    
 
-Allow: /post/golang/2/
+    
 
-Allow: /post/golang/1/
+    
 
-Allow: /categories/frontend/
+    
 
-Allow: /tags/javascript/
+    
 
-Allow: /tags/vue/
+    
 
-Allow: /post/vue3/
+    
 
-Allow: /tags/browser/
+    
 
-Allow: /tags/web/
+    
 
-Allow: /post/rendering_optimize/
+    
 
-Allow: /post/crp_optimize/
+    
 
-Allow: /post/browser/
+    
 
-Allow: /categories/data/
+    
 
-Allow: /post/message_queue/
+    
 
-Allow: /tags/server/
+    
 
-Allow: /tags/typescript/
+    
 
-Allow: /post/typescript/tutorial/2/
+    
 
-Allow: /post/typescript/tutorial/1/1/
+    
 
-Allow: /post/typescript/tutorial/1/2/
+    
 
-Allow: /categories/backend/
+    
 
-Allow: /tags/java/
+    
 
-Allow: /tags/jvm/
+    
 
-Allow: /post/jvm_gc/
+    
 
-Allow: /post/jvm/
+    
 
-Allow: /tags/backend/
+    
 
-Allow: /post/python_cover/
+    
 
-Allow: /tags/data/
+    
 
-Allow: /post/elasticsearch/
+    
 
-Allow: /tags/search/
+    
 
-Allow: /post/search_engine/
+    
 
-Allow: /tags/mq/
+    
 
-Allow: /post/messaging_system/
+    
 
-Allow: /tags/nosql/
+    
 
-Allow: /post/nosql/
+    
 
-Allow: /tags/basic/
+    
 
-Allow: /post/nginx_vs_apache/
+    
 
-Allow: /post/web/
+    
 
-Allow: /tags/frontend/
+    
 
-Allow: /post/js_closure/
+    
 
-Allow: /post/js_this/
+    
 
-Allow: /post/js_hoisting/
+    
 
-Allow: /post/docker/0/
+    
 
-Allow: /tags/infra/
+    
 
-Allow: /post/real-mysql/4/4/
+    
 
-Allow: /post/real-mysql/4/3/
+    
 
-Allow: /post/real-mysql/4_2_3/
+    
 
-Allow: /post/real_mysql_4/2/2/
+    
 
-Allow: /post/real-mysql/4/2/1/
+    
 
-Allow: /post/real-mysql/4/1/
+    
 
-Allow: /archives/
+    
 
-Allow: /page/
+    
 
-Allow: /tags/reuse/release-equivalence-principle/
+    
 
-Allow: /search/
+    
 
-Allow: /tags/%EC%9E%AC%EC%82%AC%EC%9A%A9/%EB%A6%B4%EB%A6%AC%EC%8A%A4-%EB%93%B1%EA%B0%80-%EC%9B%90%EC%B9%99/
+    
