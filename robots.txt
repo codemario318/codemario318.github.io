@@ -39,6 +39,12 @@ Allow: /post/
 
 
 
+Allow: /post/clean-architecture/16/
+
+
+
+
+
 Allow: /post/clean-architecture/14/
 
 
