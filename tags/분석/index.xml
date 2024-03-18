@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>분석 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%B6%84%EC%84%9D/</link><description>Recent content in 분석 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 18 Mar 2024 11:00:01 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%B6%84%EC%84%9D/index.xml" rel="self" type="application/rss+xml"/><item><title>[MovieLens] 1. 데이터 살펴보기</title><link>https://codemario318.github.io/post/movielens/1/</link><pubDate>Mon, 18 Mar 2024 11:00:01 +0900</pubDate><guid>https://codemario318.github.io/post/movielens/1/</guid><description>&lt;img src="https://codemario318.github.io/post/movielens/1/cover.jpeg" alt="Featured image of post [MovieLens] 1. 데이터 살펴보기" />&lt;p>안녕하세요 :D 서칭하던 중 재미있어보이는 데이터를 발견했습니다.&lt;/p>
+&lt;p>미네소타 대학의 컴퓨터 과학 연구 그룹인 &lt;a class="link" href="https://grouplens.org/" target="_blank" rel="noopener"
+>&lt;strong>GroupLens&lt;/strong>&lt;/a>에서 공개한 &lt;a class="link" href="https://grouplens.org/datasets/movielens/latest/" target="_blank" rel="noopener"
+>&lt;strong>MovieLens&lt;/strong>&lt;/a> 데이터셋으로, GroupLens의 연구 분야 중 하나인 인공지능 추천 시스템을 위해 만들어진 데이터셋입니다.&lt;/p>
+&lt;p>&lt;strong>86,537편의 영화&lt;/strong>와 그와 관련된 &lt;strong>33,832,162개의 평점&lt;/strong> 및 &lt;strong>2,328,315개의 태그&lt;/strong>로 구성되어있는데, 볼륨이 꽤 커서 직접 활용해보지 못했던 기술들을 실전에 유사한 환경에서 만들어 볼 수 있을것 같다는 생각이 들었습니다.&lt;/p>
+&lt;p>프로젝트는 처음 &lt;code>RDBMS&lt;/code> 부터 시작하여, 일부 데이터들을 다른 기술들로 전환하여 점진적으로 개선하는 방식으로 진행해보려고 합니다.&lt;/p>
+&lt;p>오늘은 첫 걸음으로 데이터가 어떤 형식으로 구성되어있는지 간략하게 살펴보고, 어떤 형태로 설계할지 고민해보겠습니다.&lt;/p>
+&lt;p>&lt;code>Python3&lt;/code>와 &lt;code>Pandas&lt;/code>를 활용하여 간단히 확인를 했는데, 환경 구성과 같은 내용들은 &lt;a class="link" href="https://github.com/codemario318/movielens-data/tree/main" target="_blank" rel="noopener"
+>&lt;strong>Movielens 데이터셋 구조 확인&lt;/strong>&lt;/a> 레포지토리를 참고해주시면 되겠습니다.&lt;/p>
+&lt;p>데이터셋에 대한 정보는 &lt;a class="link" href="https://files.grouplens.org/datasets/movielens/ml-latest-README.html" target="_blank" rel="noopener"
+>&lt;strong>README.html&lt;/strong>&lt;/a>에 상세히 나와있습니다.&lt;/p>
+&lt;h2 id="데이터셋-구성">데이터셋 구성&lt;/h2>
+&lt;p>데이터셋은 &lt;code>userId&lt;/code>, &lt;code>movieId&lt;/code>를 공통으로 활용하고 있고, 앞서 설명드렸던 영화, 평점, 태그 포함 총 6개의 &lt;code>.csv&lt;/code> 파일로 구성되어 있습니다.&lt;/p>
+&lt;p>&lt;strong>&lt;code>userId&lt;/code>&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://movielens.org/" target="_blank" rel="noopener"
+>MovieLens&lt;/a>의 사용자로 무작위 선택&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>&lt;code>movieId&lt;/code>&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://movielens.org/" target="_blank" rel="noopener"
+>MovieLens&lt;/a>에 등록된 영화로, 등급이나 태그가 하나 이상 등록된 영화&lt;/li>
+&lt;/ul>
+&lt;p>포함된 데이터 중 영화에 대한 태그 관련성 점수를 포함하는 데이터 셋인 &lt;strong>태그 게놈&lt;/strong>(&lt;code>genome-scores.csv&lt;/code>, &lt;code>genome-tags.csv&lt;/code>)와 영화 데이터의 다른 소스에 연결하기 위한 식별자 정보가 담겨있는 &lt;code>links.csv&lt;/code> 데이터는 활용하지 않겠습니다.&lt;/p>
+&lt;h2 id="movies">movies&lt;/h2>
+&lt;p>영화 데이터는 &lt;code>movieId&lt;/code>, &lt;code>title&lt;/code>, &lt;code>genres&lt;/code> 로 구성되어 있습니다.&lt;/p>
+&lt;p>영화의 제목들은 직접 입력되었거나, &lt;a class="link" href="https://www.themoviedb.org/" target="_blank" rel="noopener"
+>https://www.themoviedb.org/&lt;/a>에서 가져온 데이터로, 괄호 안에 개봉년이 포함되어 있으나 정확하지 않을 수 있다고 합니다.&lt;/p>
+&lt;p>영화 장르들을 모두 포함하고있는 &lt;code>genres&lt;/code> 컬럼은 아래의 19개 장르중 일부를 &lt;code>|&lt;/code> 문자로 합친 형태로 구성된다고 합니다.&lt;/p>
+&lt;ul>
+&lt;li>Action&lt;/li>
+&lt;li>Adventure&lt;/li>
+&lt;li>Animation&lt;/li>
+&lt;li>Children&amp;rsquo;s&lt;/li>
+&lt;li>Comedy&lt;/li>
+&lt;li>Crime&lt;/li>
+&lt;li>Documentary&lt;/li>
+&lt;li>Drama&lt;/li>
+&lt;li>Fantasy&lt;/li>
+&lt;li>Film-Noir&lt;/li>
+&lt;li>Horror&lt;/li>
+&lt;li>Musical&lt;/li>
+&lt;li>Mystery&lt;/li>
+&lt;li>Romance&lt;/li>
+&lt;li>Sci-Fi&lt;/li>
+&lt;li>Thriller&lt;/li>
+&lt;li>War&lt;/li>
+&lt;li>Western&lt;/li>
+&lt;li>(no genres listed)&lt;/li>
+&lt;/ul>
+&lt;p>장르가 없는 경우는 (&lt;strong>no genres listed&lt;/strong>)가 입력되는 것으로 보아 &lt;code>NULL&lt;/code>을 허용하지는 않는 것으로 보이네요.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">pandas&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">pd&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read_csv&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;dataset/movies.csv&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># 86537&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>파일을 &lt;code>pandas DataFrame&lt;/code>으로 열고 건수를 확인해보니, 처음 언급한대로 86,537건이었습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">head&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>최상단 5건을 확인해보니, &lt;strong>README.html&lt;/strong>에 언급된 형식으로 데이터들이 저장되어 있는 것으로 보입니다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>movieId&lt;/th>
+&lt;th>title&lt;/th>
+&lt;th>genres&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>Toy Stroy (1995)&lt;/td>
+&lt;td>Adventure|Animation|Children|Comedy|Fantasy&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Jumanji (1995)&lt;/td>
+&lt;td>Adventure|Children|Fantasy&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>Grumpier Old Men (1995)&lt;/td>
+&lt;td>Comedy|Romance&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>Waiting to Exhale (1995)&lt;/td>
+&lt;td>Comedy|Drama|Romance&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>Father of the Bride Part II (1995)&lt;/td>
+&lt;td>Comedy&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;code>genres&lt;/code> 컬럼 같은 경우 공식 설명과는 달리 총 20개로 &lt;code>IMAX&lt;/code>가 추가되있습니다. 누락되었나보네요.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">genres_list&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;genres&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">lambda&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;|&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">genres&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">set&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">l&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">genres_list&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">genres&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">l&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">genres&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="c1"># 20&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">genres&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">&amp;#39;&amp;#39;&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Adventure&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;War&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;(no genres listed)&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Action&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Mystery&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Fantasy&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Film-Noir&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Comedy&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Romance&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;IMAX&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Crime&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Musical&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Animation&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Drama&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Horror&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Children&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Sci-Fi&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Thriller&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Western&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1"> &amp;#39;Documentary&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">&amp;#39;&amp;#39;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;genres&amp;#39;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">str&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;IMAX&amp;#39;&lt;/span>&lt;span class="p">)])&lt;/span> &lt;span class="c1"># 195&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>IMAX&lt;/code>가 포함된 장르를 가지는 레코드들은 총 195건으로 많지는 않지만 데이터 분포 같은 것들이 중요한 요소는 아니기때문에 그냥 활용해도 괜찮을 것 같습니다.&lt;/p>
+&lt;hr>
+&lt;p>눈에 띄는점은 &lt;code>genres&lt;/code> 컬럼인데, 각 장르가 &lt;code>|&lt;/code> 문자로 구분되어 여러개 항목이 들어있습니다. 장르들이 영어 오름차순으로 정렬되어 저장되어있는 것으로 보이네요.&lt;/p>
+&lt;p>이러한 경우 일반적인 RDBMS에서 &lt;code>genres&lt;/code>를 조건으로 이용하여 &lt;code>SELECT&lt;/code>하게 될 경우 &lt;code>%{keyword}%&lt;/code>로 처리해야하므로 인덱스를 활용할 수 없고, 이로 인해 성능에서 문제가 발생할 수 있습니다.&lt;/p>
+&lt;p>&lt;code>genres&lt;/code> 컬럼들의 각 장르들을 카테고리 테이블로 분리하고 &lt;code>movieId&lt;/code>와 장르 간 1:N 테이블을 추가하는 방식으로 바꾼다면 장르를 이용한 검색 조건으로 인덱스를 사용할 수 없는 문제는 해결할 수 있습니다만&amp;hellip;&lt;/p>
+&lt;p>&lt;code>genres&lt;/code>가 여러개의 장르를 포함할 수 있다는 특성으로 인해 쿼리 작성할 때 조인을 사용하면 &lt;code>movies&lt;/code>의 컬럼들이 중복됩니다.&lt;/p>
+&lt;p>이로 인해 서브 쿼리나 &lt;code>CONCAT&lt;/code>과 같은 처리를 필요로 하거나, &lt;code>movieId&lt;/code>로 장르를 조회하는 방식으로 처리해야 하므로 조회 성능이 떨어질 수 있음은 물론, 테이블 구조가 불필요하게 복잡해집니다.&lt;/p>
+&lt;p>&lt;code>genres&lt;/code>의 데이터 형태와 한번 등록되면 변하지 않는 장르의 특성으로 볼 때, 단순 조회를 위한 컬럼이지 않을까 추측되고, 검색 기능은 &lt;strong>검색 엔진&lt;/strong>을 별도로 구성하는 방식으로 처리되고 있을 것 같다는 예상을 해봅니다.&lt;/p>
+&lt;p>일단 RDBMS를 이용한 &lt;code>genres&lt;/code> 컬럼 조건 검색은 배제하고 이후 더 좋은 방법을 고려하는 것이 좋겠습니다.&lt;/p>
+&lt;h2 id="tags">tags&lt;/h2>
+&lt;p>태그 데이터는 &lt;code>userId&lt;/code>, &lt;code>movieId&lt;/code>, &lt;code>tag&lt;/code>, &lt;code>timestamp&lt;/code>로 구성되어 있습니다.&lt;/p>
+&lt;p>각 행은 한명의 사용자가 한 영화에 적용한 하나의 태그를 의미합니다.&lt;/p>
+&lt;p>&lt;code>tag&lt;/code>는 단일 단어나 짧은 문구로 구성되며, 의미, 가치, 목적은 각 사용자의 목적에 의해 결정됩니다.&lt;/p>
+&lt;p>데이터는 총 2,328,315건으로 확인됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read_csv&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;dataset/tags.csv&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">head&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>userId&lt;/th>
+&lt;th>movieId&lt;/th>
+&lt;th>tag&lt;/th>
+&lt;th>timestamp&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>260&lt;/td>
+&lt;td>good vs evil&lt;/td>
+&lt;td>1430666558&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>260&lt;/td>
+&lt;td>Harrison Ford&lt;/td>
+&lt;td>1430666505&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>260&lt;/td>
+&lt;td>sci-fi&lt;/td>
+&lt;td>1430666538&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>14&lt;/td>
+&lt;td>1221&lt;/td>
+&lt;td>Al Pacino&lt;/td>
+&lt;td>1311600756&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>14&lt;/td>
+&lt;td>1221&lt;/td>
+&lt;td>mafia&lt;/td>
+&lt;td>1311600746&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;code>tags.csv&lt;/code> 파일을 읽어 최상단 5건을 확인해보면 1명의 사용자가 여러개의 영화에 여러개의 태그를 남길 수 있다는 것을 예상해볼 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">unique_tags&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;tag&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">drop_duplicates&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">unique_tags&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># 153950&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>유니크한 &lt;code>tag&lt;/code> 값은 153,950건 입니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>tags.csv&lt;/code>는 사용자가 한 영화에 적용한 태그로 1명의 유저가 여러 영화에 여러 종류의 태그를 적용할 수 있습니다.&lt;/p>
+&lt;p>전체 항목은 2,328,315건 이지만, &lt;code>tag&lt;/code> 컬럼의 유니크한 값의 개수는 153,950개 인 것을 확인할 수 있습니다.&lt;/p>
+&lt;p>N:M 형태인 &lt;code>tag.csv&lt;/code>의 데이터를 RDBMS에 저장하는 것이 좋은 방법인가 의구심이 들긴 하지만, 일반적인 서비스 정책으로 예상해 볼 때(특정 영화에 적용된 태그들 조회, 사용자가 활용한 태그들 조회, 사용자가 특정 영화에 남긴 태그 조회 등) 인덱스 설정만 잘 해준다면 화면에 노출 될 데이터 조회 성능에는 큰 이슈는 없어 보입니다.&lt;/p>
+&lt;p>처음엔 RDBMS로 처리하더라도 이후 새로운 요구가 있다면, 다른 방법으로 변경을 고려할 수 있겠습니다.&lt;/p>
+&lt;h2 id="ratings">ratings&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read_csv&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;dataset/ratings.csv&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">df&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">head&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>userId&lt;/th>
+&lt;th>movieId&lt;/th>
+&lt;th>rating&lt;/th>
+&lt;th>timestamp&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>4.0&lt;/td>
+&lt;td>1225734739&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>110&lt;/td>
+&lt;td>4.0&lt;/td>
+&lt;td>1225865086&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>158&lt;/td>
+&lt;td>4.0&lt;/td>
+&lt;td>1225733503&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>260&lt;/td>
+&lt;td>4.5&lt;/td>
+&lt;td>1225735204&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>356&lt;/td>
+&lt;td>5.0&lt;/td>
+&lt;td>1225735119&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>평가 데이터는 &lt;code>userId&lt;/code>, &lt;code>movieId&lt;/code>, &lt;code>rating&lt;/code>, &lt;code>timestamp&lt;/code>로 구성되어 있습니다.&lt;/p>
+&lt;p>각 행은 한 사용자가 한 영화에 남긴 점수를 의미합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="c1"># 33832162&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;rating&amp;#34;&lt;/span>&lt;span class="p">]),&lt;/span> &lt;span class="nb">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;rating&amp;#34;&lt;/span>&lt;span class="p">]))&lt;/span> &lt;span class="c1"># 0.5 5.0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>총 데이터 수는 33,832,162건, 최대, 최소값은 각각 0.5, 5.0 입니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>ratings.csv&lt;/code>는 영화에 대한 사용자의 평점으로 영화 하나에 하나만 만들 수 있습니다.&lt;/p>
+&lt;p>영화 목록을 검색할 때 일반적으로 평균 평점이 포함되는데, 현재 상태로 테이블을 생성할 시 조회 처리에서 &lt;code>GROUP BY&lt;/code>나 서브 쿼리를 통해 평균을 계산한다던가, 활용된 값들을 조회하는 처리가 필요하게 되고, 이 때문에 조회 성능에 문제가 발생할 수 있습니다.&lt;/p>
+&lt;p>이를 방지 위해 &lt;code>movies&lt;/code> 테이블에 통계 정보에 활용될 컬럼을 만들어 두는 방식으로 설계하는 것도 고려해볼 수 있겠습니다.&lt;/p>
+&lt;p>&lt;code>rating&lt;/code> 컬럼도 꼭 소수로 넣을 필요는 없어보이네요.&lt;/p>
+&lt;h2 id="끝으로">끝으로&lt;/h2>
+&lt;p>간단하게 MovieLens 데이터셋의 주요 데이터들을 확인해봤습니다.&lt;/p>
+&lt;p>영화들에 대한 메타데이터가 없어 다채로운 기능들은 구현할 수 없을 것 같다는 점이 조금 아쉬운 마음에 찾아보니 MovieLens 데이터를 기반으로 &lt;a class="link" href="https://www.themoviedb.org/settings/api/request" target="_blank" rel="noopener"
+>TBMS API&lt;/a>이용하여 만든 &lt;a class="link" href="https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?resource=download&amp;amp;select=credits.csv" target="_blank" rel="noopener"
+>&lt;strong>The Movies Dataset&lt;/strong>&lt;/a> 데이터가 Kaggle에 공개되어 있었습니다.&lt;/p>
+&lt;p>하지만 데이터가 최신화가 안되어 사용할 수 없는 데이터가 많아 사용은 보류했습니다.&lt;/p>
+&lt;p>일단 생각하고 있는 기능들은 MovieLens 데이터으로 충분해서 필요는 없지만, 여유가 된다면 제가 최신화를 해봐도 괜찮을 것 같네요.&lt;/p>
+&lt;p>다음은 각 데이터의 특성을 고려하여 테이블을 설계하고, DB에 적재해볼예정입니다.&lt;/p>
+&lt;p>부족한 글 끝까지 읽어주셔서 감사합니다 :D&lt;/p></description></item></channel></rss>

@@ -74,9 +74,9 @@
 &lt;p>업무 규칙은 그 자체가 애플리케이션과 밀접한 관련이 있거나, 혹은 더 범용적일 수 있는데, 아키텍트는 이들을 시스템의 나머지 부분으로부터 분리하여 독립적으로 변경할 수 있도록 해야한다.&lt;/p>
 &lt;ul>
 &lt;li>입력 필드 유효성 검사는 애플리케이션 자체와 밀접하게 관련된 업무 규칙이다.&lt;/li>
-&lt;li>계좌의 이자 계산이나 재고품 빕겨는 업무 도메인에 더 밀접하게 연관된 업무 규칙이다.&lt;/li>
+&lt;li>계좌의 이자 계산이나 재고품 비교는 업무 도메인에 더 밀접하게 연관된 업무 규칙이다.&lt;/li>
 &lt;/ul>
-&lt;p>이러한 계층의 예로는 UI, 애플리케이션에 특화된 업무 규칙, 애플리케이션과는 독립접인 업무 규칙, 데이터베이스와 같은 기술적인 세부하항등이 있다.&lt;/p>
+&lt;p>이러한 계층의 예로는 UI, 애플리케이션에 특화된 업무 규칙, 애플리케이션과는 독립접인 업무 규칙, 데이터베이스와 같은 기술적인 세부사항등이 있다.&lt;/p>
 &lt;h2 id="유스케이스-결합-분리">유스케이스 결합 분리&lt;/h2>
 &lt;p>유스케이스 자체도 서로 다른 이유로 변경될 수 있다.&lt;/p>
 &lt;ul>
@@ -137,7 +137,7 @@ data-flex-basis="704px"
 &lt;li>분리된 컴포넌트를 서로 다른 서버에서 실행해야 하는 상황: MSA 등&lt;/li>
 &lt;/ul>
 &lt;p>때때로는 컴포넌트를 서비스 수준까지도 분리해야 한다.&lt;/p>
-&lt;p>좋은 이키텍처는 선택권을 열어둔다는 말에서 결합 분리 모드는 이러한 선택지 중 하나다.&lt;/p>
+&lt;p>좋은 아키텍처는 선택권을 열어둔다는 말에서 결합 분리 모드는 이러한 선택지 중 하나다.&lt;/p>
 &lt;p>계층과 유스케이스의 결합을 분리하는 방법은 다양하다.&lt;/p>
 &lt;ul>
 &lt;li>소스 수준 분리 모드
@@ -168,7 +168,7 @@ data-flex-basis="704px"
 &lt;p>좋은 아키텍처는 시스템이 모노리틱 구조로 태어나서 단일 파일로 배포되더라도,이후에는 독립적으로 배포 가능한 단위들의 집합으로 성장하고, 또 독립적인 서비스나 마이크로서비스 수준까지 성장할 수 있도록 만들어져야 한다.(반대도 마찬가지)&lt;/p>
 &lt;p>좋은 아키텍처는 결합 분리 모드를 선택사항으로 남겨두어서 배포 규모에 다라 가장 적합한 모드를 선택해 사용할 수 있게 만들어 준다.&lt;/p>
 &lt;h2 id="결론">결론&lt;/h2>
-&lt;p>시스템의 결합 분리 모드는 시간이 지나면서 바귀기 쉬우며, 뛰어난 아키텍트라면 이러한 변경을 예측하여 큰 무리 없이 반영할 수 있도록 만들어야한다.&lt;/p></description></item><item><title>15. 아키텍처란?</title><link>https://codemario318.github.io/post/clean-architecture/15/</link><pubDate>Tue, 12 Mar 2024 15:37:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/15/cover.png" alt="Featured image of post 15. 아키텍처란?" />&lt;p>&lt;strong>소프트웨어 아키텍트란?&lt;/strong>&lt;br>
+&lt;p>시스템의 결합 분리 모드는 시간이 지나면서 바뀌기 쉬우며, 뛰어난 아키텍트라면 이러한 변경을 예측하여 큰 무리 없이 반영할 수 있도록 만들어야한다.&lt;/p></description></item><item><title>15. 아키텍처란?</title><link>https://codemario318.github.io/post/clean-architecture/15/</link><pubDate>Tue, 12 Mar 2024 15:37:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/15/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/15/cover.png" alt="Featured image of post 15. 아키텍처란?" />&lt;p>&lt;strong>소프트웨어 아키텍트란?&lt;/strong>&lt;br>
 소프트웨어 아키텍트는 프로그래머이며, 앞으로도 계속 프로그래머로 남아야하므로, 고수준 문제에만 집중하여 코드와 동떨어져서는 안 된다.&lt;/p>
 &lt;p>소프트웨어 아키텍트는 개발에 참여하며 나머지 팀원들이 생산성을 극대화할 수 있는 설계를 하도록 방향을 이끌어준다.&lt;/p>
 &lt;p>따라서 프로그래밍을 작업에 계속 참여하며 문제를 직접 경험하고 이를 통해 다른 프로그래머를 지원하는 작업을 수행해야한다.&lt;/p>
