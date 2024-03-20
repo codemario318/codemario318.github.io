@@ -1,4 +1,109 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 13 Mar 2024 14:51:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>16. 독립성</title><link>https://codemario318.github.io/post/clean-architecture/16/</link><pubDate>Wed, 13 Mar 2024 14:51:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/16/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/16/cover.png" alt="Featured image of post 16. 독립성" />&lt;p>좋은 아키텍처는 다음을 지원해야한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 20 Mar 2024 21:36:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>17. 경계: 선 긋기</title><link>https://codemario318.github.io/post/clean-architecture/17/</link><pubDate>Wed, 20 Mar 2024 21:36:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/17/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/17/cover.png" alt="Featured image of post 17. 경계: 선 긋기" />&lt;p>소프트웨어 아키텍처는 선을 긋는 기술이며, 이러한 선을 &lt;strong>경계&lt;/strong>(Boundary)라고 부른다.&lt;/p>
+&lt;p>경계는 소프트웨어 요소를 서로 분리하고, 경계 한편에 있는 소소가 반대편에 있는 요소를 알지 못하도록 막는다.&lt;/p>
+&lt;p>이 중 초기에 그려지는 선은 &lt;strong>가능한 한 오랫동안 결정을 연기&lt;/strong>시키기고, 결정이 핵심적인 업무 로직을 &lt;strong>오염시키지 못하게 만들려는 목적&lt;/strong>으로 쓰인다.&lt;/p>
+&lt;p>아키텍트의 목표는 시스템을 만들고 유지하는 데 드는 자원을 최소화 하는 것인데, 효율을 떨어뜨리는 요인은 &lt;strong>결합&lt;/strong>(Coupling)이며, &lt;strong>너무 일찍 내려진 결정에 따른 결합은 더 큰 영향&lt;/strong>을 미친다.&lt;/p>
+&lt;p>너무 일찍 내려진 결정은 시스템의 업무 요구사항, 즉 유스케이스와 아무런 관련이 없는 결정을 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>프레임워크&lt;/li>
+&lt;li>데이터베이스&lt;/li>
+&lt;li>웹 서버&lt;/li>
+&lt;li>유틸리티 라이브러리&lt;/li>
+&lt;li>의존성 주입에 대한 결정 등&lt;/li>
+&lt;/ul>
+&lt;p>좋은 시스템 아키텍처란 유스케이스와 아무런 관련이 없는 결정에 의존하지 않아 이러한 결정이 부수적이며, 연기할 수 있는 아키텍처다.&lt;/p>
+&lt;p>경계선을 긋는 행위는 결정을 늦추고 연기하는 데 도움이되며, 궁극적으로는 시간을 엄청나게 절약해주었으며, 골치를 썩지 않게 해준다.&lt;/p>
+&lt;h2 id="어떻게-선을-그을까-언제-그을까">어떻게 선을 그을까? 언제 그을까?&lt;/h2>
+&lt;p>관련이 있는 것과 없는 것 사이에 선을 긋는다.&lt;/p>
+&lt;ul>
+&lt;li>GUI는 업뮤 규칙과는 관련 없기 때문에, 둘 사이에는 반드시 선이 있어야한다.&lt;/li>
+&lt;li>데이터베이스는 GUI와는 고나련이 없으므로, 둘 사이에는 반드시 선이 있어야한다.&lt;/li>
+&lt;li>데이터베이스는 업무 규칙과 관련이 없으므로, 둘 사이에도 선이 있어야한다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>데이터베이스는 업무 규칙과 서로 떼어놓을 수 없는 관계라고 배운 사람이 많으며, 심지어 업무 규칙이 구체화된 것이 데이터베이스라고 확신하는 사람도 더러 있지만 이는 잘못된 생각이다.&lt;/p>
+&lt;p>업무 규칙은 데이터를 가져오고 저장할 때 사용할 수 있는 함수 집합이 있다는 사실이 전부여아한다.&lt;/p>
+&lt;p>이러한 함수 집합을 통해 데이터베이스를 인터페이스 뒤로 숨길 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/17/img.png"
+width="407"
+height="281"
+srcset="https://codemario318.github.io/post/clean-architecture/17/img_hu673cbb09eeb85c8e13222d62fdbc3a4e_65890_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/17/img_hu673cbb09eeb85c8e13222d62fdbc3a4e_65890_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="클래스 경계선"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/p>
+&lt;p>&lt;code>DatabaseAccess&lt;/code>에서 출발하는 화살표는 클래스로부터 바깥쪽으로 향하는데 이는 &lt;code>DatabaseAccess&lt;/code>가 존재하는 클래스는 없다는 의미이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/17/img_1.png"
+width="401"
+height="283"
+srcset="https://codemario318.github.io/post/clean-architecture/17/img_1_hub12dd706ba5018e7ec9bc226af343837_66166_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/17/img_1_hub12dd706ba5018e7ec9bc226af343837_66166_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="컴포넌트 경계선"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;p>&lt;code>DatabaseInterface&lt;/code> 클래스는 &lt;code>BusinessRules&lt;/code> 컴포넌트에 속하며, &lt;code>DatabaseAccess&lt;/code> 클래스는 &lt;code>Database&lt;/code> 컴포넌트에 속하므로, &lt;code>Database&lt;/code>는 &lt;code>BusinessRules&lt;/code>에 대해 알고있지만, &lt;code>BusinessRules&lt;/code>은 &lt;code>Database&lt;/code>에 관해 알지 못한다.&lt;/p>
+&lt;p>따라서 &lt;code>BusinessRules&lt;/code>에게 있어 &lt;code>Database&lt;/code>는 문제가 되지 않지만, &lt;code>Database&lt;/code>는 &lt;code>BusinessRules&lt;/code> 없이는 존재할 수 없다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>Database&lt;/code> 컴포넌트는 &lt;code>BusinessRules&lt;/code>가 만들어 낸 호출을 데이터베이스의 쿼리 언어로 변환하는 코드를 담고 있으며, 이 변환 코드가 &lt;code>BusinessRules&lt;/code>를 알고 있는 것이다.&lt;/p>
+&lt;p>두 컴포넌트 사이에 경계선, 화살표의 방향이 &lt;code>BusinessRules&lt;/code>를 향하도록 만들었기 때문에 어떤 종류의 데이터베이스도 사용할 수 있게된다.&lt;/p>
+&lt;p>따라서 데이터베이스에 대한 결정을 연기할 수 있으며, 데이터베이스를 결정하기에 앞서 업무 규칙을 먼저 작성하고 테스트하는 데 집중할 수 있다.&lt;/p>
+&lt;h2 id="입력과-출력은">입력과 출력은?&lt;/h2>
+&lt;p>입력과 출력은 중요하지않다.&lt;/p>
+&lt;p>시스템의 행위를 입출력이 지닌 행위적 측면에서 생각하는 경향이 있는데, 이러한 입출력 뒤에는 모델(데이터 구조와 함수로 구성된 정교한 집합)이 존재한다는 사실을 잊는다.&lt;/p>
+&lt;p>이러한 모델은 GUI가 없이도 동작할 수 있으므로 중요하지 않고, 실제로 중요한 것은 &lt;strong>업무 규칙&lt;/strong>이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/17/img_2.png"
+width="401"
+height="275"
+srcset="https://codemario318.github.io/post/clean-architecture/17/img_2_huca1b9f1dde324acc9010f81287c21632_63448_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/17/img_2_huca1b9f1dde324acc9010f81287c21632_63448_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="349px"
+>&lt;/p>
+&lt;p>&lt;code>GUI&lt;/code> 컴포넌트는 &lt;code>BusinessRules&lt;/code> 컴포넌트에게 의존하기 때문에 경계선으로 분할할 수 있다.&lt;/p>
+&lt;p>따라서 &lt;code>GUI&lt;/code>는 다른 종류의 인터페이스로 얼마든지 교체할 수 있으며 &lt;code>BusinessRules&lt;/code>에 끼치는 영향은 없다.&lt;/p>
+&lt;h2 id="플러그인-아키텍처">플러그인 아키텍처&lt;/h2>
+&lt;p>데이터베이스와 GUI에 대해 내린 두 가지 결정을 하나로 합쳐서 보면 컴포넌트 추가와 관련한 일정의 패턴이 만들어진다.&lt;/p>
+&lt;p>소프트웨어 개발 기술의 역사는 프러그인을 손쉽게 생성하여, 확장 가능하며 유지보수가 쉬운 시스템 아키텍처를 확립할 수 있게 만드는 방법에 대한 이야기이다.&lt;/p>
+&lt;ul>
+&lt;li>선택적이거나 또는 수많은 다양한 형태로 구현될 수 있는 나머지 컴포넌트로부터 핵심적인 업무 규칙은 분리되어 있고, 또한 독립적이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/17/img_3.png"
+width="411"
+height="276"
+srcset="https://codemario318.github.io/post/clean-architecture/17/img_3_hu6d5ed14c5677eea0e6c3298e2ee307eb_74568_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/17/img_3_hu6d5ed14c5677eea0e6c3298e2ee307eb_74568_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;p>위와 같은 설계에서 사용자 인터페이스는 플러그인 형태로 고려되었기에, 수많은 종류의 사용자 인터페이스를 플러그인 형태로 연결할 수 있게 된다.&lt;/p>
+&lt;p>데이터베이스도 동일하게 적용할 수 있다.&lt;/p>
+&lt;p>GUI, 데이터베이스 등의 교체 작업이 쉬운 작업은 아니고, 업무 규칙 활용을 위해 추가적인 작업도 필요할 수 있지만, 플러그인 구조를 가정한 채 시작함으로써, 이러한 변경 작업을 현실성 있도록 만든다.&lt;/p>
+&lt;h2 id="플러그인에-대한-논의">플러그인에 대한 논의&lt;/h2>
+&lt;p>시스템을 플러그인 아키텍처로 배치함으로써 변경이 전파될 수 없는 방화벽을 생성할 수 있다.&lt;/p>
+&lt;p>경계는 &lt;strong>변경의 축&lt;/strong>(Axis of change)이 있는 지점에 그어진다. 그리고 경계의 한쪽에 위치한 컴포넌트는 경계 반대편의 컴포넌트와는 다른 속도로, 다른 이유로 변경된다.&lt;/p>
+&lt;p>따라서 다른 시점에 다른 속도로 변경되는 둘 사이에는 반드시 경계가 필요하다.&lt;/p>
+&lt;p>이 역시도 단일 책임 원칙에 해당하며, 단일 책임 원칙은 어디에 경계를 그어야 할지 알려준다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>소프트웨어 아키텍처에서 경계선을 그리려면&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>먼저 시스템을 컴포넌트 단위로 분할해야한다.&lt;/p>
+&lt;ul>
+&lt;li>일부 컴포넌트는 핵심 업무 규칙에 해당한다.&lt;/li>
+&lt;li>나머지 컴포넌트는 플러그인으로 핵심 업무와는 직접적인 관련이 없지만 필수 기능을 포함한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>컴포넌트 사이의 화살표가 핵심 업무를 향하도록 컴포넌트의 소스를 배치한다.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>이는 의존성 역전 원칙과 안정된 추상화 원칙을 응용한 것이며, 의존성의 화살표는 저수준 세부사항에서 고수준의 추상화를 향하도록 배치된다.&lt;/p></description></item><item><title>16. 독립성</title><link>https://codemario318.github.io/post/clean-architecture/16/</link><pubDate>Wed, 13 Mar 2024 14:51:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/16/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/16/cover.png" alt="Featured image of post 16. 독립성" />&lt;p>좋은 아키텍처는 다음을 지원해야한다.&lt;/p>
 &lt;ul>
 &lt;li>시스템의 유스케이스&lt;/li>
 &lt;li>시스템의 운영&lt;/li>

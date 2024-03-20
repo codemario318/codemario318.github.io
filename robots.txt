@@ -3,9 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/movielens/2/
-
-
+Allow: /post/clean-architecture/17/
 
 
 
@@ -22,6 +20,30 @@ Allow: /post/movielens/2/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/movielens/2/
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -54,20 +76,6 @@ Allow: /post/movielens/1/
 
 
 Allow: /post/clean-architecture/16/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
