@@ -1,0 +1,129 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="연구용 데이터셋으로 프로젝트 만들기"><title>[MovieLens] 2. DB 설계</title><link rel=canonical href=https://codemario318.github.io/post/movielens/2/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="[MovieLens] 2. DB 설계"><meta property="og:description" content="연구용 데이터셋으로 프로젝트 만들기"><meta property="og:url" content="https://codemario318.github.io/post/movielens/2/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="토이프로젝트"><meta property="article:tag" content="Toy Project"><meta property="article:tag" content="데이터셋"><meta property="article:tag" content="dataset"><meta property="article:tag" content="GroupLens"><meta property="article:tag" content="MovieLens"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="DB"><meta property="article:tag" content="RDBMS"><meta property="article:tag" content="MySQL"><meta property="article:tag" content="PostgreSQL"><meta property="article:published_time" content="2024-03-19T16:00:01+09:00"><meta property="article:modified_time" content="2024-03-19T16:00:01+09:00"><meta property="og:image" content="https://codemario318.github.io/post/movielens/2/cover.jpeg"><meta name=twitter:title content="[MovieLens] 2. DB 설계"><meta name=twitter:description content="연구용 데이터셋으로 프로젝트 만들기"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/movielens/2/cover.jpeg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>20</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#movies>MOVIES</a></li><li><a href=#ratings>RATINGS</a></li><li><a href=#tags-reviews-reviews_tags>TAGS, REVIEWS, REVIEWS_TAGS</a></li><li><a href=#끝으로>끝으로</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/movielens/2/><img src=/post/movielens/2/cover_hu223669cbbbe5efa1c70286790dba8a54_16582_800x0_resize_q75_box.jpeg srcset="/post/movielens/2/cover_hu223669cbbbe5efa1c70286790dba8a54_16582_800x0_resize_q75_box.jpeg 800w, /post/movielens/2/cover_hu223669cbbbe5efa1c70286790dba8a54_16582_1600x0_resize_q75_box.jpeg 1600w" width=800 height=296 loading=lazy alt="Featured image of post [MovieLens] 2. DB 설계"></a></div><div class=article-details><header class=article-category><a href=/categories/project/>Project</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/movielens/2/>[MovieLens] 2. DB 설계</a></h2><h3 class=article-subtitle>연구용 데이터셋으로 프로젝트 만들기</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2024/03/19</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>4 minute read</time></div></footer></div></header><section class=article-content><p>앞서 진행한 데이터셋 구조 확인을 바탕으로, 간단하게 데이터베이스 설계를 해봤습니다.</p><p><code>TAGS</code>, <code>RATINGS</code> 테이블은 <code>user_id</code>, <code>movie_id</code> 컬럼을 활용한 관계 테이블인데 <code>USERS</code> 테이블에 관련된 데이터들을 별도로 제공하지 않았기 때문에 있다고 가정하고 진행했습니다.</p><pre class=mermaid style=text-align:center>erDiagram
+    MOVIES {
+        int movie_id PK
+        string title
+        string geners
+        int rating_count
+        bigint rating_total
+    }
+    
+    RATINGS {
+        int rating_id PK
+        int user_id FK
+        int movie_id FK
+        int rating
+        timestamp create_ts
+    }
+    
+    REVIEWS {
+        int review_id PK
+        int user_id FK
+        int movie_id FK
+        string content
+        timestamp create_ts
+        timestamp update_ts
+    }
+    
+    TAGS {
+        string name PK
+        timestamp create_ts
+    }
+
+    REVIEWS_TAGS {
+        int user_id PK,FK
+        int movie_id PK,FK
+        int tag_name PK,FK
+    }
+
+    USERS {
+    }
+
+    MOVIES ||--o{ RATINGS: ""
+    RATINGS }o--|| USERS: ""
+    
+    MOVIES ||--o{ REVIEWS: ""
+    REVIEWS }o--|| USERS: ""
+    
+    REVIEWS ||--o{ REVIEWS_TAGS: ""
+    REVIEWS_TAGS }o--|| TAGS: ""
+</pre><p>기존 데이터를 기반으로 일부 컬럼들과 테이블을 추가하였습니다.</p><p>자세한 내용은 테이블 별로 설명해보겠습니다.</p><h2 id=movies>MOVIES</h2><pre class=mermaid style=text-align:center>erDiagram
+    MOVIES {
+        int movie_id PK
+        string title
+        string geners
+        int rating_count
+        bigint rating_total
+    }
+</pre><p>기존 제공된 <code>movie_id</code>, <code>title</code>, <code>geners</code>는 그대로 활용하고, 평균 평점 계산에 활용될 <code>rating_count</code>, <code>rating_total</code> 컬럼을 추가했습니다.</p><p><code>geners</code> 컬럼은 장르들이 <code>|</code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 조회 후 서버나 클라이언트 측에서 직접 계산하는 방식을 사용할 수 있고, <strong>MySQL</strong>, <strong>PostgreSQL</strong>등과 같이 <strong>함수 기반 인덱스</strong> 기능을 제공하는 RDBMS를 활용한다면 조건을 활용한 조회 성능에도 이슈가 발생하지 않을 것이라 생각되어 추가하였습니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 사용자가 평점을 추가하거나 수정할 때 변경되는 값이므로 평점 등록, 수정, 삭제 처리시 해당 컬럼 처리 로직 구현에 주의가 필요하겠습니다.</p><h2 id=ratings>RATINGS</h2><pre class=mermaid style=text-align:center>erDiagram
+    RATINGS {
+        int user_id PK,FK
+        int movie_id PK,FK
+        int rating
+        timestamp create_ts
+    }
+</pre><p>기존 제공된 <code>user_id</code>, <code>movie_id</code>, <code>create_ts</code>는 그대로 활용하고, <code>rating</code> 컬럼의 데이터 타입을 변경하였습니다.</p><p><code>rating</code> 같은 경우 기존에는 <strong>0.5 간격 0~5 까지의 소수</strong>를 저장하고 있었지만, <code>MOVIES</code> 테이블의 <code>rating_total</code> 처리와 평균 평점 계산 처리가 필요하므로, 개인 최고점을 10점으로 변경하고 서비스 로직에서 평점을 계산하는 방식을 고려하는게 더 합리적이라 판단하여 정수형 데이터타입을 선택하였습니다.</p><p>이외에도 <code>rating_id</code>와 같은 별도 PK를 만드는 것을 고려해봤지만, <code>rating_id</code> 컬럼이 다른 테이블에서 활용되거나 PK가 변경거나 <code>user_id</code>, <code>movie_id</code> 없이 단독으로 할용되는 경우는 없을 것이라 판단되어 별도로 추가하지는 않았습니다.</p><h2 id=tags-reviews-reviews_tags>TAGS, REVIEWS, REVIEWS_TAGS</h2><p>기본 제공된 데이터에서 <code>TAGS</code>는 전체 2,328,315건 중 유니크한 <code>tag</code>는 153,950개 였습니다.</p><pre class=mermaid style=text-align:center>erDiagram
+    TAGS {
+        int user_id PK,FK
+        int movie_id PK,FK
+        int tag PK,FK
+        timestamp create_ts
+    }
+</pre><p>위와 같은 구조를 확인할 수 있었는데, 일반적으로 이러한 형태의 태그는 글과 함께 사용되는 해시태그 같은 기능이어서 어떻게 구조를 가져가야할지 고민이 들었습니다.</p><p>제 추측으로는 이 데이터의 목적은 추천 모델 개발이므로 사용자와 영화의 관계, 사용자가 자주 활용한 태그, 특정 영화에 많이 활용된 태그 등 <code>user_id</code>, <code>movie_id</code>를 기준으로 활용하는 것이 더 적합했기 때문이라고 생각되었습니다.</p><p>이 부분들을 고려하여 구성한 테이블 구조는 아래와 같습니다.</p><pre class=mermaid style=text-align:center>erDiagram
+    TAGS {
+        string name PK
+        timestamp create_ts
+    }
+    
+    REVIEWS_TAGS {
+        int user_id PK,FK
+        int movie_id PK,FK
+        int tag_name PK,FK
+    }
+
+    REVIEWS {
+        int review_id PK
+        int user_id FK
+        int movie_id FK
+        string content
+        timestamp create_ts
+        timestamp update_ts
+    }
+
+
+    TAGS ||--o{ REVIEWS_TAGS: ""
+    REVIEWS_TAGS }o--|| REVIEWS: ""
+</pre><p>기존 <code>TAGS</code>를 <code>REVIEWS_TAGS</code>로 바꿔 연결 테이블로 구성했습니다.</p><p><code>TAGS</code> 테이블은 <code>tag</code>만을 가지게 구성하고, 사용자가 영화에 후기를 남기는 기능을 고려하여 <code>REVIEWS</code> 테이블을 추가하였습니다.</p><p><code>TAGS</code> 테이블은 앞서 언급했던 데이터 중복 뿐만 아니라 특정 태그를 활용한 게시글 검색등 활용될 여지가 많기 때문에 추가하였습니다.</p><p>사용 횟수 같은 컬럼들을 추가하는 것도 고려하였으나, 현 상황에서는 <code>(tag_name)</code> 인덱스 추가 정도로 충분히 빠른 조회를 수행할 수 있기 때문에 게시글 작성, 수정, 삭제 등의 로직 처리에 변수들을 배제하는것이 좋겠다고 판단하였습니다.</p><p><code>REVIEWS</code> 테이블은 비즈니스 요구사항(베스트 후기 등)에 따라 단독으로 활용될 여지가 많다고 생각되어 <code>RATINGS</code> 테이블과 다르게 <code>review_id</code>를 추가하였습니다.</p><p><code>REVIEWS_TAGS</code> 테이블은 기존 외래키인 <code>user_id</code>, <code>movie_id</code>를 <code>review_id</code>로 변경하지 않고 사용했는데, 위에서 언급한대로 사용자와 영화의 관계를 쉽게 이용하려면 기존 방식이 더 적합하고, <code>REVIEWS</code>와 관련된 처리가 필요하다면 인덱스를 활용하여 충분히 쉽게 처리할 수 있다고 판단되었습니다.</p><h2 id=끝으로>끝으로</h2><p>데이터셋 구조 확인에 이어 간단히 데이터베이스 구조를 구상해봤습니다.</p><p>만들어 놓고 보니 뭔가 찜찜한 기분이 계속 남네요..</p><p>제 역량이 부족해서 어떤 문제들이 발생하게 될지 예상할 수는 없지만 앞으로 발견되는 부족한 부분들은 프로젝트를 진행하면서 조금씩 수정해나가겠습니다.</p><p>끝까지 읽어주셔서 감사합니다 :)</p></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/%ED%86%A0%EC%9D%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/>토이프로젝트</a>
+<a href=/tags/toy-project/>Toy Project</a>
+<a href=/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B/>데이터셋</a>
+<a href=/tags/dataset/>dataset</a>
+<a href=/tags/grouplens/>GroupLens</a>
+<a href=/tags/movielens/>MovieLens</a>
+<a href=/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/>데이터베이스</a>
+<a href=/tags/db/>DB</a>
+<a href=/tags/rdbms/>RDBMS</a>
+<a href=/tags/mysql/>MySQL</a>
+<a href=/tags/postgresql/>PostgreSQL</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://grouplens.org/datasets/movielens/latest/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>MovieLens Latest Datasets</h2><footer class=article-time>grouplens.org</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/movielens/1/><div class=article-image><img src=/post/movielens/1/cover.b58f190c97e00f5e1877639742b37ab3_hu223669cbbbe5efa1c70286790dba8a54_16582_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post [MovieLens] 1. 데이터 살펴보기" data-key=movielens/1 data-hash="md5-tY8ZDJfgD14Yd2OXQrN6sw=="></div><div class=article-details><h2 class=article-title>[MovieLens] 1. 데이터 살펴보기</h2></div></a></article><article class=has-image><a href=/post/real-mysql/16/7/4/><div class=article-image><img src=/post/real-mysql/16/7/4/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 16.7.4 복제 고급 설정 - 필터링된 복제(Filterd Replication)" data-key=real-mysql/16/7/4 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>16.7.4 복제 고급 설정 - 필터링된 복제(Filterd Replication)</h2></div></a></article><article class=has-image><a href=/post/real-mysql/16/7/3/><div class=article-image><img src=/post/real-mysql/16/7/3/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 16.7.3 복제 고급 설정 - 크래시 세이프 복제(Crash-safe Replication)" data-key=real-mysql/16/7/3 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>16.7.3 복제 고급 설정 - 크래시 세이프 복제(Crash-safe Replication)</h2></div></a></article><article class=has-image><a href=/post/real-mysql/16/7/2/><div class=article-image><img src=/post/real-mysql/16/7/2/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 16.7.2 복제 고급 설정 - 멀티 스레드 복제" data-key=real-mysql/16/7/2 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>16.7.2 복제 고급 설정 - 멀티 스레드 복제</h2></div></a></article><article class=has-image><a href=/post/real-mysql/16/7/1/><div class=article-image><img src=/post/real-mysql/16/7/1/real_mysql.335f5c2fc94dc22cf816a9c1393301d9_hu03b8ff0acb6f52b3ec9ae95e616f82c2_25714_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post 16.7.1 복제 고급 설정 - 지연된 복제" data-key=real-mysql/16/7/1 data-hash="md5-M19cL8lNwiz4FqnBOTMB2Q=="></div><div class=article-details><h2 class=article-title>16.7.1 복제 고급 설정 - 지연된 복제</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -3,7 +3,11 @@ User-agent: *
 
 
 
-Allow: /post/movielens/1/
+Allow: /post/movielens/2/
+
+
+
+
 
 
 
@@ -24,6 +28,18 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/movielens/1/
 
 
 
@@ -386,10 +402,6 @@ Allow: /post/gof/1/
 
 
 Allow: /post/real-mysql/16/7/4/
-
-
-
-
 
 
 

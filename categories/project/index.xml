@@ -1,4 +1,119 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Project on Mario Blog</title><link>https://codemario318.github.io/categories/project/</link><description>Recent content in Project on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 18 Mar 2024 11:00:01 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/project/index.xml" rel="self" type="application/rss+xml"/><item><title>[MovieLens] 1. 데이터 살펴보기</title><link>https://codemario318.github.io/post/movielens/1/</link><pubDate>Mon, 18 Mar 2024 11:00:01 +0900</pubDate><guid>https://codemario318.github.io/post/movielens/1/</guid><description>&lt;img src="https://codemario318.github.io/post/movielens/1/cover.jpeg" alt="Featured image of post [MovieLens] 1. 데이터 살펴보기" />&lt;p>안녕하세요 :D 서칭하던 중 재미있어보이는 데이터를 발견했습니다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Project on Mario Blog</title><link>https://codemario318.github.io/categories/project/</link><description>Recent content in Project on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 19 Mar 2024 16:00:01 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/project/index.xml" rel="self" type="application/rss+xml"/><item><title>[MovieLens] 2. DB 설계</title><link>https://codemario318.github.io/post/movielens/2/</link><pubDate>Tue, 19 Mar 2024 16:00:01 +0900</pubDate><guid>https://codemario318.github.io/post/movielens/2/</guid><description>&lt;img src="https://codemario318.github.io/post/movielens/2/cover.jpeg" alt="Featured image of post [MovieLens] 2. DB 설계" />&lt;p>앞서 진행한 데이터셋 구조 확인을 바탕으로, 간단하게 데이터베이스 설계를 해봤습니다.&lt;/p>
+&lt;p>&lt;code>TAGS&lt;/code>, &lt;code>RATINGS&lt;/code> 테이블은 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code> 컬럼을 활용한 관계 테이블인데 &lt;code>USERS&lt;/code> 테이블에 관련된 데이터들을 별도로 제공하지 않았기 때문에 있다고 가정하고 진행했습니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+MOVIES {
+int movie_id PK
+string title
+string geners
+int rating_count
+bigint rating_total
+}
+RATINGS {
+int rating_id PK
+int user_id FK
+int movie_id FK
+int rating
+timestamp create_ts
+}
+REVIEWS {
+int review_id PK
+int user_id FK
+int movie_id FK
+string content
+timestamp create_ts
+timestamp update_ts
+}
+TAGS {
+string name PK
+timestamp create_ts
+}
+REVIEWS_TAGS {
+int user_id PK,FK
+int movie_id PK,FK
+int tag_name PK,FK
+}
+USERS {
+}
+MOVIES ||--o{ RATINGS: ""
+RATINGS }o--|| USERS: ""
+MOVIES ||--o{ REVIEWS: ""
+REVIEWS }o--|| USERS: ""
+REVIEWS ||--o{ REVIEWS_TAGS: ""
+REVIEWS_TAGS }o--|| TAGS: ""
+&lt;/pre>
+&lt;p>기존 데이터를 기반으로 일부 컬럼들과 테이블을 추가하였습니다.&lt;/p>
+&lt;p>자세한 내용은 테이블 별로 설명해보겠습니다.&lt;/p>
+&lt;h2 id="movies">MOVIES&lt;/h2>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+MOVIES {
+int movie_id PK
+string title
+string geners
+int rating_count
+bigint rating_total
+}
+&lt;/pre>
+&lt;p>기존 제공된 &lt;code>movie_id&lt;/code>, &lt;code>title&lt;/code>, &lt;code>geners&lt;/code>는 그대로 활용하고, 평균 평점 계산에 활용될 &lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼을 추가했습니다.&lt;/p>
+&lt;p>&lt;code>geners&lt;/code> 컬럼은 장르들이 &lt;code>|&lt;/code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.&lt;/p>
+&lt;p>&lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼은 조회 후 서버나 클라이언트 측에서 직접 계산하는 방식을 사용할 수 있고, &lt;strong>MySQL&lt;/strong>, &lt;strong>PostgreSQL&lt;/strong>등과 같이 &lt;strong>함수 기반 인덱스&lt;/strong> 기능을 제공하는 RDBMS를 활용한다면 조건을 활용한 조회 성능에도 이슈가 발생하지 않을 것이라 생각되어 추가하였습니다.&lt;/p>
+&lt;p>&lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼은 사용자가 평점을 추가하거나 수정할 때 변경되는 값이므로 평점 등록, 수정, 삭제 처리시 해당 컬럼 처리 로직 구현에 주의가 필요하겠습니다.&lt;/p>
+&lt;h2 id="ratings">RATINGS&lt;/h2>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+RATINGS {
+int user_id PK,FK
+int movie_id PK,FK
+int rating
+timestamp create_ts
+}
+&lt;/pre>
+&lt;p>기존 제공된 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code>, &lt;code>create_ts&lt;/code>는 그대로 활용하고, &lt;code>rating&lt;/code> 컬럼의 데이터 타입을 변경하였습니다.&lt;/p>
+&lt;p>&lt;code>rating&lt;/code> 같은 경우 기존에는 &lt;strong>0.5 간격 0~5 까지의 소수&lt;/strong>를 저장하고 있었지만, &lt;code>MOVIES&lt;/code> 테이블의 &lt;code>rating_total&lt;/code> 처리와 평균 평점 계산 처리가 필요하므로, 개인 최고점을 10점으로 변경하고 서비스 로직에서 평점을 계산하는 방식을 고려하는게 더 합리적이라 판단하여 정수형 데이터타입을 선택하였습니다.&lt;/p>
+&lt;p>이외에도 &lt;code>rating_id&lt;/code>와 같은 별도 PK를 만드는 것을 고려해봤지만, &lt;code>rating_id&lt;/code> 컬럼이 다른 테이블에서 활용되거나 PK가 변경거나 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code> 없이 단독으로 할용되는 경우는 없을 것이라 판단되어 별도로 추가하지는 않았습니다.&lt;/p>
+&lt;h2 id="tags-reviews-reviews_tags">TAGS, REVIEWS, REVIEWS_TAGS&lt;/h2>
+&lt;p>기본 제공된 데이터에서 &lt;code>TAGS&lt;/code>는 전체 2,328,315건 중 유니크한 &lt;code>tag&lt;/code>는 153,950개 였습니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+TAGS {
+int user_id PK,FK
+int movie_id PK,FK
+int tag PK,FK
+timestamp create_ts
+}
+&lt;/pre>
+&lt;p>위와 같은 구조를 확인할 수 있었는데, 일반적으로 이러한 형태의 태그는 글과 함께 사용되는 해시태그 같은 기능이어서 어떻게 구조를 가져가야할지 고민이 들었습니다.&lt;/p>
+&lt;p>제 추측으로는 이 데이터의 목적은 추천 모델 개발이므로 사용자와 영화의 관계, 사용자가 자주 활용한 태그, 특정 영화에 많이 활용된 태그 등 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code>를 기준으로 활용하는 것이 더 적합했기 때문이라고 생각되었습니다.&lt;/p>
+&lt;p>이 부분들을 고려하여 구성한 테이블 구조는 아래와 같습니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+TAGS {
+string name PK
+timestamp create_ts
+}
+REVIEWS_TAGS {
+int user_id PK,FK
+int movie_id PK,FK
+int tag_name PK,FK
+}
+REVIEWS {
+int review_id PK
+int user_id FK
+int movie_id FK
+string content
+timestamp create_ts
+timestamp update_ts
+}
+TAGS ||--o{ REVIEWS_TAGS: ""
+REVIEWS_TAGS }o--|| REVIEWS: ""
+&lt;/pre>
+&lt;p>기존 &lt;code>TAGS&lt;/code>를 &lt;code>REVIEWS_TAGS&lt;/code>로 바꿔 연결 테이블로 구성했습니다.&lt;/p>
+&lt;p>&lt;code>TAGS&lt;/code> 테이블은 &lt;code>tag&lt;/code>만을 가지게 구성하고, 사용자가 영화에 후기를 남기는 기능을 고려하여 &lt;code>REVIEWS&lt;/code> 테이블을 추가하였습니다.&lt;/p>
+&lt;p>&lt;code>TAGS&lt;/code> 테이블은 앞서 언급했던 데이터 중복 뿐만 아니라 특정 태그를 활용한 게시글 검색등 활용될 여지가 많기 때문에 추가하였습니다.&lt;/p>
+&lt;p>사용 횟수 같은 컬럼들을 추가하는 것도 고려하였으나, 현 상황에서는 &lt;code>(tag_name)&lt;/code> 인덱스 추가 정도로 충분히 빠른 조회를 수행할 수 있기 때문에 게시글 작성, 수정, 삭제 등의 로직 처리에 변수들을 배제하는것이 좋겠다고 판단하였습니다.&lt;/p>
+&lt;p>&lt;code>REVIEWS&lt;/code> 테이블은 비즈니스 요구사항(베스트 후기 등)에 따라 단독으로 활용될 여지가 많다고 생각되어 &lt;code>RATINGS&lt;/code> 테이블과 다르게 &lt;code>review_id&lt;/code>를 추가하였습니다.&lt;/p>
+&lt;p>&lt;code>REVIEWS_TAGS&lt;/code> 테이블은 기존 외래키인 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code>를 &lt;code>review_id&lt;/code>로 변경하지 않고 사용했는데, 위에서 언급한대로 사용자와 영화의 관계를 쉽게 이용하려면 기존 방식이 더 적합하고, &lt;code>REVIEWS&lt;/code>와 관련된 처리가 필요하다면 인덱스를 활용하여 충분히 쉽게 처리할 수 있다고 판단되었습니다.&lt;/p>
+&lt;h2 id="끝으로">끝으로&lt;/h2>
+&lt;p>데이터셋 구조 확인에 이어 간단히 데이터베이스 구조를 구상해봤습니다.&lt;/p>
+&lt;p>만들어 놓고 보니 뭔가 찜찜한 기분이 계속 남네요..&lt;/p>
+&lt;p>제 역량이 부족해서 어떤 문제들이 발생하게 될지 예상할 수는 없지만 앞으로 발견되는 부족한 부분들은 프로젝트를 진행하면서 조금씩 수정해나가겠습니다.&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다 :)&lt;/p></description></item><item><title>[MovieLens] 1. 데이터 살펴보기</title><link>https://codemario318.github.io/post/movielens/1/</link><pubDate>Mon, 18 Mar 2024 11:00:01 +0900</pubDate><guid>https://codemario318.github.io/post/movielens/1/</guid><description>&lt;img src="https://codemario318.github.io/post/movielens/1/cover.jpeg" alt="Featured image of post [MovieLens] 1. 데이터 살펴보기" />&lt;p>안녕하세요 :D 서칭하던 중 재미있어보이는 데이터를 발견했습니다.&lt;/p>
 &lt;p>미네소타 대학의 컴퓨터 과학 연구 그룹인 &lt;a class="link" href="https://grouplens.org/" target="_blank" rel="noopener"
 >&lt;strong>GroupLens&lt;/strong>&lt;/a>에서 공개한 &lt;a class="link" href="https://grouplens.org/datasets/movielens/latest/" target="_blank" rel="noopener"
 >&lt;strong>MovieLens&lt;/strong>&lt;/a> 데이터셋으로, GroupLens의 연구 분야 중 하나인 인공지능 추천 시스템을 위해 만들어진 데이터셋입니다.&lt;/p>
