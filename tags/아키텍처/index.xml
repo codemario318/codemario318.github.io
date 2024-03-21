@@ -1,4 +1,84 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>아키텍처 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/</link><description>Recent content in 아키텍처 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 21 Mar 2024 15:36:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/index.xml" rel="self" type="application/rss+xml"/><item><title>18. 경계 해부학</title><link>https://codemario318.github.io/post/clean-architecture/18/</link><pubDate>Thu, 21 Mar 2024 15:36:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/18/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/18/cover.png" alt="Featured image of post 18. 경계 해부학" />&lt;p>시스템 아키텍처는 일련의 소프트웨어 퀌포넌트와 그 컴포넌트들을 분리하는 경계에 의해 정의된다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>아키텍처 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/</link><description>Recent content in 아키텍처 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 21 Mar 2024 23:41:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/index.xml" rel="self" type="application/rss+xml"/><item><title>19. 정책과 수준</title><link>https://codemario318.github.io/post/clean-architecture/19/</link><pubDate>Thu, 21 Mar 2024 23:41:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/19/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/cover.png" alt="Featured image of post 19. 정책과 수준" />&lt;p>소프트웨어 시스템이란 전책을 기술한 것이다.&lt;/p>
+&lt;p>컴퓨터 프로그램은 각 입력을 출력으로 변환하는 정책을 상세하게 기술한 설명서이다.&lt;/p>
+&lt;p>대다수의 주요 시스템에서 하나의 정책은 이 정책을 서술하는 여러 개의 조그만 정책들로 쪼갤 수 있다.&lt;/p>
+&lt;p>소프트웨어 아키텍처를 개발하는 기술에는 정책을 신중하게 분리하고, 정책이 변경되는 양상에 따라 정책을 재편성하는 일도 포함된다.&lt;/p>
+&lt;ul>
+&lt;li>동일한 이유로 동일한 시점에 변경되는 정책은 동일한 수준에 위치하며, 동일한 컴포넌트에 속해야 한다.&lt;/li>
+&lt;li>서로 다른 이유, 다른 시점에 변경되는 정책은 다른 수준에 위치하며, 반드시 컴포넌트로 분리해야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>아키텍처 개발은 재편성된 컴포넌트들을 비순환 방향 그래프(directed acyclic graph)로 구성하는 기술을 포함한다.&lt;/p>
+&lt;ul>
+&lt;li>정점(node): 동일한 수준의 정책을 포함하는 컴포넌트&lt;/li>
+&lt;li>간선(edge): 컴포넌트 사이의 의존성&lt;/li>
+&lt;/ul>
+&lt;p>좋은 아키텍처라면 각 컴포넌트를 연결할 때 의존성의 방향이 컴포넌트의 수준을 기반으로 즉, 저수준 컴포넌트가 고수준 컴포넌트에 의존하도록 설계해야 한다.&lt;/p>
+&lt;h2 id="수준">수준&lt;/h2>
+&lt;p>수준(level)은 &lt;strong>입력과 출력까지의 거리&lt;/strong>로 정의할 수 있다.&lt;/p>
+&lt;p>시스템의 입력과 출력 모두로부터 멀리 위차할수록 정책의 수준은 높아지며, 입력과 출력을 다루는 정책이라면 시스템에서 최하위 수준에 위치한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/img.png"
+width="1400"
+height="738"
+srcset="https://codemario318.github.io/post/clean-architecture/19/img_hu0cccb83cda5e1cfc944d8b5720341535_354495_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/19/img_hu0cccb83cda5e1cfc944d8b5720341535_354495_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="455px"
+>&lt;/p>
+&lt;p>간단한 암호화 프로그램의 설계 예시 처럼 프로그램을 제대로 설계했다면 소스 코드 의존성은 곧은 점선처럼 표시되어야 한다.&lt;/p>
+&lt;p>&lt;code>Translate&lt;/code> 컴포넌트는 입력과 출력에서 가장 멀리 떨어져 있으므로 최고 수준의 컴포넌트이다.&lt;/p>
+&lt;p>굽은 실선은 데이터의 흐름을 나타내는데, 보는 것과 같이 데이터 흐름과 소스 코드 의존성이 항상 같은 방향을 가리키지는 않는다.&lt;/p>
+&lt;p>여기서 의미하는 바는 소스 코드 의존성은 그 수준에 따라 결합되어야 하며, 데이터 흐름을 기준으로 결합되어서는 안된다는 것이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">function encrypt() {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while(true)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writeChar(translate(readChar()));
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 예시는 고수준인 &lt;code>encrypt&lt;/code> 함수가 저수준인 &lt;code>readChar&lt;/code>, &lt;code>writeChar&lt;/code> 함수에 의존하기 때문에 잘못된 아키텍처이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/img_1.png"
+width="672"
+height="560"
+srcset="https://codemario318.github.io/post/clean-architecture/19/img_1_hu3792ba83091153c640e2b5a2eab1f46a_335401_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/19/img_1_hu3792ba83091153c640e2b5a2eab1f46a_335401_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>&lt;code>Encrypt&lt;/code> 클래스, &lt;code>CharWriter&lt;/code>와 &lt;code>CharReader&lt;/code> 인터페이스를 둘러싸고 있는 점선으로 된 경계로 묶인 영역이 이 시스템에서 최고 수준의 구성요소이며, 횡단하는 의존성은 모두 경계 안쪽으로 향한다.&lt;/p>
+&lt;p>입력과 출력에 변화가 생기더라도 암호화 정책은 거의 영향을 받지 않기 때문에, 고수준의의 암호화 정책을 저수준의 입력/출력 정책으로 부터 분리시켜 암호화 정책을 더 넓은 맥락에서 사용할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>정책을 컴포넌트로 묶는 기준은 정책이 변경되는 방식에 달려있다.&lt;/p>
+&lt;p>단일 책임 원칙(SRP)과 공통 폐쇄 원칙(CCP)에 따르면 동일한 이유로 동일한 시점에 변경되는 정책은 함께 묶인다.&lt;/p>
+&lt;ul>
+&lt;li>고수준 정책: 입력/출력에서부터 멀리 떨어진 정책
+&lt;ul>
+&lt;li>저수준 정책에 비해 덜 빈번하게 변경된다.&lt;/li>
+&lt;li>보다 중요한 이유로 변경된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>저수준 정책: 입력과 출력에 가까운 정책
+&lt;ul>
+&lt;li>더 빈빈하게 변경된다.&lt;/li>
+&lt;li>긴급성을 요하며, 덜 중요한 이유로 변경된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이처럼 소스 코드 의존성 방향이 고수준 정책을 향할 수 있도록 정책을 분리했다면 변경의 영향도를 줄일 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>시스템의 최저 수준에서 중요하지 않지만 긴급한 변경이 발생하더라도, 중요한 수준에 미치는 영향이 거의 없게 된다.&lt;/li>
+&lt;/ul>
+&lt;p>이는 저수준 컴포넌트가 고수준 컴포넌트에 플러그인되어야 한다는 관점으로도 바라볼 수 있다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>정책을 분리하는 것은 단일 책임 원칙, 개방 폐쇄 원칙, 공통 폐쇄 원칙, 의존성 역전 원칙, 안정된 의존성 원칙, 안정된 추상화 원칙을 모두 포함한다.&lt;/p></description></item><item><title>18. 경계 해부학</title><link>https://codemario318.github.io/post/clean-architecture/18/</link><pubDate>Thu, 21 Mar 2024 15:36:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/18/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/18/cover.png" alt="Featured image of post 18. 경계 해부학" />&lt;p>시스템 아키텍처는 일련의 소프트웨어 퀌포넌트와 그 컴포넌트들을 분리하는 경계에 의해 정의된다.&lt;/p>
 &lt;p>이러한 경계는 다양한 형태로 나타난다.&lt;/p>
 &lt;h2 id="경계-횡단하기">경계 횡단하기&lt;/h2>
 &lt;p>&amp;lsquo;런타임에 경계를 횡단한다&amp;rsquo;는 의미는 경계 한쪽에 있는 기능에서 반대편 기능을 호출하여 데이터를 전달하는 일에 불과하다.&lt;/p>
@@ -190,82 +270,7 @@ data-flex-basis="357px"
 &lt;p>컴포넌트 사이의 화살표가 핵심 업무를 향하도록 컴포넌트의 소스를 배치한다.&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;p>이는 의존성 역전 원칙과 안정된 추상화 원칙을 응용한 것이며, 의존성의 화살표는 저수준 세부사항에서 고수준의 추상화를 향하도록 배치된다.&lt;/p></description></item><item><title>18. 경계 해부학</title><link>https://codemario318.github.io/post/clean-architecture/18/</link><pubDate>Wed, 20 Mar 2024 21:36:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/18/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/18/cover.png" alt="Featured image of post 18. 경계 해부학" />&lt;p>시스템 아키텍처는 일련의 소프트웨어 퀌포넌트와 그 컴포넌트들을 분리하는 경계에 의해 정의된다.&lt;/p>
-&lt;p>이러한 경계는 다양한 형태로 나타난다.&lt;/p>
-&lt;h2 id="경계-횡단하기">경계 횡단하기&lt;/h2>
-&lt;p>&amp;lsquo;런타임에 경계를 횡단한다&amp;rsquo;는 의미는 경계 한쪽에 있는 기능에서 반대편 기능을 호출하여 데이터를 전달하는 일에 불과하다.&lt;/p>
-&lt;p>적절한 위치에서 경계를 횡단하게 하는 비결은 소스 코드 의존성 관리에 있다.&lt;/p>
-&lt;ul>
-&lt;li>소스 코드 모듈 하나의 변경으로 읜존하는 다른 소스 코드 모듈을 변경하거나, 다시 컴파일해서 새로 배포해야 할 지도 모르기 때문&lt;/li>
-&lt;/ul>
-&lt;p>경계는 소스 코드 변경이 전파되는 것을 막는 방화벽을 구축하고 관리하는 수단으로써 존재한다.&lt;/p>
-&lt;h2 id="두려운-단일체">두려운 단일체&lt;/h2>
-&lt;p>아키텍처 경계 중 가장 단순하며 흔한 형태는 물리적으로 엄격하게 구분되지 않는 형태다.&lt;/p>
-&lt;p>이는 앞서 언급했던 소스 수준 분리 모드로, 함수와 데이터가 단일 프로세서에서 같은 주소 공간을 공유하며 나름의 규칙에 따라 분리되어있는 상태이다.&lt;/p>
-&lt;p>배포 관점에서 이는 단일체(monolith)라고 불리는 단일 실행 파일이므로, 외부에서 볼 때(물리적으로) 경계가 밖으로 드러나지는 않는다.&lt;/p>
-&lt;p>가장 단순한 형태의 경계 횡단은 저수준 클라이언트에서 고수준 서비스로 향하는 함수 호출이다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/img.png"
-loading="lazy"
->&lt;/p>
-&lt;p>이 경우 런타임 의존성과 컴파일타임 의존성은 모두 저수준 컴포넌트에서 고수준 컴포넌트로 향한다.&lt;/p>
-&lt;hr>
-&lt;p>고수준 클라이언트가 저수준 서비스를 호출해야 한다면 동적 다형성을 사용하여 제어흐름과는 반대 방향으로 의존성을 역전시킬 수 있다.&lt;/p>
-&lt;p>&lt;img src="https://codemario318.github.io/img_1.png"
-loading="lazy"
->&lt;/p>
-&lt;p>경계를 횡단할 때 의존성은 모두 고수준 컴포넌트를 향하고 있으며, 데이터 구조의 정의가 호출하는 쪽에 위치한다.&lt;/p>
-&lt;hr>
-&lt;p>정적 링크된 모노리틱 구조의 실행 파일이라도 규칙적인 방식으로 구조를 분리하면 프로젝트를 개발, 테스트, 배포하는 작업에 큰 도움이 된다.&lt;/p>
-&lt;p>단일체에서 컴포넌트간 통신은 전형적인 함수 호출에 지나지 않으므로 매우 빠르고 값싸며, 이러한 이유로 소스 수준에서 결합이 분리되면 경계를 가로지르는 통신은 상당히 빈번할 수 있다.&lt;/p>
-&lt;h2 id="배포형-컴포넌트">배포형 컴포넌트&lt;/h2>
-&lt;p>아키텍처의 경계가 물리적으로 드러날 수도 있는데 그중 가장 단순한 형태는 동적 링크 라이브러리다.&lt;/p>
-&lt;p>이는 배포 수준 결합 분리 모드에 해당하며 컴포넌트를 동적 링크 라이브러리 형태로 배포하면 따로 컴파일하지 않고 곧바로 사용할 수 있는 대신 바이너리와 같이 배포 가능한 형태로 전달된다.&lt;/p>
-&lt;p>배포 관점에서 이러한 형태는 단순히 배포 가능한 단위를 좀 더 편리한 형태로 묶으므로, 단일체와 동일하다.&lt;/p>
-&lt;ul>
-&lt;li>모든 함수가 동일한 프로세서와 주소 공간에 위치하며, 컴포넌트 간 의존성을 관리하는 전략도 동일하다.&lt;/li>
-&lt;/ul>
-&lt;p>단일체와 마찬가지로 경계를 가로지르는 통신은 함수 호출에 지나지 않으므로 값싸기 때문에, 경계를 가로지르는 통신은 대체로 매우 빈번하다.&lt;/p>
-&lt;h2 id="스레드">스레드&lt;/h2>
-&lt;p>스레드는 아키텍처 경계도 아니며 배포 단위도 아니다.&lt;/p>
-&lt;p>단일체와 배포형 컴포넌트 모두 스레드를 활용할 수 있다.&lt;/p>
-&lt;p>스레드는 실행 계획과 순서를 체계화 하는 방법에 가까우며, 모든 스레드가 단 하나의 컴포넌트에 포함될 수도 있고, 분산될 수도 있다.&lt;/p>
-&lt;h2 id="로컬-프로세스">로컬 프로세스&lt;/h2>
-&lt;p>로컬 프로세스는 이전 언급한 경계보다 훨씬 강한 물리적 형태를 띈다.&lt;/p>
-&lt;p>주로 명령행이나 그와 유사한 시스템 호출을 통해 생성되고, 동일한 프로세서 또는 하나의 멀티코어 시스템에 속한 여러 프로세서들에서 실행되지만, 독립된 주소 공간에서 실행된다.&lt;/p>
-&lt;p>종종 공유 메모리 파티션을 사용하기도 하지만, 일반적으로는 메모리 보호를 통해 프로세스들이 메모리를 공유하지 못하게 한다.&lt;/p>
-&lt;p>대개의 경우 소켓, 메일박스, 메시지 큐와 같이 운영체제에서 제공하는 통신 기능을 이용하여 서로 통신한다.&lt;/p>
-&lt;hr>
-&lt;p>각 로컬 프로세스는 정적으로 링크된 단일체 이거나 동적으로 링크된 여러개의 컴포넌트로 구성될 수 있다.&lt;/p>
-&lt;ul>
-&lt;li>정적으로 링크된 단일체
-&lt;ul>
-&lt;li>여러 모노리틱 프로세스가 같은 컴포넌트들을 가지고 있을 수 있디.&lt;/li>
-&lt;li>컴파일하고 정적 링크하는 과정에서 각 컴포넌트의 바이너리가 단일체에 물리적으로 복사되기때문&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>동적으로 링크된 배포형 컴포넌트
-&lt;ul>
-&lt;li>동적으로 링크된 배포형 컴포넌트들을 서로 공유할 수 있다.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;p>로컬 프로세스는 컴포넌트 간 의존성을 동적 다형성을 통해 관리하는 저수준 컴포넌트로 구성되므로 일종의 최상위 컴포넌트로 볼 수 있다.&lt;/p>
-&lt;p>로컬 프로세스 간 분리 전략은 단일체나 바이너리 컴포넌트의 경우와 동일하다.&lt;/p>
-&lt;p>소스 코드 의존성은 고수준 컴포넌트를 향해야하므로 로컬 프로세스에서는 고수준 프로세스의 소스 코드가 저수준 프로세스의 이름, 물리 주소, 레지스트리 조회 키를 절대로 포함해서는 안된다.&lt;/p>
-&lt;p>로컬 프로세스 경계를 지나는 통신에는 운영체제 호출, 데이터 마샬링, 언마샬링, 프로세스 간 문맥 교환 등이 있으며, 이들은 제법 비싼 작업이므로 통신이 너무 빈번하게 이뤄지지 않도록 신중하게 제한해야한다.&lt;/p>
-&lt;h2 id="서비스">서비스&lt;/h2>
-&lt;p>물리적인 형태를 띠는 가장 강력한 경계는 서비스다.&lt;/p>
-&lt;p>서비스는 프로세스로, 일반적으로 명령행 또는 그와 동등한 시스템 호출을 통해 구동된다.&lt;/p>
-&lt;p>서비스들은 모든 통신이 네트워크를 통해 이뤄진다고 가정하므로 자신의 물리적 위치에 구애받지 않는다.&lt;/p>
-&lt;p>서비스 경계를 지나는 통신은 함수 호출에 매우 느리므로 가능하다면 빈번하게 통신하는 일을 피해야 하며, 지연(latency)에 따른 문제를 고수준에서 처리할 수 있어야 한다.&lt;/p>
-&lt;p>이를 제외하고는 로컬 프로세스에 적용한 규칙이 서비스에 적용된다.&lt;/p>
-&lt;p>저수준 서비스는 반드시 고수준 서비스에 &lt;strong>플러그인&lt;/strong>되어야하며, 고수준 서비스의 소스 코드에는 저수준 서비스를 특정 짓는 어떤 물리적인 정보(URI 등)도 절대로 포함해서는 안된다.&lt;/p>
-&lt;h2 id="결론">결론&lt;/h2>
-&lt;p>단일체를 제외한 대다수의 시스템은 한 가지 이사으이 경계 전략을 사용한다.&lt;/p>
-&lt;p>실제로 서비스는 상호작용하는 일련의 로컬 프로세스 퍼사드에 불과할 때가 많다.&lt;/p>
-&lt;p>또한 개별 서비스 또는 로컬 프로세스는 거의 언제나 소스 코드 컴포넌트로 구성된 단일체이거나, 동적으로 링크된 배포형 컴포넌트의 집합이다.&lt;/p>
-&lt;p>즉, 한 시스템 안에서도 통신이 빈번한 로컬 경계와 지연을 중요하게 고려해야 하는 경계가 혼합되어 있음을 의미한다.&lt;/p></description></item><item><title>16. 독립성</title><link>https://codemario318.github.io/post/clean-architecture/16/</link><pubDate>Wed, 13 Mar 2024 14:51:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/16/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/16/cover.png" alt="Featured image of post 16. 독립성" />&lt;p>좋은 아키텍처는 다음을 지원해야한다.&lt;/p>
+&lt;p>이는 의존성 역전 원칙과 안정된 추상화 원칙을 응용한 것이며, 의존성의 화살표는 저수준 세부사항에서 고수준의 추상화를 향하도록 배치된다.&lt;/p></description></item><item><title>16. 독립성</title><link>https://codemario318.github.io/post/clean-architecture/16/</link><pubDate>Wed, 13 Mar 2024 14:51:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/16/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/16/cover.png" alt="Featured image of post 16. 독립성" />&lt;p>좋은 아키텍처는 다음을 지원해야한다.&lt;/p>
 &lt;ul>
 &lt;li>시스템의 유스케이스&lt;/li>
 &lt;li>시스템의 운영&lt;/li>
