@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 21 Mar 2024 23:41:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>19. 정책과 수준</title><link>https://codemario318.github.io/post/clean-architecture/19/</link><pubDate>Thu, 21 Mar 2024 23:41:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/19/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/cover.png" alt="Featured image of post 19. 정책과 수준" />&lt;p>소프트웨어 시스템이란 전책을 기술한 것이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mario Blog</title><link>https://codemario318.github.io/</link><description>Recent content on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 21 Mar 2024 23:41:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>19. 정책과 수준</title><link>https://codemario318.github.io/post/clean-architecture/19/</link><pubDate>Thu, 21 Mar 2024 23:41:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/19/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/cover.png" alt="Featured image of post 19. 정책과 수준" />&lt;p>소프트웨어 시스템이란 정책을 기술한 것이다.&lt;/p>
 &lt;p>컴퓨터 프로그램은 각 입력을 출력으로 변환하는 정책을 상세하게 기술한 설명서이다.&lt;/p>
 &lt;p>대다수의 주요 시스템에서 하나의 정책은 이 정책을 서술하는 여러 개의 조그만 정책들로 쪼갤 수 있다.&lt;/p>
 &lt;p>소프트웨어 아키텍처를 개발하는 기술에는 정책을 신중하게 분리하고, 정책이 변경되는 양상에 따라 정책을 재편성하는 일도 포함된다.&lt;/p>
@@ -11,10 +11,10 @@
 &lt;li>정점(node): 동일한 수준의 정책을 포함하는 컴포넌트&lt;/li>
 &lt;li>간선(edge): 컴포넌트 사이의 의존성&lt;/li>
 &lt;/ul>
-&lt;p>좋은 아키텍처라면 각 컴포넌트를 연결할 때 의존성의 방향이 컴포넌트의 수준을 기반으로 즉, 저수준 컴포넌트가 고수준 컴포넌트에 의존하도록 설계해야 한다.&lt;/p>
+&lt;p>좋은 아키텍처라면 각 컴포넌트를 연결할 때 의존성의 방향이 컴포넌트의 수준을 기반으로 저수준 컴포넌트가 고수준 컴포넌트에 의존하도록 설계해야 한다.&lt;/p>
 &lt;h2 id="수준">수준&lt;/h2>
 &lt;p>수준(level)은 &lt;strong>입력과 출력까지의 거리&lt;/strong>로 정의할 수 있다.&lt;/p>
-&lt;p>시스템의 입력과 출력 모두로부터 멀리 위차할수록 정책의 수준은 높아지며, 입력과 출력을 다루는 정책이라면 시스템에서 최하위 수준에 위치한다.&lt;/p>
+&lt;p>시스템의 입력과 출력 모두로부터 멀리 위치할수록 정책의 수준은 높아지며, 입력과 출력을 다루는 정책이라면 시스템에서 최하위 수준에 위치한다.&lt;/p>
 &lt;hr>
 &lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/img.png"
 width="1400"
@@ -28,7 +28,9 @@ data-flex-basis="455px"
 &lt;p>간단한 암호화 프로그램의 설계 예시 처럼 프로그램을 제대로 설계했다면 소스 코드 의존성은 곧은 점선처럼 표시되어야 한다.&lt;/p>
 &lt;p>&lt;code>Translate&lt;/code> 컴포넌트는 입력과 출력에서 가장 멀리 떨어져 있으므로 최고 수준의 컴포넌트이다.&lt;/p>
 &lt;p>굽은 실선은 데이터의 흐름을 나타내는데, 보는 것과 같이 데이터 흐름과 소스 코드 의존성이 항상 같은 방향을 가리키지는 않는다.&lt;/p>
-&lt;p>여기서 의미하는 바는 소스 코드 의존성은 그 수준에 따라 결합되어야 하며, 데이터 흐름을 기준으로 결합되어서는 안된다는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>소스 코드 의존성은 그 수준에 따라 결합되어야 하며, 데이터 흐름을 기준으로 결합되어서는 안된다는 것이다.&lt;/li>
+&lt;/ul>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -52,6 +54,74 @@ loading="lazy"
 class="gallery-image"
 data-flex-grow="120"
 data-flex-basis="288px"
+>&lt;/p>
+&lt;p>&lt;code>Encrypt&lt;/code> 클래스, &lt;code>CharWriter&lt;/code>와 &lt;code>CharReader&lt;/code> 인터페이스를 둘러싸고 있는 점선으로 된 경계로 묶인 영역이 이 시스템에서 최고 수준의 구성요소이며, 횡단하는 의존성은 모두 경계 안쪽으로 향한다.&lt;/p>
+&lt;p>입력과 출력에 변화가 생기더라도 암호화 정책은 거의 영향을 받지 않기 때문에, 고수준의 암호화 정책을 저수준의 입력/출력 정책으로 부터 분리시켜 암호화 정책을 더 넓은 맥락에서 사용할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>정책을 컴포넌트로 묶는 기준은 정책이 변경되는 방식에 달려있다.&lt;/p>
+&lt;p>단일 책임 원칙(SRP)과 공통 폐쇄 원칙(CCP)에 따르면 동일한 이유로 동일한 시점에 변경되는 정책은 함께 묶인다.&lt;/p>
+&lt;ul>
+&lt;li>고수준 정책: 입력/출력에서부터 멀리 떨어진 정책
+&lt;ul>
+&lt;li>저수준 정책에 비해 덜 빈번하게 변경된다.&lt;/li>
+&lt;li>보다 중요한 이유로 변경된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>저수준 정책: 입력과 출력에 가까운 정책
+&lt;ul>
+&lt;li>더 빈빈하게 변경된다.&lt;/li>
+&lt;li>긴급성을 요하며, 덜 중요한 이유로 변경된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이처럼 소스 코드 의존성 방향이 고수준 정책을 향할 수 있도록 정책을 분리했다면 변경의 영향도를 줄일 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>시스템의 최저 수준에서 중요하지 않지만 긴급한 변경이 발생하더라도, 중요한 수준에 미치는 영향이 거의 없게 된다.&lt;/li>
+&lt;/ul>
+&lt;p>이는 저수준 컴포넌트가 고수준 컴포넌트에 플러그인되어야 한다는 관점으로도 바라볼 수 있다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>정책을 분리하는 것은 단일 책임 원칙, 개방 폐쇄 원칙, 공통 폐쇄 원칙, 의존성 역전 원칙, 안정된 의존성 원칙, 안정된 추상화 원칙을 모두 포함한다.&lt;/p></description></item><item><title>19. 정책과 수준</title><link>https://codemario318.github.io/post/clean-architecture/19/</link><pubDate>Thu, 21 Mar 2024 23:41:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/19/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/19/cover.png" alt="Featured image of post 19. 정책과 수준" />&lt;p>소프트웨어 시스템이란 전책을 기술한 것이다.&lt;/p>
+&lt;p>컴퓨터 프로그램은 각 입력을 출력으로 변환하는 정책을 상세하게 기술한 설명서이다.&lt;/p>
+&lt;p>대다수의 주요 시스템에서 하나의 정책은 이 정책을 서술하는 여러 개의 조그만 정책들로 쪼갤 수 있다.&lt;/p>
+&lt;p>소프트웨어 아키텍처를 개발하는 기술에는 정책을 신중하게 분리하고, 정책이 변경되는 양상에 따라 정책을 재편성하는 일도 포함된다.&lt;/p>
+&lt;ul>
+&lt;li>동일한 이유로 동일한 시점에 변경되는 정책은 동일한 수준에 위치하며, 동일한 컴포넌트에 속해야 한다.&lt;/li>
+&lt;li>서로 다른 이유, 다른 시점에 변경되는 정책은 다른 수준에 위치하며, 반드시 컴포넌트로 분리해야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>아키텍처 개발은 재편성된 컴포넌트들을 비순환 방향 그래프(directed acyclic graph)로 구성하는 기술을 포함한다.&lt;/p>
+&lt;ul>
+&lt;li>정점(node): 동일한 수준의 정책을 포함하는 컴포넌트&lt;/li>
+&lt;li>간선(edge): 컴포넌트 사이의 의존성&lt;/li>
+&lt;/ul>
+&lt;p>좋은 아키텍처라면 각 컴포넌트를 연결할 때 의존성의 방향이 컴포넌트의 수준을 기반으로 즉, 저수준 컴포넌트가 고수준 컴포넌트에 의존하도록 설계해야 한다.&lt;/p>
+&lt;h2 id="수준">수준&lt;/h2>
+&lt;p>수준(level)은 &lt;strong>입력과 출력까지의 거리&lt;/strong>로 정의할 수 있다.&lt;/p>
+&lt;p>시스템의 입력과 출력 모두로부터 멀리 위차할수록 정책의 수준은 높아지며, 입력과 출력을 다루는 정책이라면 시스템에서 최하위 수준에 위치한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;img src="https://codemario318.github.io/img.png"
+loading="lazy"
+>&lt;/p>
+&lt;p>간단한 암호화 프로그램의 설계 예시 처럼 프로그램을 제대로 설계했다면 소스 코드 의존성은 곧은 점선처럼 표시되어야 한다.&lt;/p>
+&lt;p>&lt;code>Translate&lt;/code> 컴포넌트는 입력과 출력에서 가장 멀리 떨어져 있으므로 최고 수준의 컴포넌트이다.&lt;/p>
+&lt;p>굽은 실선은 데이터의 흐름을 나타내는데, 보는 것과 같이 데이터 흐름과 소스 코드 의존성이 항상 같은 방향을 가리키지는 않는다.&lt;/p>
+&lt;p>여기서 의미하는 바는 소스 코드 의존성은 그 수준에 따라 결합되어야 하며, 데이터 흐름을 기준으로 결합되어서는 안된다는 것이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">function encrypt() {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while(true)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writeChar(translate(readChar()));
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 예시는 고수준인 &lt;code>encrypt&lt;/code> 함수가 저수준인 &lt;code>readChar&lt;/code>, &lt;code>writeChar&lt;/code> 함수에 의존하기 때문에 잘못된 아키텍처이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/img_1.png"
+loading="lazy"
 >&lt;/p>
 &lt;p>&lt;code>Encrypt&lt;/code> 클래스, &lt;code>CharWriter&lt;/code>와 &lt;code>CharReader&lt;/code> 인터페이스를 둘러싸고 있는 점선으로 된 경계로 묶인 영역이 이 시스템에서 최고 수준의 구성요소이며, 횡단하는 의존성은 모두 경계 안쪽으로 향한다.&lt;/p>
 &lt;p>입력과 출력에 변화가 생기더라도 암호화 정책은 거의 영향을 받지 않기 때문에, 고수준의의 암호화 정책을 저수준의 입력/출력 정책으로 부터 분리시켜 암호화 정책을 더 넓은 맥락에서 사용할 수 있다.&lt;/p>

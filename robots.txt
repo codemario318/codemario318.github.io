@@ -7,6 +7,10 @@ Allow: /post/clean-architecture/19/
 
 
 
+Allow: /post/clean-architecture/19/
+
+
+
 
 
 
