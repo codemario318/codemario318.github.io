@@ -10,7 +10,7 @@
 &lt;li>핵심 업무 규칙이 요구하는 데이터&lt;/li>
 &lt;li>시스템으로 자동화도지 않은 경우에도 존재하는 데이터이다.&lt;/li>
 &lt;/ul>
-&lt;p>핵심 규칙과 핵심 데이터는 본질적으로 결함되어 있기 때문에 객체로 만들 좋은 후보가 되며 이러한 유형의 객체를 **엔티티(Entity)**라고 부른다.&lt;/p>
+&lt;p>핵심 규칙과 핵심 데이터는 본질적으로 결함되어 있기 때문에 객체로 만들 좋은 후보가 되며 이러한 유형의 객체를 &lt;strong>엔티티&lt;/strong>ƒ(Entity)라고 부른다.&lt;/p>
 &lt;h2 id="엔티티">엔티티&lt;/h2>
 &lt;p>엔티티는 컴퓨터 시스템 내부의 객체로서, 핵심 업무 데이터를 기반으로 동작하는 일련의 조그만 핵심 업무 규칙을 구체화한다.&lt;/p>
 &lt;ul>
@@ -356,7 +356,7 @@ data-flex-basis="357px"
 MOVIES {
 int movie_id PK
 string title
-string geners
+string genres
 int rating_count
 bigint rating_total
 }
@@ -400,13 +400,13 @@ REVIEWS_TAGS }o--|| TAGS: ""
 MOVIES {
 int movie_id PK
 string title
-string geners
+string genres
 int rating_count
 bigint rating_total
 }
 &lt;/pre>
-&lt;p>기존 제공된 &lt;code>movie_id&lt;/code>, &lt;code>title&lt;/code>, &lt;code>geners&lt;/code>는 그대로 활용하고, 평균 평점 계산에 활용될 &lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼을 추가했습니다.&lt;/p>
-&lt;p>&lt;code>geners&lt;/code> 컬럼은 장르들이 &lt;code>|&lt;/code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.&lt;/p>
+&lt;p>기존 제공된 &lt;code>movie_id&lt;/code>, &lt;code>title&lt;/code>, &lt;code>genres&lt;/code>는 그대로 활용하고, 평균 평점 계산에 활용될 &lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼을 추가했습니다.&lt;/p>
+&lt;p>&lt;code>genres&lt;/code> 컬럼은 장르들이 &lt;code>|&lt;/code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.&lt;/p>
 &lt;p>&lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼은 조회 후 서버나 클라이언트 측에서 직접 계산하는 방식을 사용할 수 있고, &lt;strong>MySQL&lt;/strong>, &lt;strong>PostgreSQL&lt;/strong>등과 같이 &lt;strong>함수 기반 인덱스&lt;/strong> 기능을 제공하는 RDBMS를 활용한다면 조건을 활용한 조회 성능에도 이슈가 발생하지 않을 것이라 생각되어 추가하였습니다.&lt;/p>
 &lt;p>&lt;code>rating_count&lt;/code>, &lt;code>rating_total&lt;/code> 컬럼은 사용자가 평점을 추가하거나 수정할 때 변경되는 값이므로 평점 등록, 수정, 삭제 처리시 해당 컬럼 처리 로직 구현에 주의가 필요하겠습니다.&lt;/p>
 &lt;h2 id="ratings">RATINGS&lt;/h2>

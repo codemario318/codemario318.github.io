@@ -16,7 +16,7 @@
     MOVIES {
         int movie_id PK
         string title
-        string geners
+        string genres
         int rating_count
         bigint rating_total
     }
@@ -64,11 +64,11 @@
     MOVIES {
         int movie_id PK
         string title
-        string geners
+        string genres
         int rating_count
         bigint rating_total
     }
-</pre><p>기존 제공된 <code>movie_id</code>, <code>title</code>, <code>geners</code>는 그대로 활용하고, 평균 평점 계산에 활용될 <code>rating_count</code>, <code>rating_total</code> 컬럼을 추가했습니다.</p><p><code>geners</code> 컬럼은 장르들이 <code>|</code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 조회 후 서버나 클라이언트 측에서 직접 계산하는 방식을 사용할 수 있고, <strong>MySQL</strong>, <strong>PostgreSQL</strong>등과 같이 <strong>함수 기반 인덱스</strong> 기능을 제공하는 RDBMS를 활용한다면 조건을 활용한 조회 성능에도 이슈가 발생하지 않을 것이라 생각되어 추가하였습니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 사용자가 평점을 추가하거나 수정할 때 변경되는 값이므로 평점 등록, 수정, 삭제 처리시 해당 컬럼 처리 로직 구현에 주의가 필요하겠습니다.</p><h2 id=ratings>RATINGS</h2><pre class=mermaid style=text-align:center>erDiagram
+</pre><p>기존 제공된 <code>movie_id</code>, <code>title</code>, <code>genres</code>는 그대로 활용하고, 평균 평점 계산에 활용될 <code>rating_count</code>, <code>rating_total</code> 컬럼을 추가했습니다.</p><p><code>genres</code> 컬럼은 장르들이 <code>|</code> 문자로 구분되어 문자열 형태로 저장되는 형식이었는데, 처음 RDBMS를 이용해 만드는 방식에서는 검색 조건등의 활용을 배제하고, 이후 검색 엔진 같은 다른 방식으로 제공해 볼 예정입니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 조회 후 서버나 클라이언트 측에서 직접 계산하는 방식을 사용할 수 있고, <strong>MySQL</strong>, <strong>PostgreSQL</strong>등과 같이 <strong>함수 기반 인덱스</strong> 기능을 제공하는 RDBMS를 활용한다면 조건을 활용한 조회 성능에도 이슈가 발생하지 않을 것이라 생각되어 추가하였습니다.</p><p><code>rating_count</code>, <code>rating_total</code> 컬럼은 사용자가 평점을 추가하거나 수정할 때 변경되는 값이므로 평점 등록, 수정, 삭제 처리시 해당 컬럼 처리 로직 구현에 주의가 필요하겠습니다.</p><h2 id=ratings>RATINGS</h2><pre class=mermaid style=text-align:center>erDiagram
     RATINGS {
         int user_id PK,FK
         int movie_id PK,FK
