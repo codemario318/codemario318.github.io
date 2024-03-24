@@ -361,23 +361,22 @@ int rating_count
 bigint rating_total
 }
 RATINGS {
-int rating_id PK
-int user_id FK
-int movie_id FK
+int user_id PK,FK
+int movie_id PK,FK
 int rating
-timestamp create_ts
+timestamp created_at
 }
 REVIEWS {
 int review_id PK
 int user_id FK
 int movie_id FK
 string content
-timestamp create_ts
-timestamp update_ts
+timestamp created_at
+timestamp updated_at
 }
 TAGS {
 string name PK
-timestamp create_ts
+timestamp created_at
 }
 REVIEWS_TAGS {
 int user_id PK,FK
@@ -385,6 +384,7 @@ int movie_id PK,FK
 int tag_name PK,FK
 }
 USERS {
+int id PK
 }
 MOVIES ||--o{ RATINGS: ""
 RATINGS }o--|| USERS: ""
