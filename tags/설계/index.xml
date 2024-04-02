@@ -1,4 +1,44 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%84%A4%EA%B3%84/</link><description>Recent content in 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 22 Mar 2024 00:23:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>20. 업무 규칙</title><link>https://codemario318.github.io/post/clean-architecture/20/</link><pubDate>Fri, 22 Mar 2024 00:23:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/20/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/20/cover.png" alt="Featured image of post 20. 업무 규칙" />&lt;p>애플리케이션을 업무 규칙과 플러그인으로 구분하려면 업무 규칙이 실제로 무엇인지를 잘 이해해야만 한다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%84%A4%EA%B3%84/</link><description>Recent content in 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 02 Apr 2024 16:19:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>21. 소리치는 아키텍처</title><link>https://codemario318.github.io/post/clean-architecture/21/</link><pubDate>Tue, 02 Apr 2024 16:19:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/21/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/21/cover.png" alt="Featured image of post 21. 소리치는 아키텍처" />&lt;p>건물의 청사진을 살펴본다고 가정했을 때, 커다란 정문, 체크인과 체크아웃을 담당할 사서를 위한 공간, 독서 공간, 작은 회의실, 책장을 배치한 진열실이 나타난다면, 이 아키틱처는 &amp;ldquo;도서관&amp;quot;을 위한 아키텍처임을 예상해볼 수 있다.&lt;/p>
+&lt;p>이처럼 잘 만들어진 소프트웨어 아키텍처라면 상위 수준의 디렉터리 구조, 최상위 패키지에 담긴 소스 파일등을 살펴보면 어떠한 역할을 수행하는 소프트웨어인지 한눈에 파악할 수 있다.&lt;/p>
+&lt;h2 id="아키텍처의-테마">아키텍처의 테마&lt;/h2>
+&lt;blockquote>
+&lt;p>소프트웨어 아키텍처는 시스템의 유스케이스를 지원하는 구조이다.&lt;br>
+- 이바 야콥슨 Ivar Jacobson,&lt;br>
+Object-Oriented Software Engineering: Use Case Driven Approach&lt;/p>
+&lt;/blockquote>
+&lt;p>소프트웨어 애플리케이션의 아키텍처도 애플리케이션의 유스케이스에 대해 소리처야한다.&lt;/p>
+&lt;ul>
+&lt;li>아키텍처는 프레임워크에 대한 것이 아니며 절대로 그래서도 안된다.&lt;/li>
+&lt;li>아키텍처를 프레임워크로부터 제공받아서는 절대 안된다.&lt;/li>
+&lt;/ul>
+&lt;p>프레임워크는 사용하는 도구일 뿐, 아키텍처가 준수해야 할 대상이 아니다.&lt;/p>
+&lt;p>아키텍처를 프레임워크 중심으로 만들어버리면 유스케이스가 중심이 되는 아키텍처는 절대 나올 수 없다.&lt;/p>
+&lt;h2 id="아키텍처의-목적">아키텍처의 목적&lt;/h2>
+&lt;p>좋은 아키텍처는 유스케이스를 그 중심에 두기 때문에, 프레임워크나 도구, 환경에 전혀 구애받지 않고 유스케이스를 지원하는 구조를 아무런 문제 없이 기술할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>건물의 청사진의 관심사는 목적에 맞는 공간임을 확실히 하는 것이지, 어떤 기법, 재질로 지어지는지 확인하는 것이 아니다.&lt;/li>
+&lt;/ul>
+&lt;p>좋은 소프트웨어 아키텍처는 유스케이스에 중점을 두며, 지엽적인 관심사에 대한 결합을 분리시켜 개발 환경 문제나 도구에 대해서는 결정을 미루고, 쉽게 번복할 수 있도록 한다.&lt;/p>
+&lt;h2 id="하지만-웹은">하지만 웹은?&lt;/h2>
+&lt;p>웹은 전달 메커니즘(입출력 장치)이며, 애플르케이션 아키텍처에서도 그와 같이 취급해야한다.&lt;/p>
+&lt;ul>
+&lt;li>웹을 통해 전달된다는 사실 자체가 세부 사항이므로, 시스템 구조를 지배해서는 안된다.&lt;/li>
+&lt;/ul>
+&lt;p>시스템 아키텍처는 과도한 문제를 일으키거나 근본적인 아키텍처를 뜯어고치지 않더라도 시스템을 콘솔 앱, 웹 앱, 리치 클라이언트, 웹서비스 앱등 다양한 방식으로 전달할 수 있어야 한다.&lt;/p>
+&lt;h2 id="프레임워크는-도구일-뿐-삶의-방식은-아니다">프레임워크는 도구일 뿐, 삶의 방식은 아니다&lt;/h2>
+&lt;p>프레임워크는 매우 강력하고 상당히 유용할 수 있지만, 의존해서는 안된다.&lt;/p>
+&lt;p>좋은 아키텍트라면 아키텍처를 유스케이스에 중점을 둔 채 그대로 보존할 수 있을지를 생각해야 하며, 프레임워크가 아키텍처의 중심을 차지하는 일을 막을 수 있는 전략을 개발해야한다.&lt;/p>
+&lt;h2 id="테스트하기-쉬운-아키텍처">테스트하기 쉬운 아키텍처&lt;/h2>
+&lt;p>아키텍처가 유스케이스를 최우선으로 하고, 이로인해 프레임워크와는 적단한 거리를 둔다면, 프레임워크를 전혀 준비하지 않더라도 필요한 유스케이스 전부에 대해 단위 테스트를 할 수 있어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>테스트를 돌리는 데 웹 서버가 반드시 필요한 상황이 되어서는 안된다.&lt;/li>
+&lt;li>데이터베이스가 반드시 연결되어 있어야만 테스트를 돌릴 수 있어서도 안된다.&lt;/li>
+&lt;/ul>
+&lt;p>엔티티 객체는 반드시 오래된 방식의 간단한 객체(Plain Old Object)여야 하며, 여타 복잡한 것들에 의존해서는 안된다.&lt;/p>
+&lt;p>유스케이스 객체가 엔티티 객체를 조작하도록 해야하며, 최종적으로 프레임워크로 인한 어려움을 겪지 않고도 이 모두를 있는 그래도 테스스할 수 있어야 한다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>아키텍처는 유스케이스를 통해 시스템을 이야기해야 하며, 시스템에 적용한 프레임워크에 대해 이야기해서는 안된다.&lt;/p>
+&lt;p>시스템이 어떻게 전달될지 알지 못한 상태에서도 시스템의 모든 유스케이스를 이해할 수 있어야한다.&lt;/p></description></item><item><title>20. 업무 규칙</title><link>https://codemario318.github.io/post/clean-architecture/20/</link><pubDate>Fri, 22 Mar 2024 00:23:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/20/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/20/cover.png" alt="Featured image of post 20. 업무 규칙" />&lt;p>애플리케이션을 업무 규칙과 플러그인으로 구분하려면 업무 규칙이 실제로 무엇인지를 잘 이해해야만 한다.&lt;/p>
 &lt;p>&lt;strong>핵심 업무 규칙&lt;/strong>(Critical Business Rule)&lt;/p>
 &lt;ul>
 &lt;li>업무 규칙은 사업적으로 수익을 얻거나 비용을 줄일 수 있는 규칙 또는 절차이다.&lt;/li>
