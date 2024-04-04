@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>소프트웨어 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/</link><description>Recent content in 소프트웨어 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 04 Apr 2024 08:49:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>24. 부분적 경계</title><link>https://codemario318.github.io/post/clean-architecture/24/</link><pubDate>Thu, 04 Apr 2024 08:49:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/24/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/24/cover.png" alt="Featured image of post 24. 부분적 경계" />&lt;p>아키텍처 경계를 완벽하게 만드는 데는 엄청난 노력을 기율여야 하고, 유지하는 데도 엄청난 노력이 든다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>소프트웨어 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/</link><description>Recent content in 소프트웨어 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 04 Apr 2024 09:16:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>25. 계층과 경계</title><link>https://codemario318.github.io/post/clean-architecture/25/</link><pubDate>Thu, 04 Apr 2024 09:16:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/25/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/25/cover.png" alt="Featured image of post 25. 계층과 경계" />&lt;p>단순한 시스템에서는 UI, 업무 규칙, 데이터베이스 컴포넌트만으로도 충분하지만, 대다수의 시스템에서 컴포넌트의 개수는 이보다 훨씬 많다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>아키텍처 경계는 어디에나 존재하며, 아키텍트는 아키텍처 경계가 언제 필요한지를 신중하게 파악해내야한다.&lt;/p>
+&lt;p>이러한 경계를 제대로 구현하는 비용은 크며, 경계가 무시되었다면 나중에 다시 추가하는 비용도 매우 크다.&lt;/p>
+&lt;p>오버 엔지니어링이 언더 엔지니어링보다 나쁠 때가 훨씬 많으므로 XP의 원칙인 &lt;strong>YAGNI&lt;/strong>가 말하는 것 처럼 추상화가 필요하리라고 미리 예측해서는 안 된다.&lt;/p>
+&lt;p>하지만, 경계가 존재하지 않는 상황에서 경계가 필요하다는 것을 깨닳고 추가하려면 비용이 매우 많이 들고 큰 위험을 감수해야한다.&lt;/p>
+&lt;hr>
+&lt;p>이처럼 소프트웨어 아키텍트는 여러 상황들을 적절히 고려하여 소프트웨어가 어떻게 발전할지 예측해야한다.&lt;/p>
+&lt;p>이를 통해 완벽하게 구현할 경계와 부분적으로 구현할 경계, 무시할 경계가 무엇인지 결정해야만 한다.&lt;/p>
+&lt;p>그렇지만 프로젝트 초반에는 경계를 쉽게 결정할 수 없기 때문에 한번에 정해지는 것은 아니므로, 시스템이 발전함에 따라 주의를 기울여야한다.&lt;/p>
+&lt;ul>
+&lt;li>경계가 필요할 수 있는 부분에 주목한다.&lt;/li>
+&lt;li>경계가 존재하지 않아 생기는 마찰의 첫 조짐을 신중하게 관찰한다.
+&lt;ul>
+&lt;li>경계를 구현하는 비용가 무시할 때 감수할 비용을 가늠해본다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>결정된 사항을 자주 검토한다.&lt;/li>
+&lt;/ul>
+&lt;p>경계의 구현 비용이 그것을 무시하여 생기는 비용보다 적어지는 시점에 경계를 구현해야하며, 적절한 시점에 경계를 구현하기 위해 빈틈없이 지켜봐야한다.&lt;/p></description></item><item><title>24. 부분적 경계</title><link>https://codemario318.github.io/post/clean-architecture/24/</link><pubDate>Thu, 04 Apr 2024 08:49:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/24/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/24/cover.png" alt="Featured image of post 24. 부분적 경계" />&lt;p>아키텍처 경계를 완벽하게 만드는 데는 엄청난 노력을 기율여야 하고, 유지하는 데도 엄청난 노력이 든다.&lt;/p>
 &lt;ul>
 &lt;li>쌍방향의 다형적 &lt;code>Boundary&lt;/code> 인터페이스&lt;/li>
 &lt;li>&lt;code>Input&lt;/code>, &lt;code>Output&lt;/code>을 위한 데이터 구조&lt;/li>
