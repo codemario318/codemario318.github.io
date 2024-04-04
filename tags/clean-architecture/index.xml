@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Clean Architecture on Mario Blog</title><link>https://codemario318.github.io/tags/clean-architecture/</link><description>Recent content in Clean Architecture on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 04 Apr 2024 09:16:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/clean-architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>25. 계층과 경계</title><link>https://codemario318.github.io/post/clean-architecture/25/</link><pubDate>Thu, 04 Apr 2024 09:16:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/25/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/25/cover.png" alt="Featured image of post 25. 계층과 경계" />&lt;p>단순한 시스템에서는 UI, 업무 규칙, 데이터베이스 컴포넌트만으로도 충분하지만, 대다수의 시스템에서 컴포넌트의 개수는 이보다 훨씬 많다.&lt;/p>
-&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>이에 따라 컴포넌트간 경계도 훨씬 많이질 수 밖에 없다.&lt;/p>
 &lt;p>아키텍처 경계는 어디에나 존재하며, 아키텍트는 아키텍처 경계가 언제 필요한지를 신중하게 파악해내야한다.&lt;/p>
 &lt;p>이러한 경계를 제대로 구현하는 비용은 크며, 경계가 무시되었다면 나중에 다시 추가하는 비용도 매우 크다.&lt;/p>
 &lt;p>오버 엔지니어링이 언더 엔지니어링보다 나쁠 때가 훨씬 많으므로 XP의 원칙인 &lt;strong>YAGNI&lt;/strong>가 말하는 것 처럼 추상화가 필요하리라고 미리 예측해서는 안 된다.&lt;/p>
