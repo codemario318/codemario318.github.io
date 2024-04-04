@@ -1,4 +1,56 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 03 Apr 2024 22:31:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>23. 프레젠터와 험블 객체</title><link>https://codemario318.github.io/post/clean-architecture/23/</link><pubDate>Wed, 03 Apr 2024 22:31:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/23/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/23/cover.png" alt="Featured image of post 23. 프레젠터와 험블 객체" />&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/23/img.png"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 04 Apr 2024 08:49:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>24. 부분적 경계</title><link>https://codemario318.github.io/post/clean-architecture/24/</link><pubDate>Thu, 04 Apr 2024 08:49:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/24/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/24/cover.png" alt="Featured image of post 24. 부분적 경계" />&lt;p>아키텍처 경계를 완벽하게 만드는 데는 엄청난 노력을 기율여야 하고, 유지하는 데도 엄청난 노력이 든다.&lt;/p>
+&lt;ul>
+&lt;li>쌍방향의 다형적 &lt;code>Boundary&lt;/code> 인터페이스&lt;/li>
+&lt;li>&lt;code>Input&lt;/code>, &lt;code>Output&lt;/code>을 위한 데이터 구조&lt;/li>
+&lt;li>두 영역을 독립적으로 컴파일하고 배포할 수 있는 컴포넌트로 젹리하는 데 필요한 모든 의존성 관리&lt;/li>
+&lt;/ul>
+&lt;p>많은 경우에 이러한 경계를 만드는 비용이 크다고 판단하면서도, 필요한 작업만 해야한다는 XP 원칙인 &lt;strong>YAGNI&lt;/strong>(You Aren&amp;rsquo;t going to Need It)을 위배하며 나중에 필요할 것이라 예상대는 것들에 대한 대비하길 원한다.&lt;/p>
+&lt;p>이렇게 필요할 것으로 예상되는 것을 꼭 대비해야 한다면 완벽한 경계가 아닌 &lt;strong>부분적 경계&lt;/strong>(Patial boundary)를 활용해 볼 수 있다.&lt;/p>
+&lt;h2 id="마지막-단계를-건너-뛰기">마지막 단계를 건너 뛰기&lt;/h2>
+&lt;p>독립적으로 컴파일하고 배포할 수 있는 컴포넌트를 만들기 위한 작업은 모두 수행한 후, 단일 컴포넌트에 그대로 모아만 두는 방법이다.&lt;/p>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>다수의 컴포넌트를 관리하는 작업을 하지 않아도 된다.&lt;/li>
+&lt;li>추적을 위한 버전 번호도 필요없다.&lt;/li>
+&lt;li>배포 관리 부담이 없다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>부분적 경계를 만들기 위해 완벽한 경계를 만들 때 만큼의 코드량과 사전 설계가 필요하다.&lt;/li>
+&lt;li>시간이 흐르며 별도로 분리한 컴포넌트가 재사용될 가능성이 전혀 없을 것임이 명백해지는 경우가 있다.&lt;/li>
+&lt;li>시간이 흐르며 컴포넌트 사이의 구분이 점점 약화된다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="일차원-경계">일차원 경계&lt;/h2>
+&lt;p>완벽한 형태의 아키텍처 경계는 양방향으로 격리된 상태를 유지해야 하므로 쌍방향 &lt;code>Boundary&lt;/code> 인터페이스를 사용하는데, 이러한 형태는 초기 설정할 때나 지속적으로 유지할 때도 비용이 많이 든다.&lt;/p>
+&lt;p>이러한 경우 추후 완벽한 형태의 경계로 확장할 수 있는 공간을 확보하고자 할 때, 전통적인 전략 패턴을 사용하여 간단한 구조를 활용해 볼 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/24/img.png"
+width="720"
+height="292"
+srcset="https://codemario318.github.io/post/clean-architecture/24/img_huf66003e0682ccdb8f85feab7e684d52d_81657_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/24/img_huf66003e0682ccdb8f85feab7e684d52d_81657_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="246"
+data-flex-basis="591px"
+>&lt;/p>
+&lt;p>&lt;code>Client&lt;/code>를 &lt;code>ServiceImpl&lt;/code>로 부터 격리시키는 데 필요한 의존성 역전이 적용되었기 때문에 미래에 필요한 아키텍처 경계를 대비할 수 있다.&lt;/p>
+&lt;p>하지만 이러한 형태의 분리는 쌍방향 인터페이스가 없고 개발자와 아키텍트의 능력에 따라, 점선과 같은 비밀 통로가 생기는 일을 막을 방법이 없다.&lt;/p>
+&lt;h2 id="퍼사드">퍼사드&lt;/h2>
+&lt;p>더 단순한 경계는 퍼사드 패턴으로, 이 경우에는 의존성 역전까지 희생한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/24/img_1.png"
+width="720"
+height="299"
+srcset="https://codemario318.github.io/post/clean-architecture/24/img_1_huda7c855c7c3463c0aff875896060fffa_46486_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/24/img_1_huda7c855c7c3463c0aff875896060fffa_46486_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="240"
+data-flex-basis="577px"
+>&lt;/p>
+&lt;p>경계는 &lt;code>Facade&lt;/code> 클래스로만 간단히 전의되며, 모든 서비스 클래스를 메서드 형태로 정의하고, 서비스 호출이 발생하면 서비스 클래스로 호출을 전달한다.&lt;/p>
+&lt;p>클라이언트는 서비스 클래스에 직접 접근할 수 없지만, &lt;code>Client&lt;/code>가 이 모든 서비스 클래스에 대해 추이 종속성을 가지게 되었다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>아키텍처 경계를 부분적으로 구현하는 방법은 많다.&lt;/p>
+&lt;p>이러한 접근법은 각각 나름의 비용과 장점을 지니며, 완벽한 형태의 경계를 담기 위한 공간으로써, 적절하게 사용할 수 있는 상황이 서로 다르다.&lt;/p>
+&lt;p>또한 추후에 완벽한 형태의 경계가 실제로 구체회되지 않으면 가치가 떨어질 수 있다.&lt;/p></description></item><item><title>23. 프레젠터와 험블 객체</title><link>https://codemario318.github.io/post/clean-architecture/23/</link><pubDate>Wed, 03 Apr 2024 22:31:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/23/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/23/cover.png" alt="Featured image of post 23. 프레젠터와 험블 객체" />&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/23/img.png"
 width="772"
 height="567"
 srcset="https://codemario318.github.io/post/clean-architecture/23/img_hudd764f775c86d6d6fb1802d465c14dac_405598_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/23/img_hudd764f775c86d6d6fb1802d465c14dac_405598_1024x0_resize_box_3.png 1024w"
