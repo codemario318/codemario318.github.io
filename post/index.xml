@@ -1,4 +1,120 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 04 Apr 2024 09:16:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>25. 계층과 경계</title><link>https://codemario318.github.io/post/clean-architecture/25/</link><pubDate>Thu, 04 Apr 2024 09:16:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/25/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/25/cover.png" alt="Featured image of post 25. 계층과 경계" />&lt;p>단순한 시스템에서는 UI, 업무 규칙, 데이터베이스 컴포넌트만으로도 충분하지만, 대다수의 시스템에서 컴포넌트의 개수는 이보다 훨씬 많다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Mario Blog</title><link>https://codemario318.github.io/post/</link><description>Recent content in Posts on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 15 Apr 2024 16:48:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>26. 메인 컴포넌트</title><link>https://codemario318.github.io/post/clean-architecture/26/</link><pubDate>Mon, 15 Apr 2024 16:48:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/26/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/26/cover.png" alt="Featured image of post 26. 메인 컴포넌트" />&lt;p>모든 시스템에는 최소한 하나의 컴포넌트가 존재하여 나머지 컴포넌트를 생성, 조정, 관리하는데 이러한 컴포넌트를 메인 컴포넌트라 한다.&lt;/p>
+&lt;h2 id="궁극적인-세부사항">궁극적인 세부사항&lt;/h2>
+&lt;p>메인 컴포넌트는 &lt;strong>궁극적인 세부사항&lt;/strong>으로, 가장 낮은 수준의 정책이다.&lt;/p>
+&lt;ul>
+&lt;li>시스템의 초기 진입점이다.&lt;/li>
+&lt;li>운영체제를 제외하면 어떤 것도 메인에 의존하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>메인은 모든 팩토리(Factory)와 전략(Strategy), 시스템 전반을 담당하는 나머지 기발 설비를 생성한 후, 시스템에서 더 높은 수준을 담당하는 부분으로 제어권을 넘긴다.&lt;/p>
+&lt;hr>
+&lt;p>의존성 주입 프레임워크를 이용해 의존성을 주입하는 일은 메인 컴포넌트에서 이뤄져야 한다.&lt;/p>
+&lt;p>메인에 의존성이 주입되고 나면, 의존성 주입 프레임워크를 사용하지 않고도 일반적인 방식으로 의존성을 분배할 수 있어야한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">public&lt;/span> &lt;span class="kd">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">String&lt;/span>&lt;span class="o">[]&lt;/span> &lt;span class="n">args&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="kd">throws&lt;/span> &lt;span class="n">IOException&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">game&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">HtwFactory&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeGame&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;htw.game.HuntTheWumpusFacade&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">Main&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">createMap&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">BufferdReader&lt;/span> &lt;span class="n">br&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">BufferedReader&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">InputStreamReader&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">in&lt;/span>&lt;span class="o">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeRestCommand&lt;/span>&lt;span class="o">().&lt;/span>&lt;span class="na">excute&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="o">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getPlayerCavern&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Health: &amp;#34;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">hitPoints&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s">&amp;#34; arrows: &amp;#34;&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">getQuiver&lt;/span>&lt;span class="o">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">HuntTheWumpus&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">Command&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeRestCommand&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;&amp;gt;&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">String&lt;/span> &lt;span class="n">command&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">br&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">readLine&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;e&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">EAST&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;w&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">WEST&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;n&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">NORTH&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;s&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">SOUTH&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;r&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;sw&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">WEST&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;se&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">EAST&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;sn&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">EAST&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;ss&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">makeMoveCommand&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">SOUTH&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;q&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="o">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">excute&lt;/span>&lt;span class="o">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>HtwFactory&lt;/code>를 사용하여 게임을 생성할 때, &lt;code>htw.game.HuntTheWumpusFacade&lt;/code>라는 클래스 이름을 문자열로 전달하는데, 이는 이 클래스가 변경이 매우 많은 지저분한 클래스이므로, 문자열을 통해 참조하도록 하여 직접 참조하지 않게 하여 변경이 생겨도 메인을 재컴파일/재배포하지 않게 만들기 위함이다.&lt;/p>
+&lt;p>입력 스티름 생성 부분, 게임의 메인 루프 처리, 간단한 입력 명령어 해석 등은 모두 &lt;code>main()&lt;/code>에서 처리하지만, 명령어를 실제로 처리하는 일은 다른 고수준 컴포넌트로 위임한다.&lt;/p>
+&lt;hr>
+&lt;p>메인은 클린 아키텍처에서 가장 바깥 원에 위치하는, 지저분한 저수준 모듈이다.&lt;/p>
+&lt;p>메인은 고 수준의 시스템을 위한 모든 것을 로드한 후, 제어권을 고수준의 시스템에게 넘긴다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>메인을 초기 조건과 성정을 구성하고, 외부 자원을 모두 수집한 후, 제어권을 애플리케이션의 고수준 정책으로 넘기는 플러그인이다.&lt;/p>
+&lt;p>메인은 플러그인이므로 메인 컴포넌트를 애플리케이션의 설정별로 하나씩 두로록 하여 둘 이상의 메인 컴포넌트를 만들 수도 있다.&lt;/p>
+&lt;ul>
+&lt;li>개발용 메인 플러그인&lt;/li>
+&lt;li>테스트용 메인 플러그인&lt;/li>
+&lt;li>국가별 플러그인&lt;/li>
+&lt;li>관할 영역 별 플러그인&lt;/li>
+&lt;li>고객별 플러그인 등&lt;/li>
+&lt;/ul>
+&lt;p>메인을 플러그인 컴포넌트로 여기고, 아키텍처 경계 바깥에 위치한다고 보면 설정 관련 문제를 훨씬 쉽게 해결할 수 있다.&lt;/p></description></item><item><title>25. 계층과 경계</title><link>https://codemario318.github.io/post/clean-architecture/25/</link><pubDate>Thu, 04 Apr 2024 09:16:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/25/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/25/cover.png" alt="Featured image of post 25. 계층과 경계" />&lt;p>단순한 시스템에서는 UI, 업무 규칙, 데이터베이스 컴포넌트만으로도 충분하지만, 대다수의 시스템에서 컴포넌트의 개수는 이보다 훨씬 많다.&lt;/p>
 &lt;p>이에 따라 컴포넌트간 경계도 훨씬 많이질 수 밖에 없다.&lt;/p>
 &lt;p>아키텍처 경계는 어디에나 존재하며, 아키텍트는 아키텍처 경계가 언제 필요한지를 신중하게 파악해내야한다.&lt;/p>
 &lt;p>이러한 경계를 제대로 구현하는 비용은 크며, 경계가 무시되었다면 나중에 다시 추가하는 비용도 매우 크다.&lt;/p>
