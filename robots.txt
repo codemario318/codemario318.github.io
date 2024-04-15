@@ -3,9 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/clean-architecture/26/
-
-
+Allow: /post/clean-architecture/27/
 
 
 
@@ -34,6 +32,16 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+Allow: /post/clean-architecture/26/
 
 
 
@@ -130,8 +138,6 @@ Allow: /post/clean-architecture/16/
 
 
 Allow: /post/clean-architecture/15/
-
-
 
 
 
