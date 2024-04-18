@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>소프트웨어 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/</link><description>Recent content in 소프트웨어 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 18 Apr 2024 16:19:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>30. 데이터베이스는 세부사항이다</title><link>https://codemario318.github.io/post/clean-architecture/30/</link><pubDate>Thu, 18 Apr 2024 16:19:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/30/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/30/cover.png" alt="Featured image of post 30. 데이터베이스는 세부사항이다" />&lt;p>아키텍처 관점에서 볼 때 데이터베이스는 엔티티가 아니다.&lt;/p>
-&lt;p>즉, 데이터 모델과는 달리 아키텍처 관점에서는 데이터베이스는 세부사항이라서 아키텍처의 구성요소 수준으로 끌어올릴 수 없다.&lt;/p>
+&lt;p>데이터 모델과는 달리 아키텍처 관점에서는 데이터베이스는 세부사항이라서 아키텍처의 구성요소 수준으로 끌어올릴 수 없다.&lt;/p>
 &lt;p>데이터베이스는 소프트웨어일 뿐이며, 데이터에 접근할 방법을 제공하는 유틸리티이다.&lt;/p>
-&lt;p>유틸리티는 저수준 세부사항(메커니즘)일 뿐이므로 아키텍처와는 관계 없으므로, 데이터베이스를 이용한다는 사실이 아키텍처에 영향을 주지 않아야한다.&lt;/p>
+&lt;p>유틸리티는 저수준 세부사항(메커니즘)일 뿐 아키텍처와는 관계 없으므로, 데이터베이스를 이용한다는 사실이 아키텍처에 영향을 주지 않아야한다.&lt;/p>
 &lt;h2 id="관계형-데이터베이스">관계형 데이터베이스&lt;/h2>
 &lt;p>관계형 테이블은 특정한 형식의 데이터에 접근하는 경우에 편리함을 제공하지만, 데이터를 테이블에 행 단위로 배치한다는 자체는 아키텍처적으로 볼 때 전혀 중요하지 않다.&lt;/p>
 &lt;p>따라서 (관계형 데이터베이스에 저장된)데이터가 테이블 구조를 가진다는 사실은 오직 아키텍처의 외부 원에 위치한 최하위 수준의 유틸리티 함수만 알아야한다.&lt;/p>
