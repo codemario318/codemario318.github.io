@@ -7,6 +7,10 @@ Allow: /post/clean-architecture/30/
 
 
 
+Allow: /post/clean-architecture/32/
+
+
+
 
 
 
