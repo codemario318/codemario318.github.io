@@ -110,13 +110,13 @@ data-flex-basis="226px"
 &lt;h2 id="컴포넌트-기반-패키지">컴포넌트 기반 패키지&lt;/h2>
 &lt;p>SOLID, REP, CCP, CRP 같은 이 책에 대다수의 조언은 당연히 중요하지만, 코드를 조직화하는 방법에 대해서는 &lt;strong>컴포넌트 기반 패키지&lt;/strong>같은 접근 방법을 적용해 볼 수 있다.&lt;/p>
 &lt;p>&lt;strong>계층형 아키텍처의 단점&lt;/strong>&lt;/p>
-&lt;p>계층형 아키텍처의 목적은 기능이 같은 코디끼리 서로 분리하는 것이다.&lt;/p>
+&lt;p>계층형 아키텍처의 목적은 기능이 같은 코드끼리 서로 분리하는 것이다.&lt;/p>
 &lt;p>구현 관점에서 보면 각 계층은 일반적으로 자바 패키지에 해당하며 서로 다른 패키지에 속한다. 따라서 코드의 접근성 관점에서 살펴보면 아래와 같은 문제가 있다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>OrdersController&lt;/code>가 &lt;code>OrdersService&lt;/code> 인터페이스에 의존하려면 &lt;code>OrdersService&lt;/code> 인터페이스는 반드시 &lt;code>public&lt;/code>으로 선언되어야 한다.&lt;/li>
 &lt;li>&lt;code>OrdersRepository&lt;/code> 인터페이스도 &lt;code>public&lt;/code>이어야만 &lt;code>repository&lt;/code> 패키지 외부에 있는 &lt;code>OrdersServiceImpl&lt;/code> 클래스에 접근할 수 있다.&lt;/li>
 &lt;/ul>
-&lt;p>엄격한 계층형 아키텍처에서 으존성 화살표는 항상 아래를 향해야 하므로, 깔끔한 비순환 의존성 그래프를 만들 수 있을 것이라 생각할 수 있지만, 실제로는 코드 베이스의 요소들이 서로를 의존할 때는 몇 가지 규칙을 반드시 지켜야한다.&lt;/p>
+&lt;p>엄격한 계층형 아키텍처에서 의존성 화살표는 항상 아래를 향해야 하므로, 깔끔한 비순환 의존성 그래프를 만들 수 있을 것이라 생각할 수 있지만, 실제로는 코드 베이스의 요소들이 서로를 의존할 때는 몇 가지 규칙을 반드시 지켜야한다.&lt;/p>
 &lt;p>여기서 큰 문제는, 속임수를 써서 의존성을 의도치 않은 방식으로 추가하더라도 보기에는 여전히 좋은 비순환 의존성 그래프가 생성된다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img_1.png"
 width="629"
