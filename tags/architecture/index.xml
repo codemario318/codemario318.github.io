@@ -1,4 +1,248 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Architecture on Mario Blog</title><link>https://codemario318.github.io/tags/architecture/</link><description>Recent content in Architecture on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 19 Apr 2024 15:27:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>33. 사례연구: 비디오 판매</title><link>https://codemario318.github.io/post/clean-architecture/33/</link><pubDate>Fri, 19 Apr 2024 15:27:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/33/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/33/cover.png" alt="Featured image of post 33. 사례연구: 비디오 판매" />&lt;p>짧고 단순한 사례를 통해 뛰어난 아키텍트가 일을 처리하는 과정과 결정을 내리는 모습을 살펴보자.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Architecture on Mario Blog</title><link>https://codemario318.github.io/tags/architecture/</link><description>Recent content in Architecture on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 19 Apr 2024 15:59:13 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>34. 빠져있는 장: By Simon Brown</title><link>https://codemario318.github.io/post/clean-architecture/34/</link><pubDate>Fri, 19 Apr 2024 15:59:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/34/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/cover.png" alt="Featured image of post 34. 빠져있는 장: By Simon Brown" />&lt;p>지금까지 읽은 모든 조언을 통해 올바르게 정의된 경계, 명확한 책임, 통제된 의존성을 가진 클래스와 컴포넌트로 구성된 좋은 소프트웨어를 설계할 수 있다.&lt;/p>
+&lt;p>하지만 실제 적용에서는 &lt;strong>디테일&lt;/strong>(구현 세부사항)을 심사숙고하지 않는다면 마지막 고비에 걸려 넘어지기 십상이다.&lt;/p>
+&lt;h2 id="계층-기반-패키지">계층 기반 패키지&lt;/h2>
+&lt;p>가장 단순한 설계 방식으로 &lt;strong>전통적인 수평 계층형 아키텍처&lt;/strong>가 있다.&lt;/p>
+&lt;p>&lt;strong>계층 기반 패키지&lt;/strong>라고도 불리는 이 방법은 기술적인 관점에서 해당 코드가 하는 일에 기반해 그 코드를 분할한다.&lt;/p>
+&lt;p>이러한 전형적인 계층형 아키텍처에는 웹, 업무 규칙, 영속성 코드를 위해 계층이 각각 하나씩 존재한다.&lt;/p>
+&lt;p>코드는 계층이라는 얇은 수평 조각으로 나뉘며, 각 계층은 유사한 종류의 것들을 묶는 도구로 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>엄격한 계층형 아키텍처의 경우 계층은 반드시 바로 아래 계층에만 의존해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img.png"
+width="635"
+height="674"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img_hu09d1a64cd1e72f2d69d142c6a608bf93_75674_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img_hu09d1a64cd1e72f2d69d142c6a608bf93_75674_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="226px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>OrdersController&lt;/code>
+&lt;ul>
+&lt;li>웹 컨트롤러이며, 웹 기반 요청을 처리한다.&lt;/li>
+&lt;li>ex) Spring MVC 컨트롤러 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>OrdersService&lt;/code>
+&lt;ul>
+&lt;li>주문 관련 업무 규칙을 정의하는 인터페이스&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>OrdersServiceImpl&lt;/code>
+&lt;ul>
+&lt;li>&lt;code>OrdersService&lt;/code>의 구현체&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>OrdersRepository&lt;/code>
+&lt;ul>
+&lt;li>영구 저장된 주문 정보에 접근하는 방법을 정의하는 인터페이스&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>JdbcOrdersRepository&lt;/code>
+&lt;ul>
+&lt;li>&lt;code>OrdersRespository&lt;/code>의 구현체&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>마틴 파울러는 &lt;strong>프레젠테이션 도메인 데이터&lt;/strong> 계층화에서 처음 시작하기에는 계층형 아키텍처가 적합하다고 언급한다.&lt;/p>
+&lt;ul>
+&lt;li>엄청난 복잡함을 겪지 않고도 무언가를 작동시켜 주는 아주 빠른 방법이다.&lt;/li>
+&lt;li>소프트웨어가 커지고 복잡해지기 시작하면 세 개의 계층으로만은 부족하다 느끼고 더 잘게 모듈화 해야할 필요성을 느낄 수 있다.&lt;/li>
+&lt;li>업무 도메인에 대해 아무것도 말해주지 않는다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="기능-기반-패키지">기능 기반 패키지&lt;/h2>
+&lt;p>&lt;strong>기능 기반 패키지&lt;/strong> 구조는 서로 연관된 기능, 도메인 개념, (도메인 주도 설계 용어를 자주 사용한다면) Aggregate Root에 기반하여 수직의 얇은 조각으로 코드를 나누는 방식이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img2.png"
+width="627"
+height="670"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img2_hub33c374a47ec3a9ae590abdd19e1dc17_60523_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img2_hub33c374a47ec3a9ae590abdd19e1dc17_60523_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="93"
+data-flex-basis="224px"
+>&lt;/p>
+&lt;p>인터페이스와 클래스는 이전과 같지만, 모두가 단 하나의 패키지에 속하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>이는 &lt;strong>계층 기반 패키지&lt;/strong>를 아주 간단히 리팩터링한 형태지만 코드의 상위 수준 구조가 업무 도메인에 대해 무언가를 알려주게된다.&lt;/li>
+&lt;li>유스케이스가 변경될 경우 변경해야 할 코드를 모두 찾는 작업이 더 쉬워질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>소프트웨어 개발팀이 수평적 계층화의 문제를 깨닫고, 수직적 계층화로 전환하는 경우가 많지만, 두 접근법 모두 차선책이다.&lt;/p>
+&lt;h2 id="포트와-어댑터">포트와 어댑터&lt;/h2>
+&lt;p>포트와 어댑터(Ports and Adapters) 혹은 육각형 아키텍처(Hexagonal Architecture), 경계, 컨트롤러, 엔티티(BCE) 등의 방식으로 접근하는 이유는 업무/도메인에 초점을 둔 코드가 프레임워크나 데이터베이스 같은 기술적인 세부 구현과 독립적이며 분리된 아키텍처를 만들기 위해서다.&lt;/p>
+&lt;p>그런 코드 베이스는 **내부(도메인)**와 **외부(인프라)**로 구성됨을 흔히 볼 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img3.png"
+width="633"
+height="485"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img3_hub97e2c2908d969078290a6c0afd4246d_67211_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img3_hub97e2c2908d969078290a6c0afd4246d_67211_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="313px"
+>&lt;/p>
+&lt;ul>
+&lt;li>내부 영역
+&lt;ul>
+&lt;li>도메인 개념을 모두 포함한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>외부 영역
+&lt;ul>
+&lt;li>외부 세계(UI, DB, 서드파티 통합)와의 상호작용을 포함한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>외부가 내부에 의존하며, 절대 그 반대로는 안된다.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img4.png"
+width="632"
+height="669"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img4_hu067ed2819602a97a65ad3f6557f29a26_73442_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img4_hu067ed2819602a97a65ad3f6557f29a26_73442_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="226px"
+>&lt;/p>
+&lt;p>위 구조에서 &lt;code>com.mycompany.myapp.domain&lt;/code> 패키지가 내부이며, 나머지 패키지는 모두 외부이다.&lt;/p>
+&lt;p>&lt;code>OrdersRepository&lt;/code>가 &lt;code>Orders&lt;/code>라는 간단한 이름으로 바뀌었는데, 이는 도메인 주도 설계라는 세계관에서 비롯된 명명법으로, &lt;strong>내부&lt;/strong>에 존재하는 모든 것의 이름은 반드시 &lt;strong>유비쿼터스 도메인 언어&lt;/strong>관점에서 기술하라고 조언한다.&lt;/p>
+&lt;ul>
+&lt;li>도메인에 대하 논의할 때 &lt;strong>주문&lt;/strong>에 대해 말하는 것이지 &lt;strong>주문 리포지토리&lt;/strong>에 대해 말하는 것이 아니기 때문&lt;/li>
+&lt;/ul>
+&lt;h2 id="컴포넌트-기반-패키지">컴포넌트 기반 패키지&lt;/h2>
+&lt;p>SOLID, REP, CCP, CRP 같은 이 책에 대다수의 조언은 당연히 중요하지만, 코드를 조직화하는 방법에 대해서는 &lt;strong>컴포넌트 기반 패키지&lt;/strong>같은 접근 방법을 적용해 볼 수 있다.&lt;/p>
+&lt;p>&lt;strong>계층형 아키텍처의 단점&lt;/strong>&lt;/p>
+&lt;p>계층형 아키텍처의 목적은 기능이 같은 코디끼리 서로 분리하는 것이다.&lt;/p>
+&lt;p>구현 관점에서 보면 각 계층은 일반적으로 자바 패키지에 해당하며 서로 다른 패키지에 속한다. 따라서 코드의 접근성 관점에서 살펴보면 아래와 같은 문제가 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>OrdersController&lt;/code>가 &lt;code>OrdersService&lt;/code> 인터페이스에 의존하려면 &lt;code>OrdersService&lt;/code> 인터페이스는 반드시 &lt;code>public&lt;/code>으로 선언되어야 한다.&lt;/li>
+&lt;li>&lt;code>OrdersRepository&lt;/code> 인터페이스도 &lt;code>public&lt;/code>이어야만 &lt;code>repository&lt;/code> 패키지 외부에 있는 &lt;code>OrdersServiceImpl&lt;/code> 클래스에 접근할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>엄격한 계층형 아키텍처에서 으존성 화살표는 항상 아래를 향해야 하므로, 깔끔한 비순환 의존성 그래프를 만들 수 있을 것이라 생각할 수 있지만, 실제로는 코드 베이스의 요소들이 서로를 의존할 때는 몇 가지 규칙을 반드시 지켜야한다.&lt;/p>
+&lt;p>여기서 큰 문제는, 속임수를 써서 의존성을 의도치 않은 방식으로 추가하더라도 보기에는 여전히 좋은 비순환 의존성 그래프가 생성된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img_1.png"
+width="629"
+height="671"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img_1_hue2c4f507d4fc8ef9fe870f9d5a52a08a_68784_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img_1_hue2c4f507d4fc8ef9fe870f9d5a52a08a_68784_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="93"
+data-flex-basis="224px"
+>&lt;/p>
+&lt;p>위 상황처럼 &lt;code>OrdersController&lt;/code>가 &lt;code>OrdersService&lt;/code>를 우회하여 직접 &lt;code>OrdersRepository&lt;/code>에 의존성을 가지게 하더라도 비순환 의존성 그래프가 만들어진다.&lt;/p>
+&lt;p>이러한 조직화는 인접한 계층들을 건너 뛰는 일이 허용되기 때문에 &lt;strong>완화된 계층형 아키텍처&lt;/strong>라고 부르며, 이러한 방식은 CQRS(Command Query Responsibility Segregation) 패턴 같은 경우를 제외한다면 바람직하지 못하다.&lt;/p>
+&lt;p>따라서 계층형 아키텍처는 이러한 우회를 강제할 수 있는 방법이 없기 때문에 아키텍처가 지켜지기 힘들어진다.&lt;/p>
+&lt;p>&lt;strong>컴포넌트 기반 패키지&lt;/strong>&lt;/p>
+&lt;p>반면 컴포넌트 기반 패키지는 컴파일러를 사용해서 아키텍처를 강제할 수 있다.&lt;/p>
+&lt;p>컴포넌트 기반 패키지는 큰 단위(coarse-grained)의 단일 컴포넌트와 관련된 모든 책임을 하나의 자바 패키지로 묶는데 주안점을 둔다.&lt;/p>
+&lt;p>이 접근법은 마이크로서비스 아키텍처가 가진 시각과 동일하게 서비스 중심적인 시각으로 소프트웨어 시스템을 바라볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>포트와 어댑터에서 웹을 그저 또 다른 전달 메커니즘으로 취급하는 것과 마찬가지로, 사용자 인터페이스를 큰 단위의 컴포넌트로부터 분리해서 유지한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img_2.png"
+width="628"
+height="668"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img_2_huade6c3c558bab5a248a2fc0978ef31a2_60168_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img_2_huade6c3c558bab5a248a2fc0978ef31a2_60168_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="225px"
+>&lt;/p>
+&lt;p>컴포넌트 기반 패키지는 본질적으로 업무 로직과 영속성 관련 코드를 하나로 묶는데 이러한 단위를 컴포넌트라 부른다.&lt;/p>
+&lt;blockquote>
+&lt;p>지금까지 언급되었던 배포할 수 있는 가장 작은 단위라는 의미가 아닌 &lt;strong>깔끔한 인터페이스로 감싸진 연관된 기능들의 묶음&lt;/strong>을 의미한다.&lt;br>
+스프트웨어 시스템의 전적 구조를 컨테이너, 컴포넌트, 클래스(코드) 측면에서 계층적으로 생각하는 방법(C4 소프트웨어 아키텍처 모델)&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>관련된 무언가를 코딩해야 할 때 &lt;code>**Component&lt;/code>만 둘러보면 된다.&lt;/li>
+&lt;li>컴포넌트 내부에서 관심사 분리는 여전히 유효하다.&lt;/li>
+&lt;li>따라서 업무 로직은 데이터 영속성과 분리된다.
+&lt;ul>
+&lt;li>컴포넌트 구현과 관련된 세부사항으로, 사용자는 알 필요가 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>모노리틱 애플리케이션에서 컴포넌트를 잘 정의하면 마이크로서비스 아키텍처로 가기 위한 발판으로 삼을 수 있다.&lt;/p>
+&lt;h2 id="구현-세부사항엔-항상-문제가-있다">구현 세부사항엔 항상 문제가 있다.&lt;/h2>
+&lt;p>언급한 네 가지 접근법이 코드를 조직하하는 것으로 보이지만 세부사항을 잘못 구현하면 이러한 견해도 아주 빠르게 흐트러지기 시작한다.&lt;/p>
+&lt;ul>
+&lt;li>모든 타입에서 &lt;strong>public&lt;/strong> 지시자를 사용한다는 것 제공하는 캡슐화 이점을 활용하지 않겠다는 뜻이며, 이로인해 지향아는 아키텍처 스타일을 위반하게 될 것이다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="조직화-vs-캡슐화">조직화 VS 캡슐화&lt;/h3>
+&lt;p>자바 애플리케이션에서 모든 타입을 &lt;code>public&lt;/code>으로 지정한다면 패키지는 단순히 조직화를 위한 매커니즘(폴더와 같은 역할만)으로 전락하여 캠슐화를 위한 메커니즘이 될 수 없다.&lt;/p>
+&lt;ul>
+&lt;li>코드 베이스를 어디서도 사용할 수 있다면 패키지를 사용하는 데 따른 이점이 거의 없다.&lt;/li>
+&lt;li>패키지를 무시해 버리면 캡슐화나 은닉에 아무런 도움이 없으므로 최종적으로 어떤 아키텍처 스타일로 만들려고 하는지는 아무런 의미가 없어진다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img_3.png"
+width="630"
+height="446"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img_3_hubd3840a39404a726edb0ac1a8a8a458d_77645_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img_3_hubd3840a39404a726edb0ac1a8a8a458d_77645_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>모든 타입을 &lt;code>public&lt;/code>으로 선언한다면 실제로 갖게 되는 것은 수평적 계층형 아키텍처를 표현하는 방법에 불과해진다.&lt;/p>
+&lt;hr>
+&lt;p>접근 지시자를 적절하게 사용하면, 타입을 패키지로 배치하는 방식에 다라서 각 타입에 접근할 수 있는 정도가 실제로 크게 달라질 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/clean-architecture/34/img_4.png"
+width="631"
+height="487"
+srcset="https://codemario318.github.io/post/clean-architecture/34/img_4_hub59749830694f830b27427b6082c0095_105897_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/clean-architecture/34/img_4_hub59749830694f830b27427b6082c0095_105897_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="310px"
+>&lt;/p>
+&lt;ol>
+&lt;li>계층 기반 패키지 접근법
+&lt;ul>
+&lt;li>&lt;code>OrdersService&lt;/code>, &lt;code>OrdersRepository&lt;/code> 인터페이스는 외부 패키지의 클래스로부터 자신이 속한 패키지 내부로 들어오는 의존성으로 &lt;code>public&lt;/code> 으로 선언되어야하지만, 구체 클래스는 누구도 알 필요가 없는 구현 세부사항이므로 &lt;code>protected&lt;/code>로 선언할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>기능 기반 패키지 접근법
+&lt;ul>
+&lt;li>&lt;code>OrdersController&lt;/code>가 패키지로 들어올 수 있는 유일한 통로를 제공하므로 나머지 패키지는 &lt;code>protected&lt;/code>로 지정할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>포트와 어댑터 접근법
+&lt;ul>
+&lt;li>&lt;code>OrdersService&lt;/code>와 &lt;code>Orders&lt;/code> 인터페이스는 외부로부터 들어오는 의존성을 가지므로 &lt;code>public&lt;/code>으로 지정해야한다.&lt;/li>
+&lt;li>구현 클래스 패키지는 &lt;code>protected&lt;/code>로 지정하며, 런타임에 의존성을 주입할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>컴포넌트 기반 패키지
+&lt;ul>
+&lt;li>컨트롤러에서 &lt;code>OrdersComponent&lt;/code> 인터페이스로 향하는 의존성을 가지며, 그 외의 모든 것은 패키지 &lt;code>protected&lt;/code>로 지정할 수 있다.&lt;/li>
+&lt;li>패키지 외부의 코드에서는 &lt;code>OrdersRepository&lt;/code> 인터페이스나 구현체를 직접 사용할 수 있는 방법이 전혀 없으므로 컴파일러를 통해 아키텍처를 강제할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>아키텍처 원칙을 강제할 때 컴파일러의 도움을 받아 그렇게 할 수 밖에 없도록 만들어야 한다.&lt;/p>
+&lt;p>모든 코드가 하나의 소스 코드 트리로 존재하는 모노리틱 애플리케이션이라면 큰 도움이 될 것이다.&lt;/p>
+&lt;h2 id="다른-결합-분리-모드">다른 결합 분리 모드&lt;/h2>
+&lt;p>프로그래밍 언어가 제공하는 방법 외에도 소스 코드 의존성을 분리하는 방법은 존재할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>모듈 시스템(ex. 자바 OSGI)&lt;/li>
+&lt;li>소스코드 수준에서 의존성을 분리하는 방법
+&lt;ul>
+&lt;li>&lt;strong>서로 다른 소스 코드 트리로 분리하는 방법&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="결론-빠져있는-조언">결론: 빠져있는 조언&lt;/h2>
+&lt;p>최적의 설계를 꾀했더라도, 구현 전략에 얽힌 복잡함을 고려하지 않으면 설계가 순식간에 망가질 수도 있다.&lt;/p>
+&lt;ul>
+&lt;li>설계를 어떻게 해야만 원하는 코드 구조로 매핑할 수 있을지&lt;/li>
+&lt;li>코드를 어떻게 조직화 할지&lt;/li>
+&lt;li>런타임과 컴파일타입에 어떤 결합 분리 모드를 적용할지&lt;/li>
+&lt;/ul>
+&lt;p>위와 같은 내용을 고민해야하며, 선택사항을 열어두되 실용주의적으로 행해야한다.&lt;/p>
+&lt;ul>
+&lt;li>팀의 규모, 기술 수준, 해결책의 복잡성을 일정과 예산이라는 제약과 동시에 고려해야한다.&lt;/li>
+&lt;li>선택된 아키텍처 스타일을 강제하는 데 컴파일러의 도움을 받을 수 있을지 고민해야한다.&lt;/li>
+&lt;li>데이터 모델과 같은 다른 영역에 결합되지 않도록 주의해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>구현 세부사항에는 항상 문제가 있는 법이다.&lt;/p></description></item><item><title>33. 사례연구: 비디오 판매</title><link>https://codemario318.github.io/post/clean-architecture/33/</link><pubDate>Fri, 19 Apr 2024 15:27:13 +0900</pubDate><guid>https://codemario318.github.io/post/clean-architecture/33/</guid><description>&lt;img src="https://codemario318.github.io/post/clean-architecture/33/cover.png" alt="Featured image of post 33. 사례연구: 비디오 판매" />&lt;p>짧고 단순한 사례를 통해 뛰어난 아키텍트가 일을 처리하는 과정과 결정을 내리는 모습을 살펴보자.&lt;/p>
 &lt;h2 id="제품-비디오-판매-웹-서비스">제품: 비디오 판매 웹 서비스&lt;/h2>
 &lt;ul>
 &lt;li>판매하길 원하는 비디오들이 있고, 개인과 기업에게 웹을 통해 판매한다.&lt;/li>
