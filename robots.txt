@@ -3,9 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/clean-architecture/34/
-
-
+Allow: /post/system-design-interview/1/
 
 
 
@@ -18,6 +16,48 @@ Allow: /post/clean-architecture/34/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/clean-architecture/34/
+
+
+
+
 
 
 
@@ -118,8 +158,6 @@ Allow: /post/clean-architecture/17/
 
 
 Allow: /post/movielens/2/
-
-
 
 
 
