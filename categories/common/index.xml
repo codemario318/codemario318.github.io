@@ -1,4 +1,233 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 30 Apr 2024 22:03:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>2. 개략적인 규모 추정</title><link>https://codemario318.github.io/post/system-design-interview/2/</link><pubDate>Tue, 30 Apr 2024 22:03:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/2/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/2/cover.png" alt="Featured image of post 2. 개략적인 규모 추정" />&lt;p>개략적인 규모 추정(back-of-the-envelope estimation)은 보편적으로 통용되는 성능 수치상에서 사고 실험(thought experiments)을 행하여 추정치를 계산하는 행위로서, 어떤 설계가 요구사항에 부합할 것인지 보기 위한 것이다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Common on Mario Blog</title><link>https://codemario318.github.io/categories/common/</link><description>Recent content in Common on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 07 May 2024 16:01:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/common/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 시스템 설계 먼접 공략법</title><link>https://codemario318.github.io/post/system-design-interview/3/</link><pubDate>Tue, 07 May 2024 16:01:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/cover.png" alt="Featured image of post 3. 시스템 설계 먼접 공략법" />&lt;blockquote>
+&lt;p>&lt;strong>시스템 설계 면접&lt;/strong>은 두 명의 동료가 모호한 문제를 풀기 위해 협력하여 그 해결책을 찾아내는 과정에 대한 시뮬레이션이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>시스템 설계 먼접은 특정 제품을 설계해보라는 식으로 막연하고, 넓은 범위로 인해 당황스러울 때가 많다.&lt;/p>
+&lt;p>하지만 실세계에서 많은 엔지니어들이 참여하여 개발한 제품은 극도로 복잡하기 때문에 한 시간 안에 설계하는 것은 불가능 할 뿐더러, 완벽한 설계를 요구하지 않는다.&lt;/p>
+&lt;ul>
+&lt;li>시스템 설계 면접은 정해진 결말, 정답도 없다.
+&lt;ul>
+&lt;li>최종적으로 도출될 설계안은 설계 과정에서 들인 노력에 비하면 그다지 중요하지 않다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>설계 기술을 시연하는 자리이다.&lt;/li>
+&lt;li>설계 과정에서 내린 결정들에 대한 방어 능력을 보이는 자리이다.&lt;/li>
+&lt;li>면접관의 피드백을 건설적인 방식으로 처리할 자질이 있음을 보이는 자리이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>면접관의 의도&lt;/strong>&lt;/p>
+&lt;p>시스템 설계 면접은 지원자의 설계 능력의 기술적인 측면 뿐만 아니라 여러 시그널을 수집한다.&lt;/p>
+&lt;ul>
+&lt;li>협력에 적합한 사람인가?&lt;/li>
+&lt;li>압박이 심한 상황도 잘 헤쳐 나갈 자질이 있는가?&lt;/li>
+&lt;li>모호한 문제를 건설적으로 해결할 능력이 있는가?&lt;/li>
+&lt;li>설계의 순수성에 집착한 나머지, 타협정 결정(trade off)를 도외시하는가?&lt;/li>
+&lt;li>완고함, 편협함 등&lt;/li>
+&lt;/ul>
+&lt;h2 id="효과적인-면접을-위한-4단계-접근법">효과적인 면접을 위한 4단계 접근법&lt;/h2>
+&lt;p>시스템 설계 면접은 제각각이다.&lt;/p>
+&lt;p>훌륭한 설계 면접은 정해진 결말도 없고 정답도 없지만, 절차나 범위에는 &lt;strong>공통적인 부분&lt;/strong>이 존재한다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>요구사항을 완전히 이해하지 않고 답을 내놓는 행위는 아주 엄청난 부정적 신호이다.&lt;/p>
+&lt;p>따라서 깊이 생각하고 질문하여 요구사항과 가정들을 분명히 해야한다.&lt;/p>
+&lt;p>적절한 설계를 위해 엔지니어가 가져야 할 중요한 기술은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>올바른 질문을 하는 것&lt;/li>
+&lt;li>적절한 가정을 하는 것&lt;/li>
+&lt;li>시스템 구축에 필요한 정보를 모으는 것&lt;/li>
+&lt;/ul>
+&lt;p>따라서 올바른 질문을 통해 적절한 가정과 정보를 모아야하며, 요구사항을 정확히 이해하기 위한 질문은 아래와 같은 유형이 있다.&lt;/p>
+&lt;ul>
+&lt;li>구체적으로 어떤 기능을 만들어야 하나?&lt;/li>
+&lt;li>제품 사용자 수는 얼마나 되나?&lt;/li>
+&lt;li>회사의 규모는 얼마나 빨리 커지리라 예상하나?&lt;/li>
+&lt;li>회사가 주로 사용하는 기술 스택은 무엇인가?&lt;/li>
+&lt;li>설계를 단순화하기 위해 활용할 수 있는 기존 서비스로는 어떤 것들이 있는가?&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>뉴스 피드(news feed) 시스템 설계 질문 예제&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Q. 모바일 앱과 웹 앱 가운데 어느쪽을 지원해야 하는가?
+&lt;ul>
+&lt;li>A. 둘다&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 가장 중요한 기능은?
+&lt;ul>
+&lt;li>A1. 새로운 포스트 올리기&lt;/li>
+&lt;li>A2. 다른 친구의 뉴스 피드 조회하기&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 정렬 기준은?
+&lt;ul>
+&lt;li>A. 시간 역순으로&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 한 사용자의 최대 친구 수
+&lt;ul>
+&lt;li>A. 5,000명&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 트래픽 규모는?
+&lt;ul>
+&lt;li>A. 일간 능동 사용자(DAU) 천만 명&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 피드는 텍스트로만 구성되는가?
+&lt;ul>
+&lt;li>A. 이미지나 비디오 같은 미디어 파일도 포스트 할 수 있어야함.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적인-설계안-제시-및-동의-구하기">2단계: 개략적인 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>개략적인 설계안을 제시하고 면접관의 동의를 구할 때 면접관과 협력하며 진행하면 좋다.&lt;/p>
+&lt;ul>
+&lt;li>설계안에 대한 최초 청사진을 제시하고 의견을 구하라.
+&lt;ul>
+&lt;li>면접관을 마치 팀원인 것 처럼&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>화이트보드나 종이에 핵심 컴포넌트를 포함하는 다이어그램을 그려라.
+&lt;ul>
+&lt;li>클라이언트, API, 웹 서버, 데이터 저장소, 캐시, CDN, 메시지 큐 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>최초 설계안이 시스템 규모에 관계된 제약사항들을 만족하는지를 개략적으로 계산한다.
+&lt;ul>
+&lt;li>계산 과정은 소리 내어 설명한다.&lt;/li>
+&lt;li>개략적 추정이 필요한지는 면접관에게 미리 물어본다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>가능하다면 시스템의 구체적 사용 사례도 몇 가지 살펴보면 고려하지 못한 에지 케이스를 발견하는 데도 도움이 될 것이다.&lt;/p>
+&lt;p>&lt;strong>뉴스 피드 시스템 개략적 설계 예시&lt;/strong>&lt;/p>
+&lt;p>개략적으로 보면 &lt;strong>피드 발행&lt;/strong>, &lt;strong>피드 생성&lt;/strong> 두 가지 처리 플로로 나눠 생각해 볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>피드 발행
+&lt;ul>
+&lt;li>사용자가 포스트를 올리면 관련된 데이터가 캐시/데이터베이스에 기록되고, 해당 사용자의 친구 뉴스 피드에 뜨게 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>피드 생성
+&lt;ul>
+&lt;li>사용자의 뉴스 피드는 해당 사용자 친구들의 포스트를 시간 역순으로 정렬하여 만든다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/img.png"
+width="423"
+height="690"
+srcset="https://codemario318.github.io/post/system-design-interview/3/img_hu039827f8027f9a00b1371e9a94d12627_101123_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/3/img_hu039827f8027f9a00b1371e9a94d12627_101123_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="피드 발행"
+class="gallery-image"
+data-flex-grow="61"
+data-flex-basis="147px"
+>
+&lt;img src="https://codemario318.github.io/post/system-design-interview/3/img_1.png"
+width="370"
+height="589"
+srcset="https://codemario318.github.io/post/system-design-interview/3/img_1_hu4e33947bf61ce6fe45cda92442fd57d4_67943_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/3/img_1_hu4e33947bf61ce6fe45cda92442fd57d4_67943_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="피드 생성"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="150px"
+>&lt;/p>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;p>이 단계로 왔다면 아래 목표는 달성한 상태일 것이다.&lt;/p>
+&lt;ul>
+&lt;li>시스템에서 전반적으로 달성해야 할 목표와 가능 범위 확인&lt;/li>
+&lt;li>전체 설계의 개략적 청사진 마련&lt;/li>
+&lt;li>해당 청사진에 대한 면접관의 의견 청취&lt;/li>
+&lt;li>상세 설계에서 집중해야 할 영역들 확인&lt;/li>
+&lt;/ul>
+&lt;p>이 단계에서는 면접관이 설계 대상 컴포넌트 사이의 우선순위를 정한다.&lt;/p>
+&lt;p>대부분의 경우 면접관은 &lt;strong>특정 시스템 컴포넌트들의 세부사항을 깊이 있게 설명하는 것을 보길 원한다&lt;/strong>.&lt;/p>
+&lt;ul>
+&lt;li>단축 URL 생성기
+&lt;ul>
+&lt;li>해시 함수의 설계의 구체적인 내용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>채팅 시스템
+&lt;ul>
+&lt;li>어떻게하면 지연시간을 줄이고 사용자의 온/오프라인 상태를 표시할 것인지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>위와 같은 경우 너무 과도하거나 불필요한 세부 사항을 설명하지 않는 것이 바람직하다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/img_2.png"
+width="641"
+height="725"
+srcset="https://codemario318.github.io/post/system-design-interview/3/img_2_hu6034e7d7aae53ae4575eee71d3d0d535_164348_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/3/img_2_hu6034e7d7aae53ae4575eee71d3d0d535_164348_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="피드 발행 상세"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="212px"
+>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/img_3.png"
+width="563"
+height="566"
+srcset="https://codemario318.github.io/post/system-design-interview/3/img_3_hu740b51119dfe66fb11a0bcd33bce86e0_132618_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/3/img_3_hu740b51119dfe66fb11a0bcd33bce86e0_132618_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="뉴스 피드 가져오기 상세"
+class="gallery-image"
+data-flex-grow="99"
+data-flex-basis="238px"
+>&lt;/p>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>마지막 단계에서 면접관은 설계 결과물에 관련된 몇 가지 후속 질문을 던질 수도 있고 스스로 추가 논의를 진행하도록 할 수도 있다.&lt;/p>
+&lt;p>그럴때는 아래와 같은 내용들을 언급해보면 좋은 방향으로 마무리 할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>면접관이 시스템 병목구간, 혹은 좀 더 개선 가능한 지점을 찾아내라 주문할 때
+&lt;ul>
+&lt;li>완벽하다거나 개선할 부분이 없다는 답은 X&lt;/li>
+&lt;li>비판적 사고 능력을 보이고, 마지막으로 좋은 인상을 남길 기회이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>만든 설계를 한번 다시 요약해준다.
+&lt;ul>
+&lt;li>여러 해결책을 제시한 경우에는 특히 중요하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>오류가 발생하면 무슨 일이 생기는지 따져본다.&lt;/li>
+&lt;li>운영 이슈도 논의할 가치가 충분하다.
+&lt;ul>
+&lt;li>메트릭 수집, 모니터링, 로그, 배포 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>미래에 닥칠 규모 확장 요구에 어떻게 대처할 것인가?&lt;/li>
+&lt;li>필요하지만 다루지 못했던 세부적 개선사항들을 제안할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>해야할 것&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>질문을 통해 확인하라. 스스로 내린 가정이 옳다 믿고 진행하지 말라.&lt;/li>
+&lt;li>문제의 요구사항을 이해하라.&lt;/li>
+&lt;li>정답이나 최선의 답안 같은 것은 없다는 점을 명심하라.&lt;/li>
+&lt;li>면접관이 사고 흐름을 이해할 수 있도록 하라. 면접관과 소통하라.&lt;/li>
+&lt;li>가능하다면 여러 해법을 함께 제시하라.&lt;/li>
+&lt;li>개략적 설계에 면접관이 동의하면, 가장 중요한 컴포넌트부터 컴포넌트의 세부사항을 설명하기 시작하라.&lt;/li>
+&lt;li>면접관의 아이디어를 이끌어내라. 좋은 면접관은 같은 팀원처럼 협력한다.&lt;/li>
+&lt;li>포기하지 말라.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>하지 말아야 할 것&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>전형적인 면접 문제들에도 대비하지 않은 상태에서 면접장에 가지 말라.&lt;/li>
+&lt;li>요구사항이나 가정들을 분명히 하지 않은 상태에서 설계를 제시하지 말라.&lt;/li>
+&lt;li>처음부터 특정 컴포넌트의 세부사항을 너무 깊이 설명하지 말라. 개략적 설계를 마친 뒤 서부사항으로 나아가라.&lt;/li>
+&lt;li>힌트를 청하기를 주저하지 말라.&lt;/li>
+&lt;li>소통을 주저하지 말라. 침묵 속에 설계를 진행하지 말라.&lt;/li>
+&lt;li>설계안을 내놓는 순간 면접이 끝난다고 생각하지 말라.&lt;/li>
+&lt;li>의견을 일찍, 그리고 자주 구하라.&lt;/li>
+&lt;/ul>
+&lt;h2 id="시간-배분">시간 배분&lt;/h2>
+&lt;p>시스템 설계 면접은 보통 매우 광범위한 영역을 다루기 때문에 시간이 충분하지 않을 수 있어 시관 관리를 잘 하는 것이 중요하다.&lt;/p>
+&lt;p>대략적인 시간 분배는 아래와 같으며, 문제의 범위나 면접관의 요구사항에 따라 달라질 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>문제 이해 및 설계 범위 확정: 3 ~ 10분&lt;/li>
+&lt;li>개략적 설계안 제시 및 도으이 구하기: 10 ~ 15분&lt;/li>
+&lt;li>상세 설계: 10 ~ 25분&lt;/li>
+&lt;li>마무리: 3 ~ 5분&lt;/li>
+&lt;/ul></description></item><item><title>2. 개략적인 규모 추정</title><link>https://codemario318.github.io/post/system-design-interview/2/</link><pubDate>Tue, 30 Apr 2024 22:03:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/2/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/2/cover.png" alt="Featured image of post 2. 개략적인 규모 추정" />&lt;p>개략적인 규모 추정(back-of-the-envelope estimation)은 보편적으로 통용되는 성능 수치상에서 사고 실험(thought experiments)을 행하여 추정치를 계산하는 행위로서, 어떤 설계가 요구사항에 부합할 것인지 보기 위한 것이다.&lt;/p>
 &lt;h2 id="2의-제곱수">2의 제곱수&lt;/h2>
 &lt;p>분산 시스템에서 다루는 데이터 양은 매우 커질 수 있으나 계산법은 기본을 크게 벗어나지 않는다.&lt;/p>
 &lt;p>제데로 된 계산 결과를 얻으려면 데이터 볼륨의 단위를 2의 제곱수로 표현하면 어떻게 되는지를 알아야한다.&lt;/p>
