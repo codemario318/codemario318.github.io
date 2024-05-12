@@ -224,7 +224,7 @@ data-flex-basis="238px"
 &lt;p>대략적인 시간 분배는 아래와 같으며, 문제의 범위나 면접관의 요구사항에 따라 달라질 수 있다.&lt;/p>
 &lt;ul>
 &lt;li>문제 이해 및 설계 범위 확정: 3 ~ 10분&lt;/li>
-&lt;li>개략적 설계안 제시 및 도으이 구하기: 10 ~ 15분&lt;/li>
+&lt;li>개략적 설계안 제시 및 동의 구하기: 10 ~ 15분&lt;/li>
 &lt;li>상세 설계: 10 ~ 25분&lt;/li>
 &lt;li>마무리: 3 ~ 5분&lt;/li>
 &lt;/ul></description></item><item><title>2. 개략적인 규모 추정</title><link>https://codemario318.github.io/post/system-design-interview/2/</link><pubDate>Tue, 30 Apr 2024 22:03:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/2/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/2/cover.png" alt="Featured image of post 2. 개략적인 규모 추정" />&lt;p>개략적인 규모 추정(back-of-the-envelope estimation)은 보편적으로 통용되는 성능 수치상에서 사고 실험(thought experiments)을 행하여 추정치를 계산하는 행위로서, 어떤 설계가 요구사항에 부합할 것인지 보기 위한 것이다.&lt;/p>
