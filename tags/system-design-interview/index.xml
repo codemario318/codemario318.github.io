@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 07 May 2024 16:01:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 시스템 설계 먼접 공략법</title><link>https://codemario318.github.io/post/system-design-interview/3/</link><pubDate>Tue, 07 May 2024 16:01:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/cover.png" alt="Featured image of post 3. 시스템 설계 먼접 공략법" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 07 May 2024 16:01:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 시스템 설계 면접 공략법</title><link>https://codemario318.github.io/post/system-design-interview/3/</link><pubDate>Tue, 07 May 2024 16:01:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/cover.png" alt="Featured image of post 3. 시스템 설계 면접 공략법" />&lt;blockquote>
 &lt;p>&lt;strong>시스템 설계 면접&lt;/strong>은 두 명의 동료가 모호한 문제를 풀기 위해 협력하여 그 해결책을 찾아내는 과정에 대한 시뮬레이션이다.&lt;/p>
 &lt;/blockquote>
 &lt;p>시스템 설계 먼접은 특정 제품을 설계해보라는 식으로 막연하고, 넓은 범위로 인해 당황스러울 때가 많다.&lt;/p>
 &lt;p>하지만 실세계에서 많은 엔지니어들이 참여하여 개발한 제품은 극도로 복잡하기 때문에 한 시간 안에 설계하는 것은 불가능 할 뿐더러, 완벽한 설계를 요구하지 않는다.&lt;/p>
 &lt;ul>
-&lt;li>시스템 설계 면접은 정해진 결말, 정답도 없다.
+&lt;li>시스템 설계 면접은 정해진 결말, 정답이 없다.
 &lt;ul>
 &lt;li>최종적으로 도출될 설계안은 설계 과정에서 들인 노력에 비하면 그다지 중요하지 않다.&lt;/li>
 &lt;/ul>
