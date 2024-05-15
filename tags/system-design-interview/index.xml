@@ -1,4 +1,556 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 07 May 2024 16:01:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 시스템 설계 면접 공략법</title><link>https://codemario318.github.io/post/system-design-interview/3/</link><pubDate>Tue, 07 May 2024 16:01:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/cover.png" alt="Featured image of post 3. 시스템 설계 면접 공략법" />&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 15 May 2024 12:22:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>4. 처리율 제한 장치의 설계</title><link>https://codemario318.github.io/post/system-design-interview/4/</link><pubDate>Wed, 15 May 2024 12:22:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/4/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/cover.png" alt="Featured image of post 4. 처리율 제한 장치의 설계" />&lt;h2 id="처리율-제한-장치rate-limiter">처리율 제한 장치(Rate limiter)?&lt;/h2>
+&lt;p>클라이언트 또는 서비스가 보내는 트래픽의 처리율을 제어하기 위한 장치이다.&lt;/p>
+&lt;p>HTTP의 경우 &lt;strong>특정 기간 내에 전송되는 클라이언트의 요청 횟수를 제한&lt;/strong>한다.&lt;/p>
+&lt;ul>
+&lt;li>사용자는 초당 2회 이상 새 글을 올릴 수 없다.&lt;/li>
+&lt;li>같은 IP 주소로는 하루 10개 이상의 계정을 생성할 수 없다.&lt;/li>
+&lt;li>같은 디바이스로는 주당 5회 이상 리워드(reward)를 요청할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;p>대형 IT 기업들이 공개한 거의 대부분의 API는 어떤 형태로든 처리율 제한 장치를 갖고 있으며, 아래와 같은 장점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>DoS(Denial of Service) 공격에 의한 자원 고갈을 방지할 수 있다.&lt;/li>
+&lt;li>자원 절약
+&lt;ul>
+&lt;li>추가 요청에 대한 처리율을 제한하면 서버를 많이 두지 않아도된다.&lt;/li>
+&lt;li>우선순위가 높은 API에 더 많은 자원을 할당할 수 있다.&lt;/li>
+&lt;li>3rd 파티 API를 사용하는 경우 요청 횟수만큼 과금이 된다면, 사용자가 처리율을 제한하여 비용을 절약할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>서버 과부하 방지
+&lt;ul>
+&lt;li>봇에서 오는 트래픽이나 사용자의 잘못된 이용 패턴으로 유발된 트래픽을 걸러내는 데 처리율 제한 장치를 활용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>처리율 제한 장치를 구현하는 데는 여러 가지 알고리즘을 고려할 수 있으며, 각각 고유한 장단점을 가지고 있다.&lt;/p>
+&lt;p>따라서 면접관과 서통하며 어떤 제한 장치를 구현해야 하는 지 분명하게 파악해야한다.&lt;/p>
+&lt;ul>
+&lt;li>Q. 클라이언트 측 제한장치? 서버 측 제한장치?
+&lt;ul>
+&lt;li>A. 서버측 API를 위한 제한 장치&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 어떠한 기준으로? IP 주소 or 사용자 ID 등
+&lt;ul>
+&lt;li>A. 다양한 형태의 제어 규칙을 정의할 수 있도록 하는 유연한 시스템&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 시스템의 규모는? 스타트업 or 대기업
+&lt;ul>
+&lt;li>A. 대규모 요청 처리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 분산 환경에서 동작해야 하는가?
+&lt;ul>
+&lt;li>A. 예&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 처리율 제한 장치가 독립적인 서비스인가? 코드에 포함할 수 있는가?
+&lt;ul>
+&lt;li>A. 알아서&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 처리율 제한에 막힌 상황에 사용자에게 알려하하는가?
+&lt;ul>
+&lt;li>A. 예&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="요구사항">요구사항&lt;/h3>
+&lt;p>질문을 통해 파악한 시스템의 요구사항은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>설정된 처리율을 초과하는 요청은 정확하게 제한&lt;/li>
+&lt;li>낮은 응답시간
+&lt;ul>
+&lt;li>HTTP 응답시간에 나쁜 영향을 주어서는 곤란하다. (대규모 처리 허용 등)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가능한 적은 메모리&lt;/li>
+&lt;li>분산형 처리율 제한
+&lt;ul>
+&lt;li>하나의 처리율 제한 장치를 여러 서버나 프로세스에서 공유할 수 있어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>예외 처리
+&lt;ul>
+&lt;li>요청 제한시 사용자에게 분명하게 보여주어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>높은 결함 감내성
+&lt;ul>
+&lt;li>제한 장치에 장애가 생기더라도 전체 시스템에 영향을 주어서는 안된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계-제시-및-동의-구하기">2단계 개략적 설계 제시 및 동의 구하기&lt;/h2>
+&lt;p>기본적인 &lt;strong>클라이언트-서버 통신 모델&lt;/strong>을 사용하여 문제를 간단하게 만든다.&lt;/p>
+&lt;h3 id="어디에-둘-것인가">어디에 둘 것인가?&lt;/h3>
+&lt;p>기본적인 &lt;strong>클라이언트-서버 통신 모델&lt;/strong>에서는 처리율 제한 장치는 클라이언트, 서버 측에 둘 수 있다.&lt;/p>
+&lt;p>&lt;strong>클라이언트&lt;/strong>&lt;/p>
+&lt;p>클라이언트 요청은 쉽게 위변조가 가능하므로 처리율 제한을 안정적으로 걸 수 있는 장소가 아니다.&lt;/p>
+&lt;ul>
+&lt;li>모든 클라이언트의 구현을 통제하는 것도 어려울 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>서버&lt;/strong>&lt;/p>
+&lt;p>큰 틀에서 처리율 제한 장치를 API 서버와 함께 두는 방식, 미들웨어로 만드는 방식 2가지를 고려할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img.png"
+width="560"
+height="141"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_hu95f96bf133f868fe94b526818cbf6220_35669_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_hu95f96bf133f868fe94b526818cbf6220_35669_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="API 서버에 두는 방식"
+class="gallery-image"
+data-flex-grow="397"
+data-flex-basis="953px"
+>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_2.png"
+width="549"
+height="218"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_2_hu46848255408feea17de861814d1271d1_42946_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_2_hu46848255408feea17de861814d1271d1_42946_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="미들웨어 동작 예시"
+class="gallery-image"
+data-flex-grow="251"
+data-flex-basis="604px"
+>&lt;/p>
+&lt;p>처리율 제한 장치를 미들웨어로 만들어 API 서버로 가는 요청을 통제하는 방식은 제한된 요청을 API 서버로 보내지 않고, HTTP 상태코드 429를 반환한다.&lt;/p>
+&lt;p>마이크로서비스의 경우 보통 API 게이트웨이라고 불리는 컴포넌트에 구현된다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>API 게이트웨이?&lt;/strong>&lt;br>
+처리율 제한, SSL 종단 사용자 인증, IP 허용 목록 관리등을 지원하는 완전 위탁 관리형 서비스&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>처리율 제한 장치는 회사의 현재 기술 스택이나 엔지니어링 인력, 우선순위, 목표에 따라 어디에 둘 지 결정한다.&lt;/p>
+&lt;ul>
+&lt;li>프로그래밍 언어, 캐시 서비스 등 현재 사용하고 있는 기술 스택을 점검한다.&lt;/li>
+&lt;li>사업에 필요에 맞는 처리율 제한 알고리즘을 찾는다.
+&lt;ul>
+&lt;li>직접 구현시 자유롭게 선택 가능하지만, 서드파티 게이트웨이를 사용하기로 했다면 제한될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>설계가 마이크로서비스에 기반하고 있다면, 사용자 인증이나 IP 화이트리스트 관리 등을 처리하기 위해 API 게이트웨이를 이미 포함했다면 처리율 제한 기능 또한 포함시켜야 할 수 있다.&lt;/li>
+&lt;li>직접 만드는 데는 시간이 들기 때문에 인력이 충분하지 않다면 상용 API 게이트웨이를 쓰는 것이 바람직하다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="처리율-제한-알고리즘">처리율 제한 알고리즘&lt;/h3>
+&lt;p>처리율 제한을 실현하는 알고리즘은 여러가지이며, 각기 다른 장단점을 가지고 있다.&lt;/p>
+&lt;ul>
+&lt;li>토큰 버킷, 누출 버킷, 고정 윈도 카운터, 이동 윈도 로그, 이동 윈도 카운터 등&lt;/li>
+&lt;/ul>
+&lt;h4 id="토큰-버킷-알고리즘">토큰 버킷 알고리즘&lt;/h4>
+&lt;p>토큰 버킷 알고리즘은 처리율 제한에 폭 넓게 이용되고 있다.&lt;/p>
+&lt;p>간단하고, 알고리즘에 대한 이해도가 높아 인터넷 기업들이 보편적으로 사용하고 있다.&lt;/p>
+&lt;ul>
+&lt;li>아마존, 스트라이프 등&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_4.png"
+width="529"
+height="492"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_4_hud272ad2e7ce6d0192e191aa981cc5e7d_63798_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_4_hud272ad2e7ce6d0192e191aa981cc5e7d_63798_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="258px"
+>&lt;/p>
+&lt;p>&lt;strong>토큰 버킷&lt;/strong>은 지정된 용량을 갖는 컨테이너로, 사전 설정된 양의 토큰이 주기적으로 채워진다.&lt;/p>
+&lt;p>토큰이 꽉 찬 버킷에는 더 이상의 토큰은 추가되지 않고 버려진다.&lt;/p>
+&lt;ul>
+&lt;li>각 요청은 처리될 때마다 하나의 토큰을 사용한다.&lt;/li>
+&lt;li>요청이 도착하면 버킷에 충분한 토큰이 있는지 검사하게 된다.&lt;/li>
+&lt;li>토큰이 있는 경우 버킷에서 토큰 하나를 꺼낸 후 요청을 시스템에 전달한다.&lt;/li>
+&lt;li>없는 경우 버려진다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_5.png"
+width="469"
+height="547"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_5_hu470c561bcff0a77f741d71f0c2c45165_78035_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_5_hu470c561bcff0a77f741d71f0c2c45165_78035_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="버킷 크기 = 4, 공급률 = 분당 4"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;p>토큰 버킷 알고리즘은 2가지 인자를 받는다.&lt;/p>
+&lt;ul>
+&lt;li>버킷 크기: 버킷에 담을 수 있는 토큰의 최대 개수&lt;/li>
+&lt;li>토큰 공급률: 초당 몇개의 토큰이 버킷에 공급되는가&lt;/li>
+&lt;/ul>
+&lt;p>적절한 버킷의 개수는 공급 제한 규칙에 따라 결정된다.&lt;/p>
+&lt;ul>
+&lt;li>통상적으로, API 엔드포인트마다 벌도의 버킷을 둔다.
+&lt;ul>
+&lt;li>포스팅 1번, 친구 150명 추가 가능, 좋아요 5번 이라면 사용자마다 3개 필요&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>IP 주소별 처리율 제한 필요시 IP 주소마다 버킷을 하나씩 할당해야 한다.&lt;/li>
+&lt;li>시스템의 처리율을 초당 10,000개 요청으로 제한하고 싶다면, 모든 요청이 하나의 버킷을 공유하도록 한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>구현이 쉽다.&lt;/li>
+&lt;li>메모리 사용 측면에서도 효율적이다.&lt;/li>
+&lt;li>짧은 시간에 집중되는 트래픽도 처리 가능하다.
+&lt;ul>
+&lt;li>버킷에 남은 토큰이 있다면 요청은 전달된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>파라미터를 적절하게 튜닝하는 것이 까다롭다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="누출-버킷-알고리즘">누출 버킷 알고리즘&lt;/h4>
+&lt;p>누출 버킷 알고리즘은 토큰 버킷 알고리즘과 비슷하지만 &lt;strong>요청 처리율이 고정되어 있다는 점&lt;/strong>이 다르다.&lt;/p>
+&lt;p>보통 FIFO 큐로 구현하며 동작 원리는 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>요청이 도착하면 큐가 가득 차 있는지 본다.
+&lt;ul>
+&lt;li>빈자리가 있다면 큐에 요청을 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>큐가 가득 차 있는 경우에는 새 요청을 버린다.&lt;/li>
+&lt;li>지정된 시간마다 큐에서 요청을 꺼내어 처리한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_6.png"
+width="599"
+height="221"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_6_hu20c9bad42732607dad0a83639f3502f8_30101_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_6_hu20c9bad42732607dad0a83639f3502f8_30101_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="누출 버킷 알고리즘"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="650px"
+>&lt;/p>
+&lt;p>누출 버킷 알고리즘은 다음의 두 인자를 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>버킷 크기: 처리될 항목들이 보관될 큐의 사이즈&lt;/li>
+&lt;li>처리율: 지정된 시간당 몇 개의 항목을 처리할지 지정하는 값.(보통 초단위)&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>큐의 크기가 제한되어 있어 메모리 사용량 측면에서 효율적이다.&lt;/li>
+&lt;li>고정된 처리율을 가지므로 안정된 출력(Stable outflow rate)이 필요한 경우에 적합하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>단시간에 많은 트래픽이 몰리는 경우 큐에는 오래된 요청들이 쌓이고, 그 요청들을 제때 처리 못하면 최신 요청들은 버려진다.&lt;/li>
+&lt;li>파라미터를 올바르게 튜닝하기 까다로울 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="고정-윈도-카운터-알고리즘">고정 윈도 카운터 알고리즘&lt;/h4>
+&lt;p>고정 윈도 카운터 알고리즘은 다음과 같이 동작한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_7.png"
+width="601"
+height="355"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_7_huacea6638a786d893354d0e089d7abe1d_35784_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_7_huacea6638a786d893354d0e089d7abe1d_35784_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="406px"
+>&lt;/p>
+&lt;ol>
+&lt;li>타임라인을 고정된 간격의 윈도로 나누고, 각 윈도마다 카운터를 붙인다.&lt;/li>
+&lt;li>요청이 접수될 때마다 이 카운터의 값을 1씩 증가시킨다.&lt;/li>
+&lt;li>카운터의 값이 사전에 설정된 임계치에 도달하면 새로운 요청은 새 윈도가 열릴 때 까지 버려진다.&lt;/li>
+&lt;/ol>
+&lt;p>고정 윈도 카운터 알고리즘의 가장 큰 문제는 윈도의 경계 부근에 순간적으로 많은 트래픽이 집중될 경우 윈도에 할당된 양보다 더 많은 요청이 처리될 수 있다는 점이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_8.png"
+width="604"
+height="296"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_8_hu06e9b333628f278fe9f5a17c951f72ed_27698_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_8_hu06e9b333628f278fe9f5a17c951f72ed_27698_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="489px"
+>&lt;/p>
+&lt;p>분당 최대 5개 요청을 허용하는 시스템에서 &lt;code>2:00:00 ~ 2:01:00&lt;/code>, &lt;code>2:01:00 ~ 2:02:00&lt;/code> 윈도우에 각각 5개 요청을 처리하였으나, 윈도우를 30초 옮겨 &lt;code>2:00:30 ~ 2:01:30&lt;/code>를 살펴보면 총 10개의 요청을 처리하게되어 설정된 최대 처리량 5개를 초과하게 된다.&lt;/p>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>메모리 효율이 좋다.&lt;/li>
+&lt;li>이해하기 쉽다.&lt;/li>
+&lt;li>윈도가 닫히는 시점에 카운터를 초기화하는 방식은 특정한 트래픽 패턴을 처리하기에 적합하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>윈도 경계 부근에서 일시적으로 많은 트래픽이 몰려드는 경우, 기대했던 시스템의 처리 한도보다 많은 양의 요청을 처리하게 된다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="이동-윈도-로깅-알고리즘">이동 윈도 로깅 알고리즘&lt;/h4>
+&lt;p>고정 윈도 카운터 알고리즘의 문제를 해결한 방식이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_9.png"
+width="582"
+height="400"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_9_hu98c0a7c61c2865bfd0748184396a4361_43992_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_9_hu98c0a7c61c2865bfd0748184396a4361_43992_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="349px"
+>&lt;/p>
+&lt;ul>
+&lt;li>요청의 타임 스탬프를 추적한다.
+&lt;ul>
+&lt;li>보통 레디스의 정렬 집합 같은 캐시에 보관한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>새 요청이 오면 만료된 타임스탬프는 제거한다.
+&lt;ul>
+&lt;li>타임스탬프 값이 현재 윈도의 시작 지점보다 오래된 타임 스탬프&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>새 요청의 타임스탬프 로그에 추가한다.&lt;/li>
+&lt;li>로그의 크기가 허용치보다 같거나 작으면 요청을 시스템에 전달한다. 아닐경우 처리를 거부한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>어느 순간 윈도를 보더라도, 허용되는 요청의 개수는 시스템의 처리율 한도를 넘기지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>거부된 요청의 타임스탬프도 보관하기 때문에 다량의 메모리를 사용하게된다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="이동-윈도-카운터-알고리즘">이동 윈도 카운터 알고리즘&lt;/h4>
+&lt;p>이동 윈도 카운터 알고리즘은 고정 윈도 카운터 알고리즘과 이동 윈도 로깅 알고리즘을 결합한 것이다.&lt;/p>
+&lt;p>&lt;code>현재 1분간의 요청 수 + 직전 1분간의 요청 수 * 이동 윈도와 직전 1분이 겹치는 비율&lt;/code>을 계산하여 현재 윈도에 몇개의 요청이 왔는지를 구한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_10.png"
+width="581"
+height="343"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_10_hu4227282d9657e7f968e2cd18b876213b_41691_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_10_hu4227282d9657e7f968e2cd18b876213b_41691_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="406px"
+>&lt;/p>
+&lt;p>분당 7개 요청으로 설정되어 있고, 이전 1분동안 5개의 요청이, 그리고 1분 동안 3개의 요청이 왔다면&lt;/p>
+&lt;p>&lt;code>3 + 5 * 70%&lt;/code>를 계산하여 현재 6.5개의 요청이 있다고 계산하고, 분당 7개의 요청보다 적으므로 전달된다.&lt;/p>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>이전 시간대의 평균 처리율에 따라 윈도의 상태를 계산하므로 짧은 시간에 몰리는 트래픽에도 잘 대응한다.&lt;/li>
+&lt;li>메모리 효율이 좋다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>직전 시간대에 도착한 요청이 균등하게 분포되어 있다고 가정한 상태에서 추정치를 계산하기 때문에 다소 느슨하다.
+&lt;ul>
+&lt;li>생각만큼은 심각한 문제는 아니다.&lt;/li>
+&lt;li>클라우드플레어가 실시했던 실험에 따르면 40억 개의 요청 가운데 스템의 실제 상태와 맞지 않게 허용되거나 버려진 요청은 0.003%에 불과하였다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적인-아키텍처">개략적인 아키텍처&lt;/h3>
+&lt;p>처리율 제한 알고리즘은 얼마나 많은 요청이 접수되었는지를 추적할 수 있는 카운터를 추적 대상별로 두고(사용자 or IP or API 엔드포인트) 이 카운터의 값이 어떤 한도를 넘어서면 도착한 요청을 거부하는 것이다.&lt;/p>
+&lt;p>이러한 카운터는 읽기 쓰기 작업이 빈번하고, 빠르게 지워져야 하는 특성으로 인해 빠른데다 시간에 기반한 만료 정책을 지원하는 메모리 캐시가 적절하다.&lt;/p>
+&lt;p>대표적으로 레디스가 많이 활용되며 이에 적합한 &lt;code>INCR&lt;/code>, &lt;code>EXPIRE&lt;/code> 명령을 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>INCR&lt;/code>: 메모리에 저당된 카운터의 값을 1만큼 증가시킨다.&lt;/li>
+&lt;li>&lt;code>EXPIRE&lt;/code>: 카운터에 타임아웃 값을 설정한다. 시간이 지나면 자동 삭제된다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_11.png"
+width="593"
+height="260"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_11_hua0ec6a8fedf59bf7e19688bf87bdb91a_52761_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_11_hua0ec6a8fedf59bf7e19688bf87bdb91a_52761_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적인 아키텍처"
+class="gallery-image"
+data-flex-grow="228"
+data-flex-basis="547px"
+>&lt;/p>
+&lt;ol>
+&lt;li>클라이언트가 처리율 제한 미들웨어에게 요청을 보낸다.&lt;/li>
+&lt;li>처리율 제한 미들웨어는 레디스의 지정 버킷에서 카운터를 가져와 한도에 도달했는지 검사한다.
+&lt;ul>
+&lt;li>한도에 도달했다면 요청은 거부됨&lt;/li>
+&lt;li>한도에 도달하지 않았다면 API로 요청을 전달하고, 카운터의 값을 증가시켜 레디스에 저장한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="상세-설계">상세 설계&lt;/h2>
+&lt;p>개략적 설계만 봐서는 다음과 같은 사항은 알 수가 없다.&lt;/p>
+&lt;ul>
+&lt;li>처리율 제한 규칙은 어떻게 만들어지고 어디에 저장되는가?&lt;/li>
+&lt;li>처리가 제한된 요청들은 어떻게 처리되는가?&lt;/li>
+&lt;/ul>
+&lt;h3 id="처리율-제한-규칙">처리율 제한 규칙&lt;/h3>
+&lt;p>리프트(lyft)는 처리율 제한에 오픈 소스를 사용하고 있는데, 이 컴포넌트를 통해 어떤 처리율 제한 규칙이 사용되고 있는지 살펴볼 수 있다.&lt;/p>
+&lt;p>이러한 규칙들은 보통 설정 파일 형태로 디스크에 저장된다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">domain&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">messaging&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">descriptors&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">key&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">message_type&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">Value&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">marketing&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">rate_limit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">unit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">day&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">requests_per_unit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">5&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>마케팅 메시지의 최대치를 하루 5개로 제한&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">domain&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">auth&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">descriptors&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">key&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">auth_type&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">Value&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">login&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">rate_limit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">unit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">minute&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">requests_per_unit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">5&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>클라이언트가 분당 5회 이상 로그인 할 수 없도록 제한&lt;/li>
+&lt;/ul>
+&lt;h3 id="처리율-한도-초과-트래픽의-처리">처리율 한도 초과 트래픽의 처리&lt;/h3>
+&lt;p>어떤 요청이 한도 제한에 걸리면 HTTP 429 응답을 보내거나, 한도 제한에 걸린 메시지를 나중에 처리하기 위해 큐에 보관할 수도 있다.&lt;/p>
+&lt;p>&lt;strong>처리율 제한 장치가 사용하는 HTTP 헤더&lt;/strong>&lt;/p>
+&lt;p>클라이언트가 요청이 제한에 관련된 정보들을 HTTP 응답 헤더를 확인하면 알 수 있다.&lt;/p>
+&lt;p>처리율 제한 장치는 다음 HTTP 헤더를 클라이언트에 보내 제한에 걸렸음을 알린다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>X-Ratelimit-Remaining&lt;/code>: 윈도 내에 남은 처리 가능 요청 수&lt;/li>
+&lt;li>&lt;code>X-Ratelimit-Limit&lt;/code>: 매 윈도마다 클라이언트가 전송할 수 있는 요청의 수&lt;/li>
+&lt;li>&lt;code>X-Ratelimit-Retry-After&lt;/code>: 한도 제한에 걸리지 않기 위해 몇초 뒤에 요청을 다시 보내야 하는지&lt;/li>
+&lt;/ul>
+&lt;p>사용자가 너무 많은 요청을 보내면 &lt;strong>429 too many requests&lt;/strong>오류를 &lt;code>X-Ratelimit-Retry-After&lt;/code> 헤더와 함께 반환하도록 한다.&lt;/p>
+&lt;h3 id="상세-설계-1">상세 설계&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_12.png"
+width="616"
+height="504"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_12_hue300fb2d822881a8aa53d8fa5a83713d_105530_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_12_hue300fb2d822881a8aa53d8fa5a83713d_105530_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="293px"
+>&lt;/p>
+&lt;ul>
+&lt;li>처리율 제한 규칙은 디스크에 보관한다.
+&lt;ul>
+&lt;li>작업 프로세스는 수시로 규칙을 읽어 캐시에 저장한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>클라이언트가 요청을 서버에 보내면 요청은 먼저 처리율 제한 미들웨어에 도달한다.&lt;/li>
+&lt;li>처리율 제한 미들웨어는 제한 규칙을 캐시에서 가져온다. 아울러 카운터 및 마지막 요청의 타임스탬프를 레디스 캐시에서 가져온다.
+&lt;ul>
+&lt;li>요청이 제한에 걸리지 않은 경우 API 서버로 보낸다.&lt;/li>
+&lt;li>처리율 제한에 걸렸다면 에러를 클라이언트에 보낸다.
+&lt;ul>
+&lt;li>요청은 버리거나 메시지 큐에 보관한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="분산-환경에서의-처리율-제한-장치의-구현">분산 환경에서의 처리율 제한 장치의 구현&lt;/h3>
+&lt;p>여러 대의 서버와 병렬 스레드를 지원하려면 &lt;strong>경쟁 조건&lt;/strong>과 &lt;strong>동기화&lt;/strong> 문제를 고려해야 한다.&lt;/p>
+&lt;h4 id="경쟁-조건">경쟁 조건&lt;/h4>
+&lt;p>처리율 제한 장치는 다음과 같이 동작한다.&lt;/p>
+&lt;ol>
+&lt;li>레디스에서 카운터의 값을 읽는다.&lt;/li>
+&lt;li>카운터의 값이 임계치를 넘는지 본다.&lt;/li>
+&lt;li>넘지 않는다면 레디스에 보관된 카운터 값을 1만큼 증가시킨다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_13.png"
+width="602"
+height="340"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_13_hu25f5b8ce1e5471668532889a2cb0e3bf_33618_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_13_hu25f5b8ce1e5471668532889a2cb0e3bf_33618_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>병행성이 심한 환경에서는 위와 같이 보관될 값이 달라질 수 있는 이슈가 존재한다.&lt;/p>
+&lt;p>이러한 경쟁 조건 문제를 해결하는 가장 널리 알려진 해결책은 **락(Lock)**이지만, 락은 시스템의 성능을 상당히 떨어뜨린다는 문제가 있다.&lt;/p>
+&lt;p>위와 같은 설계의 경우 락 대신 **루아 스크립트(Lua script)**와 **정렬 집합(Sorted set)**이라 불리는 레디스 자료구조를 사용하여 해결할 수 있다.&lt;/p>
+&lt;h4 id="동기화-이슈">동기화 이슈&lt;/h4>
+&lt;p>수백만 사용자를 지원하려면 한 대의 처리율 제한 장치 서버로는 충분하지 않을 수 있어 처리율 제한 장치 서버를 여러 대 두게 되면 동기화가 필요해진다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_14.png"
+width="612"
+height="219"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_14_hud5d811b010ac2a69e5217967669d0f69_74199_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_14_hud5d811b010ac2a69e5217967669d0f69_74199_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="279"
+data-flex-basis="670px"
+>&lt;/p>
+&lt;p>웹은 무상태이므로 클라이언트는 다음 요청을 다른 처리율 제한 장치로 보내게 될 수 있다.&lt;/p>
+&lt;p>이때 동기화를 하지 않는다면 제한 장치 1은 클라이언트 2에 대해서는 아무것도 모르므로 처리율 제한이 올바르게 적용되지 않을 수 있다.&lt;/p>
+&lt;p>이러한 문제를 해결하기 위해 같은 클라이언트로부터의 요청은 항상 같은 처리율 제한 장치로 보내는 &lt;strong>고정 세션&lt;/strong> 방식을 고려할 수 있다.&lt;/p>
+&lt;p>하지만 이러한 방식은 확장 불가능, 뻣뻣하다는 단점을 가진다.&lt;/p>
+&lt;p>따라서 레디스와 같은 중앙 집중형 데이터 저장소를 사용하여 해결하는 것이 좋다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/img_15.png"
+width="559"
+height="252"
+srcset="https://codemario318.github.io/post/system-design-interview/4/img_15_hub3172bc6f37be502955916b9482777c8_60583_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/4/img_15_hub3172bc6f37be502955916b9482777c8_60583_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="532px"
+>&lt;/p>
+&lt;h4 id="성능-최적화">성능 최적화&lt;/h4>
+&lt;p>성능 최적화는 시스템 설계 면접의 단골 주제이며, 지금까지 살펴본 설계는 두 가지 지점에서 개선이 가능하다.&lt;/p>
+&lt;ul>
+&lt;li>여러 데이터센터를 지원하는 문제
+&lt;ul>
+&lt;li>멀리 떨어진 사용자를 지원하기 위해 지연시간이 증가할 수 밖에 없는데, 대부분의 클라우드 서비스 사업자는 세계 곳곳에 에지 서버를 심어두어 성능을 끌어올린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>제한 장치 간에 데이터를 동기화할 때 최종 일관성 모델을 사용하는 것&lt;/li>
+&lt;/ul>
+&lt;h4 id="모니터링">모니터링&lt;/h4>
+&lt;p>처리율 제한 장치를 설치한 이후에는 효과적으로 동작하는지 확인하기 위해 데이터를 모을 필요가 있다.&lt;/p>
+&lt;ul>
+&lt;li>채택된 처리율 제한 알고리즘이 효과적인지 확인하기 위해
+&lt;ul>
+&lt;li>이벤트 같은 이슈로 트래픽이 급증할 때 처리율 제한 장치가 비효율적으로 동작한다면 트래픽 패턴을 고려하여 알고리즘 변경을 고려한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>정의한 처리율 제한 규칙이 효과적인지 확인하기 위해
+&lt;ul>
+&lt;li>제한 규칙이 너무 엄격하다면 많은 유효 요청이 처리되지 못하고 버려질 경우 완화한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>시간이 허락된다면 다음 부분을 언급해보면 좋다.&lt;/p>
+&lt;ul>
+&lt;li>경성 또는 연성 처리율 제한
+&lt;ul>
+&lt;li>경성 처리율 제한: 요청의 개수는 임계치를 절대 넘어설 수 없다.&lt;/li>
+&lt;li>연성 처리율 제한: 요청의 개수는 잠시동안은 임계치를 넘어설 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>다양한 계층에서의 처리율 제한
+&lt;ul>
+&lt;li>애플리케이션 계층 외 다른 계층에서도 처리율 제한이 가능하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>처리율 제한을 회피하는 방법. 클라이언트를 어떻게 설계하는 것이 최선인가?
+&lt;ul>
+&lt;li>클라이언트 측 캐시를 사용하여 API 호출 횟수를 줄인다.&lt;/li>
+&lt;li>임계치를 이해하고, 짧은 시간 동안 너무 많은 메시지를 보내지 않도록 한다.&lt;/li>
+&lt;li>예외나 에러를 처리하는 코드를 도입하여 예외적 상황을 우아하게 복구될 수 있도록 한다.&lt;/li>
+&lt;li>재시도 로직을 구현할 때는 충분한 백오프 시간을 둔다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>3. 시스템 설계 면접 공략법</title><link>https://codemario318.github.io/post/system-design-interview/3/</link><pubDate>Tue, 07 May 2024 16:01:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/3/cover.png" alt="Featured image of post 3. 시스템 설계 면접 공략법" />&lt;blockquote>
 &lt;p>&lt;strong>시스템 설계 면접&lt;/strong>은 두 명의 동료가 모호한 문제를 풀기 위해 협력하여 그 해결책을 찾아내는 과정에 대한 시뮬레이션이다.&lt;/p>
 &lt;/blockquote>
 &lt;p>시스템 설계 먼접은 특정 제품을 설계해보라는 식으로 막연하고, 넓은 범위로 인해 당황스러울 때가 많다.&lt;/p>
