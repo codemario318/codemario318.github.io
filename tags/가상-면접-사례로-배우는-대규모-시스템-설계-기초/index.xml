@@ -1,4 +1,345 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 15 May 2024 12:22:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>4. 처리율 제한 장치의 설계</title><link>https://codemario318.github.io/post/system-design-interview/4/</link><pubDate>Wed, 15 May 2024 12:22:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/4/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/cover.png" alt="Featured image of post 4. 처리율 제한 장치의 설계" />&lt;h2 id="처리율-제한-장치rate-limiter">처리율 제한 장치(Rate limiter)?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 23 May 2024 12:04:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>5. 안정 해시 설계</title><link>https://codemario318.github.io/post/system-design-interview/5/</link><pubDate>Thu, 23 May 2024 12:04:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/5/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/cover.png" alt="Featured image of post 5. 안정 해시 설계" />&lt;p>&lt;strong>수평적 규모 확장성&lt;/strong>을 달성하기 위해서는 요청 또는 데이터를 서버에 &lt;strong>균등하게 나누는 것&lt;/strong>이 중요하다.&lt;/p>
+&lt;p>&lt;strong>안정 해시&lt;/strong>는 이 목표를 달성하기 위해 보편적으로 사용하는 기술이다.&lt;/p>
+&lt;h2 id="해시-키-재배치rehash-문제">해시 키 재배치(rehash) 문제&lt;/h2>
+&lt;p>N개의 캐시 서버가 있을 때, 부하를 균등하게 나누는 보편적 방법은 해시 함수를 사용하는 것이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">serverIndex = hash(key) % N
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>총 4대의 서버를 사용한다면, 주어진 각각의 키에 대해 아래와 같이 계산될 수 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>키&lt;/th>
+&lt;th>해시&lt;/th>
+&lt;th>해시 % 4(서버 인덱스)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>key0&lt;/td>
+&lt;td>18358617&lt;/td>
+&lt;td>1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key1&lt;/td>
+&lt;td>26143584&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key2&lt;/td>
+&lt;td>18131146&lt;/td>
+&lt;td>2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key3&lt;/td>
+&lt;td>35863496&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key4&lt;/td>
+&lt;td>34085809&lt;/td>
+&lt;td>1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key5&lt;/td>
+&lt;td>27581703&lt;/td>
+&lt;td>3&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key6&lt;/td>
+&lt;td>38164978&lt;/td>
+&lt;td>2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key7&lt;/td>
+&lt;td>22530351&lt;/td>
+&lt;td>3&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>키 값을 해싱한 값에 나머지 연산을 하여 저장될 서버가 결정된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img.png"
+width="597"
+height="323"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_hu8ecb82b93ef83548a97acf28dacc70e3_47080_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_hu8ecb82b93ef83548a97acf28dacc70e3_47080_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="443px"
+>&lt;/p>
+&lt;p>이 방식은 &lt;strong>서버 풀의 크기가 고정되어 있을 때&lt;/strong>, &lt;strong>데이터 분포가 균등할 때&lt;/strong> 잘 동작한다.&lt;/p>
+&lt;p>하지만 서버가 추가되거나, 기존 서버가 삭제되면 나머지 연산 결과 값이 변하기 때문에 문제가 발생한다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>키&lt;/th>
+&lt;th>해시&lt;/th>
+&lt;th>해시 % 3(서버 인덱스)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>key0&lt;/td>
+&lt;td>18358617&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key1&lt;/td>
+&lt;td>26143584&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key2&lt;/td>
+&lt;td>18131146&lt;/td>
+&lt;td>1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key3&lt;/td>
+&lt;td>35863496&lt;/td>
+&lt;td>2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key4&lt;/td>
+&lt;td>34085809&lt;/td>
+&lt;td>1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key5&lt;/td>
+&lt;td>27581703&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key6&lt;/td>
+&lt;td>38164978&lt;/td>
+&lt;td>1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>key7&lt;/td>
+&lt;td>22530351&lt;/td>
+&lt;td>0&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>따라서 아래와 같은 형태로 키의 분포가 바뀐다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_1.png"
+width="595"
+height="375"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_1_hu221148814a934c0ed66cfef734ebb8e4_56907_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_1_hu221148814a934c0ed66cfef734ebb8e4_56907_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;p>장애가 발생한 1번 서버에 보관되어 있는 키 뿐만 아닌 대부분의 키가 재분배되어, 대부분 캐시 클라이언트가 데이터가 없는 서버에 접속하게된다.&lt;/p>
+&lt;p>이로 인해 대규모 캐시 미스가 발생하게되는데, &lt;strong>안정 해시&lt;/strong>는 이러한 문제를 효과적으로 해결하는 방식이다.&lt;/p>
+&lt;h2 id="안정-해시">안정 해시&lt;/h2>
+&lt;p>안정 해시는 &lt;strong>해시 테이블 크기가 조정될 때 평균적으로 &lt;code>k/n&lt;/code>개의 키만 재비치하는 해시 기술&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>k&lt;/code>: 키의 개수&lt;/li>
+&lt;li>&lt;code>n&lt;/code>: 슬롯의 개수&lt;/li>
+&lt;/ul>
+&lt;p>이와는 달리 대부분의 전통적인 해시 테이블은 슬롯의 수가 바뀌면 거의 대부분 키를 재배치한다.&lt;/p>
+&lt;h3 id="해시-공간과-해시-링">해시 공간과 해시 링&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>SHA-1&lt;/strong> 해시함수를 사용하며, 출력 값의 범위는 &lt;code>x0, x1 ... xn&lt;/code>이라고 가정한다.&lt;/li>
+&lt;li>&lt;strong>SHA-1&lt;/strong>의 해시 공간(hash space) 범위는 &lt;strong>0 부터 &lt;code>2^160 - 1&lt;/code>&lt;/strong> 까지라고 알려져 있다.&lt;/li>
+&lt;/ul>
+&lt;p>따라서 &lt;code>x0 = 0&lt;/code>, &lt;code>xn -1 = 2^160 - 1&lt;/code>이며, 두 수 사이의 값을 갖게 된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_2.png"
+width="239"
+height="284"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_2_huf4d0b3acc8d8378f9f6d7202b468ee24_14360_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_2_huf4d0b3acc8d8378f9f6d7202b468ee24_14360_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="84"
+data-flex-basis="201px"
+>&lt;/p>
+&lt;p>이 해시 공간의 양쪽을 연결하변 해시 링이 만들어진다.&lt;/p>
+&lt;h3 id="해시-서버">해시 서버&lt;/h3>
+&lt;p>해시 함수 &lt;code>f&lt;/code>를 사용하면 서버(IP, 이름 등)를 링 위의 어딘가에 대응시킬 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_3.png"
+width="607"
+height="421"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_3_hu0bc48cf4515b95e87de880bf1aab9c60_55336_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_3_hu0bc48cf4515b95e87de880bf1aab9c60_55336_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>&lt;/p>
+&lt;h3 id="해시-키">해시 키&lt;/h3>
+&lt;blockquote>
+&lt;p>안정 해시에서 사용되는 해시 함수는 전통적인 해시 키 방식에서 언급된 방식과 다르며, 만들어질 수 있는 모든 해시 공간 &lt;code>x0 ... xn&lt;/code>을 연결한 형태이므로 나머지 연산을 사용하지 않는다.&lt;/p>
+&lt;/blockquote>
+&lt;p>캐시할 키 또한 서버와 함께 해시 링 위의 어느 지점에 배치할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_4.png"
+width="606"
+height="390"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_4_hu2fcefd9766a218d8cface53baa2bca15_61260_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_4_hu2fcefd9766a218d8cface53baa2bca15_61260_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;h3 id="서버-조회">서버 조회&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_5.png"
+width="606"
+height="390"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_5_hu2fcefd9766a218d8cface53baa2bca15_61260_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_5_hu2fcefd9766a218d8cface53baa2bca15_61260_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>어떤 키가 저장되는 서버는 &lt;strong>해당 키의 위치로부터 시계 방향으로 링을 탐색해 나가면서 만나는 첫번 째 서버&lt;/strong>이다.&lt;/p>
+&lt;p>따라서 &lt;strong>k0&lt;/strong>는 &lt;strong>s0&lt;/strong> 에 저장된다.&lt;/p>
+&lt;h3 id="서버-추가">서버 추가&lt;/h3>
+&lt;p>키가 저장되는 서버가 키의 위치로부터 시계 방향으로 링을 돌면서 만나는 첫 서버이므로, 서버를 추가하더라도 키 가운데 일부만 재배치하면 된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_6.png"
+width="615"
+height="465"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_6_huc8545933ab2d8774b07636da6ebf7ea2_77279_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_6_huc8545933ab2d8774b07636da6ebf7ea2_77279_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="132"
+data-flex-basis="317px"
+>&lt;/p>
+&lt;p>위 그림처럼 s4가 추가되면, k0만 재배치하면 되며, 나머지 키들은 같은 서버에 남게된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>k0&lt;/strong>가 만나는 첫 서버가 &lt;strong>s4&lt;/strong>로 바뀌기 때문&lt;/li>
+&lt;/ul>
+&lt;h3 id="서버-제거">서버 제거&lt;/h3>
+&lt;p>마찬가지로 한 서버가 제거되면 &lt;strong>키 일부만 재배치&lt;/strong>된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_7.png"
+width="609"
+height="450"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_7_hu76c16055e4220cf0e1509508dbdc7e60_68728_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_7_hu76c16055e4220cf0e1509508dbdc7e60_68728_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>s1&lt;/strong>이 삭제되었을 때 &lt;strong>k1&lt;/strong>의 첫 서버만 &lt;strong>s2&lt;/strong>로 바뀌므로 &lt;strong>k1&lt;/strong>만 &lt;strong>s2&lt;/strong>로 재배치된다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="기존-구현법의-두-가지-문제">기존 구현법의 두 가지 문제&lt;/h3>
+&lt;p>안정 해시 알고리즘은 MIT에서 처음 제안되었는데, 기본 절차는 아래와 같다.&lt;/p>
+&lt;ol>
+&lt;li>서버와 키를 &lt;strong>균등 분포 해시 함수&lt;/strong>를 사용해 해시 링에 배치한다.&lt;/li>
+&lt;li>키의 위치에서 링을 시계방향으로 탐색하다 만나는 최초의 서버가 키가 저장될 서버이다.&lt;/li>
+&lt;/ol>
+&lt;p>안정 해시는 근본적으로 최소한의 추가/삭제에 대해 최소한의 재배치를 고려한다. 따라서 이러한 방식에는 두 가지 문제가 발생한다.&lt;/p>
+&lt;p>&lt;strong>파티션 크기 문제&lt;/strong>&lt;/p>
+&lt;p>서버가 추가되거나 삭제되는 상황을 감안하면 사용하더라도 파티션의 크기를 균등하게 유지하는 게 불가능하다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_8.png"
+width="610"
+height="371"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_8_hufb05e65c37497f753e3a366dbfe6320e_67873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_8_hufb05e65c37497f753e3a366dbfe6320e_67873_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="394px"
+>&lt;/p>
+&lt;ul>
+&lt;li>파티션의 크기는 시계 방향으로 제일 가까운 서버 사이와의 거리만큼의 해시 공간으로, 서버의 해시 공간이 균등하지 않다.
+&lt;ul>
+&lt;li>추가 삭제될 때 시계 방향으로 제일 가까운 서버에 키들이 집중된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>키의 균등 분포 문제&lt;/strong>&lt;/p>
+&lt;p>균등 분포 해시 함수는 충돌을 최소화하며 입력 키들이 해시 공간 전체에 고르게 분포되어 특정 영역에 물리지 않도록 구현되지만 완전하지는 않다.&lt;/p>
+&lt;ul>
+&lt;li>데이터의 비균등한 본질:
+&lt;ul>
+&lt;li>실제 데이터는 해시 함수의 이상적인 균등 분포를 따르지 않을 수 있다.&lt;/li>
+&lt;li>특정 패턴이나 값들이 특정 해시 영역에 몰리는 경우가 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>해시 함수의 한계:
+&lt;ul>
+&lt;li>모든 해시 함수는 완벽한 균등 분포를 보장할 수 없다.&lt;/li>
+&lt;li>특히 입력 키의 분포가 고르지 않을 경우, 해시 값의 분포도 고르지 않을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_9.png"
+width="611"
+height="409"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_9_hu5257857a45f5f8de50581f3a0c6d2841_61763_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_9_hu5257857a45f5f8de50581f3a0c6d2841_61763_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="358px"
+>&lt;/p>
+&lt;p>따라서 키의 균등 분포가 매우 달성하기 어려워 위와 같은 상황이 발생하게된다.&lt;/p>
+&lt;p>&lt;strong>+ 실제 서버의 처리 능력 차이&lt;/strong>&lt;/p>
+&lt;p>노드(서버)마다 처리 능력이나 저장 용량이 다를 경우, 파티션 크기의 균등성이 실제 부하의 균등성을 의미하지 않을 수 있다.&lt;/p>
+&lt;h3 id="가상-노드">가상 노드&lt;/h3>
+&lt;p>가상 노드는 &lt;strong>실제 노드 또는 서버를 가리키는 노드&lt;/strong>로서 하나의 서버는 링 위에 여러 개의 가상 노드를 가질 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_10.png"
+width="603"
+height="458"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_10_hua3bd50f3317f65ef075362e2b74282e1_85776_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_10_hua3bd50f3317f65ef075362e2b74282e1_85776_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+>&lt;/p>
+&lt;p>서버들의 비슷한 해시 공간을 가질 수 있도록 하는 기법으로 해시 링 위에 실제 서버를 가르키는 가상 노드들을 분포시킨 후 가상 노드에 할당되는 해시 영역을 가상 노드가 가르키는 서버가 처리하도록 한다.&lt;/p>
+&lt;ul>
+&lt;li>따라서 각 서버는 하나가 아닌 여러 개의 파티션을 관리해야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>가상 노드의 개수를 늘리면 표준 편차가 작아져 데이터가 고르게 분포되므로, 키위 분포는 점점 더 균등해지지만&lt;/p>
+&lt;p>가상 노드 데이터를 저장할 공간이 더 많이 필요해지므로, 시스템 요구사항에 맞도록 가상 노드 개수를 적절히 조정하는 트레이드오프가 필요하다.&lt;/p>
+&lt;h3 id="재배치할-키-결정">재배치할 키 결정&lt;/h3>
+&lt;p>서버가 추가되거나 제거되면 데이터의 일부는 재배치해야 한다.&lt;/p>
+&lt;p>&lt;strong>서버가 추가되었을 때&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>s4&lt;/strong>가 추가되었다고 가정하면, 영향을 받는 위는 &lt;strong>s4&lt;/strong> 부터 그 반시계 방향에 있는 &lt;strong>s3&lt;/strong> 까지이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_11.png"
+width="611"
+height="463"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_11_hu56d8da2926a0ef9a8f4dcf5986502707_77091_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_11_hu56d8da2926a0ef9a8f4dcf5986502707_77091_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>따라서 &lt;strong>s3&lt;/strong> 부터 &lt;strong>s4&lt;/strong> 사이에 있는 키들을 &lt;strong>s4&lt;/strong>로 재배치해야한다.&lt;/p>
+&lt;p>&lt;strong>서버가 삭제되었을 때&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/5/img_12.png"
+width="608"
+height="449"
+srcset="https://codemario318.github.io/post/system-design-interview/5/img_12_hu33149acfb6f53d9b638ddb2443c387f3_70058_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/5/img_12_hu33149acfb6f53d9b638ddb2443c387f3_70058_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+>&lt;/p>
+&lt;p>&lt;strong>s1&lt;/strong>이 삭제되면 &lt;strong>s1&lt;/strong> 부터 그 반시계 방향에 있는 최초 서버 &lt;strong>s0&lt;/strong> 사이에 있는 키들이 &lt;strong>s2&lt;/strong>로 재배치되어야 한다.&lt;/p>
+&lt;h2 id="마치며">마치며&lt;/h2>
+&lt;p>안정 해시의 이점은 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>서버가 추가되거나 삭제될 때 재배치되는 키의 수가 최소화된다.&lt;/li>
+&lt;li>데이터가 보다 균등하게 분포하게 되므로 수평적 규모 확장성을 달성하기 쉽다.&lt;/li>
+&lt;li>핫스팟 키 문제를 줄인다.
+&lt;ul>
+&lt;li>특정한 샤드에 대한 접근이 지나치게 빈번하면 서버 과부화 문제가 생길 수 있는데(유명인사 문제), 데이터를 좀 더 균등하게 분배하므로 문제 발생 가능성을 줄인다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>안정해시는 실제로 널리 쓰이는 기술이다.&lt;/p>
+&lt;ul>
+&lt;li>아마존 다이나모 데이터베이스의 파티셔닝 관련 컴포넌트&lt;/li>
+&lt;li>아파치 카산드라 클러스터에서 데이터 파티셔닝&lt;/li>
+&lt;li>디스코드 채팅 어플리케이션&lt;/li>
+&lt;li>아카마이 CDN&lt;/li>
+&lt;li>매그레프 네트워크 부하 분산기 등&lt;/li>
+&lt;/ul></description></item><item><title>4. 처리율 제한 장치의 설계</title><link>https://codemario318.github.io/post/system-design-interview/4/</link><pubDate>Wed, 15 May 2024 12:22:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/4/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/4/cover.png" alt="Featured image of post 4. 처리율 제한 장치의 설계" />&lt;h2 id="처리율-제한-장치rate-limiter">처리율 제한 장치(Rate limiter)?&lt;/h2>
 &lt;p>클라이언트 또는 서비스가 보내는 트래픽의 처리율을 제어하기 위한 장치이다.&lt;/p>
 &lt;p>HTTP의 경우 &lt;strong>특정 기간 내에 전송되는 클라이언트의 요청 횟수를 제한&lt;/strong>한다.&lt;/p>
 &lt;ul>
