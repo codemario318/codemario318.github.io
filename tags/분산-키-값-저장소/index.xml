@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>분산 키-값 저장소 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%B6%84%EC%82%B0-%ED%82%A4-%EA%B0%92-%EC%A0%80%EC%9E%A5%EC%86%8C/</link><description>Recent content in 분산 키-값 저장소 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 27 May 2024 11:59:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%B6%84%EC%82%B0-%ED%82%A4-%EA%B0%92-%EC%A0%80%EC%9E%A5%EC%86%8C/index.xml" rel="self" type="application/rss+xml"/><item><title>6. 키-값 저장소 설계</title><link>https://codemario318.github.io/post/system-design-interview/6/</link><pubDate>Mon, 27 May 2024 11:59:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/6/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/cover.png" alt="Featured image of post 6. 키-값 저장소 설계" />&lt;p>키-값 저장소(key-value store)는 키-값 데이터베이스라고도 불리는 비 관계형(non-relational) 데이터베이스이다.&lt;/p>
+&lt;ul>
+&lt;li>이 저장소에 저장되는 값은 &lt;strong>고유 식별자&lt;/strong>를 키로 가져야한다.&lt;/li>
+&lt;li>키와 값 사이의 이런 연결 관계를 &lt;strong>키-값 쌍&lt;/strong>(key-value pair)이라고 지칭한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>키&lt;/strong>&lt;br>
+키-값 쌍에서의 키는 &lt;strong>유일&lt;/strong>해야 하며 해당 키에 매달린 값은 &lt;strong>키를 통해서만 접근&lt;/strong>할 수 있다.&lt;/p>
+&lt;p>키는 일반 텍스트일 수도 있고 해시 값일 수도 있지만, 성능상의 이유로 짧을수록 좋다.&lt;/p>
+&lt;ul>
+&lt;li>일반 텍스트 키: &amp;ldquo;last_logged_in_at&amp;rdquo;&lt;/li>
+&lt;li>해시 키: 253DDEC4&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>값&lt;/strong>&lt;br>
+키-값 저장소는 보통 &lt;strong>값으로 무엇이 오든 상관하지 않는다&lt;/strong>.&lt;/p>
+&lt;ul>
+&lt;li>문자열, 리스트, 객체 등&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>키-값 저장소로 널리 알려진 것은 아마존 다이나모, memcached, 레디스 같은 것들이 있다.&lt;/p>
+&lt;p>또한 기본적으로 아래와 같은 연산을 지원해야한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>put(key, value)&lt;/code>: 키-값 쌍을 저장소에 저장한다.&lt;/li>
+&lt;li>&lt;code>get(key)&lt;/code>: 인자로 주어진 키에 매달린 값을 꺼낸다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="문제-이해-및-설계-범위-확정">문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>완벽한 설계란 없다.&lt;/p>
+&lt;p>읽기, 쓰기 그리고 메모리 사용량 사이에 어떤 균형을 찾고, 데이터의 일관성과 가용성 사이에서 타협적 결정을 내린 설계를 만들었다면 충분히 쓸만한 답이다.&lt;/p>
+&lt;p>이번 장에서는 다음 특성을 갖는 키-값 저장소를 설계해본다.&lt;/p>
+&lt;ul>
+&lt;li>키-값 쌍의 크기는 10KB 이하이다.&lt;/li>
+&lt;li>큰 데이터를 저장할 수 있어야 한다.&lt;/li>
+&lt;li>높은 가용성을 제공해야한다.
+&lt;ul>
+&lt;li>시스템은 장애가 있더라도 빨리 응답해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>높은 규모 확장성을 제공해야 한다.
+&lt;ul>
+&lt;li>트래픽 양에 따라 자동적으로 서버 증설/삭제가 이루어져야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 일관성 수준은 조정이 가능해야 한다.&lt;/li>
+&lt;li>응답 지연시간(latency)이 짧아야 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="단일-서버-키-값-저장소">단일 서버 키-값 저장소&lt;/h2>
+&lt;p>한 대 서버만 사용하는 키-값 저장소는 설계가 쉽다.&lt;/p>
+&lt;p>가장 직관적인 방법은 키-값 쌍 전부를 메모리에 해시 테이블로 저장하는 것이다.&lt;/p>
+&lt;p>이 방법은 빠른 속도를 보장하지만 &lt;strong>모든 데이터를 메모리안에 두는 것이 불가능&lt;/strong>할 수도 있다.&lt;/p>
+&lt;p>이 문제의 개선책은 다음과 같은 것들이 있다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 압축&lt;/li>
+&lt;li>자주 쓰이는 데이터만 메모리에 두고 나머지는 디스크에 저장&lt;/li>
+&lt;/ul>
+&lt;p>이렇게 개선한다고 해도, 한 대 서버로 부족한 때가 찾아오며, 많은 데이터를 저장하기 위해서 &lt;strong>분산 키-값 저장소&lt;/strong>를 만들어야한다.&lt;/p>
+&lt;h2 id="분산-키-값-저장소">분산 키 값 저장소&lt;/h2>
+&lt;p>분산 키 값 저장소는 키-값 쌍을 여러 서버에 분산시키므로 &lt;strong>분산 해시 테이블&lt;/strong>이라고도 불린다.&lt;/p>
+&lt;p>분산 시스템을 설계할 때는 &lt;strong>CAP 정리&lt;/strong>(Consistency, Availability, Partition Tolerance theorem)를 이해하고 있어야 한다.&lt;/p>
+&lt;h3 id="cap-정리">CAP 정리&lt;/h3>
+&lt;p>CAP 정리는 &lt;strong>데이터 일관성(consistency), 가용성(availability), 파티션 감내(partition tolerance)라는 세가지 요구사항을 동시에 만족하는 분산 시스템을 설계하는 것은 불가능하다&lt;/strong>는 정리이다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 일관성
+&lt;ul>
+&lt;li>분산 시스템에 접속하는 모든 클라이언트는 어떤 노드에 접속했느냐에 관계없이 언제나 같은 데이터를 보게 되어야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가용성
+&lt;ul>
+&lt;li>분산 시스템에 접속하는 클라이언트는 일부 노드에 장애가 발생하더라도 항상 응답을 받을 수 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션 감내
+&lt;ul>
+&lt;li>파티션은 두 노드 사이에 통신 장애가 발생하였음을 의미한다.&lt;/li>
+&lt;li>네트워크에 파티션(분할)이 생기더라도 시스템은 계속 동작하여야 한다는 것을 뜻한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>네트워크 파티션?&lt;/strong>&lt;br>
+테이터베이스 시스템의 일부 노드들이 서로 통신할 수 없는 상황으로 인해 각 노드들(파티션)이 독립적으로 동작하게 되어 각 파티션이 사로 다른 상태나 데이터를 가지게 되는 상황&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img.png"
+width="828"
+height="608"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_hu8399b985eaaab4d8c3cc5e2bfd3651de_149592_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_hu8399b985eaaab4d8c3cc5e2bfd3651de_149592_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="326px"
+>&lt;/p>
+&lt;p>따라서 이들 가운데 &lt;strong>어떤 두 가지를 충족하려면 나머지 하나는 반드시 희생되어야 한다&lt;/strong>는 것을 의미한다.&lt;/p>
+&lt;p>키 값 저장소는 세 가지 요구사항 가운데 어느 두 가지를 만족하느냐에 따라 다음과 같이 분류할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>CP: 일관성과 파티션 감내를 지원(가용성 희생)&lt;/li>
+&lt;li>AP: 가용성과 파티션 감내를 지원(데이터 일관성 희생)&lt;/li>
+&lt;li>CA: 일관성과 가용성을 지원(파티션 감내 지원 안함)
+&lt;ul>
+&lt;li>통상 네트워크 장애는 피할 수 없는 일로 여겨지므로, 분산 시스템은 반드시 파티션 문제를 감내할 수 있도록 설계되어야 한다.&lt;/li>
+&lt;li>실세계에서 CA 시스템은 존재하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="구체적-사례">구체적 사례&lt;/h3>
+&lt;p>분산 시스템에서 데이터는 보통 여러 노드에 복제되어 보관된다.&lt;/p>
+&lt;h4 id="이상적-상태">이상적 상태&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_1.png"
+width="840"
+height="592"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_1_hua0faa9aa952f92ab7c5a2fe27ee0e7c0_91753_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_1_hua0faa9aa952f92ab7c5a2fe27ee0e7c0_91753_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;p>이상적인 환경이라면 &lt;strong>네트워크가 파티션되는 상황은 절대로 일어나지 않을 것&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>n1&lt;/strong>에 기록된 데이터는 자동적으로 &lt;strong>n2&lt;/strong>, &lt;strong>n3&lt;/strong>에 복제되며 데이터 일관성과 가용성도 만족한다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="실세계의-분산-시스템">실세계의 분산 시스템&lt;/h4>
+&lt;p>분산 시스템은 파티션 문제를 피할 수 없다.&lt;/p>
+&lt;p>파티션 문제가 발생하면 &lt;strong>일관성과 가용성 사이에서 하나를 선택&lt;/strong>해야 한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_2.png"
+width="839"
+height="605"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_2_hud8043c96815985a7c6b0f4ed2ff33b87_103442_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_2_hud8043c96815985a7c6b0f4ed2ff33b87_103442_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="332px"
+>&lt;/p>
+&lt;p>&lt;strong>n3&lt;/strong>에 장애가 발생하여 &lt;strong>n1&lt;/strong>, &lt;strong>n2&lt;/strong>와 통신 할 수 없는 상황에서&lt;/p>
+&lt;ul>
+&lt;li>클라이언트가 &lt;strong>n1&lt;/strong>, &lt;strong>n2&lt;/strong>에 기록한 데이터는 &lt;strong>n3&lt;/strong>에 전달되지 않는다.&lt;/li>
+&lt;li>&lt;strong>n3&lt;/strong>에 기록되었으나 &lt;strong>n1&lt;/strong>, &lt;strong>n2&lt;/strong>로 전달되지 않은 데이터가 있다면 오래된 사본을 갖고 있을 것이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>CP 시스템&lt;/strong>&lt;/p>
+&lt;p>가용성 대신 일관성을 선택한다면 세 서버 사이에 생길 수 있는 데이터 불일치 문제를 피하기 위해 &lt;strong>n1&lt;/strong>, &lt;strong>n2&lt;/strong>에 대해 &lt;strong>쓰기 연산을 중단&lt;/strong>시켜야한다.&lt;/p>
+&lt;p>이러한 경우 일부 노드가 장애가 발생하여도 동작해야 한다는 가용성이 깨진다.&lt;/p>
+&lt;p>데이터 일관성을 양보할 수 없는 시스템은 이렇게 처리되어 상황이 해결될 때 까지 오류를 반환해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>온라인 뱅킹 등&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>AP 시스템&lt;/strong>&lt;/p>
+&lt;p>일관성 대신 가용성을 선택한 시스템은 &lt;strong>낡은 데이터를 반환할 위험이 있더라도 계속 읽기 연산을 허용&lt;/strong>해야한다.&lt;/p>
+&lt;p>&lt;strong>n1&lt;/strong>, &lt;strong>n2&lt;/strong>는 계속 쓰기 연산을 허용하고, 파티션 문제가 해결된 뒤 새 데이터를 &lt;strong>n3&lt;/strong>에 전송해야한다.&lt;/p>
+&lt;hr>
+&lt;p>분산 키-값 저장소를 만들 때는 그 요구사항에 맞도록 CAP 정리를 적용해야 한다.&lt;/p>
+&lt;p>면접 상황에서는 이 문제에 대해 면접관과 상의하고, 그 결론에 따라 시스템을 설계하도록 하자.&lt;/p>
+&lt;h3 id="시스템-컴포넌트">시스템 컴포넌트&lt;/h3>
+&lt;p>키-값 저장소 구형에 사용되는 핵심 컴포넌트들 및 기술을 살펴본다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 파티션&lt;/li>
+&lt;li>데이터 다중화&lt;/li>
+&lt;li>일관성&lt;/li>
+&lt;li>일관성 불일치 해소&lt;/li>
+&lt;li>장애 처리&lt;/li>
+&lt;li>시스템 아키텍처 다이어그램&lt;/li>
+&lt;li>쓰기 경로&lt;/li>
+&lt;li>읽기 경로&lt;/li>
+&lt;/ul>
+&lt;h4 id="데이터-파티션">데이터 파티션&lt;/h4>
+&lt;p>대규모 애플리케이션의 경우 전체 데이터를 한 대 서버에 욱여넣는 것은 불가능하다.&lt;/p>
+&lt;p>가장 단순한 해결책은 &lt;strong>데이터를 작은 파티션들로 분할한 다음 여러 대 서버에 저장하는 것&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>데이터를 여러 서버에 고르게 분산할 수 있는가&lt;/li>
+&lt;li>노드가 추가되거나 삭제될 때 데이터의 이동을 최소화할 수 있는가&lt;/li>
+&lt;/ul>
+&lt;p>5장에서 다룬 안정 해시는 이런 문제를 푸는 데 적합한 기술로 활용될 수 있다.&lt;/p>
+&lt;p>안정 해시를 사용하여 데이터를 파티션하면 몇가지 장점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>규모 확장 자동화(automatic scaling)
+&lt;ul>
+&lt;li>시스템 부하에 따라 서버가 자동으로 추가되거나 삭제되도록 만들 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>다양성(heterogeneity)
+&lt;ul>
+&lt;li>각 서버의 용량에 맞게 가상 노드의 수를 조정할 수 있다.&lt;/li>
+&lt;li>고성능 서버는 더 많은 가상노드를 갖도록&amp;hellip;&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="데이터-다중화">데이터 다중화&lt;/h4>
+&lt;p>높은 가용성과 안정성을 확보하기 위해서는 데이터를 N개 서버에 비동기적으로 다중화할 필요가 있다.&lt;/p>
+&lt;p>어떤 키를 해시 링 위에 배치한 수, 그 지점으로부터 시계 방향으로 링을 순회하면서 만나는 첫 N개 서버에 데이터 사본을 보관한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_3.png"
+width="843"
+height="685"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_3_hu0675f294d26db8b4acf424a88b68b693_77163_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_3_hu0675f294d26db8b4acf424a88b68b693_77163_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="295px"
+>&lt;/p>
+&lt;p>하지만 가상 노드를 사용한다면 선택한 N개의 노드가 대응될 실제 물리 서버의 개수가 N보다 작아질 수 있다.&lt;/p>
+&lt;p>이 문제를 피하려면 노드를 선택할 때 같은 물리 서버를 중복으로 선택하지 않도록 해야한다.&lt;/p>
+&lt;p>같은 데이터 센터에 속한 노드는 정전, 네트워크 이슈, 자연 재해 등의 문제를 동시에 같이 겪을 가능성이 있으므로, 안정성을 담보하기 위해 데이터의 사본은 다른 센터의 서버에 보관하고, 센터들은 고속 네트워크로 연결한다.&lt;/p>
+&lt;h4 id="데이터-일관성">데이터 일관성&lt;/h4>
+&lt;p>여러 노드에 다중화된 데이터는 적절히 동기화가 되어야 한다.&lt;/p>
+&lt;p>&lt;strong>정족수 합의&lt;/strong>(Quorum Consensus) 프로토콜을 사용하면 읽기/쓰기 연산 모두에 일관성을 보장할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>N&lt;/code>: 사본의 개수&lt;/li>
+&lt;li>&lt;code>W&lt;/code>: 쓰기 연산에 대한 정족수
+&lt;ul>
+&lt;li>쓰기 연산이 성공한 것으로 간주되려면 적어도 &lt;code>W&lt;/code>개의 서버로부터 쓰기 연산이 성공했다는 응답을 받아야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>R&lt;/code>: 읽기 연산에 대한 정족수
+&lt;ul>
+&lt;li>읽기 연산이 성공한 것으로 간주되려면 적어도 &lt;code>R&lt;/code>개의 서버로부터 응답을 받아야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로 &lt;code>N = R + W &amp;gt; N&lt;/code> 조건을 만족하도록 설정하며, 읽기와 쓰기 요청이 적어도 하나의 공통 노드를 통해 일관성을 유지하도록 보장한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_4.png"
+width="839"
+height="579"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_4_huec6b456c1e9a98e57b711c077ef003c7_99493_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_4_huec6b456c1e9a98e57b711c077ef003c7_99493_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="N = 3"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/p>
+&lt;p>&lt;code>W = 1&lt;/code>는 쓰기 연산이 성공했다고 판단하기 위해 중재자(coordinator)는 최소 한 대 서버로부터 쓰기 성공 응답을 받아야한다는 뜻이다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>s1&lt;/strong>으로 부터 성공 응답을 받았다면, 나머지 응답은 기다릴 필요가 없다.&lt;/li>
+&lt;/ul>
+&lt;p>중재자는 클라이언트와 노드 사이에서 프락시(proxy)역할을 한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>W&lt;/code>, &lt;code>R&lt;/code>, &lt;code>N&lt;/code>의 값을 정하는 것은 응답 지연과 데이터 일관성 사이의 타협점을 찾는 전형정인 과정이다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>W = 1&lt;/code> or &lt;code>R = 1&lt;/code>
+&lt;ul>
+&lt;li>중재자는 한 대 서버로부터의 응답만 받으면 되므로 응답속도는 빠르다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>W &amp;gt; 1&lt;/code> or &lt;code>R &amp;gt; 1&lt;/code>
+&lt;ul>
+&lt;li>데이터 일관성의 수준은 향상되지만 중재자의 응답 속도는 가장 느린 서버로부터의 응답을 기다려야 하므로 느려진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>따라서 &lt;code>W + R &amp;gt; N&lt;/code>인 경우에는 일관성을 보증할 최신 데이터를 가진 노드가 최소 하나는 겹치므로 강한 일관성이 보장된다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>R = 1&lt;/code>, &lt;code>W = N&lt;/code>
+&lt;ul>
+&lt;li>빠른 읽기 연산에 최적화된 시스템&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>R = N&lt;/code>, &lt;code>W = 1&lt;/code>
+&lt;ul>
+&lt;li>빠른 쓰기 연산에 최적화된 시스템&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>R + W &amp;gt; N&lt;/code>
+&lt;ul>
+&lt;li>강한 일관성이 보장됨
+&lt;ul>
+&lt;li>보통 &lt;code>N = 3&lt;/code>, &lt;code>W = R = 2&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>R + W &amp;lt;= N&lt;/code>
+&lt;ul>
+&lt;li>강한 일관성이 보장되지 않음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>요구되는 일관성 수준에 따라 &lt;code>W&lt;/code>, &lt;code>R&lt;/code>, &lt;code>N&lt;/code> 값을 조정한다.&lt;/p>
+&lt;p>&lt;strong>일관성 모델&lt;/strong>&lt;/p>
+&lt;p>일관성 모델(consistency model)은 키-값 저장소를 설계할 때 고려해야 할 요소로 데이터 일관성 수준을 결정한다.&lt;/p>
+&lt;ul>
+&lt;li>강한 일관성
+&lt;ul>
+&lt;li>모든 읽기 연산은 최신 결과를 반환한다.&lt;/li>
+&lt;li>클라이언트는 절대로 낡은 데이터를 볼 수 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>약한 일관성
+&lt;ul>
+&lt;li>읽기 연산은 최신 결과를 반환하지 못할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>결과적 일관성
+&lt;ul>
+&lt;li>약한 일관성의 한 형태로, 갱신 결과가 결국에는 모든 사본에 반영(동기화)된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>강한 일관성&lt;/strong>을 달성하는 일반적인 방법은, &lt;strong>모든 사본에 현재 쓰기 연산의 결과가 반영될 때까지 해당 데이터에 대한 읽기/쓰기를 금지&lt;/strong>하는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>새로운 요청의 처리가 중단되므로 고 가용성 시스템에는 적합하지 않다.&lt;/li>
+&lt;/ul>
+&lt;p>다이나모 또는 카산드라 같은 저장소는 결과적 일관성 모델을 택하고 있다.&lt;/p>
+&lt;ul>
+&lt;li>결과적 일관성 모델을 따를 경우 &lt;strong>쓰기 연산이 병렬적으로 발생하면 시스템에 저장된 값의 일관성이 깨어질 수 있는데&lt;/strong>, 이 문제는 클라이언트가 해결해야한다.&lt;/li>
+&lt;li>클라이언트 측에서 데이터의 버전 정보를 활용해 일관성이 깨진 데이터를 읽지 않도록 해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>데이터를 다중화하면 가용성은 높아지지만 사본 간 일관성이 깨질 가능성은 높아진다.&lt;/p>
+&lt;p>&lt;strong>비 일관성 해소 기법: 데이터 버저닝&lt;/strong>&lt;/p>
+&lt;p>버저닝은 데이터를 변경할 때마다 해당 데이터의 새로운 버전을 만든다.&lt;/p>
+&lt;ul>
+&lt;li>각 버전은 변경 불가능하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_5.png"
+width="838"
+height="387"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_5_hu314294c50ed1dac3bf6da051bfbc696c_78353_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_5_hu314294c50ed1dac3bf6da051bfbc696c_78353_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="충돌하는 두 값"
+class="gallery-image"
+data-flex-grow="216"
+data-flex-basis="519px"
+>&lt;/p>
+&lt;p>서버 1, 2가 다른 노드의 같은&lt;code>name&lt;/code>의 값을 동시에 변경하여 충돌이 발생했다고 가정했을 때 각각을 버전 &lt;strong>v1&lt;/strong>, &lt;strong>v2&lt;/strong>로 볼 수 있다.&lt;/p>
+&lt;p>이러한 충돌 문제를 해결하려면, 충돌을 발견하고 자동으로 해결해 낼 버저닝 시스템이 필요하다.&lt;/p>
+&lt;p>&lt;strong>백터 시계&lt;/strong>(vector clock)는 &lt;strong>&lt;code>[서버, 버전]&lt;/code>의 순서 쌍을 데이터에 매단 것&lt;/strong>으로 충돌 문제를 푸는데 보편적으로 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>어떤 버전이 선행 버전인지, 후행 버전인지, 충돌이 있는지 판별하는 데 쓰인다.&lt;/li>
+&lt;/ul>
+&lt;p>데이터 D를 서버 &lt;strong>Si&lt;/strong>에 기록하려면 아래 작업 가운데 하나를 수행해야한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>[Si, Vi]&lt;/code>가 있으면 &lt;code>Vi&lt;/code>를 증가시킨다.&lt;/li>
+&lt;li>그렇지 않다면 새 항목 &lt;code>[Si, 1]&lt;/code>을 만든다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_6.png"
+width="717"
+height="798"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_6_hu4d508b5e0485ac8ed5a6f6afc4aa05b9_112910_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_6_hu4d508b5e0485ac8ed5a6f6afc4aa05b9_112910_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="백터 시계"
+class="gallery-image"
+data-flex-grow="89"
+data-flex-basis="215px"
+>&lt;/p>
+&lt;ol>
+&lt;li>클라이언트가 &lt;code>D1&lt;/code>을 시스템에 기록한다.
+&lt;ul>
+&lt;li>처리한 서버는 &lt;code>Sx&lt;/code>이므로 백터 시계는 &lt;code>D1[Sx, 1]&lt;/code>으로 변한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>다른 클라이언트가 &lt;code>D1&lt;/code>을 읽고 &lt;code>D2&lt;/code>로 업데이트한 다음 기록한다.
+&lt;ul>
+&lt;li>&lt;code>D2&lt;/code>는 &lt;code>D1&lt;/code>의 변경이므로 덮어쓴다.&lt;/li>
+&lt;li>&lt;code>Sx&lt;/code>가 처리했으므로 벡터 시계를 &lt;code>D2[Sx, 2]&lt;/code>로 변경한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>다른 클라이언트가 &lt;code>D2&lt;/code>를 읽어 &lt;code>D3&lt;/code>로 갱신한 다음 기록한다.
+&lt;ul>
+&lt;li>&lt;code>Sy&lt;/code>가 처리했으므로 백터 시계 상태는 &lt;code>D3([Sx, 2], [Sy, 1])&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>또 다른 클라이언트가 &lt;code>D2&lt;/code>를 읽고 &lt;code>D4&lt;/code>로 갱신한 후 기록한다.
+&lt;ul>
+&lt;li>&lt;code>Sz&lt;/code>가 처리했으므로 백터 시계 상태는 &lt;code>D4([Sx, 2], [Sz, 1])&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>어떤 클라이언트가 D3과 D4를 읽으면 데이터 간 충돌이 있다는 것을 알게 되므로, 클라이언트가 해소한 후 서버에 기록한다.
+&lt;ul>
+&lt;li>&lt;code>Sx&lt;/code>가 처리했으므로 백터 시계는 &lt;code>D5([Sx, 3], [Sy, 1], [Sz, 1])&lt;/code>로 바뀐다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>벡터 시계를 이용하면 버전 Y에 포함된 모든 구성 요소의 값이 X에 포함된 모든 구성요소 값보다 같거나 큰지만 확인하면 어떤 버전 X가 버전 Y의 이전 버전인지 쉽게 판단할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>D([s0, 1], [s1, 1])&lt;/code>은 &lt;code>D([s0, 1], [s1, 2])&lt;/code>보다 이전 버전이다.(충돌 X)&lt;/li>
+&lt;/ul>
+&lt;p>어떤 버전 X와 Y 사이에 충돌이 있는지 보려면 &lt;strong>Y의 벡터 시계 구성 요소 가운데 X의 벡터 시계 동일 서버 구성요소보다 작은 값을 갖는 것이 있는지 확인&lt;/strong>한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>D([s0, 1], [s1, 2])&lt;/code>, &lt;code>D([s0, 2], [s1, 1])&lt;/code>는 서로 충돌한다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>벡터 시계를 통해 충돌 감지하고 해소하는 방법에는 두 가지 단점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>충돌 감지 및 해소 로직이 클라이언트에 들어가야 하므로, 클라이언트 구현이 복잡해진다.&lt;/li>
+&lt;li>&lt;code>[서버: 버전]&lt;/code>의 순서쌍 개수가 굉장히 빨리 늘어난다.
+&lt;ul>
+&lt;li>순서쌍 개수에 임계치를 설정하고, 임계치 이상으로 길이가 길어지면 오래된 순서쌍을 백터 시계에서 제거한다.&lt;/li>
+&lt;li>버전 간 선후 관계가 정확하게 결정될 수 없으므로 충돌 해소 과정의 효율성이 낮아질 수 있다.&lt;/li>
+&lt;li>실제 서비스에서 그런 문제는 거의 발생하지 않으므로, 대부분 기업에서 괜찮다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="장애-처리">장애 처리&lt;/h4>
+&lt;p>대규모 시스템에서 장애는 아주 흔하게 벌어지므로 장애를 어떻게 처리할 것이냐 하는 것은 굉장히 중요한 문제이다.&lt;/p>
+&lt;h4 id="장애-감지">장애 감지&lt;/h4>
+&lt;p>분산 시스템에서는 서버 A에 문제가 생겼을 때 바로 장애를 처리하지 않고, 보통 두 대 이상의 서버가 똑같이 서버 A에 대해 장애를 보고해야 해당 서버에 실제로 장애가 발생했다고 간주한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_7.png"
+width="838"
+height="636"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_7_hu135f183e800718526af99039ce9e186b_156879_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_7_hu135f183e800718526af99039ce9e186b_156879_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="멀티캐스팅 채널 구축"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>모든 노드 사이에 멀티캐스팅 채널을 구축하는 것이 서버 장애를 감지하는 손쉬운 방법이나, 이 방법은 서버가 많을 때 비효율적이다.&lt;/p>
+&lt;p>따라서 가십 프로토콜(gossip protocol) 같은 분산형 장애 감지 솔루션을 채택하는 편이 보다 효율적이다.&lt;/p>
+&lt;ul>
+&lt;li>각 노드는 맴버십 목록을 유지한다.
+&lt;ul>
+&lt;li>맴버십 목록: 각 맴버 ID와 그 박동 카운터(heartbeat counter) 쌍의 목록&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>각 노드는 주기적으로 자신의 박동 카운터를 증가시킨다.&lt;/li>
+&lt;li>각 노드는 무작위로 선정된 노드들에게 주기적으로 자기 박동 카운터 목록을 보낸다.&lt;/li>
+&lt;li>박동 카운터 목록을 받은 노드는 맴버십 목록을 최신 값으로 갱신한다.&lt;/li>
+&lt;li>어떤 맴버의 박동 카운터 값이 지정된 시간 동안 갱신되지 않으면 해당 멤버는 장애 상태인 것으로 간주한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_8.png"
+width="839"
+height="382"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_8_hu90da88e3e0d0b1a6937865c76380943d_88593_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_8_hu90da88e3e0d0b1a6937865c76380943d_88593_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="가십 프로토콜"
+class="gallery-image"
+data-flex-grow="219"
+data-flex-basis="527px"
+>&lt;/p>
+&lt;h4 id="일시적-장애-처리">일시적 장애 처리&lt;/h4>
+&lt;p>장애를 감지한 시스템은 가용성을 보장하기 위해 필요한 조치를 해야한다.&lt;/p>
+&lt;ul>
+&lt;li>엄격한 정족수 접근법은 읽기와 쓰기 연산을 금지한다.&lt;/li>
+&lt;li>느슨한 정족수 접근법은 쓰기 연산을 수행할 W개의 건강한 서버와 읽기 연산을 수행할 R개의 건강한 서버를 해시 링에서 고른다.(장애 서버는 무시)&lt;/li>
+&lt;li>장애 상태인 서버로 가는 요청은 다른 서버가 잠시 맡아 처리한다.&lt;/li>
+&lt;li>그동안 발생한 변경 사항은 장애 서버가 복구 되었을 때 일괄 반영햐여 데이터 일관성을 보존한다.
+&lt;ul>
+&lt;li>임시로 쓰기 연산을 처리한 서버에는 그에 관한 단서를 남겨둔다.(단서 후 임시 위탁(hinted handoff))&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_9.png"
+width="834"
+height="718"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_9_hu115bfa1d5fe40c44de379ba88e53d6c2_127770_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_9_hu115bfa1d5fe40c44de379ba88e53d6c2_127770_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="278px"
+>&lt;/p>
+&lt;p>장애 상태인 s2에 대한 읽기 및 쓰기 연산은 일시적으로 s3가 처리하며, s2가 복구되면 s3는 갱신된 데이터를 s2로 인계한다.&lt;/p>
+&lt;h4 id="영구-장애-처리">영구 장애 처리&lt;/h4>
+&lt;p>영구적인 노드의 장애 상태는 반-엔트로피(anti-entropy) 프로토콜을 구현하여 사본들을 동기화한다.&lt;/p>
+&lt;p>반-엔트로피 프로토콜은 &lt;strong>사본들을 비교하여 최신 버전으로 갱신하는 과정을 포함&lt;/strong>한다.&lt;/p>
+&lt;p>사본 간의 일관성이 망가진 상태를 탐지하고 전송 데이터의 양을 줄이기 위해서 머클(Merkle) 트리를 사용한다.&lt;/p>
+&lt;blockquote>
+&lt;p>머클 트리?&lt;br>
+해시 트리라고 불리는 머클 트리는 각 노드에 그 자식 노드들의 보관된 값의 해시(자식 노느가 leaf인 경우) 또는 자식 노드들의 레이블로부터 계산된 해시 값을 레이블로 붙여두는 트리&lt;/p>
+&lt;/blockquote>
+&lt;p>해시 트리를 사용하면 &lt;strong>대규모 자료 구조의 내용을 효과적이면서도 보안상 안전한 방법으로 검증&lt;/strong>할 수 있다.&lt;/p>
+&lt;p>&lt;strong>1 단계&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_10.png"
+width="844"
+height="330"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_10_hu458e95c99f7dfcfac03b6157ee8c6e5b_44753_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_10_hu458e95c99f7dfcfac03b6157ee8c6e5b_44753_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="255"
+data-flex-basis="613px"
+>&lt;/p>
+&lt;p>키 공간을 버킷으로 나눈다.&lt;/p>
+&lt;p>&lt;strong>2 단계&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_11.png"
+width="842"
+height="182"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_11_hu5646976f70d14d2033d017e53694f064_41493_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_11_hu5646976f70d14d2033d017e53694f064_41493_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="462"
+data-flex-basis="1110px"
+>&lt;/p>
+&lt;p>버킷에 포함된 각각의 키에 균등 분포 해시 함수를 적용하여 해시 값을 계산한다.&lt;/p>
+&lt;p>&lt;strong>3 단계&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_12.png"
+width="839"
+height="260"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_12_hu38a58b95ad281add1c37ca9db00d3b58_73545_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_12_hu38a58b95ad281add1c37ca9db00d3b58_73545_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="322"
+data-flex-basis="774px"
+>&lt;/p>
+&lt;p>버킷 별로 해시값을 계산한 후, 해당 해시 값을 레이블로 갖는 노드를 만든다.&lt;/p>
+&lt;p>&lt;strong>4 단계&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_13.png"
+width="840"
+height="445"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_13_hu8894cdbe47f2eb2880a4148ac1861de4_101648_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_13_hu8894cdbe47f2eb2880a4148ac1861de4_101648_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="453px"
+>&lt;/p>
+&lt;p>자식 노드의 레이블로부터 새로운 해시값을 계산하여, 이진 트리를 상향식으로 구성해 나간다.&lt;/p>
+&lt;hr>
+&lt;p>두 머클 트리의 비교는 루트 노드의 해시값을 비교하는 것으로 시작하며, 다른 데이터를 갖는 버킷을 찾을 경우 그 버킷들만 동기화한다.&lt;/p>
+&lt;p>머클 트리를 사용하면 동기화해야 하는 데이터 양은 실제로 존재하는 차이의 크기에 비례할 뿐, 두 서버에 보관된 데이터의 총량과는 무관해진다.&lt;/p>
+&lt;ul>
+&lt;li>실제로 쓰이는 시스템의 경우 버킷 하나의 크기가 꽤 크다.&lt;/li>
+&lt;li>10억(1B) 개의 키를 백만(1M) 개의 버킷으로 관리하면, 하나의 버킷은 1,000개 키를 관리한다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="데이터-센터-장애-처리">데이터 센터 장애 처리&lt;/h4>
+&lt;p>데이터 센터 장애는 정전, 네트워크 장애, 자연재해 등 다양한 이유로 발생할 수 있다.&lt;/p>
+&lt;p>데이터 센터의 장애에 대응할 수 있는 시스템을 만드려면 데이터를 여러 데이터 센터에 다중화하는 것이 중요하다.&lt;/p>
+&lt;h3 id="시스템-아키텍처-다이어그램">시스템 아키텍처 다이어그램&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_14.png"
+width="842"
+height="525"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_14_hu3a1f1cde060e244af1e3932a5858e642_94830_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_14_hu3a1f1cde060e244af1e3932a5858e642_94830_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="384px"
+>&lt;/p>
+&lt;ul>
+&lt;li>클라이언트는 키-값 저장소가 제공하는 두 가지 단순한 API, &lt;code>get(key)&lt;/code>, &lt;code>put(key, value)&lt;/code>와 통신한다.&lt;/li>
+&lt;li>중재자는 클라이언트에게 키-값 저장소에 대한 프락시 역할을 하는 노드다.&lt;/li>
+&lt;li>노드는 안정 해시의 해시 링 위에 분포한다.&lt;/li>
+&lt;li>노드를 자동으로 추가 또는 삭제할 수 있도록, 시스템은 완전히 분산된다.&lt;/li>
+&lt;li>데이터는 여러 노드에 다중화된다.&lt;/li>
+&lt;li>모든 노드가 같은 책임을 지므로, SPOF(Single Point of Failure)는 존재하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_15.png"
+width="830"
+height="656"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_15_hud90111428b56169725aae5ee0bdfc804_100802_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_15_hud90111428b56169725aae5ee0bdfc804_100802_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>완전히 분산된 설계를 채택하였으므로 모든 노드는 제시된 기능을 전부 지원해야한다.&lt;/p>
+&lt;h3 id="쓰기-경로">쓰기 경로&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_16.png"
+width="845"
+height="458"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_16_hu216694585a97b0bfbb508eaee3fd8e8a_77802_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_16_hu216694585a97b0bfbb508eaee3fd8e8a_77802_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="카산드라의 사례"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="442px"
+>&lt;/p>
+&lt;ol>
+&lt;li>쓰기 요청이 커밋 로그 파일에 기록된다.&lt;/li>
+&lt;li>데이터가 메모리 캐시에 기록된다.&lt;/li>
+&lt;li>메모리 캐시가 가득 차거나 사전에 정의된 임계치에 도달하면 데이터는 디스크에 있는 SSTable에 기록된다.
+&lt;ul>
+&lt;li>SSTable: Sorted-String Table의 약어로 &amp;lt;키, 값&amp;gt; 의 순서쌍을 정렬된 리스트로 관리하는 테이블이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="읽기-경로">읽기 경로&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_17.png"
+width="845"
+height="446"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_17_huaac619f90ef719991892748c739fd616_71124_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_17_huaac619f90ef719991892748c739fd616_71124_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+>&lt;/p>
+&lt;p>읽기 요청을 받은 노드는 데이터가 메모리 캐시에 있는지부터 살핀 후 데이터를 클라이언트에게 반환한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/6/img_18.png"
+width="843"
+height="425"
+srcset="https://codemario318.github.io/post/system-design-interview/6/img_18_hub84a0c909dfc6b10b41bdf7efd5bb775_89775_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/6/img_18_hub84a0c909dfc6b10b41bdf7efd5bb775_89775_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="476px"
+>&lt;/p>
+&lt;p>데이터가 메모리에 없는 경우 디스크에서 가져온다.&lt;/p>
+&lt;p>어느 SSTable에 찾는 키가 있는지 효율적으로 찾기 위해 블룸 필터(Bloom filter)가 흔히 사용된다.&lt;/p>
+&lt;ol>
+&lt;li>데이터가 메모리에 있는지 검사하고 있다면 반환한다.&lt;/li>
+&lt;li>데이터가 메모리에 없으므로 블룸 필터를 검사한다.&lt;/li>
+&lt;li>블룸 필터를 통해 어떤 SSTable에 키가 보관되어 있는지 알아낸다.&lt;/li>
+&lt;li>SSTable에서 데이터를 가져온다.&lt;/li>
+&lt;li>해당 데이터를 클라이언트에게 반환한다.&lt;/li>
+&lt;/ol>
+&lt;h2 id="요약">요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>목표/문제&lt;/th>
+&lt;th>기술&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>대규모 데이터 저장&lt;/td>
+&lt;td>안정 해시를 사용해 서버들에 부하 분산&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>읽기 연산에 대한 높은 가용성 보장&lt;/td>
+&lt;td>데이터를 여러 데이터센터에 다중화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>쓰기 연산에 대한 높은 가용성 보장&lt;/td>
+&lt;td>버저닝 및 백터 시계를 사용한 충돌 해소&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 파티션&lt;/td>
+&lt;td>안정 해시&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>점진적 규모 확장성&lt;/td>
+&lt;td>안정 해시&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>다양성(heterogeneity)&lt;/td>
+&lt;td>안정 해시&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조절 가능한 데이터 일관성&lt;/td>
+&lt;td>정족수 합의(quorum consensus)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>일시적 장애 처리&lt;/td>
+&lt;td>느슨한 정족수 프로토콜(sloppy quorum)과 단서 후 임시 위탁(hinted handoff)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>영구적 장애 처리&lt;/td>
+&lt;td>머클 트리(Merkle tree)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 센터 장애 대응&lt;/td>
+&lt;td>여러 데이터 센터에 걸친 데이터 다중화&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item></channel></rss>

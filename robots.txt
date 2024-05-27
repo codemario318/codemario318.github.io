@@ -3,11 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview/5/
-
-
-
-
+Allow: /post/system-design-interview/6/
 
 
 
@@ -26,6 +22,32 @@ Allow: /post/system-design-interview/5/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview/5/
+
+
+
+
 
 
 
