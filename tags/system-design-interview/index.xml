@@ -1,4 +1,302 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 04 Jun 2024 14:26:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>7. 분산 시스템을 위한 유일 ID 생성기 설계</title><link>https://codemario318.github.io/post/system-design-interview/7/</link><pubDate>Tue, 04 Jun 2024 14:26:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/7/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/7/cover.png" alt="Featured image of post 7. 분산 시스템을 위한 유일 ID 생성기 설계" />&lt;p>서비스의 규모가 작을때는 &lt;code>auto_increment&lt;/code> 속성이 설정된 관계형 데이터 베이스의 기본키를 사용하는 방법을 고려할 수 있지만, 분산 환경에서는 이러한 방법을 사용할 수 없다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 04 Jun 2024 15:18:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>8. URL 단축기 설계</title><link>https://codemario318.github.io/post/system-design-interview/8/</link><pubDate>Tue, 04 Jun 2024 15:18:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/8/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/cover.png" alt="Featured image of post 8. URL 단축기 설계" />&lt;h2 id="1단계-문제-이해-및-설게-범위-확정">1단계: 문제 이해 및 설게 범위 확정&lt;/h2>
+&lt;ul>
+&lt;li>Q. URL 단축기 동작 예시
+&lt;ul>
+&lt;li>A. &lt;code>https://tinyurl.com/y7ke-ocwj&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 트래픽 규모는?
+&lt;ul>
+&lt;li>A. 매일 1억개의 단축 URL 생성&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 단축 URL의 길이는?
+&lt;ul>
+&lt;li>A. 짧을수록 좋음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 단축 URL에 포함될 문자제한은?&lt;/li>
+&lt;li>A. 숫자(0~9), 영문자(A~z) 사용 가능&lt;/li>
+&lt;li>Q. 단축된 URL을 지우거나 갱신 가능?
+&lt;ul>
+&lt;li>A. 시스템 단순화를 위해 삭제나 갱신은 할 수 없다 가정&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이 시스템의 기본적 기능은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>URL 단축: 주어진 긴 URL을 훨씬 짧게 줄인다.&lt;/li>
+&lt;li>URL 리디렉션(redirection): 축약된 URL로 HTTP 요청이 오면 원래 URL로 안내&lt;/li>
+&lt;li>높은 가용성과 규모 확장성, 장애 감내 요구됨&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-추정">개략적 추정&lt;/h3>
+&lt;ul>
+&lt;li>쓰기 연산: 매일 1억 개의 단축 URL 생성&lt;/li>
+&lt;li>초당 쓰기 연산: &lt;code>1억 / 24 / 3600 = 1160&lt;/code>&lt;/li>
+&lt;li>읽기 연산:
+&lt;ul>
+&lt;li>읽기 연산과 쓰기 연산의 비율은 &lt;strong>10:1&lt;/strong>로 가정&lt;/li>
+&lt;li>대략 초당 11,600회 발생&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>URL 단축 서비스를 10년간 운영한다고 가정하면 &lt;code>1억 * 365 * 10 = 3650억&lt;/code>개 레코드 보관&lt;/li>
+&lt;li>축약 전 URL의 평균 길이는 100
+&lt;ul>
+&lt;li>필요한 저장 용량은 &lt;code>3650억 * 100바이트 = 36.5TB&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;h3 id="api-엔드포인트">API 엔드포인트&lt;/h3>
+&lt;p>클라이언트는 서버가 제공하는 API 엔드포인트를 통해 서버와 통신한다.&lt;/p>
+&lt;p>RESTful API 스타일로 설계한다고 가정하면, 기본적으로 두 개의 엔드포인트를 필요로 한다.&lt;/p>
+&lt;ol>
+&lt;li>URL 단축용 엔드포인트:
+&lt;ul>
+&lt;li>새 단축 URL을 생성하고자 하는 클라이언트는 이 엔드포인트에 단축할 URL을 인자로 담아 POST 요청을 보내야한다.&lt;/li>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">POST /api/v1/data/shorten
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>인자: &lt;code>{longUrl: longURLstring}&lt;/code>&lt;/li>
+&lt;li>반환: 단축 URL&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>URL 리디렉션용 엔드포인트: 단축 URL에 대해 HTTP 요청이 오면 원래 URL로 보내주기 위한 용도의 엔드포인트
+&lt;ul>
+&lt;li>&lt;code>GET /api/v1/shortUrl&lt;/code>&lt;/li>
+&lt;li>반환: HTTP 리디렉션 목적지가 될 원래 URL&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="url-리디렉션">URL 리디렉션&lt;/h3>
+&lt;p>단축 URL을 받은 서버는 그 URL을 원래 URL로 바꾸어 &lt;strong>301 응답&lt;/strong>의 &lt;strong>Location 헤더&lt;/strong>에 넣어 반환한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img.png"
+width="362"
+height="363"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_hu4a278bdc249e7e3e9a78362cdb2bf14f_44204_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_hu4a278bdc249e7e3e9a78362cdb2bf14f_44204_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="클라이언트와 서버 사이의 통신 절차"
+class="gallery-image"
+data-flex-grow="99"
+data-flex-basis="239px"
+>&lt;/p>
+&lt;p>유의할 점은 301 응답과 302 응답의 차이로, 둘 다 리디렉션 응답이지만 차이가 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>301 Permanently Moved&lt;/code>
+&lt;ul>
+&lt;li>URL에 대한 HTTP 요청의 처리 책임이 영구적으로 Location 헤더에 반환된 URL로 이전됨&lt;/li>
+&lt;li>영구적인 이전이므로 브라우저는 이 응답을 캐싱한다.&lt;/li>
+&lt;li>따라서 같은 단축 URL로 재 요청시 캐시된 원래 URL로 요청을 보낸다.&lt;/li>
+&lt;li>서버 부하를 줄이는 것이 중요할 때 사용될 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>302 Found&lt;/code>
+&lt;ul>
+&lt;li>URL로의 요청이 일시적으로 Location 헤더의 URL에 의해 처리되어야함&lt;/li>
+&lt;li>클라이언트의 요청은 캐싱되지 않으므로, 언제나 단축 URL 서버에 먼저 보내짐&lt;/li>
+&lt;li>트래픽 분석 같이 클릭 발생률이나 발생 위치를 파악해야할 때 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>URL 리디렉션을 구현하는 가장 직관적인 방법은 &lt;strong>해시 테이블&lt;/strong>을 사용하는 것으로 &lt;code>&amp;lt;단축 URL: 원래 URL&amp;gt;&lt;/code> 형식으로 구현될 수 있다.&lt;/p>
+&lt;h3 id="url-단축">URL 단축&lt;/h3>
+&lt;p>단축 URL이 &lt;code>&amp;lt;www.tinyurl.com/{hashValue}&lt;/code> 같은 형태로 만들어진다면, &lt;strong>긴 URL을 이 해시 값으로 대응시킬 해시 함수 &lt;code>fx&lt;/code>&lt;/strong> 를 찾는 것이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_1.png"
+width="263"
+height="205"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_1_hu28fdb81906c71ae40d2947e410c83904_16249_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_1_hu28fdb81906c71ae40d2947e410c83904_16249_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="해시 함수 fx"
+class="gallery-image"
+data-flex-grow="128"
+data-flex-basis="307px"
+>&lt;/p>
+&lt;p>해시 함수는 다음과 같은 요구사항을 만족해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>입력으로 주어지는 긴 URL이 다른 값이면 해시 값도 달라야한다.&lt;/li>
+&lt;li>계산된 해시 값은 원래 입력으로 주어졌던 긴 URL로 복원될 수 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="데이터-모델">데이터 모델&lt;/h3>
+&lt;p>개략적 설계에서는 모든 것을 해시 테이블에 두었지만, 이 방식은 메모리는 유한하고 비싸기 때문에 실제 시스템에서 사용되기 어렵다.&lt;/p>
+&lt;p>더 나은 방식은 &lt;code>&amp;lt;단축 URL, 원래 URL&amp;gt;&lt;/code>의 순서쌍을 RDB에 저장하는 것이다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+URL {
+number id pk
+string shortURL
+string longURL
+}
+&lt;/pre>
+&lt;h3 id="해시-함수">해시 함수&lt;/h3>
+&lt;p>해시 함수는 &lt;strong>원래 URL을 단축 URL로 변환&lt;/strong>하는 데 쓰인다.&lt;/p>
+&lt;p>&lt;strong>해시 값 길이&lt;/strong>&lt;br>
+hashValue는 [0-9, a-z, A-Z]의 문자들로 구성된다.&lt;/p>
+&lt;ul>
+&lt;li>사용할 수 있는 문자의 개수는 &lt;code>10 + 26 + 26 = 62&lt;/code>개이다.&lt;/li>
+&lt;li>hashValue의 길이를 정하기 위해서는 &lt;code>62^n &amp;gt;= 3650억&lt;/code>을 만드는 n의 최소값을 찾아야한다.
+&lt;ul>
+&lt;li>n = 7, 약 3.5조 개&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>해시후 충돌 해소&lt;/strong>&lt;br>
+긴 URL을 줄이려면, 원래 URL을 7글자 문자열로 줄이는 해시 함수가 필요하다.&lt;/p>
+&lt;p>가장 쉬운 방법은 CRC32, MD5, SHA-1 같이 잘 알려진 해시 함수를 이용하는 것이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_2.png"
+width="403"
+height="141"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_2_hu130b2b42d1534b4e7248d03256cabfb1_16625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_2_hu130b2b42d1534b4e7248d03256cabfb1_16625_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="https://en.wikipedia.org/wiki/Systems_design 해시 적용"
+class="gallery-image"
+data-flex-grow="285"
+data-flex-basis="685px"
+>&lt;/p>
+&lt;p>잘 알려진 해시 함수를 사용한 결과가 계산한 가장 짧은 해시값조차도 7보다는 길이가 긴데, 이 문제를 해결하기 위한 첫 번째 방법으로 처음 7개 문자만 사용하는 방법을 고려할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>해시 결과가 충돌할 확률이 높아진다.&lt;/li>
+&lt;li>충돌이 발생한 경우, 충돌이 해소될 때까지 사전에 정한 문자열을 해시값에 덧붙인다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_3.png"
+width="527"
+height="318"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_3_hub0df4858afff8df13008d5e526aeee01_35083_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_3_hub0df4858afff8df13008d5e526aeee01_35083_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="해시 후 충돌 해소"
+class="gallery-image"
+data-flex-grow="165"
+data-flex-basis="397px"
+>&lt;/p>
+&lt;ul>
+&lt;li>단축 URL을 생성할 때 한 번 이상 데이터베이스 질의를 해야 하므로 오버헤드가 크다.&lt;/li>
+&lt;li>데이터베이스 대신 블룸 필터를 사용하면 성능을 높일 수 있다.
+&lt;ul>
+&lt;li>어떤 집합에 특정 원소가 있는 지 검사할 수 있도록 하는, 확률론에 기초한 공간 효율이 좋은 기술&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>base-62 변환&lt;/strong>&lt;br>
+진법 변환(base conversion)은 URL 단축기를 구현할 때 흔히 사용되는 접근법이다.&lt;/p>
+&lt;ul>
+&lt;li>수의 표현 방식이 다른 두 시스템이 같은 수를 공유하여야 하는 경우 유용하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_4.png"
+width="460"
+height="209"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_4_hua0543d5a53f0486c3860430ba71667b3_17218_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_4_hua0543d5a53f0486c3860430ba71667b3_17218_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="62 진법 변환"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="528px"
+>&lt;/p>
+&lt;p>&lt;strong>두 접근법 비교&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>해시 후 충돌 해소&lt;/th>
+&lt;th>62 진법 변환&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>단축 URL 길이가 고정됨&lt;/td>
+&lt;td>단축 URL 길이가 가변적, ID 값이 커지면 길어짐&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>유일성이 보장되는 ID 생성기가 필요하지 않음&lt;/td>
+&lt;td>유일성 보장 ID 생성기 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>충돌이 해소 전략 필요&lt;/td>
+&lt;td>ID 유일성이 보장되어야 적용 가능한 전략이라 충돌 불가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ID로 부터 단축 URL을 계산하는 방식이 아니므로 다음에 쓸 수 있는 URL을 알아내는 것이 불가능&lt;/td>
+&lt;td>ID가 1씩 증가하는 값이라고 가정하면 다음에 쓸 수 있는 단축 URL이 무엇인지 쉽게 알아낼 수 있어 보안상 문제 소지가 될 수 있음&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="url-단축기-상세-설계">URL 단축기 상세 설계&lt;/h3>
+&lt;p>URL 단축기는 시스템의 핵심 컴포넌트이므로, 그 처리흐름이 놀리적으로는 단순해야 하고, 기능적으로는 언제나 동작하는 상태로 유지되어야 한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_5.png"
+width="463"
+height="348"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_5_hud414c15ad06fec3825b6f1e5e69c33f5_33072_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_5_hud414c15ad06fec3825b6f1e5e69c33f5_33072_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="URL 단축 처리 흐름"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;/p>
+&lt;ol>
+&lt;li>입력으로 긴 URL을 받는다.&lt;/li>
+&lt;li>데이터베이스에 해당 URL이 있는지 검사한다.&lt;/li>
+&lt;li>데이터베이스에 있다면 해당 URL에 대한 단축 URL을 만든 적이 있는것으로 해당 단축 URL을 클라이언트에게 반환&lt;/li>
+&lt;li>데이터베이스에 없는 경우 유일한 ID를 생성하여 데이터베이스의 기본키로 사용&lt;/li>
+&lt;li>62진법 변환을 적용하여 ID를 단축 URL로 만든다.&lt;/li>
+&lt;li>ID, 단축 URL, 원래 URL로 새 데이터베이스 레코드를 만든 후 단축 URL을 클라이언트에 전달&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;p>해당 ID 생성기의 주된 용도는, 단축 URL을 만들 때 사용할 ID를 만드는 것이고, 이 ID는 전역적 유일성이 보장되는 것 이어야 한다.&lt;/p>
+&lt;p>고도로 분산된 환경에서 이런 생성기를 만드는 것은 무척 어려운 일로 필요하다면 7장 내용을 응용하여 분산 환경에 사용될 유일한 ID를 만들 수 있다.&lt;/p>
+&lt;h3 id="url-리디렉션-상세-설계">URL 리디렉션 상세 설계&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_6.png"
+width="526"
+height="167"
+srcset="https://codemario318.github.io/post/system-design-interview/8/img_6_hu33c2d1982d9952264698b9ef2bfc0ff5_38702_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_6_hu33c2d1982d9952264698b9ef2bfc0ff5_38702_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="URL 리디렉션 상세 설계"
+class="gallery-image"
+data-flex-grow="314"
+data-flex-basis="755px"
+>&lt;/p>
+&lt;p>쓰기보다 읽기를 더 자주하는 시스템의 특성에 맞추어, &lt;code>&amp;lt;단축 URL, 원래 URL&amp;gt;&lt;/code>의 쌍을 캐싱하여 성능을 높힐 수 있다.&lt;/p>
+&lt;p>로드벨런서의 동작 흐름은 다음과 같이 요약할 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>사용자가 단축 URL로 요청&lt;/li>
+&lt;li>로드밸런서가 해당 클릭으로 발생한 요청을 웹 서버에 전달&lt;/li>
+&lt;li>단축 URL이 이미 캐시에 있다면 원래 URL을 바로 꺼내 전달&lt;/li>
+&lt;li>캐시에 없다면 데이터베이스에서 꺼내 전달&lt;/li>
+&lt;li>데이터베이스에서 꺼낸 URL을 캐시에 넣은 후 사용자에게 반환&lt;/li>
+&lt;/ol>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>설계를 마친 후 시간이 좀 남는다면 다음과 같은 것을 면접관과 이야기 할 수 있을것이다.&lt;/p>
+&lt;ul>
+&lt;li>처리율 제한 장치
+&lt;ul>
+&lt;li>엄청난 양은 단축 요청이 들어올 경우 무력화될 수 있다는 잠재적 보안 결함을 갖고 있다.&lt;/li>
+&lt;li>처리율 제한 장치를 통해 요청을 걸러낼 수 있다. 4장 참조&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>웹 서버의 규모 확장
+&lt;ul>
+&lt;li>설계에 포함된 웹 계층은 무상태 계층이므로, 웹 서버를 자유롭게 증설, 삭제 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터베이스 규모 확장
+&lt;ul>
+&lt;li>데이터베이스를 다중화하거나 샤딩하여 규모 확장성을 달성할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 분석 솔루션
+&lt;ul>
+&lt;li>URL 단축기에 데이터 분석 솔루션을 통합해 두면 어떤 링크를 얼마나 많은 사용자가 클릭했는지, 언제 주로 클릭했는지 등 중요한 정보를 알아낼 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가용성, 데이터 일관성, 안정성
+&lt;ul>
+&lt;li>1장 참조&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>7. 분산 시스템을 위한 유일 ID 생성기 설계</title><link>https://codemario318.github.io/post/system-design-interview/7/</link><pubDate>Tue, 04 Jun 2024 14:26:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/7/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/7/cover.png" alt="Featured image of post 7. 분산 시스템을 위한 유일 ID 생성기 설계" />&lt;p>서비스의 규모가 작을때는 &lt;code>auto_increment&lt;/code> 속성이 설정된 관계형 데이터 베이스의 기본키를 사용하는 방법을 고려할 수 있지만, 분산 환경에서는 이러한 방법을 사용할 수 없다.&lt;/p>
 &lt;ul>
 &lt;li>데이터베이스 서버 한 대로는 요구를 감당할 수 없다.&lt;/li>
 &lt;li>여러 데이터베이스 서버를 쓰는 경우 지연 시간을 낮추기 매우 힘들다.&lt;/li>
