@@ -15,8 +15,11 @@
 &lt;li>A. 짧을수록 좋음&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>Q. 단축 URL에 포함될 문자제한은?&lt;/li>
+&lt;li>Q. 단축 URL에 포함될 문자제한은?
+&lt;ul>
 &lt;li>A. 숫자(0~9), 영문자(A~z) 사용 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;li>Q. 단축된 URL을 지우거나 갱신 가능?
 &lt;ul>
 &lt;li>A. 시스템 단순화를 위해 삭제나 갱신은 할 수 없다 가정&lt;/li>
