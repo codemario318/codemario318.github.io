@@ -28,8 +28,16 @@
 &lt;/ul>
 &lt;p>이 시스템의 기본적 기능은 아래와 같다.&lt;/p>
 &lt;ul>
-&lt;li>URL 단축: 주어진 긴 URL을 훨씬 짧게 줄인다.&lt;/li>
-&lt;li>URL 리디렉션(redirection): 축약된 URL로 HTTP 요청이 오면 원래 URL로 안내&lt;/li>
+&lt;li>URL 단축
+&lt;ul>
+&lt;li>주어진 긴 URL을 훨씬 짧게 줄인다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>URL 리디렉션(redirection)
+&lt;ul>
+&lt;li>축약된 URL로 HTTP 요청이 오면 원래 URL로 안내&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;li>높은 가용성과 규모 확장성, 장애 감내 요구됨&lt;/li>
 &lt;/ul>
 &lt;h3 id="개략적-추정">개략적 추정&lt;/h3>
@@ -52,9 +60,9 @@
 &lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
 &lt;h3 id="api-엔드포인트">API 엔드포인트&lt;/h3>
 &lt;p>클라이언트는 서버가 제공하는 API 엔드포인트를 통해 서버와 통신한다.&lt;/p>
-&lt;p>RESTful API 스타일로 설계한다고 가정하면, 기본적으로 두 개의 엔드포인트를 필요로 한다.&lt;/p>
+&lt;p>RESTful API로 설계한다고 가정하면, 기본적으로 두 개의 엔드포인트를 필요로 한다.&lt;/p>
 &lt;ol>
-&lt;li>URL 단축용 엔드포인트:
+&lt;li>&lt;strong>URL 단축용 엔드포인트&lt;/strong>
 &lt;ul>
 &lt;li>새 단축 URL을 생성하고자 하는 클라이언트는 이 엔드포인트에 단축할 URL을 인자로 담아 POST 요청을 보내야한다.&lt;/li>
 &lt;li>
@@ -71,9 +79,19 @@
 &lt;li>반환: 단축 URL&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>URL 리디렉션용 엔드포인트: 단축 URL에 대해 HTTP 요청이 오면 원래 URL로 보내주기 위한 용도의 엔드포인트
+&lt;li>&lt;strong>URL 리디렉션용 엔드포인트&lt;/strong>
 &lt;ul>
-&lt;li>&lt;code>GET /api/v1/shortUrl&lt;/code>&lt;/li>
+&lt;li>단축 URL에 대해 HTTP 요청이 오면 원래 URL로 보내주기 위한 용도의 엔드포인트&lt;/li>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">GET /api/v1/shortUrl
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;li>반환: HTTP 리디렉션 목적지가 될 원래 URL&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -94,23 +112,23 @@ data-flex-basis="239px"
 &lt;ul>
 &lt;li>&lt;code>301 Permanently Moved&lt;/code>
 &lt;ul>
-&lt;li>URL에 대한 HTTP 요청의 처리 책임이 영구적으로 Location 헤더에 반환된 URL로 이전됨&lt;/li>
-&lt;li>영구적인 이전이므로 브라우저는 이 응답을 캐싱한다.&lt;/li>
-&lt;li>따라서 같은 단축 URL로 재 요청시 캐시된 원래 URL로 요청을 보낸다.&lt;/li>
+&lt;li>URL에 대한 HTTP 요청의 처리 책임이 &lt;strong>영구적으로 Location 헤더에 반환된 URL로 이전&lt;/strong>됨&lt;/li>
+&lt;li>영구적인 이전이므로 브라우저는 이 응답을 &lt;strong>캐싱&lt;/strong>한다.&lt;/li>
+&lt;li>따라서 같은 단축 URL로 재요청시 캐시된 원래 URL로 요청을 보낸다.&lt;/li>
 &lt;li>서버 부하를 줄이는 것이 중요할 때 사용될 수 있음&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;code>302 Found&lt;/code>
 &lt;ul>
-&lt;li>URL로의 요청이 일시적으로 Location 헤더의 URL에 의해 처리되어야함&lt;/li>
-&lt;li>클라이언트의 요청은 캐싱되지 않으므로, 언제나 단축 URL 서버에 먼저 보내짐&lt;/li>
+&lt;li>URL로의 요청이 &lt;strong>일시적으로 Location 헤더의 URL에 의해 처리&lt;/strong>되어야함&lt;/li>
+&lt;li>클라이언트의 요청은 &lt;strong>캐싱되지 않으므로&lt;/strong>, 언제나 단축 URL 서버에 먼저 보내짐&lt;/li>
 &lt;li>트래픽 분석 같이 클릭 발생률이나 발생 위치를 파악해야할 때 사용&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
 &lt;p>URL 리디렉션을 구현하는 가장 직관적인 방법은 &lt;strong>해시 테이블&lt;/strong>을 사용하는 것으로 &lt;code>&amp;lt;단축 URL: 원래 URL&amp;gt;&lt;/code> 형식으로 구현될 수 있다.&lt;/p>
 &lt;h3 id="url-단축">URL 단축&lt;/h3>
-&lt;p>단축 URL이 &lt;code>&amp;lt;www.tinyurl.com/{hashValue}&lt;/code> 같은 형태로 만들어진다면, &lt;strong>긴 URL을 이 해시 값으로 대응시킬 해시 함수 &lt;code>fx&lt;/code>&lt;/strong> 를 찾는 것이다.&lt;/p>
+&lt;p>단축 URL이 &lt;code>&amp;lt;www.tinyurl.com/{hashValue}&amp;gt;&lt;/code> 같은 형태로 만들어진다면, 긴 URL을 이 해시 값으로 대응시킬 &lt;strong>해시 함수 &lt;code>fx&lt;/code>&lt;/strong> 를 찾는 것이다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_1.png"
 width="263"
 height="205"
@@ -140,7 +158,7 @@ string longURL
 &lt;h3 id="해시-함수">해시 함수&lt;/h3>
 &lt;p>해시 함수는 &lt;strong>원래 URL을 단축 URL로 변환&lt;/strong>하는 데 쓰인다.&lt;/p>
 &lt;p>&lt;strong>해시 값 길이&lt;/strong>&lt;br>
-hashValue는 [0-9, a-z, A-Z]의 문자들로 구성된다.&lt;/p>
+hashValue는 &lt;code>[0-9, a-z, A-Z]&lt;/code>의 문자들로 구성된다.&lt;/p>
 &lt;ul>
 &lt;li>사용할 수 있는 문자의 개수는 &lt;code>10 + 26 + 26 = 62&lt;/code>개이다.&lt;/li>
 &lt;li>hashValue의 길이를 정하기 위해서는 &lt;code>62^n &amp;gt;= 3650억&lt;/code>을 만드는 n의 최소값을 찾아야한다.
@@ -157,7 +175,7 @@ width="403"
 height="141"
 srcset="https://codemario318.github.io/post/system-design-interview/8/img_2_hu130b2b42d1534b4e7248d03256cabfb1_16625_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/8/img_2_hu130b2b42d1534b4e7248d03256cabfb1_16625_1024x0_resize_box_3.png 1024w"
 loading="lazy"
-alt="https://en.wikipedia.org/wiki/Systems_design 해시 적용"
+alt="&amp;ldquo;https://en.wikipedia.org/wiki/Systems_design&amp;#34;의 해시값"
 class="gallery-image"
 data-flex-grow="285"
 data-flex-basis="685px"
@@ -228,7 +246,7 @@ data-flex-basis="528px"
 &lt;/tbody>
 &lt;/table>
 &lt;h3 id="url-단축기-상세-설계">URL 단축기 상세 설계&lt;/h3>
-&lt;p>URL 단축기는 시스템의 핵심 컴포넌트이므로, 그 처리흐름이 놀리적으로는 단순해야 하고, 기능적으로는 언제나 동작하는 상태로 유지되어야 한다.&lt;/p>
+&lt;p>URL 단축기는 시스템의 핵심 컴포넌트이므로, 그 처리흐름이 논리적으로는 단순해야 하고, 기능적으로는 언제나 동작하는 상태로 유지되어야 한다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_5.png"
 width="463"
 height="348"
@@ -239,17 +257,8 @@ class="gallery-image"
 data-flex-grow="133"
 data-flex-basis="319px"
 >&lt;/p>
-&lt;ol>
-&lt;li>입력으로 긴 URL을 받는다.&lt;/li>
-&lt;li>데이터베이스에 해당 URL이 있는지 검사한다.&lt;/li>
-&lt;li>데이터베이스에 있다면 해당 URL에 대한 단축 URL을 만든 적이 있는것으로 해당 단축 URL을 클라이언트에게 반환&lt;/li>
-&lt;li>데이터베이스에 없는 경우 유일한 ID를 생성하여 데이터베이스의 기본키로 사용&lt;/li>
-&lt;li>62진법 변환을 적용하여 ID를 단축 URL로 만든다.&lt;/li>
-&lt;li>ID, 단축 URL, 원래 URL로 새 데이터베이스 레코드를 만든 후 단축 URL을 클라이언트에 전달&lt;/li>
-&lt;/ol>
-&lt;hr>
-&lt;p>해당 ID 생성기의 주된 용도는, 단축 URL을 만들 때 사용할 ID를 만드는 것이고, 이 ID는 전역적 유일성이 보장되는 것 이어야 한다.&lt;/p>
-&lt;p>고도로 분산된 환경에서 이런 생성기를 만드는 것은 무척 어려운 일로 필요하다면 7장 내용을 응용하여 분산 환경에 사용될 유일한 ID를 만들 수 있다.&lt;/p>
+&lt;p>해당 ID 생성기의 주된 용도는, 단축 URL을 만들 때 사용할 ID를 만드는 것이고, 이 &lt;strong>ID는 전역적 유일성이 보장&lt;/strong>되는 것 이어야 한다.&lt;/p>
+&lt;p>고도로 분산된 환경에서 이런 생성기를 만드는 것은 무척 어려운 일로 필요하다면 &lt;strong>7장 내용을 응용하여 분산 환경에 사용될 유일한 ID를 만들 수 있다&lt;/strong>.&lt;/p>
 &lt;h3 id="url-리디렉션-상세-설계">URL 리디렉션 상세 설계&lt;/h3>
 &lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/8/img_6.png"
 width="526"
@@ -261,15 +270,7 @@ class="gallery-image"
 data-flex-grow="314"
 data-flex-basis="755px"
 >&lt;/p>
-&lt;p>쓰기보다 읽기를 더 자주하는 시스템의 특성에 맞추어, &lt;code>&amp;lt;단축 URL, 원래 URL&amp;gt;&lt;/code>의 쌍을 캐싱하여 성능을 높힐 수 있다.&lt;/p>
-&lt;p>로드벨런서의 동작 흐름은 다음과 같이 요약할 수 있다.&lt;/p>
-&lt;ol>
-&lt;li>사용자가 단축 URL로 요청&lt;/li>
-&lt;li>로드밸런서가 해당 클릭으로 발생한 요청을 웹 서버에 전달&lt;/li>
-&lt;li>단축 URL이 이미 캐시에 있다면 원래 URL을 바로 꺼내 전달&lt;/li>
-&lt;li>캐시에 없다면 데이터베이스에서 꺼내 전달&lt;/li>
-&lt;li>데이터베이스에서 꺼낸 URL을 캐시에 넣은 후 사용자에게 반환&lt;/li>
-&lt;/ol>
+&lt;p>쓰기보다 읽기를 더 자주하는 시스템의 특성에 맞추어, &lt;code>&amp;lt;단축 URL, 원래 URL&amp;gt;&lt;/code>의 쌍을 &lt;strong>캐싱&lt;/strong>하여 성능을 높힐 수 있다.&lt;/p>
 &lt;h2 id="마무리">마무리&lt;/h2>
 &lt;p>설계를 마친 후 시간이 좀 남는다면 다음과 같은 것을 면접관과 이야기 할 수 있을것이다.&lt;/p>
 &lt;ul>
