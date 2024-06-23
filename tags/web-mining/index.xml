@@ -144,7 +144,7 @@ data-flex-basis="334px"
 &lt;p>대부분의 현대적 웹 크롤러는 크롤링 상태를 &lt;strong>다운로드할 URL&lt;/strong>, &lt;strong>다운로드된 URL&lt;/strong> 두 가지로 나눠 관리한다.&lt;/p>
 &lt;p>다운로드할 URL을 저장 관리하는 컴포넌트를 미수집 URL 저장소(URL Frontier)라고 부른다.&lt;/p>
 &lt;p>&lt;strong>HTML 다운로더&lt;/strong>&lt;/p>
-&lt;p>HTML 다운로더는 &lt;strong>d인터넷에서 웹 페이지를 다운로드하는 컴포넌트&lt;/strong>이다.&lt;/p>
+&lt;p>HTML 다운로더는 &lt;strong>인터넷에서 웹 페이지를 다운로드하는 컴포넌트&lt;/strong>이다.&lt;/p>
 &lt;p>다운로드할 페이지의 URL은 미수집 URL 저장소가 제공한다.&lt;/p>
 &lt;p>&lt;strong>도메인 이름 변환기&lt;/strong>&lt;/p>
 &lt;p>웹 페이지를 다운받으려면 URL을 IP로 변환하는 절차가 필요하므로, HTML 다운로더는 도메인 이름 변환기를 이용하여 &lt;strong>URL에 대응되는 IP 주소를 알아낸다.&lt;/strong>&lt;/p>
@@ -448,7 +448,7 @@ data-flex-basis="295px"
 &lt;/li>
 &lt;/ul>
 &lt;p>&lt;strong>안정성&lt;/strong>&lt;/p>
-&lt;p>시스템 안정성을 향상시키이 위한 접근법 가운데 중요한 몇가지는 아래와 같다.&lt;/p>
+&lt;p>시스템 안정성을 향상하기 위한 접근법 가운데 중요한 몇가지는 아래와 같다.&lt;/p>
 &lt;ul>
 &lt;li>안정 해시
 &lt;ul>
@@ -535,7 +535,7 @@ data-flex-basis="364px"
 &lt;ul>
 &lt;li>서버 측 렌더링
 &lt;ul>
-&lt;li>비동기를 통ㅎ래 동적으로 생성되는 링크는 페이지를 파싱하기 전에 서버 측 렌더링을 적용하면 해결할 수 있다.&lt;/li>
+&lt;li>비동기를 통해 동적으로 생성되는 링크는 페이지를 파싱하기 전에 서버 측 렌더링을 적용하면 해결할 수 있다.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>윈치 않는 페이지 필터링
@@ -543,7 +543,7 @@ data-flex-basis="364px"
 &lt;li>스팸 방지 컴포넌트를 두어 품질이 조악하거나 스팸성인 페이지를 걸러내도록 하면 좋다.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>데이터베이스 다중화및 샤딩
+&lt;li>데이터베이스 다중화 및 샤딩
 &lt;ul>
 &lt;li>다중화나 샤딩 같은 기법을 적용하면 데이터 계층의 가용성, 규모 확장성, 안정성이 향상된다.&lt;/li>
 &lt;/ul>
