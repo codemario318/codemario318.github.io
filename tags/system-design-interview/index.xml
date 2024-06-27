@@ -1,4 +1,439 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 18 Jun 2024 13:54:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>9. 웹 크롤러 설계</title><link>https://codemario318.github.io/post/system-design-interview/9/</link><pubDate>Tue, 18 Jun 2024 13:54:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/9/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/9/cover.png" alt="Featured image of post 9. 웹 크롤러 설계" />&lt;h2 id="웹-크롤러">웹 크롤러?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System Design Interview on Mario Blog</title><link>https://codemario318.github.io/tags/system-design-interview/</link><description>Recent content in System Design Interview on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 27 Jun 2024 21:43:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/system-design-interview/index.xml" rel="self" type="application/rss+xml"/><item><title>10. 알람 시스템 설계</title><link>https://codemario318.github.io/post/system-design-interview/10/</link><pubDate>Thu, 27 Jun 2024 21:43:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/10/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/cover.png" alt="Featured image of post 10. 알람 시스템 설계" />&lt;p>알림 시스템은 최근 많은 프로그램들이 채택한 인기 있는 기능이다.&lt;/p>
+&lt;p>고객에게 중요할 만한 정보를 &lt;strong>비동기적&lt;/strong>으로 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>모마일 푸시 알림&lt;/li>
+&lt;li>SMS 메시지&lt;/li>
+&lt;li>이메일&lt;/li>
+&lt;/ul>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>하루에 백만 건 이상의 알림을 처리하는 확장성 높은 시스템을 구축하는건 쉬운 과제가 아니다.&lt;/p>
+&lt;p>알림 시스템이 어떻게 구현되는지에 대한 깊은 이해가 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>Q. 어떤 종류의 알림을 지원해야하는가?
+&lt;ul>
+&lt;li>A. 푸시 알림, SMS 메시지, dlapdlf&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 실시간 시스템?
+&lt;ul>
+&lt;li>A. 연성 실시간 시스템 &amp;gt; 빨리 전달해야하지만 시스템의 부하가 심할 때 약간의 지연은 무방함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 지원 단말?
+&lt;ul>
+&lt;li>A. IOS, 안드로이드, 랩톱/데스크톱&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 알림은 누가 만들 수 있는가?
+&lt;ul>
+&lt;li>A. 클라이언트 애프리케이션, 서버측 스케쥴링&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 알림 거부 가능?
+&lt;ul>
+&lt;li>A. 예&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 하루 몇 건의 알림 처리?
+&lt;ul>
+&lt;li>A. 천만 건 푸시 알림, 백만 건 SMS, 5백만 건 이메일&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;h3 id="알림-유형-별-지원-방안">알림 유형 별 지원 방안&lt;/h3>
+&lt;p>유형에 따라 동작하는 알림 메커니즘에 차이가 있다.&lt;/p>
+&lt;p>&lt;strong>IOS 푸시 알림&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img.png"
+width="575"
+height="126"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_hu740000bab3f30bdd0a1a67ae3b5eabd1_20508_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_hu740000bab3f30bdd0a1a67ae3b5eabd1_20508_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="ios 푸시 알림 컴포넌트"
+class="gallery-image"
+data-flex-grow="456"
+data-flex-basis="1095px"
+>&lt;/p>
+&lt;p>IOS에서 푸시 알림을 보내기 위해서는 3가지 컴포넌트가 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>일림 제공자(provider)
+&lt;ul>
+&lt;li>알림 요청을 만들어 &lt;strong>애플 푸시 알림 서비스&lt;/strong>(APNS)로 보내는 주체로 두개의 정보가 필요하다.&lt;/li>
+&lt;li>&lt;strong>단말 토큰&lt;/strong>: 알림 요청을 보내는 데 필요한 고유 식별자&lt;/li>
+&lt;li>&lt;strong>페이로드&lt;/strong>: 알림 내용을 담은 JSON 딕셔너리&lt;/li>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;aps&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;alert&amp;#34;&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Game Request&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;body&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Bob wants to play chess&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;action-loc-key&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;PLAY&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;badge&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>APNS
+&lt;ul>
+&lt;li>애플이 제공하는 원격 서비스&lt;/li>
+&lt;li>푸시 알림을 IOS 장치로 보내는 역할을 담당.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>IOS 단말
+&lt;ul>
+&lt;li>푸시 알림을 수신하는 사용자의 단말&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>안드로이드 푸시 알림&lt;/strong>&lt;/p>
+&lt;p>APNS를 사용하는 IOS와 달리 FCM(Firebase Cloud Messaging)을 사용한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_1.png"
+width="634"
+height="142"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_1_hu230abd40214ac2cc9d4d6ae33273b666_22808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_1_hu230abd40214ac2cc9d4d6ae33273b666_22808_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="AOS 푸시 알림 컴포넌트"
+class="gallery-image"
+data-flex-grow="446"
+data-flex-basis="1071px"
+>&lt;/p>
+&lt;p>&lt;strong>SMS 메시지&lt;/strong>&lt;/p>
+&lt;p>트윌리오(Twilio), 넥스모(Nexmo)같은 제3 사업자의 서비스를 많이 이용한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_2.png"
+width="645"
+height="166"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_2_hua9b34508436b686eb916dc3bc2dce64b_27617_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_2_hua9b34508436b686eb916dc3bc2dce64b_27617_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="SMS 메시지 컴포넌트"
+class="gallery-image"
+data-flex-grow="388"
+data-flex-basis="932px"
+>&lt;/p>
+&lt;p>&lt;strong>이메일&lt;/strong>&lt;/p>
+&lt;p>대부분 고유 이메일 서버를 구축할 역량을 가지고 있지만, 상용 이메일 서비스를 이용한다.&lt;/p>
+&lt;ul>
+&lt;li>센드그리드, 메일침프&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_3.png"
+width="635"
+height="137"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_3_hu87f4edfcf86cd64dbb4cab74e62a2243_26432_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_3_hu87f4edfcf86cd64dbb4cab74e62a2243_26432_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="이메일 컴포넌트"
+class="gallery-image"
+data-flex-grow="463"
+data-flex-basis="1112px"
+>&lt;/p>
+&lt;hr>
+&lt;p>지금까지의 언급한 모든 알림 유형을 한 시스템으로 묶어면 아래와 같다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_4.png"
+width="405"
+height="767"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_4_hu994f53c88cb3013bc3a97423d78ab8b7_76258_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_4_hu994f53c88cb3013bc3a97423d78ab8b7_76258_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최종"
+class="gallery-image"
+data-flex-grow="52"
+data-flex-basis="126px"
+>&lt;/p>
+&lt;h3 id="연락처-정보-수집-절차">연락처 정보 수집 절차&lt;/h3>
+&lt;p>알림을 보내기 위해 &lt;strong>모바일 단말 토큰&lt;/strong>, &lt;strong>전화번호&lt;/strong>, &lt;strong>이메일 주소&lt;/strong> 등 정보가 필요하다.&lt;/p>
+&lt;p>사용자가 앱을 설치하거나 처음으로 계정을 등록할 때 API 서버는 해당 사용자의 정보를 수집하여 데이터베이스에 저장한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_5.png"
+width="834"
+height="202"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_5_huad049bab1460305989d0ac3f2e4bbf4b_85105_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_5_huad049bab1460305989d0ac3f2e4bbf4b_85105_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="연락처 정보 수집 절차"
+class="gallery-image"
+data-flex-grow="412"
+data-flex-basis="990px"
+>&lt;/p>
+&lt;p>필수적인 정보만 포함한 스키마는 아래와 같다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+USER {
+bigint user_id
+varchar email
+integer coutry_code
+integer phone_number
+timestamp created_at
+}
+DEVICE {
+bigint id
+varchar device_token
+bigint user_id
+timestamp last_logged_in_at
+}
+&lt;/pre>
+&lt;ul>
+&lt;li>이메일 주소와 전화번호는 &lt;code>USER&lt;/code> 테이블에 저장하고, 단말 토큰은 &lt;code>DEVICE&lt;/code> 테이블에 저장한다.&lt;/li>
+&lt;li>한 사용자가 여러 단말을 가질 수 있다.&lt;/li>
+&lt;li>알림은 모든 단말에 전송되어야 한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="알림-전송-및-수신-절차">알림 전송 및 수신 절차&lt;/h3>
+&lt;p>개략적으로 설계하고 점차적으로 최적화한다.&lt;/p>
+&lt;p>&lt;strong>개략적 설계안(초안)&lt;/strong>&lt;/p>
+&lt;p>서버를 1대만 사용하는 시스템이라 가정한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_6.png"
+width="836"
+height="624"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_6_hu79685c192455f85017d1b07942a95c3d_90148_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_6_hu79685c192455f85017d1b07942a95c3d_90148_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안(초안)"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="321px"
+>&lt;/p>
+&lt;ul>
+&lt;li>Service 1 ~ N
+&lt;ul>
+&lt;li>마이크로서비스, 크론잡, 분산 시스템 컴포넌트 일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 시스템
+&lt;ul>
+&lt;li>알림 전송/수신 처리의 핵심&lt;/li>
+&lt;li>Service 1 ~ N에 알림 전송을 위한 *&lt;em>API 제공&lt;/em>&lt;/li>
+&lt;li>제3자 서비스에 전달할 &lt;strong>알림 페이로드 생성&lt;/strong>&lt;/li>
+&lt;li>확장성을 유의해야함, 쉽게 새로운 서비스를 통합하거나 기존 서비스를 제거할 수 있어야함&lt;/li>
+&lt;li>어떤 서비스는 다른 시장에서는 사용할 수 없을 수도 있다. (FCM은 중국서 사용불가)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단말&lt;/li>
+&lt;/ul>
+&lt;p>위와 같은 설계에는 몇 가지 문제가 있다.&lt;/p>
+&lt;ul>
+&lt;li>SPOF
+&lt;ul>
+&lt;li>알림 서비스에 서버가 하나 뿐이라 서버 장애 발생시 전체 서비스 장애로 이어진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>규모 확장성
+&lt;ul>
+&lt;li>한 대 서비스로 푸시 알림에 관계된 모든 것을 처리하므로, 데이터베이스나 캐시 등 중요 컴포넌트의 규모를 개별적으로 늘릴 수 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>성능 병목
+&lt;ul>
+&lt;li>알림을 처리하고 보내는 것은 자원을 많이 필요로할 수 있어, 트래픽이 몰리면 과부하 상태에 빠질 수 있다.
+&lt;ul>
+&lt;li>HTML 페이지 생성&lt;/li>
+&lt;li>제3자 서비스의 응답 대기&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>개략적 설계안(개선)&lt;/strong>&lt;/p>
+&lt;p>최초 개략적 설계안에서 다음과 같은 문제를 개선했다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>데이터베이스&lt;/strong>와 &lt;strong>캐시&lt;/strong>를 알림 시스템에서 분리&lt;/li>
+&lt;li>&lt;strong>알림 서버 증설&lt;/strong> 및 &lt;strong>자동 수평 규모 확장&lt;/strong> 추가&lt;/li>
+&lt;li>&lt;strong>메시지 큐&lt;/strong>를 이용해 시스템 컴포넌트 사이의 강한 결합을 끊는다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_7.png"
+width="788"
+height="495"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_7_huc5bb10796dc5d83e13d2174837213014_204960_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_7_huc5bb10796dc5d83e13d2174837213014_204960_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안(개선)"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>&lt;/p>
+&lt;ul>
+&lt;li>서비스(1~N)
+&lt;ul>
+&lt;li>알림 시스템 서버의 API를 통해 알림을 보낼 서비스들&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 서버
+&lt;ul>
+&lt;li>알림 전송 API
+&lt;ul>
+&lt;li>스팸 방지를 위해 사내 서비스 또는 인증된 클라이언트만 이용 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 검증
+&lt;ul>
+&lt;li>이메일, 전화번호 등 기본적 검증 수행&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터베이스 또는 캐시 질의
+&lt;ul>
+&lt;li>알림에 포함시킬 데이터를 가져온다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 전송
+&lt;ul>
+&lt;li>알림 데이터를 메시지 큐에 넣는다.&lt;/li>
+&lt;li>하나 이상의 메시지 큐를 이용하면 병렬적으로 처리할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>캐시
+&lt;ul>
+&lt;li>사용자 정보, 단말 정보, 알림 템플릿 등을 캐시한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>DB
+&lt;ul>
+&lt;li>사용자, 알림, 설정 등 다양한 정보 저장&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메시지 큐
+&lt;ul>
+&lt;li>시스템 컴포넌트 간 의존성을 제거한다.&lt;/li>
+&lt;li>다량의 알림이 전송되어야 하는 경우 버퍼 역할도 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>작업 서버
+&lt;ul>
+&lt;li>메시지 큐에서 전송할 알림을 꺼내 제3자 서비스로 전달한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="안정성">안정성&lt;/h3>
+&lt;p>분산 환경에서 운영될 알림 시스템을 설계할 때는 안정성을 확보하기 위한 사앙 몇 가지를 반드시 고려해야한다.&lt;/p>
+&lt;p>&lt;strong>데이터 손실 방지&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_8.png"
+width="544"
+height="319"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_8_hucbd178a7d97384a0a3abf8183f284e96_66785_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_8_hucbd178a7d97384a0a3abf8183f284e96_66785_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터 손실 방지"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="409px"
+>&lt;/p>
+&lt;p>알림 전송 시스템의 가장 중요한 요구사항 가운데 하나는 &lt;strong>어떤 상황에서도 알림이 소실되면 안된다&lt;/strong>는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>지연되거나 순서가 달라도 사라지면 안된다&lt;/li>
+&lt;/ul>
+&lt;p>이를 위해 알림 데이터를 데이터베이스에 보관하고 재시도하는 메커니즘을 구현해야 한다.&lt;/p>
+&lt;p>&lt;strong>알림 중복 전송 방지&lt;/strong>&lt;/p>
+&lt;p>같은 알림이 여러 번 반복되는 것을 완전히 막는 것은 불가능하다.&lt;/p>
+&lt;p>그 빈도를 줄이기 위해 중복을 탐지하는 매커니즘을 도입하고, 오류를 신중하게 처리해아한다.&lt;/p>
+&lt;ul>
+&lt;li>보내야 할 알림이 도착하면 그 이벤트 ID를 검사하여 이전에 본 적이 있는 이벤트인지 살핀다.&lt;/li>
+&lt;li>중복된 이벤트면 버리고, 그렇지 않으면 알림을 발송한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="추가로-필요한-컴포넌트-및-고려사항">추가로 필요한 컴포넌트 및 고려사항&lt;/h3>
+&lt;p>&lt;strong>알림 템플릿&lt;/strong>&lt;/p>
+&lt;p>알림 메시지 대부분은 형식이 비슷하다.&lt;/p>
+&lt;p>알림 템플릿은 이런 유사성을 고려하여, 알림 메시지의 모든 부분을 처음부터 다시 만들 필요 없도록 한다.&lt;/p>
+&lt;ul>
+&lt;li>사전에 지정한 형식에 맞춰 알람을 만들어 내는 틀이다.&lt;/li>
+&lt;li>전송될 알림들의 형식을 일관성 있게 유지할 수 있다.&lt;/li>
+&lt;li>오류 가능성뿐 아니라 알림 작성에 드는 시간도 줄일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>알림 설정&lt;/strong>&lt;/p>
+&lt;p>사용자가 알림 설정을 상세히 조정할 수 있도록 한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+OPT {
+bigint user_id
+varchar channel
+boolean opt_in
+}
+&lt;/pre>
+&lt;p>이와 같은 설정을 도입했다면 알람을 보내기 전 반드시 해당 사용자가 알림을 켜 두었는지 확인해야한다.&lt;/p>
+&lt;p>&lt;strong>전송률 제한&lt;/strong>&lt;/p>
+&lt;p>한 사용자가 받을 수 있는 알림의 빈도를 제한하여 사용자에게 많은 알림을 보내지 않도록 할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>알림을 너무 많이 보내기 시작하면 사용자가 알림 기능을 꺼버릴 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>재시도 방법&lt;/strong>&lt;/p>
+&lt;p>써드 파티 서비스가 알림 전송에 실패하면, 해당 알림을 재시도 전용 큐에 넣고 같은 문제가 계속해서 발생하면 개발자에게 통지한다.&lt;/p>
+&lt;p>&lt;strong>푸시 알림과 보안&lt;/strong>&lt;/p>
+&lt;p>IOS와 안드로이드 앱의 경우, 알림 전송 API는 appKey와 appSecret을 사용하여 보안을 유지한다.&lt;/p>
+&lt;p>이러한 방식으로 인증된 혹은 승인된 클라이언트만 해당 API를 사용할 수 있다.&lt;/p>
+&lt;p>&lt;strong>큐 모니터링&lt;/strong>&lt;/p>
+&lt;p>큐에 쌓인 알림의 개수를 보고 작업 서버들의 처리량을 쉽게 모니터링 할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>너무 크면 이벤트를 빠르게 처리하지 못하고있다는 뜻&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>이벤트 추적&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_9.png"
+width="769"
+height="409"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_9_hud2dbc79b7de8b0aa132399e5d3082a08_62119_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_9_hud2dbc79b7de8b0aa132399e5d3082a08_62119_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="이벤트 추적"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;p>알림 확인율, 클릭율, 실제 앱 사용으로 이어지는 비율 같은 메트릭은 사용자를 이해하는데 중요하다.&lt;/p>
+&lt;p>보통 알림 시스템을 만들면 데이터 분석 서비스와도 통합하는 경우가 많다.&lt;/p>
+&lt;p>&lt;strong>수정된 설계안&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/10/img_10.png"
+width="841"
+height="514"
+srcset="https://codemario318.github.io/post/system-design-interview/10/img_10_huf8cbea8348c39c7ce30b64e29ad9daf9_149286_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/10/img_10_huf8cbea8348c39c7ce30b64e29ad9daf9_149286_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="수정된 설계안"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="392px"
+>&lt;/p>
+&lt;p>이전 설계안과의 차이점은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>알림 서버에 인증과 전송률 제한 기능이 추가&lt;/li>
+&lt;li>전송 실패에 대응하기 위한 재시도 기능 추가
+&lt;ul>
+&lt;li>다시 큐에 넣고 지정된 횟수만큼 재시도&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>전송 템플릿을 사용하여 알림 생성 과정을 단순화하고 알림 내용의 일관성을 유지&lt;/li>
+&lt;li>모니터링과 추적 시스템 추가&lt;/li>
+&lt;/ul>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>규모 확장이 쉬울 뿐 아니라 푸시 알림, SMS 메시지, 이메일 등 다양한 정보 전달 방식을 지원하는 알림 시스템을 구축했다.&lt;/p>
+&lt;p>시스템 컴포넌트 사이의 결함도를 낮추기 위해 메시지 큐를 적극적으로 사용하였다.&lt;/p>
+&lt;ul>
+&lt;li>안정성
+&lt;ul>
+&lt;li>메시지 전송 실패율을 낮추기 위해 안정적인 재시도 메커니즘을 도입&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>보안
+&lt;ul>
+&lt;li>인징된 클라이언트만이 알림을 보낼 수 있도록 보안 매커니즘 추가(appKey, appSecret)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>이벤트 추적 및 모니터링&lt;/li>
+&lt;li>사용자 설정
+&lt;ul>
+&lt;li>사용자가 알림 수신 설정을 조정할 수 있도록 함&lt;/li>
+&lt;li>알람을 보내기 전 해당 설정을 확인하도록 스스템 설계를 변경&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>전송률 제한
+&lt;ul>
+&lt;li>사용자에게 알림을 보내는 빈도를 제한할 수 있도록 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>9. 웹 크롤러 설계</title><link>https://codemario318.github.io/post/system-design-interview/9/</link><pubDate>Tue, 18 Jun 2024 13:54:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/9/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/9/cover.png" alt="Featured image of post 9. 웹 크롤러 설계" />&lt;h2 id="웹-크롤러">웹 크롤러?&lt;/h2>
 &lt;p>웹 크롤러는 로봇(Robot) 또는 스파이더(Spider)라고도 부르는 검색 엔진에서 널리 쓰는 기술로, &lt;strong>웹에 새로 올라오거나 갱신된 콘텐츠를 찾아내는 것이 주된 목적&lt;/strong>이다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/9/img.png"
 width="690"
