@@ -11,7 +11,7 @@
 &lt;ul>
 &lt;li>Q. 어떤 종류의 알림을 지원해야하는가?
 &lt;ul>
-&lt;li>A. 푸시 알림, SMS 메시지, dlapdlf&lt;/li>
+&lt;li>A. 푸시 알림, SMS 메시지, 이메일&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Q. 실시간 시스템?
@@ -26,7 +26,7 @@
 &lt;/li>
 &lt;li>Q. 알림은 누가 만들 수 있는가?
 &lt;ul>
-&lt;li>A. 클라이언트 애프리케이션, 서버측 스케쥴링&lt;/li>
+&lt;li>A. 클라이언트 애플리케이션, 서버측 스케쥴링&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Q. 알림 거부 가능?

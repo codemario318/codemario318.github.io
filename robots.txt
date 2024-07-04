@@ -3,9 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview/10/
-
-
+Allow: /post/system-design-interview/11/
 
 
 
@@ -18,6 +16,16 @@ Allow: /post/system-design-interview/10/
 Allow: /post/
 
 
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview/10/
 
 
 
