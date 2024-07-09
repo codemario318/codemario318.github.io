@@ -456,7 +456,7 @@ data-flex-basis="276px"
 &lt;p>이러한 설계는 소규모 그룹 채팅에 적합하다.&lt;/p>
 &lt;ul>
 &lt;li>새로운 메시지가 왔는지 확인하려면 자기 큐만 보면 되므로 메시지 동기화 플로가 단순하다.&lt;/li>
-&lt;li>그룹이 크지 않으면 메시지를 수신자별로 복사해서 큐에 넣는 작업 미용이 문제되지 않는다.&lt;/li>
+&lt;li>그룹이 크지 않으면 메시지를 수신자별로 복사해서 큐에 넣는 작업 비용이 문제되지 않는다.&lt;/li>
 &lt;/ul>
 &lt;p>많은 사용자를 지원해야 하는 경우라면 똑같은 메시지를 모든 사용자의 큐에 복사하는 게 바람직하지 않다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/12/img_12.png"
