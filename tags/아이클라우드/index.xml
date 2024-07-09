@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>아이클라우드 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%95%84%EC%9D%B4%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/</link><description>Recent content in 아이클라우드 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 09 Jul 2024 15:46:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%95%84%EC%9D%B4%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>15. 구글 드라이브 설계</title><link>https://codemario318.github.io/post/system-design-interview/15/</link><pubDate>Tue, 09 Jul 2024 15:46:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/15/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/cover.png" alt="Featured image of post 15. 구글 드라이브 설계" />&lt;p>클라우드 저장소 서비스는 최근 높은 인기를 누리게 된 대표적 클라우드 서비스다.&lt;/p>
+&lt;p>그 가운데 구글 드라이브 서비스를 설계해 본다.&lt;/p>
+&lt;p>구글 드라이브는 &lt;strong>파일 저장 및 동기화 서비스&lt;/strong>로, 문서, 사진, 비디오, 기타 피일을 &lt;strong>클라우드에 보관&lt;/strong>할 수 있도록 한다.&lt;/p>
+&lt;ul>
+&lt;li>이 파일은 컴퓨터, 스마트폰, 태블릿 등 어떤 단말에서도 이용 가능해야한다.&lt;/li>
+&lt;li>보관된 파일은 친구, 가족, 동료 들과 손쉽게 공유할 수 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;ul>
+&lt;li>Q. 지원해야할 기능?
+&lt;ul>
+&lt;li>A. 파일 업로드/다운로드, 파일 동기화, 알림&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 모바일 앱, 웹 앱 중 지원 범위
+&lt;ul>
+&lt;li>A. 웹, 앱 둘다&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 파일 암호화 처리?
+&lt;ul>
+&lt;li>A. Y&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 파일 크기 제한?
+&lt;ul>
+&lt;li>A. 10GB&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 사용자는?
+&lt;ul>
+&lt;li>A. DAU 천만명&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이번 장에서는 다음 기능의 설계에 집중한다.&lt;/p>
+&lt;ul>
+&lt;li>파일 추가
+&lt;ul>
+&lt;li>가장 쉬운 방법은 파일을 구글 드라이브 안으로 떨구는 것(Drag-and-drop)이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파일 다운로드&lt;/li>
+&lt;li>여러 단말에 파일 동기화
+&lt;ul>
+&lt;li>한 단말에서 파일을 추가하면 다른 단말에도 자동 동기화되어야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파일 갱신 이력 조회&lt;/li>
+&lt;li>파일 공유&lt;/li>
+&lt;li>파일 편집, 삭제, 새롭게 공유 되었을 때 알림 표시&lt;/li>
+&lt;/ul>
+&lt;p>기능적 요구사항 외, 비-기능적 요구사항을 이해하는 것도 중요하다.&lt;/p>
+&lt;ul>
+&lt;li>안정성
+&lt;ul>
+&lt;li>저장소 시스템의 안정성은 아주 중요하다.&lt;/li>
+&lt;li>데이터 손실이 발생하면 안된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>빠른 동기화
+&lt;ul>
+&lt;li>동기화 사긴이 너무 많이 걸리면 인내심을 읽고 제품을 더 이상 사용하지 않을 것&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>네트워크 대역폭
+&lt;ul>
+&lt;li>네트워크 대역폭을 불필요하게 많이 소모한다면 사용자가 좋아하지 않을 것&lt;/li>
+&lt;li>모바일 데이터 플랜이라면 더욱더&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>규모 확장성
+&lt;ul>
+&lt;li>아주 많은 양의 트래픽도 처리 가능해야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>높은 가용성
+&lt;ul>
+&lt;li>일부 서버의 장애, 지연, 네트워크 이슈가 발생해도 계속 사용 가능해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-추정치">개략적 추정치&lt;/h3>
+&lt;ul>
+&lt;li>가입 사용자는 오천만명, 천만명의 DAU 가정&lt;/li>
+&lt;li>모든 사용자에게 10GB 무료 저장공간 할당&lt;/li>
+&lt;li>매일 각 사용자가 평균 2개의 파일을 업로드 한다고 가정&lt;/li>
+&lt;li>파일 크기 평균 500KB 가정&lt;/li>
+&lt;li>읽기, 쓰기 비율은 1:1&lt;/li>
+&lt;li>&lt;code>필요한 저장공간 총량 = 5천만 사용자 * 10GB = 500PB&lt;/code>&lt;/li>
+&lt;li>&lt;code>업로드 API QPS = 1천만 사용자 * 2회 / 24시간 /3600초 = 240&lt;/code>&lt;/li>
+&lt;li>&lt;code>최대 QPS = QPS * 2 = 480&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>모든 것을 담은 한 대 서버에서 출발해 점진적으로 천만 사용자 지원이 가능한 시스템으로 발전시켜 나간다.&lt;/p>
+&lt;ul>
+&lt;li>파일을 올리고 다운로드 하는 과정을 처리할 웹서버&lt;/li>
+&lt;li>사용자 데이터, 로그인 정보, 파일 정보 드으이 메타데이터를 보관할 데이터베이스&lt;/li>
+&lt;li>파일을 저장할 저장소 시스템.
+&lt;ul>
+&lt;li>1TB 사용 예정&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>웹 서버, 데이터베이스 설치 후, 파일이 저장될 &lt;code>drive/&lt;/code> 디렉터리를 준비한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img.png"
+width="688"
+height="311"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_hub24c5a9894590f2559d10c8a4efc626c_63107_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_hub24c5a9894590f2559d10c8a4efc626c_63107_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파일 저장 예시"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="530px"
+>&lt;/p>
+&lt;ul>
+&lt;li>디렉터리 안에는 네임스페이스라 불리는 하위 디렉터리를 둔다.&lt;/li>
+&lt;li>각 네임스페이스 안에는 특정 사용자가 올린 파일이 보관된다.&lt;/li>
+&lt;li>파일들은 원래 파일과 같은 이름을 갖는다.&lt;/li>
+&lt;li>각 파일과 폴더는 그 상대 경로를 네임스페이스 이름과 결합하면 유일하게 식별할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="api">API&lt;/h3>
+&lt;p>이 시스템은 3가지 API가 필요하다.&lt;/p>
+&lt;h4 id="파일-업로드-api">파일 업로드 API&lt;/h4>
+&lt;p>&lt;strong>단순 업로드&lt;/strong>&lt;/p>
+&lt;p>파일 크기가 작을 때 사용한다.&lt;/p>
+&lt;p>&lt;strong>이어 올리기(resumable upload)&lt;/strong>&lt;/p>
+&lt;p>파일 사이즈가 크고 네트워크 문제로 업로드가 중단될 가능성이 높다고 생각되면 사용한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">https://api.example.com/files/upload?uploadType=resumable
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>인자
+&lt;ul>
+&lt;li>&lt;code>uploadType=resumable&lt;/code>&lt;/li>
+&lt;li>&lt;code>data&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이어올리기는 다음 세 단계 절차로 이루어진다.&lt;/p>
+&lt;ol>
+&lt;li>이어 올리기 URL을 받기 위한 최초 요청 전송&lt;/li>
+&lt;li>데이터를 업로드하고 업로드 상태 모니터링&lt;/li>
+&lt;li>업로드에 장애가 발생하면 장애 발생시점부터 업로드를 재시작&lt;/li>
+&lt;/ol>
+&lt;h4 id="파일-다운로드-api">파일 다운로드 API&lt;/h4>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">https://api.example.com/files/download
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>인자&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>path&lt;/code>
+&lt;ul>
+&lt;li>다운로드할 파일의 경로&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;path&amp;#34;: &amp;#34;/recipes/soup/best_soup.txt&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="파일-갱신-히스토리">파일 갱신 히스토리&lt;/h4>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">https://api.exmaple.com/files/list_revisions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>인자&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>path&lt;/code>: 갱신 히스토리를 가져올 파일의 경로&lt;/li>
+&lt;li>&lt;code>limit&lt;/code>: 히스토리 길이의 최대치&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;path&amp;#34;: &amp;#34;/recipes/soup/best_soup.txt&amp;#34;,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;limit&amp;#34;: 20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>나열한 모든 API는 사용자 인증을 필요로 하고, 클라이언트와 백엔드 서버가 주고받는 데이터를 보호하기 위해 &lt;code>HTTPS&lt;/code> 프로토콜을 사용해야한다.&lt;/p>
+&lt;h3 id="한-대-서버의-제약-극복">한 대 서버의 제약 극복&lt;/h3>
+&lt;p>파일이 많아지면 결국 가득 차게되어 더 이상 파일을 올릴 수 없으므로 긴급히 문제를 해결해야한다.&lt;/p>
+&lt;p>쉬운 해결책으로 &lt;strong>샤딩&lt;/strong>을 통해 데이터를 여러 서버에 나누어 저장하는 방법을 고려할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_1.png"
+width="549"
+height="382"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_1_hue1f43ec1f6b9cd6c37e81cda8b5995c5_45245_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_1_hue1f43ec1f6b9cd6c37e81cda8b5995c5_45245_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="샤딩"
+class="gallery-image"
+data-flex-grow="143"
+data-flex-basis="344px"
+>&lt;/p>
+&lt;p>서버를 직접 관리했을 때, 장애가 생기면 데이터를 잃게될 수 있으므로 불안하다.&lt;/p>
+&lt;p>넷플릭스, 에어비엔비 같은 시장 주도 기업들은 저장소로 &lt;strong>아마존 S3&lt;/strong>를 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>업계 최고 수준의 규모 확장성, 가용성, 보안, 성능을 제공하는 객체 저장소 서비스&lt;/li>
+&lt;li>같은 지역 안에서 다중화, 여러 지역에 걸쳐 다중화가 가능하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_2.png"
+width="820"
+height="269"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_2_hufcdd6e06324f9d7c9cd88babfdc6839a_145452_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_2_hufcdd6e06324f9d7c9cd88babfdc6839a_145452_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="다중화"
+class="gallery-image"
+data-flex-grow="304"
+data-flex-basis="731px"
+>&lt;/p>
+&lt;p>따라서 S3를 사용을 결정한다. 하지만 미래에 비슷한 문제(사용자 증가로 인해 발생하는 문제)가 벌어지는 것을 막기 위해, 개선할 부분을 더 찾아보면 아래와 같다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_3.png"
+width="498"
+height="682"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_3_hu7c8b4e63be5e874ab6c187e11a695377_134558_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_3_hu7c8b4e63be5e874ab6c187e11a695377_134558_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="수정한 설계안"
+class="gallery-image"
+data-flex-grow="73"
+data-flex-basis="175px"
+>&lt;/p>
+&lt;ul>
+&lt;li>로드밸런서
+&lt;ul>
+&lt;li>트래픽을 고르게 분산할 수 있다.&lt;/li>
+&lt;li>특정 웹 서버에 장애가 발생하면 자동으로 해당 서버를 우회한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>웹 서버
+&lt;ul>
+&lt;li>로드밸런서를 추가하고 나면 더 많은 웹 서버를 손쉽게 추가할 수 있다.&lt;/li>
+&lt;li>트래픽이 폭증해도 쉽게 대응 가능하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 데이터베이스
+&lt;ul>
+&lt;li>데이터베이스를 파일 저장 서버에서 분리하여 SPOF를 회피한다.&lt;/li>
+&lt;li>다중화 및 샤딩 정책을 정용하여 가용성과 규모 확장성 요구사항에 대응한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파일 저장소
+&lt;ul>
+&lt;li>S3를 파일 저장소로 사용하고 가용성과 데이터 무손실을 보장하기 위해 두 개 이상의 지역에 데이터를 다중화한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="동기화-충돌">동기화 충돌&lt;/h3>
+&lt;p>구글 드라이브 같은 대형 저장소 시스템의 경우 동기화 충돌이 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>두 명 이상의 사용자가 같은 파일이나 폴더를 동시에 업데이트하려고 하는 경우&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_4.png"
+width="835"
+height="188"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_4_hu342e61e0409206514e14b35844cf2592_55317_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_4_hu342e61e0409206514e14b35844cf2592_55317_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="충돌 해소 전략"
+class="gallery-image"
+data-flex-grow="444"
+data-flex-basis="1065px"
+>&lt;/p>
+&lt;p>먼저 처리되는 변경은 성공한 것으로 보고, 나중에 처리되는 변경은 충돌이 발생한 것으로 표시하는 전략을 사용할 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>사용자 1과 2는 같은 파일을 동시에 갱신을 시도한다.&lt;/li>
+&lt;li>사용자 1의 요청이 먼저 처리된다.&lt;/li>
+&lt;li>사용자 2는 동기화 충돌 오류가 발생한다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>충돌 오류 해소&lt;/strong>&lt;/p>
+&lt;p>오류가 발생한 시점에 이 시스템에는 같은 파일의 두가지 버전이 존재하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>사용자 2가 가지고 있는 로컬 사본과 서버에 있는 최신 버전&lt;/li>
+&lt;/ul>
+&lt;p>이 상태에서는 &lt;strong>두 파일을 하나로 합칠지&lt;/strong> 아니면 &lt;strong>둘 중 하나를 다른 파일로 대체할지&lt;/strong>를 결정해야한다.&lt;/p>
+&lt;h3 id="개략적-설계안">개략적 설계안&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_5.png"
+width="762"
+height="578"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_5_hu0a421274c901a4c9b3c387104fb85a94_147635_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_5_hu0a421274c901a4c9b3c387104fb85a94_147635_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;ul>
+&lt;li>사용자 단말
+&lt;ul>
+&lt;li>사용자가 이용하는 웹 브라우저 또는 모바일 앱 등의 클라이언트&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>블록 저장소 서버(block server, block-level storage)
+&lt;ul>
+&lt;li>파일 블록을 클라우드 저장소에 업로드하는 서버&lt;/li>
+&lt;li>클라우드 환경에서 데이터 파일을 저장하는 기술&lt;/li>
+&lt;li>파일을 여러개의 블록으로 나눠 저장하며, 각 블록에는 고유한 해시값을 할당&lt;/li>
+&lt;li>해시값은 메타데이터 데이터베이스에 저장됨&lt;/li>
+&lt;li>각 블록은 독립적인 객체로 취급되어 클라우드 저장소 시스템에 보관(여기서는 s3)&lt;/li>
+&lt;li>파일 재구성 시 블록들을 원래 순서대로 합친다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>클라우드 저장소
+&lt;ul>
+&lt;li>파일을 블록 단위로 나눠 클라우드 저장소에 보관한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>아카이빙 저장소(cold storage)
+&lt;ul>
+&lt;li>오랫동안 사용되지 않은 비활성 데이터를 저장한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>로드밸런서
+&lt;ul>
+&lt;li>요청을 모든 API 서버에 고르게 분산한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>API 서버
+&lt;ul>
+&lt;li>파일 업로드 외 거의 모든 것을 담당&lt;/li>
+&lt;li>사용자 인증, 사용자 프로파일 관리, 파일 메타데이터 갱신 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 데이터베이스
+&lt;ul>
+&lt;li>사용자, 파일, 블록, 버전 등의 메타데이터 정보를 관리&lt;/li>
+&lt;li>실제 파일은 클라우드에 보관&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 캐시
+&lt;ul>
+&lt;li>성능을 높이기 위해 자주 쓰이는 메타데이터를 캐시&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 서비스
+&lt;ul>
+&lt;li>특정 이벤트가 발생했음을 클라이언트에게 알리는 발생/구독 프로토콜 기반 시스템&lt;/li>
+&lt;li>파일 추가, 편집, 삭제 되었음을 알린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>오프라인 사용자 백업 큐(offline backup queue)
+&lt;ul>
+&lt;li>클라이언트가 접속 중이 아니라서 파일의 최신 상태를 확인할 수 없을 때는 해당 정보를 이 큐에 두어 나중에 클라이언트가 접속했을 때 동기화한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="블록-저장소-서버">블록 저장소 서버&lt;/h3>
+&lt;p>정기적으로 갱신되는 큰 파일들은 업데이트가 일어날 때마다 전체 파일을 서버로 보내면 네트워크 대역폭을 많이 사용하게된다.&lt;/p>
+&lt;p>이를 최적화하는 방법으로 두 가지 정도를 생각해 볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>델타 동기화(delta sync)
+&lt;ul>
+&lt;li>파일이 수정되면 전체 파일 대신 수정이 일어난 블록만 동기화&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>압축(compression)
+&lt;ul>
+&lt;li>블록 단위로 압축해 두면 데이터 크기를 많이 줄일 수 있다.&lt;/li>
+&lt;li>압축 알고리즘은 파일 유형에 따라 정한다.&lt;/li>
+&lt;li>텍스트: gzip, bzip2 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_6.png"
+width="831"
+height="451"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_6_hud8fbf54a2a35c27ffe337a1e218c26a0_109645_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_6_hud8fbf54a2a35c27ffe337a1e218c26a0_109645_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="블록 저장소 동작"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="442px"
+>&lt;/p>
+&lt;p>블록 저장소 서버는 &lt;strong>파일 업로드에 관계된 힘든 일을 처리하는 컴포넌트&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>클라이언트가 보낸 파일을 블록 단위로 나눈다.&lt;/li>
+&lt;li>각 블록에 압축 알고리즘을 적용한다.&lt;/li>
+&lt;li>암호화한다.&lt;/li>
+&lt;li>전체 파일을 저장소 시스템으로 보내는 대신 수정된 블록만 전송한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_7.png"
+width="699"
+height="561"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_7_hu2ea83530cb1f2bac8670a57a1cacd1e2_91495_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_7_hu2ea83530cb1f2bac8670a57a1cacd1e2_91495_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="델타 동기화 전략 동작"
+class="gallery-image"
+data-flex-grow="124"
+data-flex-basis="299px"
+>&lt;/p>
+&lt;p>갱신된 부분만 동기화해야 하므로 이 두 블록만 클라우드 저장소에 업로드한다.&lt;/p>
+&lt;p>블록 저장소 서버에 델타 동기화 전략과 압축 알고리즘을 도입하면, 네트워크 대역폭 사용량을 절감할 수 있다.&lt;/p>
+&lt;h3 id="높은-일관성-요구사항">높은 일관성 요구사항&lt;/h3>
+&lt;p>구글 드라이브 시스템은 &lt;strong>강한 일관성&lt;/strong>(string consistency) 모델을 기본으로 지원해야한다.&lt;/p>
+&lt;ul>
+&lt;li>같은 파일이 단말이나 사용자에 따라 다르게 보이는 것을 허용할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>메모리 캐시는 보통 &lt;strong>결과적 일관성&lt;/strong>(eventual consistency) 모델은 지원하기 때문에 강한 일관성을 달성하려면 다음 사항을 보장해야한다.&lt;/p>
+&lt;ul>
+&lt;li>캐시에 보관된 사본과 데이터베이스에 있는 원본이 일치한다.&lt;/li>
+&lt;li>데이터베이스에 보관된 원본에 변경이 발생하면 캐시에 있는 사본을 무효화한다.&lt;/li>
+&lt;/ul>
+&lt;p>관계형 데이터베이스는 ACID를 보장하므로 강한 일관성을 보장하기 쉽다.&lt;/p>
+&lt;p>하지만 NoSQL 데이터베이스는 이를 기본으로 지원하지 않으므로, 동기화 로직 안에 프로그램해 넣어야 한다.&lt;/p>
+&lt;p>이번 설계안에는 관계형 데이터베이스를 채택하여 높은 일관성 요구사항에 대응한다.&lt;/p>
+&lt;h3 id="메타데이터-데이터베이스">메타데이터 데이터베이스&lt;/h3>
+&lt;p>중요한 것만 간추린 스키마를 그려보면 아래와 같다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_8.png"
+width="815"
+height="552"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_8_hu4f4697bf0a6ca547432e300010d24d9d_152870_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_8_hu4f4697bf0a6ca547432e300010d24d9d_152870_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="스키마 설계안"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="354px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>user&lt;/code>
+&lt;ul>
+&lt;li>이름, 이베일 프로파일 사진 등 사용자에 관계된 기본적인 정보들이 보관&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>device&lt;/code>
+&lt;ul>
+&lt;li>단말 정보가 보관&lt;/li>
+&lt;li>&lt;code>push_id&lt;/code>는 모바일 푸시 알림을 보내고 받기 위한 것&lt;/li>
+&lt;li>한 사용자가 여러 대의 단말을 가질 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>namespace&lt;/code>
+&lt;ul>
+&lt;li>사용자의 루트 디렉터리 정보가 보관된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>file&lt;/code>
+&lt;ul>
+&lt;li>파일의 최신 정보가 보관&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>file_version&lt;/code>
+&lt;ul>
+&lt;li>파일의 갱신 이력이 보관&lt;/li>
+&lt;li>보관되는 레코드는 전부 읽기 전용&lt;/li>
+&lt;li>갱신 이력이 회손되는 것을 막는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>block&lt;/code>
+&lt;ul>
+&lt;li>파일 블록에 대한 정보를 보관&lt;/li>
+&lt;li>특정 버전의 파일은 올바른 순서로 조합하기만 하면 복원할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="업로드-절차">업로드 절차&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_9.png"
+width="833"
+height="483"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_9_hua0a53d0668d6e7e3b8f1258d11bcb681_72670_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_9_hua0a53d0668d6e7e3b8f1258d11bcb681_72670_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="업로드 절차"
+class="gallery-image"
+data-flex-grow="172"
+data-flex-basis="413px"
+>&lt;/p>
+&lt;p>사용자가 파일을 올리면 두 개의 요청이 병렬적으로 수행되어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>파일 메타데이터를 추가
+&lt;ol>
+&lt;li>새 파일의 메타데이터를 추가하기 위한 요청 전송&lt;/li>
+&lt;li>새 파일의 메타 데이터를 데이터베이스에 저장하고 업로드 상태를 대기중(pending)으로 변경&lt;/li>
+&lt;li>새 파일이 추가되었음을 알림 서비스에 통지&lt;/li>
+&lt;li>관련된 클라이언트(여기서는 클라이언트 2)에게 파일이 업로드되고 있음을 알림&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>파일을 클라우드 저장소로 업로드
+&lt;ol>
+&lt;li>파일을 블록 저장소 서버에 업로드&lt;/li>
+&lt;li>파일을 블록 단위로 쪼갠 다음 압축, 암호화 후 클라우드 저장소에 전송&lt;/li>
+&lt;li>업로드 완료시 클라이드 스토리지는 완료 콜백 호출&lt;/li>
+&lt;li>메타데이터 DB에 기록된 해당 파일의 상태를 완료(uploaded)로 변경&lt;/li>
+&lt;li>알림 서비스에 파일 업로드가 끝났음을 통지&lt;/li>
+&lt;li>알림 서비스가 관련 클라이언트(2)에게 파일 업로드가 끝났음을 알림&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;p>수정도 이와 거의 동일하다.&lt;/p>
+&lt;h3 id="다운로드-절차">다운로드 절차&lt;/h3>
+&lt;p>파일 다운로드는 파일이 새로 추가되거나 편집되면 자동으로 시작된다.&lt;/p>
+&lt;p>다른 클라이언트가 파일을 편집하거나 추가했다는 사실은 두 가지 방법을 통해 이루어진다.&lt;/p>
+&lt;ul>
+&lt;li>클라이언트 A가 접속 중
+&lt;ul>
+&lt;li>다른 클라이언트가 파일을 변경하면 알림 서비스가 클라이언트 A에게 변경이 발생했으니 새 버전을 끌어가야 한다고 알림&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>클라이언트 A가 접속중이 아님
+&lt;ul>
+&lt;li>데이터는 캐시에 보관&lt;/li>
+&lt;li>해당 클라이언트 상태가 접속 중으로 바뀌면 그때 해당 클라이언트가 새 버전을 가져감&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>파일이 변경되었음을 감지한 클라이언트는&lt;/p>
+&lt;ol>
+&lt;li>API 서버를 통해 메타데이터를 새로 가져가야한다.&lt;/li>
+&lt;li>블록들을 다운받아 파일을 재구성해야 한다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview/15/img_10.png"
+width="833"
+height="420"
+srcset="https://codemario318.github.io/post/system-design-interview/15/img_10_hu6a208727cbba91ca136cb143ce08ef99_65538_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview/15/img_10_hu6a208727cbba91ca136cb143ce08ef99_65538_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파일 재구성 흐름"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="476px"
+>&lt;/p>
+&lt;ol>
+&lt;li>알림 서비스가 클라이언트 2에게 파일을 변경했음을 알림&lt;/li>
+&lt;li>클라이언트 2는 새로운 메타데이터를 요청&lt;/li>
+&lt;li>API 서버는 메타데이터 데이터베이스에게 새 메타데이터 요청&lt;/li>
+&lt;li>API 서버에게 새 메타데이터 반환&lt;/li>
+&lt;li>클라이언트 2에게 새 메타데이터가 반환&lt;/li>
+&lt;li>클라이언트 2는 새 메타데이터를 맏는 즉시 블록 다운로드 요청&lt;/li>
+&lt;li>블록 저장소 서버는 클라우드 저장소에서 블록 다운로드&lt;/li>
+&lt;li>클라우드 저장소는 블록 서버에 요청된 블록 반환&lt;/li>
+&lt;li>블록 저장소 서버는 클라이언트에게 요청된 블록 반환.&lt;/li>
+&lt;li>클라이언트 2는 전송된 블록으로 파일 재구성&lt;/li>
+&lt;/ol>
+&lt;h3 id="알림-서비스">알림 서비스&lt;/h3>
+&lt;p>알림 서비스는 파일의 일관성 유지를 위해 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>클라이언트가 로컬에서 파일이 수정되었음을 감지하는 순간 다른 클라이언트에 그 사실을 알려 충돌 가능성을 줄여야한다.&lt;/li>
+&lt;/ul>
+&lt;p>단순히 보면 알림 서비스는 &lt;strong>이벤트 데이터를 클라이언트들로 보내는 서비스&lt;/strong>이다.&lt;/p>
+&lt;p>따라서 두 가지 정도 선택지가 있다.&lt;/p>
+&lt;ul>
+&lt;li>롱 폴링: 드롭박스가 채택하고있음&lt;/li>
+&lt;li>웹소켓
+&lt;ul>
+&lt;li>클라이언트와 서버 사이에 지속적인 통신 채널을 제공하므로 양방향 통신이 가능함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>둘 다 좋은 방안이지만 이번 설계안에서는 롱 폴링을 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>구글 드라이브 시스템은 알림 서비스와 양방향 통신이 필요하지 않다.
+&lt;ul>
+&lt;li>서버만 파일이 변경된 사실을 클라이언트에게 알린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>웹소켓은 실시간 양방향 통신이 요구되는 채팅과 같은 응용에 적합하다.
+&lt;ul>
+&lt;li>구글 드라이브의 경우 알림을 보낼 일이 그렇게 자주 발생하지 않는다.&lt;/li>
+&lt;li>알림을 보내야 하는 경우에도 단시간에 많은 데이터를 보낼 일은 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>따라서 롱 폴링을 채택하며, 아래와 같은 절차가 반복된다.&lt;/p>
+&lt;ol>
+&lt;li>각 클라이언트는 알림 서버와 롱 볼링용 연결을 유지한다.&lt;/li>
+&lt;li>특정 파일에 대한 변경을 감지하면 해당 연결을 끊는다&lt;/li>
+&lt;li>메타데이터 서버와 연결해 파일의 최신 내역을 다운로드한다.&lt;/li>
+&lt;li>다운로드 작업이 끝났거나 타임아웃 시간에 도달한 경우 즉시 새요청을 보내 롱 폴링 연결을 복원하고 유지한다.&lt;/li>
+&lt;/ol>
+&lt;h3 id="저장소-공간-절약">저장소 공간 절약&lt;/h3>
+&lt;p>파일 갱신 이력을 보존하고 안정성을 보장하기 위해서 파일의 여러 버전을 데이터센터에 보관할 필요가 있다.&lt;/p>
+&lt;p>이 때 모든 버전을 자주 백업하면 저장용량이 너무 빨리 소진될 가능성이 있으므로 아래와 같은 방식을 활용한다.&lt;/p>
+&lt;ul>
+&lt;li>중복 제거(de-dupe)
+&lt;ul>
+&lt;li>중복된 파일 블록을 계정 차원에서 제거한다.&lt;/li>
+&lt;li>해시 값을 비교해서 판다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지능적 백업 전략 도입
+&lt;ul>
+&lt;li>한도 설정
+&lt;ul>
+&lt;li>파일 버전 개수에 상한을 둔다.&lt;/li>
+&lt;li>제일 오래된 버전은 버린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>중요한 버전만 보관
+&lt;ul>
+&lt;li>특정 파일은 단기간에 자주 변경되므로 업데이트될 때마다 새로운 버전으로 관리하는 것이 아닌, 중요한 것만 골라내어 보관한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>아카이빙 저장소(cold storage) 활용
+&lt;ul>
+&lt;li>자주 쓰이지 않는 데이터는 아카이빙 저장소로 옮긴다.&lt;/li>
+&lt;li>아마존 S3 글래지어 같은 아카이빙 저장소 이용료는 매우 저렴하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="장애-처리">장애 처리&lt;/h3>
+&lt;p>장애는 대규모 시스템이라면 피할 수 없으므로, 설계 시 그 점을 반드시 고려해야한다.&lt;/p>
+&lt;ul>
+&lt;li>로드밸런서 장애
+&lt;ul>
+&lt;li>부(Secondary) 로드밸런서가 활성화되어 트래픽을 이어받아야한다.&lt;/li>
+&lt;li>로드밸런서끼리 박동 신호를 주기적으로 보내 상태를 모니터링한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>블록 저장소 서버 장애
+&lt;ul>
+&lt;li>다른 서버가 미완료 상태 또는 대기 상태인 작업을 이어받아야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>클라우드 저장소 장애
+&lt;ul>
+&lt;li>S3 버킷은 여러 지역에 다중화 할 수 있으므로, 한 지역에서 장애가 발생하였다면 다른 지역에서 파일을 가져온다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>API 서버 장애
+&lt;ul>
+&lt;li>API 서버는 무상태로, 로드밸런서가 해당 서버에 요청을 보내지 않음으로 장애 서버와 격리한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 캐시 장애
+&lt;ul>
+&lt;li>다중화하여 다른 노드에서 데이터를 가져온다.&lt;/li>
+&lt;li>장애가 발생한 서버는 새 서버로 교체한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 데이터베이스 장애
+&lt;ul>
+&lt;li>주 데이터베이스 장애
+&lt;ul>
+&lt;li>부 데이터베이스 서버 가운데 하나를 주 데이터베이스로 바꾼 후, 부 데이터베이스를 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>부 데이터베이스 장애
+&lt;ul>
+&lt;li>다른 부 데이터베이스 서버가 읽기 연산을 처리하도록 한다.&lt;/li>
+&lt;li>부 데이터베이스 서버를 새로 하나 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 서비스 장애
+&lt;ul>
+&lt;li>접속중인 모든 사용자가 알림 서버와 롱 폴링 연결을 하나씩 유지하므로, 많은 사용자와의 연결을 유지하고 관리해야한다.&lt;/li>
+&lt;li>따라서 장애가 발생하면 롱 폴링 연결을 다시 만들어야 하므로 복구하는 것이 상대적으로 느릴 수 있다.&lt;/li>
+&lt;li>유지는 쉽지만, 연결을 새로 만드는 것은 오래걸린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>오프라인 사용자 백업 큐 장애
+&lt;ul>
+&lt;li>다중화하여 구독 중인 클라이언트들은 백업 큐로 구독 관게를 재설정해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>높은 수준의 일관성, 낮은 네트워크 지연, 빠른 동기호가 요구된다는 점이 핵심이었다.&lt;/p>
+&lt;ul>
+&lt;li>구글 드라이브 시스템은 크게 두 가지 부분으로 구성된다.
+&lt;ul>
+&lt;li>파일의 메타데이터를 관리&lt;/li>
+&lt;li>파일 동기화를 처리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>알림 서비스는 이 두 부분과 변존하는 또 하나의 중요 컴포넌트
+&lt;ul>
+&lt;li>롱 폴링을 사용하여 클라이언트로 하여금 파일의 상태를 최신으로 유지할 수 있도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>설계안에 어떤 다른 선택지가 있었는지 살펴보면 좋다.&lt;/p>
+&lt;ul>
+&lt;li>블록 저장소 서버를 거치지 않고 파일을 클라우드 저장소에 직접 업로드한다면?
+&lt;ul>
+&lt;li>업로드 시간이 빨라질 수 있다.&lt;/li>
+&lt;li>분할, 압축, 암호화 로직이 클라이언트에서 처리되어야한다.&lt;/li>
+&lt;li>따라서 플랫폼별로 따로 구현해야한다.&lt;/li>
+&lt;li>클라이언트가 해킹 당할 가능성이 있으므로 암호화 로직이 클라이언트에 두는 것이 적절치 않을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>접속상태 관리 로직을 별도 서비스로 옮기는것은?
+&lt;ul>
+&lt;li>관련 조릭을 알림 서비스에서 분리하면, 다른 서비스에서도 쉽게 활용할 수 있게될 것이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>
