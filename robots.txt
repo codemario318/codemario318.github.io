@@ -3,7 +3,11 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview/14/
+
+
+
+
+
 
 
 
@@ -16,6 +20,44 @@ Allow: /post/system-design-interview/14/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/boostcamp-9th/review/challenge/1/
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview/14/
+
+
+
+
 
 
 
@@ -1318,8 +1360,6 @@ Allow: /post/real-mysql/4/2/1/
 
 
 Allow: /post/real-mysql/4/1/
-
-
 
 
 
