@@ -11,15 +11,39 @@ User-agent: *
 
 
 
-
-
-
-
-
+Allow: /post/jest-unit-test/
 
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -54,8 +78,6 @@ Allow: /post/boostcamp-9th/review/challenge/1/
 
 
 Allow: /post/system-design-interview/14/
-
-
 
 
 
@@ -402,10 +424,6 @@ Allow: /post/clean-architecture/30/
 
 
 Allow: /post/clean-architecture/28/
-
-
-
-
 
 
 
@@ -1221,8 +1239,6 @@ Allow: /post/golang/1/
 
 
 
-
-
 Allow: /post/vue3/
 
 
@@ -1246,8 +1262,6 @@ Allow: /post/browser/
 
 
 Allow: /post/message_queue/
-
-
 
 
 
