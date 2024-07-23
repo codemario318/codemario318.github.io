@@ -1,1 +1,548 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jest on Mario Blog</title><link>https://codemario318.github.io/tags/jest/</link><description>Recent content in Jest on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 23 Jul 2024 13:53:35 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/jest/index.xml" rel="self" type="application/rss+xml"/></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jest on Mario Blog</title><link>https://codemario318.github.io/tags/jest/</link><description>Recent content in Jest on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Tue, 23 Jul 2024 13:53:35 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/jest/index.xml" rel="self" type="application/rss+xml"/><item><title>Jest를 활용한 유닛 테스트</title><link>https://codemario318.github.io/post/jest-unit-test/</link><pubDate>Tue, 23 Jul 2024 13:53:35 +0900</pubDate><guid>https://codemario318.github.io/post/jest-unit-test/</guid><description>&lt;img src="https://codemario318.github.io/post/jest-unit-test/cover.png" alt="Featured image of post Jest를 활용한 유닛 테스트" />&lt;h2 id="소프트웨어-테스트란">소프트웨어 테스트란?&lt;/h2>
+&lt;p>소프트웨어 테스트는 소프트웨어가 요구사항을 충족하는지, 결함이 없는지, 의도한 대로 작동하는지를 확인하는 것을 목표로 수행됩니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img.png"
+width="1024"
+height="680"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_hu34b341a957e0c9749c8004b23f93334d_19212_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_hu34b341a957e0c9749c8004b23f93334d_19212_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="TDD"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>예를 들면 &lt;strong>TDD&lt;/strong>에서 파생된 &lt;strong>BDD&lt;/strong>(행위 주도 개발)는 테스트 코드를 작성할 때 수행할 행위에 대한 명세를 &lt;strong>비 기술적인&lt;/strong> 방식으로 작성하여 명세상의 요구사항을 만족하고 있는지 파악하는데 큰 도움을 주기도합니다.&lt;/p>
+&lt;p>이러한 이유로 어떤 회사에서는 개발을 시작하기 전 기획서를 기반으로 요구사항을 테스트 코드에 옮겨놓는 작업부터 하는 곳도 있다고 들었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img_1.png"
+width="640"
+height="463"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_1_hu8a95588ee7e37a1467ddf58bf0d04b87_277163_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_1_hu8a95588ee7e37a1467ddf58bf0d04b87_277163_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="331px"
+>&lt;/p>
+&lt;p>그리고 최근 접했던 &lt;strong>개발자 원칙&lt;/strong>이라는 책에서 &lt;strong>탁월한 성과를 내는 조직의 공통점&lt;/strong>은 &lt;strong>심리적 안정감&lt;/strong>이라는 내용이 있었습니다.&lt;/p>
+&lt;p>&lt;strong>심리적 안정감&lt;/strong>은 &lt;strong>실수가 드러났을 때에도 처벌받거나 놀림 받지 않을 것 이라는 믿음&lt;/strong>이라고 하는데, 테스트는 조금 다른 관점에서 &lt;strong>실수가 발생하지 않을 것 이라는 믿음&lt;/strong>을 통해 &lt;strong>안정감&lt;/strong>을 느끼게되어 도전적인 시도를 많이하게 되었다는 의견이 많은 것 같습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img_2.png"
+width="1024"
+height="768"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_2_huf4fe4d3807eda6911a791cff0f5cfe22_449498_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_2_huf4fe4d3807eda6911a791cff0f5cfe22_449498_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="V 모델"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>이처럼 테스트는 소프트웨어가 단순히 요구사항을 충족하는지, 결함이 없는지, 의도하는 대로 작동하는지 확인하는 것을 넘어서 &lt;strong>안정감&lt;/strong> 같은 부과적인 효과를 위해서라도 현재 가장 중요한 프로세스라는 평가도 있을 정도입니다.&lt;/p>
+&lt;h2 id="unit-test란">Unit Test란?&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img_3.png"
+width="1076"
+height="1092"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_3_hub49cc3aa594321fb7e04a428f3a9147d_349149_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_3_hub49cc3aa594321fb7e04a428f3a9147d_349149_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="테스트 피라미드"
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="236px"
+>&lt;/p>
+&lt;p>테스트의 시작점이라고도 할 수 있는 단위 테스트는 프로그래밍의 최소 단위(함수, 메서드, 객체)를 테스트하는 방법 입니다.&lt;/p>
+&lt;p>주요 목적은 각 단위가 예상대로 작동하는지 확인하는 것이며, 소프트웨어 개발 과정에서 매우 중요한 단계로, 코드의 결함을 조기에 발견하고 수정할 수 있도록 도와줍니다.&lt;/p>
+&lt;h3 id="주요-특징">주요 특징&lt;/h3>
+&lt;p>단위 테스트의 주요 특징은 아래와 같습니다.&lt;/p>
+&lt;ul>
+&lt;li>빠른 피드백(Quickly)
+&lt;ul>
+&lt;li>코드를 수정한 직후에 피드백을 받을 수 있도록 빠르게 수행되어야 함&lt;/li>
+&lt;li>단위 테스트는 매우 작은 코드 단위를 테스트하기 때문에 빠르게 실행됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>독립성(Isolation)
+&lt;ul>
+&lt;li>각 테스트는 다른 테스트와 독립적으로 실행되어 테스트 간의 상호작용이나 의존성을 최소화해야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>작은 검증 단위(Veridate)
+&lt;ul>
+&lt;li>작은 단위를 검증해야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>자동화 가능성(Automatic)
+&lt;ul>
+&lt;li>자동화되어 개발 과정에서 지속적으로 실행되어야 함&lt;/li>
+&lt;li>따라서 반복적인 테스트 작업을 효율적으로 수행 가능해야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>개발자 주도
+&lt;ul>
+&lt;li>개발자가 작성하고 유지 관리함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="좋은-단위-테스트의-특징">좋은 단위 테스트의 특징&lt;/h3>
+&lt;p>좋은 단위 테스트는 다음과 같은 특징들을 갖습니다.&lt;/p>
+&lt;ul>
+&lt;li>독립적
+&lt;ul>
+&lt;li>각 테스트는 다른 테스트와 독립적으로 실행되어야 함&lt;/li>
+&lt;li>테스트가 서로에게 의존하게 되면 문제를 파악하기 어려워짐&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>자동화 가능
+&lt;ul>
+&lt;li>단위 테스트는 자동으로 실행될 수 있어야 함&lt;/li>
+&lt;li>자동화된 테스트는 반복적으로 실행할 수 있어 지속적인 피드백을 제공할 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>반복 가능
+&lt;ul>
+&lt;li>테스트는 언제든지 반복해서 실행할 수 있어야 하며, 실행할 때마다 동일한 결과를 제공해야 함&lt;/li>
+&lt;li>외부 요인에 의한 변동이 없어야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>빠른 실행
+&lt;ul>
+&lt;li>단위 테스트는 빠르게 실행되어야 함&lt;/li>
+&lt;li>테스트 실행 시간이 길어지면 개발자가 자주 실행하기 어려워지고 피드백 속도가 느려짐&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>명확한 목적
+&lt;ul>
+&lt;li>각 테스트는 특정 기능이나 동작을 검증하는 명확한 목적을 가져야 함&lt;/li>
+&lt;li>무엇을 테스트하는지 분명히 알 수 있어야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가독성
+&lt;ul>
+&lt;li>테스트 코드는 읽기 쉬워야 함&lt;/li>
+&lt;li>다른 개발자가 테스트 코드를 보고 쉽게 이해할 수 있어야 하며, 테스트의 의도를 명확히 파악할 수 있어야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>설정 및 정리
+&lt;ul>
+&lt;li>테스트 실행 전후에 필요한 설정(setup)과 정리(teardown) 작업이 명확히 정의되어 있어야 함&lt;/li>
+&lt;li>이는 테스트 환경을 일관되게 유지하는 데 중요함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단일 검증
+&lt;ul>
+&lt;li>각 테스트는 하나의 동작이나 기능을 검증해야 함&lt;/li>
+&lt;li>어떤 테스트가 실패했을 때 그 원인을 쉽게 파악할 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>신뢰성
+&lt;ul>
+&lt;li>테스트는 항상 일관된 결과를 제공해야 함&lt;/li>
+&lt;li>테스트 결과가 불안정하면 테스트의 신뢰성이 떨어짐&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>의존성 최소화
+&lt;ul>
+&lt;li>외부 시스템이나 데이터베이스와 같은 외부 의존성에 최소한으로 의존해야 함&lt;/li>
+&lt;li>필요하다면 목(Mocks)이나 스텁(Stubs) 같은 테스트 대역을 사용하여 외부 의존성을 격리할 수 있어야 함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>요약하면 좋은 단위 테스트는 소프트웨어 개발 프로세스의 효율성을 높이고, 코드의 신뢰성을 강화하며, 유지 보수성을 향상시키는 데 중요한 역할을 합니다. 참 어렵군요..😂&lt;/p>
+&lt;h2 id="jest란">Jest란?&lt;/h2>
+&lt;p>JS진영에서 많이 활용되는 테스트 도구로 &lt;code>Jest&lt;/code>, &lt;code>Mocha&lt;/code> 등이 있습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img_4.png"
+width="484"
+height="484"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_4_hu6667362b1aeecce3369b167bd4546191_67465_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_4_hu6667362b1aeecce3369b167bd4546191_67465_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Jest"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>그 중 &lt;code>Jest&lt;/code>는 &lt;code>Nest.js&lt;/code>, &lt;code>React&lt;/code>에서도 표준으로 사용되고 있을 만큼 활용도가 높은 뿐만 아니라, 단위 테스트, 통합 테스트, 스냅샷 테스트 등 다양한 테스트 유형을 지원하며, 많은 기능들을 지원하고 있으므로 선택하였습니다.&lt;/p>
+&lt;h3 id="환경-준비">환경 준비&lt;/h3>
+&lt;p>&lt;code>Node.js&lt;/code> 환경에서 &lt;code>Jest&lt;/code>를 사용해보겠습니다. 이를 위해 환경부터 구성해야합니다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>node&lt;/code>, &lt;code>npm&lt;/code>는 설치되어 있다고 가정하고 진행합니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>프로젝트 초기화&lt;/strong>&lt;/p>
+&lt;p>새 프로젝트 디렉토리를 만들고, 만들어진 디렉토리에 프로젝트 초기화를 수행합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">mkdir my-project
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> my-project
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">npm init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>타입 스크립트는 &lt;code>npm tsc --init&lt;/code> 명령을 수행하면 됩니다.&lt;/p>
+&lt;p>&lt;strong>Jest 설치&lt;/strong>&lt;/p>
+&lt;p>프로젝트에 &lt;code>Jest&lt;/code>를 개발 의존성(dev dependency)으로 설치합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">npm install --save-dev jest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>설치가 완료되면 &lt;code>package.json&lt;/code> 파일에 &lt;code>Jest&lt;/code> 관련 설정을 추가합니다.&lt;/p>
+&lt;p>&lt;code>scripts&lt;/code> 섹션에 테스트 스크립트를 추가하여 &lt;code>Jest&lt;/code>를 실행할 수 있게 합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;scripts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;test&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;jest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="동작-확인">동작 확인&lt;/h3>
+&lt;p>실제 코드를 실행하여 동작을 확인해봅니다.&lt;/p>
+&lt;p>&lt;strong>operations.js&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">add&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">b&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">b&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">module&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">exports&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">add&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>operations.test.js&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">add&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">require&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;./operations&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">test&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;adds 1 + 2 to equal 3&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>실행 결과&lt;/strong>&lt;/p>
+&lt;p>명령을 실행하여 테스트를 수행해보겠습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">npm &lt;span class="nb">test&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>정상적으로 수행되는 것을 확인할 수 있습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/jest-unit-test/img_5.png"
+width="264"
+height="260"
+srcset="https://codemario318.github.io/post/jest-unit-test/img_5_hu60f9a2aa71392d50cb7cbf55bbc5d494_27548_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/jest-unit-test/img_5_hu60f9a2aa71392d50cb7cbf55bbc5d494_27548_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="실행 결과"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="243px"
+>&lt;/p>
+&lt;h2 id="jest-기본-함수">Jest 기본 함수&lt;/h2>
+&lt;p>&lt;code>Jest&lt;/code>를 사용하기위한 기본적인 함수들을 확인해보겠습니다.&lt;/p>
+&lt;h3 id="테스트-함수">테스트 함수&lt;/h3>
+&lt;p>&lt;strong>&lt;code>test&lt;/code>, &lt;code>it&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>단위 테스트를 정의하는 함수로, 두 함수 모두 동일하게 동작하여 편한 것을 사용하면 되겠습니다.&lt;/p>
+&lt;p>테스트를 설명할 문자열과 테스트 본문을 포함하는 콜백 함수를 인자로 받습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">test&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;함수 설명을 입력해주세요&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">someFunction&lt;/span>&lt;span class="p">()).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">expectedValue&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;함수 설명을 입력해주세요&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">someFunction&lt;/span>&lt;span class="p">()).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">expectedValue&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>describe&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>테스트를 그룹화 하는 합수입니다.&lt;/p>
+&lt;p>관련된 테스트를 하나의 블록으로 묶어 정리할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;MyComponent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">test&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;renders correctly&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">test&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;another test&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">false&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">false&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="기대값-설정-함수">기대값 설정 함수&lt;/h3>
+&lt;p>테스트 본문에서 사용하며, 결과가 특정 값임을 확인하는 하게됩니다.&lt;/p>
+&lt;p>&lt;strong>&lt;code>expect&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>테스트의 기대값을 설정하여, 다양한 매처(Matcher)와 함께 사용되어 값을 검증하게됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">value&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">expectedValue&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">array&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toContain&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">object&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toHaveProperty&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;propertyName&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">function&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toThrow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>주요 매처&lt;/strong>&lt;/p>
+&lt;p>기본적으로 많이 활용되는 매처들은 아래와 같습니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>toBe&lt;/code>
+&lt;ul>
+&lt;li>기본적인 일치 검사를 수행합니다. (엄격한 일치)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toEqual&lt;/code>
+&lt;ul>
+&lt;li>객체나 배열의 값을 비교합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toBeNull&lt;/code>
+&lt;ul>
+&lt;li>값이 null인지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toBeDefined&lt;/code>
+&lt;ul>
+&lt;li>값이 정의되었는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toBeUndefined&lt;/code>
+&lt;ul>
+&lt;li>값이 정의되지 않았는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toBeTruthy&lt;/code>
+&lt;ul>
+&lt;li>값이 true로 평가될 수 있는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toBeFalsy&lt;/code>
+&lt;ul>
+&lt;li>값이 false로 평가될 수 있는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toContain&lt;/code>
+&lt;ul>
+&lt;li>배열이나 문자열에 특정 값이 포함되어 있는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toHaveLength&lt;/code>
+&lt;ul>
+&lt;li>배열이나 문자열의 길이를 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toHaveProperty&lt;/code>
+&lt;ul>
+&lt;li>객체가 특정 프로퍼티를 가지고 있는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toMatch&lt;/code>
+&lt;ul>
+&lt;li>문자열이 정규 표현식과 일치하는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>toThrow&lt;/code>
+&lt;ul>
+&lt;li>함수가 호출될 때 예외를 던지는지 확인합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="모킹-및-스파이">모킹 및 스파이&lt;/h3>
+&lt;p>&lt;strong>&lt;code>jest.fn&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>모킹 함수 생성에 사용됩니다.&lt;/p>
+&lt;p>함수 호출 여부, 호출 횟수, 인자 등을 추적할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">mockFunction&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">jest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">fn&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">mockFunction&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;arg1&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;arg2&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">mockFunction&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toHaveBeenCalled&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">mockFunction&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toHaveBeenCalledWith&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;arg1&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;arg2&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>jest.mock&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>모듈을 모킹하여 외부 의존성을 대체할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">jest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">mock&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;axios&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">axios&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">require&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;axios&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">axios&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">get&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">mockResolvedValue&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;mocked data&amp;#39;&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>jest.spyOn&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>객체의 메서드를 감시하여 호출 여부, 호출 횟수, 인자 등을 추적할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">obj&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">method&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="s1">&amp;#39;real implementation&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">spy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">jest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">spyOn&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">obj&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;method&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">obj&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">method&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;arg1&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">spy&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toHaveBeenCalledWith&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;arg1&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="훅-hooks">훅 Hooks&lt;/h3>
+&lt;p>&lt;strong>&lt;code>beforeAll&lt;/code>, &lt;code>afterAll&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>각 테스트 블록 전후에 한 번씩 실행됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">beforeAll&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 모든 테스트 전에 한 번 실행
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">afterAll&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 모든 테스트 후에 한 번 실행
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>beforeEach&lt;/code>, &lt;code>afterEach&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>각 테스트 전후에 실행됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">beforeEach&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 각 테스트 전에 실행
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">afterEach&lt;/span>&lt;span class="p">(()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 각 테스트 후에 실행
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="타임아웃-및-기타-설정">타임아웃 및 기타 설정&lt;/h3>
+&lt;p>&lt;strong>&lt;code>jest.setTimeout&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>테스트의 타임아웃 시간을 설정합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">jest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">setTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10000&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 10초로 타임아웃 설정
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>test.only&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>해당 테스트만 실행합니다. 주로 디버깅 용도로 사용됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">only&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;only this test will run&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>&lt;code>test.skip&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>해당 테스트를 건너뜁니다. 임시로 테스트를 제외하고자 할 때 사용됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">skip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;this test will be skipped&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="기타">기타&lt;/h3>
+&lt;p>찾아보니 유용해 보이는 다른 기능들도 추가합니다.&lt;/p>
+&lt;p>&lt;strong>커버리지 확인&lt;/strong>&lt;/p>
+&lt;p>테스트 커버리지를 확인할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">npx jest --coverage
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>사실 이전 직장에서 테스트 코드의 부재로 인한 고통을 뼈져리게 느꼈었기 때문에 테스트의 중요성은 너무나 잘 알고 있습니다.&lt;/p>
+&lt;p>꼭 필요하다고 생각하고 있지만, 습관화가 안되어 아직까지는 잘 활용하지 못하고 있었는데 이번 기회를 시작으로 테스트를 잘 적용해보려고 노력해야겠습니다.&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다.😁&lt;/p></description></item></channel></rss>
