@@ -1,4 +1,144 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>기록 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B8%B0%EB%A1%9D/</link><description>Recent content in 기록 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 21 Jul 2024 20:49:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B8%B0%EB%A1%9D/index.xml" rel="self" type="application/rss+xml"/><item><title>챌린지 과정 1주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/</link><pubDate>Sun, 21 Jul 2024 20:49:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/cover.png" alt="Featured image of post 챌린지 과정 1주차 회고" />&lt;p>부스트캠프 챌린지 과정에 입과한 후 첫 일주일이 흘렀습니다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>기록 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B8%B0%EB%A1%9D/</link><description>Recent content in 기록 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 27 Jul 2024 21:23:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B8%B0%EB%A1%9D/index.xml" rel="self" type="application/rss+xml"/><item><title>챌린지 과정 2주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/</link><pubDate>Sat, 27 Jul 2024 21:23:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/cover.png" alt="Featured image of post 챌린지 과정 2주차 회고" />&lt;p>부스트캠프 챌린지 과정 2주차가 마무리되었습니다 🥳&lt;/p>
+&lt;p>저번주에는 중요한 CS 내용들을 직접 구현해보는 미션들이 주어졌다면, 이번주는 개발 방법론, 디자인 패턴, 아키텍처와 같은 것들을 종합적으로 활용하여 특정 기능을 구현하는 내용들로 미션들이 구성되었습니다.&lt;/p>
+&lt;p>또한, 첫 회고에 남겼던 &lt;strong>건방진 생각&lt;/strong>을 깨버리듯🥲 한명도 빠짐없이 역량이 출중하신 캠퍼들과 스터디그룹을 이루어 진행하게 되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img.png"
+width="800"
+height="316"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_hu131439b1cfdaa317552cdf91e94ff142_702376_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_hu131439b1cfdaa317552cdf91e94ff142_702376_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="호크아이 슨배님 ㅜ"
+class="gallery-image"
+data-flex-grow="253"
+data-flex-basis="607px"
+>&lt;/p>
+&lt;p>요구사항 자체는 저번주보다 여렵지는 않았지만, &lt;strong>생각의 전환&lt;/strong>을 필요로하는 미션들이 많았기 때문에 다른 의미로 어려웠던 것 같습니다.&lt;/p>
+&lt;p>저번주보다는 시간을 덜 쓰긴 했지만 학습부터 분석, 설계, 구현까지 평균적으로 10시간 정도는 필요했던 것 같습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_1.png"
+width="743"
+height="475"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_1_hudb4f3b36d5d6c17e98a88d51baa0bc39_194558_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_1_hudb4f3b36d5d6c17e98a88d51baa0bc39_194558_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="페어 프로그래밍"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="375px"
+>&lt;/p>
+&lt;p>그리고 지난주의 &lt;strong>짝 설계&lt;/strong>에 더해서 &lt;strong>짝 구현&lt;/strong> 미션이 있어 다른 캠퍼 한 분과 분석 부터 구현까지 진행해볼 수 있었습니다.&lt;/p>
+&lt;p>같이 개발할 수 있다면 어떠한 방법을 활용해도 괜찮았지만, 저희 조는 VSCode의 &lt;strong>Live Share&lt;/strong>를 이용하여 &lt;strong>페어 프로그래밍&lt;/strong>으로 진행하였습니다.&lt;/p>
+&lt;h2 id="피어-세션">피어 세션&lt;/h2>
+&lt;p>저번 주와는 다르게 자신의 코드를 설명하는 시간을 갖지 않았습니다.&lt;/p>
+&lt;p>이렇게 진행한 이유는 모든 팀원분들이 역량이 좋으셨기 때문인데, 코드를 굳이 설명하지 않아도 이해하는데 어려움이 없는데다, 인사이트까지 충분히 가져갈 수 있었습니다.&lt;/p>
+&lt;p>이에 따라 피어 세션 전 과정인 &lt;strong>피어 컴파일링&lt;/strong>과정에서 코드를 분석하고 &lt;strong>질문&lt;/strong>, &lt;strong>좋았던 부분&lt;/strong>, &lt;strong>개선이 필요한 부분&lt;/strong>을 정리 한 후 피어 세션에 참여했습니다.&lt;/p>
+&lt;p>&lt;strong>인당 5분&lt;/strong> 정도의 시간으로 빨리 마무리 하고, &lt;strong>같이 고민해볼 내용&lt;/strong>이나 미션 관련 기술 등에 대해서 토론하는 시간을 가졌습니다.&lt;/p>
+&lt;p>다 같이 &lt;strong>토론하는 과정&lt;/strong>에서 많은 것들을 알아갈 수 있었기 때문에 구성원들 모두 &lt;strong>만족&lt;/strong>스러워 했습니다.&lt;/p>
+&lt;h2 id="미션-해결-및-학습">미션 해결 및 학습&lt;/h2>
+&lt;p>이번 주는 미션만 잘 수행하는 것을 넘어서 새로운 것을 시도해봤습니다.&lt;/p>
+&lt;p>마스터인 &lt;strong>JK&lt;/strong>님이 올려주신 해설 영상에 &lt;strong>애자일하게 개발하는 법&lt;/strong>에 대한 부분을 언급하셨는데, 이부분에서 공감이 되어 바로 적용했습니다.&lt;/p>
+&lt;p>이와 더불어 모든 미션에 &lt;strong>TDD&lt;/strong>를 시도하여 진행하였습니다.&lt;/p>
+&lt;h3 id="agile-하게-개발하는-법">Agile 하게 개발하는 법&lt;/h3>
+&lt;p>애자일의 핵심은 &amp;ldquo;&lt;strong>빠르고 짧은 피드백 루프&lt;/strong>&amp;ldquo;를 통해 변화에 민첩하게 대응하는 것 입니다.&lt;/p>
+&lt;p>사실 애자일은 조직 전체에 대상으로 배포 가능한 단위에 대해 민첩한 대응을 의미하지만, 이러한 방식을 개발에만 적용해보려고했습니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+분석 --> 설계 --> 구현 --> 완료
+&lt;/pre>
+&lt;p>이전까지는 위와 같이 &amp;ldquo;&lt;strong>분석 - 설계 구현&lt;/strong>&amp;ldquo;과정으로 진행하였다면,&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+a[분석] --> b[작업 분해]
+subgraph sa [반복]
+c[설계] --> d[구현]
+end
+b --> c
+d --> e[완료]
+&lt;/pre>
+&lt;p>이번 주 부터는 작업을 작은 단위로 작업을 분해하고, 설계에서 개발까지 반복적으로 수행하는 방식으로 변경하였습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_3.png"
+width="1024"
+height="505"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_3_hu6efaf883042006ad369b55af72bffa5b_178457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_3_hu6efaf883042006ad369b55af72bffa5b_178457_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="애자일 개발 방법론"
+class="gallery-image"
+data-flex-grow="202"
+data-flex-basis="486px"
+>&lt;/p>
+&lt;p>미션들을 수행하면서 나름 완벽히 설계해도 조금씩 바뀌게되어 &lt;strong>곤란했던 경험&lt;/strong>이 있었는데, &lt;strong>변화를 가정하고 진행&lt;/strong>되는 이러한 방식으로 &lt;strong>수월하게&lt;/strong> 구조 등을 변경할 수 있었던 것 같습니다.&lt;/p>
+&lt;h3 id="tdd">TDD&lt;/h3>
+&lt;p>사실 이전 직장에서부터 테스트 코드의 부재로 인한 고통을 뼈져리게 느꼈었기 때문에 테스트의 중요성은 너무나 잘 알고 있습니다.&lt;/p>
+&lt;p>꼭 필요하다고 생각하고 있지만 습관화가 안되어 잘 활용하지 못하고 있었는데, 테스트에 익숙해지기 이번 기회를 시작하기로 마음먹었습니다.&lt;/p>
+&lt;p>덤으로 위에서 언급한 &lt;strong>Agile 하게 개발하기&lt;/strong>에서 빠른 피드백을 받는 데 도움이 될 것이라 생각해 적용했습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_4.png"
+width="1024"
+height="680"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_4_hu34b341a957e0c9749c8004b23f93334d_19212_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_4_hu34b341a957e0c9749c8004b23f93334d_19212_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="TDD"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>다들 아시는 것 처럼 구현 과정에 들어가기 전, 미션의 요구사항들을 모두 테스트 코드로 작성한 후, 테스트를 통과시키는 방식으로 진행하였습니다.&lt;/p>
+&lt;p>가장 어려움을 느꼈던 테스트 코드 작성은 &lt;code>GPT&lt;/code>의 도움을 받으며 진행하였는데, 설계를 잘 수행한 덕에 테스트를 정확히 잘 만들어줘서 매우 편리했습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/gif1.gif"
+width="350"
+height="240"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/gif1_hu47953aa9c0ae4dc86946ac79a368a34c_398794_480x0_resize_box_1.gif 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/gif1_hu47953aa9c0ae4dc86946ac79a368a34c_398794_1024x0_resize_box_1.gif 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="350px"
+>&lt;/p>
+&lt;p>터미널을 한쪽에 상시로 띄워놓고 &lt;code>jest --watch&lt;/code>를 통해 실시간으로 통과되는 것을 확인하며 구현했는데, 마치 &lt;strong>게임&lt;/strong>을 하는 것 같다는 느낌을 받을 수 있어서 미션을 더 재미있게 수행했던 것 같습니다. 🎮&lt;/p>
+&lt;h2 id="학습-정리">학습 정리&lt;/h2>
+&lt;p>일부 내용에 대해서는 학습했던 내용을 당일에 정리하여 올릴 수 있었으나, 짝 설계나 짝 구현 등의 미션들로 인해 따로 학습 정리가 어려웠습니다.&lt;/p>
+&lt;p>이러한 부분은 주말을 활용해 추가적으로 진행하기로 결정했습니다.&lt;/p>
+&lt;p>이를 위해 어떤 내용을 어떻게 정리할 것인지만 따로 메모했고, 이 회고를 마무리하고 진행할 예정이에요🥲&lt;/p>
+&lt;h2 id="나의-변화">나의 변화&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_2.png"
+width="278"
+height="181"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_2_hubca6b70351de21cb18efa000fe370bd6_35435_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_2_hubca6b70351de21cb18efa000fe370bd6_35435_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="틀깨기"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="368px"
+>&lt;/p>
+&lt;p>이번 주 미션들은 풀스택 개발자로 일했던 경험과 다양한 방식으로 개발했던 경험 덕분에 접근 방법을 결정하는데는 큰 어려움이 없었습니다만&amp;hellip;&lt;/p>
+&lt;p>다른 분들의 작업물들을 보며 개발자라면 고민해봤을 내용인 &lt;strong>얼마나 깊게 이해하고 있는가&lt;/strong>에 대해서 한번 더 생각해볼 수 있는 계기였습니다.&lt;/p>
+&lt;p>특히 &lt;strong>함수형 프로그래밍&lt;/strong>을 활용해야하는 미션에서는 &lt;strong>상태&lt;/strong>를 아예 만들지않고 구현하셨던 캠퍼도 있어서 충격적으로 다가왔던 것 같습니다.&lt;/p>
+&lt;p>다행히도 &lt;strong>이벤트 주도 아키텍처&lt;/strong>가 필요했던 미션은 모든 캠퍼분들이 어려움을 느끼셨었는데, 저의 결과물로 인사이트를 드릴 수 있었습니다.😁&lt;/p>
+&lt;h3 id="나-좀-성장해-있었을지도">나 좀 성장해 있었을지도?&lt;/h3>
+&lt;p>부스트캠프 5기에 참여했던 예전에 저였다면 뛰어난 동료들을 봤을 때 스스로 자책했었겠죠?&lt;/p>
+&lt;p>이번에는 오히려 뛰어난 동료들을 보며 다른 분들은 어떻게 생각했을까? 어떻게 구현했을까? 라는 기대감에 다음날 피어세션이 더욱더 기다려졌어요&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_5.png"
+width="640"
+height="427"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_5_hu84b39fe339821112912a9fed69654c15_768651_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/2/img_5_hu84b39fe339821112912a9fed69654c15_768651_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="10시 50분의 내 모습"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;p>문득 이런 저의 모습을 보며 &lt;strong>나 좀 성장해 있었을지도?&lt;/strong> 라는 생각이 들면서 몰래 뿌듯했었네요😋&lt;/p>
+&lt;h3 id="좋은-동료들">좋은 동료들&lt;/h3>
+&lt;p>사실 저는 &lt;strong>집단 지성&lt;/strong>을 믿지 않았습니다.&lt;/p>
+&lt;p>지금까지 살아오면서 여러 활동을 했었지만, 대부분 잘 하는 일부가 &lt;strong>캐리&lt;/strong>하는 방식으로 진행되었었기 때문이에요.&lt;/p>
+&lt;p>그런데 각각의 개성이있는 잘 하는 사람들끼리 모여 내는 &lt;strong>학습 시너지&lt;/strong>는 저의 생각을 바꾸기 충분했습니다.&lt;/p>
+&lt;p>큰 기업들에서 자신들의 최고의 장점 &lt;strong>좋은 동료들&lt;/strong>이라고 강조하는 모습을 쉽게 볼 수 있었는데, 이 부분을 확실히 이해할 수 있었습니다.&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>지난주보다 더 빠르게 한 주가 지나갔습니다. 다음주는 조 활동이 더 많아진다고 하는데 벌써 기대가 되네요.&lt;/p>
+&lt;p>하루 하루를 정해진 일과에 맞춰 충실히 살아가는게 중요하다는 걸 새삼 다시 느끼는 것 같습니다. 조금(많이) 피곤하긴 하지만 살아온 어느때보다 활력이 넘치는 것 같아요🔥🔥🔥&lt;/p>
+&lt;p>마지막으로 그룹원들에게 코멘트 할 때 공통으로 넣으려고 준비한 문구로 마무리하겠습니다. 끝까지 읽어주셔서 감사합니다.😁&lt;/p>
+&lt;blockquote>
+&lt;p>소프트웨어 장인이라는 책에서 나온 내용인데 소프트웨어 장인은 경지라기 보다는 이념이나 마음가짐으로 소프트웨어 장인정신을 잘 지키고 있는가를 의미한다고 해요&lt;/p>
+&lt;p>프로페셔널하게 행동하기,&lt;br>
+다른 개발자들에게 배우기,&lt;br>
+자신의 지식을 나누기 등이 이에 해당한다고 합니다.&lt;/p>
+&lt;p>저자는 이런 것들은 잘 하고 있다면 스스로를 소프트웨어 장인이라고 칭해도 괜찮다고 생각한데요&lt;/p>
+&lt;p>그런 의미에서 조금 부끄럽지만 저희 그룹원들 모두 소프트웨어 장인이라고 불러도 괜찮지 않을까요? ㅎㅎ&lt;/p>
+&lt;p>한 주 동안 많이 배워갑니다. 멤버쉽에서 다시 뵈어요 :D&lt;/p>
+&lt;/blockquote></description></item><item><title>챌린지 과정 1주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/</link><pubDate>Sun, 21 Jul 2024 20:49:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/1/cover.png" alt="Featured image of post 챌린지 과정 1주차 회고" />&lt;p>부스트캠프 챌린지 과정에 입과한 후 첫 일주일이 흘렀습니다.&lt;/p>
 &lt;p>챌린지 과정은 총 6명이 스터티 그룹을 구성하여 일주일간 정해진 일과에 참여하게됩니다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>(10:00 ~ 11:00)&lt;/strong> 체크인 및 피어리뷰&lt;/li>

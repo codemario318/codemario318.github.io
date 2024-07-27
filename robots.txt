@@ -11,7 +11,17 @@ User-agent: *
 
 
 
-Allow: /post/jest-unit-test/
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -47,9 +57,27 @@ Allow: /post/
 
 
 
+Allow: /post/boostcamp-9th/review/challenge/2/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/jest-unit-test/
 
 
 
@@ -68,12 +96,6 @@ Allow: /post/
 
 
 Allow: /post/boostcamp-9th/review/challenge/1/
-
-
-
-
-
-
 
 
 
