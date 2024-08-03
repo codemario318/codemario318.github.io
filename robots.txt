@@ -25,6 +25,10 @@ User-agent: *
 
 
 
+
+
+
+
 Allow: /post/
 
 
@@ -57,15 +61,41 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/boostcamp-9th/review/challenge/3/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/boostcamp-9th/review/challenge/2/
-
-
-
-
-
-
-
-
 
 
 
@@ -906,8 +936,6 @@ Allow: /post/real-mysql/16/5/
 
 
 Allow: /post/infra/container-env/2/
-
-
 
 
 
