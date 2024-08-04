@@ -3,13 +3,7 @@ User-agent: *
 
 
 
-
-
-
-
-
-
-
+Allow: /post/system-design-interview-2/1/
 
 
 
@@ -30,6 +24,36 @@ User-agent: *
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -105,8 +129,6 @@ Allow: /post/boostcamp-9th/review/challenge/2/
 
 
 
-
-
 Allow: /post/jest-unit-test/
 
 
@@ -132,10 +154,6 @@ Allow: /post/boostcamp-9th/review/challenge/1/
 
 
 Allow: /post/system-design-interview/14/
-
-
-
-
 
 
 

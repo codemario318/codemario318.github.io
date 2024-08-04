@@ -1,4 +1,918 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 11 Jul 2024 11:07:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>14. 유튜브 설계</title><link>https://codemario318.github.io/post/system-design-interview/14/</link><pubDate>Thu, 11 Jul 2024 11:07:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/14/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/14/cover.png" alt="Featured image of post 14. 유튜브 설계" />&lt;p>유튜브 시스템을 설계하는 방식은 넷플릭스나 훌루 같은 &lt;strong>비디오 플랫폼&lt;/strong>을 설계하는 문제에도 적용 가능하다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 04 Aug 2024 20:08:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>1. 근접성 서비스</title><link>https://codemario318.github.io/post/system-design-interview-2/1/</link><pubDate>Sun, 04 Aug 2024 20:08:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/cover.png" alt="Featured image of post 1. 근접성 서비스" />&lt;p>근접성 서비스는 음식점, 호텔, 극장, 박물관 등 현재 위치에서 가까운 시설을 찾는 데 이용된다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;ul>
+&lt;li>Q. 검색 반경을 지정할 수 있어야하는가?
+&lt;ul>
+&lt;li>A. 주어진 반경 내의 사업장만 대상, 이후 확장 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 최대 허용 반경?
+&lt;ul>
+&lt;li>A. 20km&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 검색 반경 변경 가능?
+&lt;ul>
+&lt;li>A. 0.5km, 1km, 2km, 5km, 20km&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 사업장 정보 CRUD는 어떻게?
+&lt;ul>
+&lt;li>A. 사업장 소유주가 직접 정보를 시스템에 CRUD, 새로 추가하거나 갱신된 정보는 다음날까지 반영&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 사용자 현재 위치 기준으로 자동 갱신?
+&lt;ul>
+&lt;li>A. 상시적으로 페이지를 갱신할 필요는 없음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="기능-요구사항">기능 요구사항&lt;/h3>
+&lt;p>다음 세 가지 핵심 기능을 추려낼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>사용자 위치와 검색 반경 정보에 매치되는 사업장 목록 반환&lt;/li>
+&lt;li>사업장 소유주가 사업장 정보를 추가, 삭제, 갱신할 수 있음
+&lt;ul>
+&lt;li>정보가 검색 결과에 실시간으로 반영될 필요는 없음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>고객은 사업장의 상세 정보를 살필 수 있어야함&lt;/li>
+&lt;/ul>
+&lt;h3 id="비기능적-요구사항">비기능적 요구사항&lt;/h3>
+&lt;p>기능 요구사항을 통해 다음과 같은 비기능 요구사항을 도출할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>낮은 응담 지연
+&lt;ul>
+&lt;li>사용자는 주변 사업장을 빠르게 검색할 수 있어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 보호
+&lt;ul>
+&lt;li>사용자 위치는 민감한 정보이므로 위치 기반 서비스(LBS)를 설계할 때는 사용자의 정보를 보호할 방법을 고려해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>고가용성 및 규모 확장성
+&lt;ul>
+&lt;li>인구 밀집 지역에서 이용자가 집중되는 시간에 트래픽이 급증해도 감당할 수 있도록 시스템을 설계해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-규모-추정">개략적 규모 추정&lt;/h3>
+&lt;p>시스템의 규모가 어느정도이며 어떤 수준의 도전적 과제를 해결해야 하는지 결정하기 위해, 개략적인 추정을 수행해본다.&lt;/p>
+&lt;p>DAU는 1억명, 등록된 사업장의 수는 2억개라고 가정한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>1일 = 24시간 * 60분 * 60초 = 약 10^5&lt;/code>&lt;/li>
+&lt;li>한 사용자는 하루에 5회 검색 시도한다고 가정&lt;/li>
+&lt;li>&lt;code>QPS = (1억 * 5) / 10^5 = 5000&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략절-설계안-제시-및-동의-구하기">2단계: 개략절 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;h3 id="api-설계">API 설계&lt;/h3>
+&lt;p>&lt;strong>RESTful API&lt;/strong> 관례를 따르는 간단한 API를 만든다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>GET /v1/search/nearby&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>특정 검색 기준에 맞는 사업장 목록을 반환&lt;/p>
+&lt;ul>
+&lt;li>인자
+&lt;ul>
+&lt;li>&lt;code>latitude&lt;/code>: 위도&lt;/li>
+&lt;li>&lt;code>longitude&lt;/code>: 경도&lt;/li>
+&lt;li>&lt;code>radius(optional)&lt;/code>: 반경, 기본값은 5000m&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;total&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;businesses&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[{&lt;/span>&lt;span class="err">business&lt;/span> &lt;span class="err">object&lt;/span>&lt;span class="p">}]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>{business object}&lt;/code>는 각 사업장을 표현하는 객체로, 검색 결과 페이지에 표시될 모든 정보를 포함한다.&lt;/p>
+&lt;p>사업장의 상세 정보 페이지에서는 추가 정보가 필요할 수 있으므로, 또 다른 API를 호출하여 &lt;strong>사업장 상세 정보&lt;/strong>를 조회해야한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>사업장 관련 API&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>GET /v1/businesses/:id&lt;/code>
+&lt;ul>
+&lt;li>특정 사업장의 상세 정보 반환&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>POST /v1/businesses&lt;/code>
+&lt;ul>
+&lt;li>새로운 사업장 추가&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>PUT /v1/businesses/:id&lt;/code>
+&lt;ul>
+&lt;li>사업장 상세 정보 갱신&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>DELETE /v1/businesses/:id&lt;/code>
+&lt;ul>
+&lt;li>특정 사업장 정보 삭제&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="데이터-모델">데이터 모델&lt;/h3>
+&lt;p>&lt;strong>읽기/쓰기 비율&lt;/strong>&lt;/p>
+&lt;p>아래의 기능으로 인해 읽기 연산은 굉장히 자주 수행된다.&lt;/p>
+&lt;ul>
+&lt;li>주변 사업장 검색&lt;/li>
+&lt;li>사업장 정보 확인&lt;/li>
+&lt;/ul>
+&lt;p>쓰기 연산은 사업장 정보를 추가, 삭제, 편집할 때만 발생하므로 실행 빈도가 매우 낮을 수 있다.&lt;/p>
+&lt;p>이렇게 읽기 연산이 압도적인 시스템에서는 MySQL 같은 &lt;strong>관계형 데이터베이스&lt;/strong>가 바람직할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>데이터 스키마&lt;/strong>&lt;/p>
+&lt;p>이 시스템의 핵심이 되는 테이블은 &lt;code>business&lt;/code> 테이블과 &lt;code>위치 색인 테이블(geospatial index table)&lt;/code>이다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+business {
+id business_id pk
+string address
+string city
+string state
+string country
+float latitude
+float longitude
+}
+&lt;/pre>
+&lt;hr>
+&lt;p>&lt;strong>지리적 위치 색인 테이블&lt;/strong>&lt;/p>
+&lt;p>지리적 위치 색인 테이블은 위치 정보 관련 연산의 효율성을 높이는데 쓰이는데, 지오해시(Geohash)에 대한 지식이 필요하므로 이후 논의한다.&lt;/p>
+&lt;h3 id="개략적-설계">개략적 설계&lt;/h3>
+&lt;p>이 시스템은 위치 기반 서비스와 사업장 관련 서비스 두 부분으로 구성된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img.png"
+width="604"
+height="601"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_hu6c73e6aa1fcd1095a416f091bed72765_134387_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_hu6c73e6aa1fcd1095a416f091bed72765_134387_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="241px"
+>&lt;/p>
+&lt;ul>
+&lt;li>로드 밸런서
+&lt;ul>
+&lt;li>유입 트래픽을 자동으로 여러 서비스에 분산시키는 컴포넌트&lt;/li>
+&lt;li>로드밸런서에 단일 DNS 진입점을 지정하고, URL 경로를 분석하여 어느 서비스에 트래픽을 전달할 지 결정한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>위치 기반 서비스(LBS)
+&lt;ul>
+&lt;li>시스템의 핵심으로 주어진 위치와 반경 정보를 이용해 주변 사업장을 검색한다.&lt;/li>
+&lt;li>쓰기 요청이 없는, 읽기 요청만 빈번하게 발생한다.&lt;/li>
+&lt;li>QPS가 높음, 특히 특정 시간대의 인구 밀집 지역일수록 그 경향이 심해진다.&lt;/li>
+&lt;li>무상태 서비스이므로 수평적 규모 확장이 쉽다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>사업장 서비스
+&lt;ul>
+&lt;li>쓰기
+&lt;ul>
+&lt;li>사업장 소유주가 사업장 정보를 생성, 갱신, 삭제한다.&lt;/li>
+&lt;li>QPS가 높지 않다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>읽기
+&lt;ul>
+&lt;li>고객이 사업장 정보를 조회한다.&lt;/li>
+&lt;li>특정 시간대에 QPS가 높아진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>데이터베이스 클러스터&lt;/strong>&lt;/p>
+&lt;p>데이터베이스 클러스터는 주-부 데이터베이스 형태로 구성할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>주 데이터베이스는 쓰기 요청을 처리한다.&lt;/li>
+&lt;li>부 데이터베이스, 즉 사본 데이터베이스는 읽기 요청을 처리한다.&lt;/li>
+&lt;/ul>
+&lt;p>데이터가 주 데이터베이스에 기록된 후 사본 데이터베이스로 복제되기 때문에 지연으로 인해 두 데이터베이스에 차이가 있을 수 있다.&lt;/p>
+&lt;p>그렇더라도 사업장 정보는 실시간으로 갱신 될 필요는 없기 때문에 문제가 되지는 않는다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>사업장 서비스와 LBS의 규모 확장성&lt;/strong>&lt;/p>
+&lt;p>사업장 서비스와 LBS 둘 다 무상태 서비스이므로 점심시간 같은 특정 시간대에 집중적으로 몰리는 트래픽에는 자동으로 서버를 추가하여 대응하고, 야간 등 유휴 시간대에는 서버를 삭제하도록 구성할 수 있다.&lt;/p>
+&lt;p>시스템을 클라우드에 둔다면 여러 지역, 여러 가용성 구역에 서버를 두어 시스템의 가용성을 높일 수 있다.&lt;/p>
+&lt;h3 id="주변-사업장-검색-알고리즘">주변 사업장 검색 알고리즘&lt;/h3>
+&lt;p>실제로는 많은 회사가 &lt;strong>레디스 지오해시&lt;/strong>(Geohash in Redis)나 &lt;strong>PostGIS&lt;/strong> 확장을 설치한 &lt;strong>포스트그레스(Postgres) 데이터베이스&lt;/strong>를 활용한다.&lt;/p>
+&lt;p>면접관은 이런 데이터베이스의 내부 구조를 알 거라고 기대하지 않으므로 데이터베이스 이름을 나열하기 보다는 &lt;strong>지리적 위치 색인&lt;/strong>이 어떻게 동작하는지 설명함으로써 문제 풀이 능력과 기술적 지식을 갖추었음을 보이는 것이 좋다.&lt;/p>
+&lt;h4 id="2차원-검색">2차원 검색&lt;/h4>
+&lt;p>주어진 반경으로 그린 원 안에 놓인 사업장을 검색하는 방법이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_1.png"
+width="420"
+height="424"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_1_hu28aaeced189dd5bd938ca37a2e071a5b_306369_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_1_hu28aaeced189dd5bd938ca37a2e071a5b_306369_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="2차원 검색"
+class="gallery-image"
+data-flex-grow="99"
+data-flex-basis="237px"
+>&lt;/p>
+&lt;p>가장 직관적이지만 지나치게 단순하다는 문제가 있다.&lt;/p>
+&lt;p>이 절차를 유사 SQL 질의문으로 옮기면 다음과 같다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">business_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">latitude&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">longitude&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">business&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">latitude&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">my_lat&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">radius&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">my_lat&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">radius&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">longitude&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">my_lon&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">radius&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">my_lon&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">radius&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 질의는 테이블 전부를 읽어야 하므로 효율적이지 않다.&lt;/p>
+&lt;p>위도, 경도 컬럼에 인덱스를 만든다면 &lt;strong>데이터 집합 1&lt;/strong>과 &lt;strong>데이터 집합 2&lt;/strong>는 빠르게 추출할 수 있지만, 주어진 반경 내 사업장을 얻으려면 이 두집합의 교집합을 구해야한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_2.png"
+width="661"
+height="629"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_2_hu40eaf7e43af948bc3acd0796b3c5f500_646398_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_2_hu40eaf7e43af948bc3acd0796b3c5f500_646398_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="두 데이터 집합의 교집합"
+class="gallery-image"
+data-flex-grow="105"
+data-flex-basis="252px"
+>&lt;/p>
+&lt;p>그럴 경우 각 집합에 속한 데이터양이 많기 때문에 효율적일 수 없다.&lt;/p>
+&lt;p>따라서 2차원 데이터를 한 차원에 대응시킬 방법을 적용해야하며, 지리적 정보에 색인을 만드는 방법은 두 종류이다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+index[인덱스]
+hash[해시]
+evenGrid[균등 격자]
+geohash[지오해시]
+cartesianTiers[카르테시안 계층]
+tree[트리]
+quadTree[쿼드트리]
+s2[구글 S2]
+rtree[R 트리]
+index --> hash
+index --> tree
+hash --> evenGrid
+hash --> geohash
+hash --> cartesianTiers
+tree --> quadTree
+tree --> s2
+tree --> rtree
+&lt;/pre>
+&lt;ul>
+&lt;li>해시 기반 방안
+&lt;ul>
+&lt;li>균등 격자(even grid), 지오해시(geohash), 카르테시안 계층(cartesian tiers) 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>트리 기반 방안
+&lt;ul>
+&lt;li>쿼드트리(quadtree), 구글 S2, R 트리(R-tree) 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>각 색인법의 구현 방법은 서로 다르지만 모두 지도를 작은 영역으로 분할하고 고속 검색이 가능하도록 색인을 만든다.&lt;/p>
+&lt;ul>
+&lt;li>지오해시, 쿼드트리, 구글 S2는 실제로 가장 널리 사용되는 방안이다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="균등-격자">균등 격자&lt;/h4>
+&lt;p>지도를 작은 격자 또는 구획으로 나누는 단순한 접근법이다.&lt;/p>
+&lt;p>하나의 격자는 여러 사업장을 담을 수 있고, 하나의 사업장은 오직 한 격자 안에만 속하게 된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_3.png"
+width="641"
+height="358"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_3_hu362895ba995ff86ccb1db11274640f8a_214139_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_3_hu362895ba995ff86ccb1db11274640f8a_214139_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="세계 지도"
+class="gallery-image"
+data-flex-grow="179"
+data-flex-basis="429px"
+>&lt;/p>
+&lt;ul>
+&lt;li>사업장 분포가 균등하지 않기 때문에, 전 세계를 동일한 크기의 격자로 나누면 데이터 분포는 전혀 균등하지 않다.&lt;/li>
+&lt;li>주어진 격자의 인접 격자를 찾기가 까다로울 수 있다.
+&lt;ul>
+&lt;li>격자 식별자 할당에 명확한 체계가 없기 때문&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="지오해시geohash">지오해시(Geohash)&lt;/h4>
+&lt;p>2차원의 위도 경도 데이터를 1차원의 문자열로 변환한다.&lt;/p>
+&lt;p>지오해시 알고리즘은 비트를 하나씩 늘려가면서 재귀적으로 세계를 더 작은 격자로 분할해 나간다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_4.png"
+width="625"
+height="519"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_4_hufacfa873ada24596b4892bc8b0fb3bf9_375857_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_4_hufacfa873ada24596b4892bc8b0fb3bf9_375857_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="지오해시"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="289px"
+>&lt;/p>
+&lt;ul>
+&lt;li>위도 범위 [-90, 0]은 0에 대응&lt;/li>
+&lt;li>위도 범위 [0, 90]은 1에 대응&lt;/li>
+&lt;li>경도 범위 [-180, 0]은 0에 대응&lt;/li>
+&lt;li>경도 범위 [0, 180]은 1에 대응&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_5.png"
+width="341"
+height="536"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_5_hu903260c7889129d2af5496540c3da4de_327438_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_5_hu903260c7889129d2af5496540c3da4de_327438_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="격자 분할"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="152px"
+>&lt;/p>
+&lt;p>이 절차를 원하는 정밀도(precision)를 얻을 때까지 반복하며, Base32 표현법으로 바꾼다.&lt;/p>
+&lt;ul>
+&lt;li>구글 본사 지오해시 (길이 = 6)
+&lt;ul>
+&lt;li>1001 10110 01001 10000 11011 11010 → 9q9hvu&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타 본사 지오해시 (길이 = 6)
+&lt;ul>
+&lt;li>1001 10110 01001 10001 10000 10111 → 949jhr&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>지오해시는 12단계 정밀도를 낮는데, 이 정밀도가 격자의 크기를 결정한다.&lt;/p>
+&lt;p>지오해시의 길이가 6보가 길어지면 한 격자가 너무 작아지고, 4보다 작으면 격자가 너무 커진다.&lt;/p>
+&lt;p>따라서 최적 정밀도는 사용자가 지정한 반경으로 그린 원을 덮는 최소 크기 격자를 만드는 지오해시 길이를 구해야한다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>반경(km)&lt;/th>
+&lt;th>지오해시 길이&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0.5km&lt;/td>
+&lt;td>6&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1km&lt;/td>
+&lt;td>5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2km&lt;/td>
+&lt;td>5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5km&lt;/td>
+&lt;td>4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>20km&lt;/td>
+&lt;td>4&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>이 접근법은 대체로 잘 동작하지만, 격자 가장자리 처리 방식에 관한 경계 조건(edge case)이 몇 가지 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>격자 가장자리 이슈 1&lt;/strong>&lt;/p>
+&lt;p>해시값의 곹통 접두어(prefix)가 긴 격자들이 서로 더 가깝게 놓이도록 보장하지만, 그 역은 참이 아니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_6.png"
+width="538"
+height="329"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_6_huab9c559e085f9df894e550dd54ea808a_327384_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_6_huab9c559e085f9df894e550dd54ea808a_327384_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="공통 접두어"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="392px"
+>&lt;/p>
+&lt;p>아주 가까운 두 위치가 어떤 공통 접두어도 갖지 않는 일이 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>두 지점이 적도의 다른 쪽에 놓이는 경우&lt;/li>
+&lt;li>자오선상의 다른 반쪽에 놓이는 경우&lt;/li>
+&lt;/ul>
+&lt;p>이 문제점으로 인해 단순한 접두어 기반 SQL 질의문을 사용하면 주변 모든 사업장을 가져올 수 없다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">geohash_index&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">geohash&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;9q8zn%&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>&lt;strong>격자 가장자리 이슈 2&lt;/strong>&lt;/p>
+&lt;p>공통 접두어 길이는 길지만 서로 다른 격자에 놓이는 경우가 존재할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_7.png"
+width="516"
+height="317"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_7_hu1ec4e92240f08b219cd6ced755e2174d_347604_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_7_hu1ec4e92240f08b219cd6ced755e2174d_347604_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="격자 가장자리 이슈"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="390px"
+>&lt;/p>
+&lt;p>가장 흔히 사용되는 해결책은 현재 격자를 비롯한 인접한 모든 격자의 모든 사업장 정보를 가져오는 것이다.&lt;/p>
+&lt;ul>
+&lt;li>특정 지오해시의 주변 지오해시를 찾는 것은 상수 시간에 가능한 연산이다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>표시할 사업장이 충분하지 않은 경우&lt;/strong>&lt;/p>
+&lt;p>현재 격자와 주변 격자를 다 살펴보아도 표시할 사업장을 충분히 발견할 수 없는 경우는 2가지 방법을 고려할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>주어진 반경 내 사업장만 반환
+&lt;ul>
+&lt;li>사용자가 만족할만한 수의 사업장 정보를 반환하지 못한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>검색 반경 키우기
+&lt;ul>
+&lt;li>지오해시 값의 마지막 비트를 삭제하여 얻은 새 지오해시 값을 사용해 주변 사업장을 검색한다.&lt;/li>
+&lt;li>만족할만한 수를 채울 때 까지 지워 범위를 다시 확장할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="쿼드트리">쿼드트리&lt;/h4>
+&lt;p>쿼드트리는 격자의 내용이 특정 기준을 만족할 때가지 2차원 공간을 재귀적으로 사분면 분할하는 데 흔히 사용되는 자료구조이다.&lt;/p>
+&lt;ul>
+&lt;li>ex) 격자에 담긴 사업장 수가 100이하가 될 때가지 분할한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_8.png"
+width="818"
+height="228"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_8_hu4541cdbdba4b6c2f45ed6a19df4e099d_62200_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_8_hu4541cdbdba4b6c2f45ed6a19df4e099d_62200_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="쿼드트리"
+class="gallery-image"
+data-flex-grow="358"
+data-flex-basis="861px"
+>&lt;/p>
+&lt;p>이 자료구조는 각각의 LBS 서버에 존재해야 하며, 서버가 시작하는 시점에 구축된다.&lt;/p>
+&lt;ul>
+&lt;li>쿼드 트리는 메모리 안에 놓이는 자료 구조일 뿐, 데이터베이스가 아님에 유의하자.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_9.png"
+width="814"
+height="544"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_9_hudfd79b9274f06537f3a452d7b383faee_138505_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_9_hudfd79b9274f06537f3a452d7b383faee_138505_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="쿼드트리 구축"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;p>트리의 루트 노드는 세계 전체 지도를 나타내며, 이 루트 노드를 사분면 각각을 나타내는 하위노드를 통해 어떤 노드의 사업장도 100개를 넘지 않을 때 까지 재귀적으로 분할한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>쿼드트리 전부를 저장하는 데 얼마나 많은 메모리가 필요한가?&lt;/strong>&lt;/p>
+&lt;p>어떤 데이터가 쿼드트리에 보관되는지 살펴봐야한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>말단 노드에 수록되는 데이터&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>이름&lt;/th>
+&lt;th>크기&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>격자를 식별하는 데 사용될 좌상단과 우하단 꼭지점 좌표&lt;/td>
+&lt;td>32바이트 (8바이트 * 4)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>격자 내부 사업장 ID 목록&lt;/td>
+&lt;td>ID당 8바이트 * 100(한 격자에 허용되는 최대 사업장 수)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>합계&lt;/td>
+&lt;td>832바이트&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;p>&lt;strong>내부 노드에 수록되는 데이터&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>이름&lt;/th>
+&lt;th>크기&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>격자를 식별하는 데 사용될 좌상단과 우하단 꼭지점 좌표&lt;/td>
+&lt;td>32바이트 (8바이트 * 4)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>하위 노드 4개를 가리킬 포인터&lt;/td>
+&lt;td>32바이트 (8바이트 * 4)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>합계&lt;/td>
+&lt;td>64바이트&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>트리 구축 프로세스가 한 격자에 허용되는 사업장 수의 초댓값에 좌우되기는 하지만 데이터베이스 레코드가 이미 최댓값을 고려하여 분할되어 있으므로 트리 안에 저장하지 않아도 된다.&lt;/p>
+&lt;hr>
+&lt;p>총 메모리 요구량은 대략 1.71GB으로 꽤 작은 것을 알 수 있다.&lt;/p>
+&lt;p>쿼드 트리 인덱스는 메모리를 많이 잡아먹지 않으므로 서버 한 대에 충분히 올릴 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>전체 쿼드트리 구축에 소요되는 시간은?&lt;/strong>&lt;/p>
+&lt;p>각 말단 노드에는 대략 100개 사업장 ID가 저장된다.&lt;/p>
+&lt;p>전체 사업장 수를 &lt;code>n&lt;/code>이라고 하였을 때 트리를 구축하는 시간 복잡도는 &lt;code>n/100 log n/100&lt;/code>이다.&lt;/p>
+&lt;p>200m 개의 사업장 정보를 인덱싱하는 쿼드트리 구축에는 몇 분 정도 소요될 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>쿼드트리로 주변 사업장을 검색하려면?&lt;/strong>&lt;/p>
+&lt;ol>
+&lt;li>메모리에 쿼드트리 인덱스를 구축한다.&lt;/li>
+&lt;li>검색 시작점이 포함된 말단 노드를 만날 때가지, 트리의 루트 노드로부터 탐색한다.
+&lt;ul>
+&lt;li>해당 노드에 100개 사업장이 있는 경우에는 해당 노드만 반환&lt;/li>
+&lt;li>그렇지 않은 경우 충분한 사업장 수가 확보될 때까지 인접 노드도 추가&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;p>&lt;strong>쿼드트리 운영 시 고려사항&lt;/strong>&lt;/p>
+&lt;p>200m개 사업장을 갖는 쿼드트리를 구축하는 데 몇 분이 소요된다.&lt;/p>
+&lt;p>따라서 서버를 시작하는 순간에 트리를 구축하면 서버 시작 시간이 길어질 수 있다는 점을 따져봐야 한다.&lt;/p>
+&lt;ul>
+&lt;li>쿼드트리를 만들고 있는 동안 서버는 트래픽을 처리할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>새로운 버전의 서버 소프트웨어를 릴리스 할 때는 동시에 너무 많은 서버에 배포하지 않도록 조심해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>새 서버 소프트웨어를 테스트 환경의 모든 서버에 동시 배포하면 200m개 사업장 정보를 데이터베이스에서 동시에 읽게 되어 시스템에 큰 부하가 가해질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>사업장이 추가/삭제 되었을 때 쿼드 트리를 갱신하는 문제도 고려해야한다.&lt;/p>
+&lt;ul>
+&lt;li>점진적 갱신
+&lt;ul>
+&lt;li>점진석으로 서버 중 몇 개씩만 갱신한다.&lt;/li>
+&lt;li>짧은 시간 동안이지만 낡은 데이터가 반환될 수 있다.&lt;/li>
+&lt;li>요구사항이 엄격하지 않다면 일반적으로 용인할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>밤사이에 일괄 갱신
+&lt;ul>
+&lt;li>수많은 키가 한번에 무효화되어 캐시 서버에 막대한 부하가 가해질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>실시간 갱신
+&lt;ul>
+&lt;li>설계가 복잡해진다.&lt;/li>
+&lt;li>여러 스레드가 쿼드트리 자료 구조를 동시에 접근하는 경우 락 매커니즘을 사용해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>실제 쓰이는 쿼드트리 사례&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_10.png"
+width="778"
+height="492"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_10_hu2dc1b935aaab456c08ca4ae535717d09_628941_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_10_hu2dc1b935aaab456c08ca4ae535717d09_628941_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="실제 쿼드트리 사례"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="379px"
+>&lt;/p>
+&lt;p>인구 밀집 지역에는 작은 격자를, 그렇지 않은 지역에는 큰 격자를 사용하고 있다.&lt;/p>
+&lt;h4 id="구글-s2">구글 S2&lt;/h4>
+&lt;p>구글 S2 기하 라이브러리는 아주 유명한 솔루션이다.&lt;/p>
+&lt;p>쿼드트리와 마찬가지로 메모리 기반이다.&lt;/p>
+&lt;p>지구를 힐베르트 곡선(Hilbert curve)라는 공간 채움 곡선을 사용하여 1차원 색인화 하는 방안이다.&lt;/p>
+&lt;p>힐베르트 곡선은 곡선 상에서 인접한 두 지점은 색인화 이후 1차원 공간 내에서도 인접한 위치에 존재한다는 특징이 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_11.png"
+width="468"
+height="511"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_11_hucae915331abfd9b51266254260a54e07_267359_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_11_hucae915331abfd9b51266254260a54e07_267359_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="힐베르트 곡선"
+class="gallery-image"
+data-flex-grow="91"
+data-flex-basis="219px"
+>&lt;/p>
+&lt;ul>
+&lt;li>지오펜스(geofence) 구현에 적합하다.
+&lt;ul>
+&lt;li>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_12.png"
+width="441"
+height="300"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_12_hu5fc670ad65b6ab7c4e04b9dba4591411_278051_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_12_hu5fc670ad65b6ab7c4e04b9dba4591411_278051_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="지오펜스"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="352px"
+>&lt;/li>
+&lt;li>지오펜스: 실제 지리적 영역에 설정한 가상의 경계&lt;/li>
+&lt;li>임의 지역에 다양한 수준의 영역 지정이 가능하다.&lt;/li>
+&lt;li>특정 지점 반경 몇 km, 스쿨 존, 동네 경계 등&lt;/li>
+&lt;li>관심 있는 영역의 경계를 정한 다음 벗어난 사용자에게 알림을 보낼 수 있게된다.&lt;/li>
+&lt;li>풍부한 기능을 제공할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>영역 지정 알고리즘
+&lt;ul>
+&lt;li>지오해시처럼 고정된 정밀도를 사용하는 대신 최소 수준, 최고 수준, 최대 셀 개수 등을 지정할 수 있다.&lt;/li>
+&lt;li>셀 크기를 유연하게 조정할 수 있으므로 좀 더 상세한 결과를 반환한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="추천">추천&lt;/h4>
+&lt;p>면접 시에는 지오해시나 쿼드트리 가운데 하나를 선택하는 것이 좋다.&lt;/p>
+&lt;ul>
+&lt;li>S2는 면접 시간 내에 분명히 설명하기 어렵다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="지오해시-vs-쿼드트리">지오해시 vs 쿼드트리&lt;/h3>
+&lt;hr>
+&lt;p>&lt;strong>지오해시&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>구현과 사용이 쉽다.&lt;/li>
+&lt;li>트리를 구축할 필요가 없다.&lt;/li>
+&lt;li>지정 반경 이내 사업장 검색을 지원한다.&lt;/li>
+&lt;li>정밀도를 고정하면 격자 크기도 고정된다.
+&lt;ul>
+&lt;li>인구 밀도에 따라 동적으로 격자 크기를 조장할 수는 없다.&lt;/li>
+&lt;li>반영하려면 복잡한 논리를 적용해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>색인 갱신이 쉽다.
+&lt;ul>
+&lt;li>사업장 하나를 삭제하려면, 지오해시 값과 사업장 식별자가 같은 열 하나만 제거하면 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>쿼드트리&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>트리 구축으로 인해 구현하기가 살짝 더 까다롭다.&lt;/li>
+&lt;li>k번째로 가까운 사업장까지의 목록을 구할 수 있다.
+&lt;ul>
+&lt;li>반경에 상관없이 내 위치에서 가까운 사업장 k개&lt;/li>
+&lt;li>하위 노드 분할 과정이 숫자 k에 기반하고, 사업장을 찾을 때까지 검색 범위를 자동으로 조정할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>인구 밀도에 따라 격자 크기를 동적으로 조정할 수 있다.&lt;/li>
+&lt;li>지오해시보다 색인 갱신은 까다롭다.
+&lt;ul>
+&lt;li>사업자 장보를 삭제하려면 루트 노드부터 말단 노드까지 트리를 순회해야 한다.(&lt;code>O(log n)&lt;/code>)&lt;/li>
+&lt;li>다중 스레드를 지원하는 경우 락을 사용해야하므로 더욱 복잡해질 수 있다.&lt;/li>
+&lt;li>리밸런싱이 필요하다면 구현은 더욱 복잡해진다.
+&lt;ul>
+&lt;li>말단 노드에 새로운 사업장을 추가할 수 없는 경우 필요함(꽉 찼을때)&lt;/li>
+&lt;li>구간의 크기를 필요한 양보다 크게 잡으면 예방할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="데이터베이스의-규모-확장성">데이터베이스의 규모 확장성&lt;/h3>
+&lt;p>사업장 테이블과 지리정보 색인 테이블의 규모 확장성을 살펴본다.&lt;/p>
+&lt;h4 id="사업장-테이블">사업장 테이블&lt;/h4>
+&lt;p>사업장 테이블 데이터는 한 서버에 담을 수 없을수도 있다.&lt;/p>
+&lt;ul>
+&lt;li>샤딩을 적용하기 좋은 후보이다.&lt;/li>
+&lt;/ul>
+&lt;p>가장 간단한 방법은 사업장 ID를 기준으로 샤딩하는 것으로 모든 샤드에 부하를 고르게 분산할 수 있을 뿐 아니라 운영적 측면에서도 관리하기 쉽다.&lt;/p>
+&lt;h4 id="지리-정보-색인-테이블">지리 정보 색인 테이블&lt;/h4>
+&lt;p>지오해시 테이블 구성 방법은 두가지이다.&lt;/p>
+&lt;ol>
+&lt;li>각각의 지오해시에 연결되는 모든 사업장 ID를 JSON 배열로 만들어 같은 열에 저장&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>사업장 정보를 갱신하려면 JSON 배열을 읽은 다음 갱신할 사업장 ID를 찾아야한다.&lt;/li>
+&lt;li>사업장을 등록해야 하는 경우 같은 사업장 정보가 이미 있는지 확인을 위해 데이터를 전부 살펴야한다.&lt;/li>
+&lt;li>병렬적으로 실행되는 갱신 연산 결과로 데이터가 소실되는 경우를 막기 위해 락을 사용해야한다.&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>같은 지오해시에 속한 사업장 ID 각각을 별도 열로 저장
+&lt;ul>
+&lt;li>지오해시와 사업장 ID 컬럼을 합친 &lt;code>(geohash, business_id)&lt;/code>를 복합키로 사용하면 사업장 정보를 추가, 삭제하기 쉽다.(락이 필요 없다)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="지리-정보-색인의-규모-확장">지리 정보 색인의 규모 확장&lt;/h4>
+&lt;p>쿼드트리 색인을 전부 보관하는데 1.71G의 메모리가 필요하므로 색인 전부를 최신 데이터베이스 서버 한 대에 충분히 수용할 수 있다.&lt;/p>
+&lt;p>하지만 읽기 연산의 빈도가 높다면 서버 한 대의 CPU와 네트워크 대역폭으로는 요청 전부를 감당하지 못할 수 있다.&lt;/p>
+&lt;p>이러한 상황에서는 여러 데이터베이스 서버로 부하를 분산해야한다.&lt;/p>
+&lt;p>관계형 데이터베이스 서버의 경우 부하 분산에는 두 가지 전략이 흔히 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>읽기 연산을 지원할 사본 데이터베이스 서버를 늘린다.&lt;/li>
+&lt;li>샤딩을 적용한다.
+&lt;ul>
+&lt;li>지오해시 테이블은 샤딩 로직을 애플리케이션 계층에서 구현해야하기 때문에 까다롭다.&lt;/li>
+&lt;li>데이터 전부를 서버 한 대에 담을 수 있으므로 여러 서버로 샤딩해야 할 강한 기술적 필요성은 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>따라서 이번 설계안에서는 읽기 부하를 나눌 사본 데이터베이스 서버를 두는 방법이 더 좋다.&lt;/p>
+&lt;h3 id="캐시">캐시&lt;/h3>
+&lt;p>캐시 계층 도입 전에는 정말 필요한지 고민해야한다.&lt;/p>
+&lt;ul>
+&lt;li>처리 부하가 읽기 중심이고 데이터베이스 크기는 상대적으로 작아 모든 데이터는 한 대 데이터베이스 서버에 수용 가능
+&lt;ul>
+&lt;li>이 경우 질의문 처리 성능은 I/O에 좌우되지 않으므로 메모리 캐시를 사용할 때와 비슷하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>읽기 성능이 병목이라면 사본 데이터베이스를 증설해서 읽기 대역폭을 늘릴 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>캐시 도입을 의논할 때 벤치마킹과 비용 분석에 각별히 주의해야 한다는 사실을 유념해야한다.&lt;/p>
+&lt;p>캐시가 사업적 요구사항을 만족하는 데 주용한 역할을 하리라는 확신이 들면 실제 캐시 전략 논의를 진행해도 좋다.&lt;/p>
+&lt;h4 id="캐시-키">캐시 키&lt;/h4>
+&lt;p>가장 직관적인 캐시 키는 사용자 위치의 위도 경도 정보이지만 몇가지 문제가 있다.&lt;/p>
+&lt;ul>
+&lt;li>사용자의 핸드폰에서 반환되는 위치 정보는 추정치일 뿐 정확하지 않다.
+&lt;ul>
+&lt;li>전혀 움직이지 않는다고 해도 측정할 때마다 조금씩 달라진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>이동하면 위도 경도 정보도 미세하게 변경된다.&lt;/li>
+&lt;/ul>
+&lt;p>따라서 사용자 위치 정보는 캐시 키로는 적절치 않으며, 지오해시나 쿼드트리는 같은 격자 내 모든 사업장이 같은 해시값을 갖도록 만들 수 있기 때문에 캐시 키로 적합하다.&lt;/p>
+&lt;h4 id="캐시-데이터-유형">캐시 데이터 유형&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>키&lt;/th>
+&lt;th>값&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>지오해시&lt;/td>
+&lt;td>해당 격자 내의 사업장 ID 목록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>사업장 ID&lt;/td>
+&lt;td>사업장 정보 객체&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>위 데이터는 캐시에 보고나하면 시스템의 성능을 전반적으로 향상시킬 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>격자 내 사업장 ID&lt;/strong>&lt;/p>
+&lt;p>사업장 정보는 상대적으로 안정적이라 자주 변경되지 않는다.&lt;/p>
+&lt;p>따라서 특정 지오해시에 해당하는 사업장 ID 목록을 미리 계산한 다음 레디스 같은 키-값 저장소에 캐시할 수 있다.&lt;/p>
+&lt;ol>
+&lt;li>주어진 지오해시에 대응되는 사업장 목록을 가져온다.
+&lt;ul>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">business_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">geohash_index&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">geohash&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">LIKE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">geohash&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="o">%&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>주어진 지오해시에 대응되는 사업장 목록을 요청받으면 캐시를 먼저 조회하고 없으면 위의 질의를 사용하여 캐시에 보관 후 반환한다.&lt;/li>
+&lt;/ol>
+&lt;p>새로운 사업장을 추가하거나, 기존 사업장 정보를 편집하거나, 아예 삭제하는 경우에는 데이터베이스를 갱신하고 캐시에 보관된 항목은 무효화(invalidate) 한다.&lt;/p>
+&lt;ul>
+&lt;li>연산의 빈도가 상대적으로 낮아 락을 사용할 필요가 없어 구현하기 쉽다.&lt;/li>
+&lt;/ul>
+&lt;p>요구사항에서 사용자가 4가지 검색 반경 가운데 하나를 고를 수 있는데, 이 검색 반경은 각각 지오해시 길이 4, 5, 5, 6에 해당한다.&lt;/p>
+&lt;p>따라서 주변 사업장 검색 결과를 신속하게 제공하려면 세가지 정밀도(4, 5, 6) 전부에 대한 검색 결과를 레디스에 캐시해야한다.&lt;/p>
+&lt;ul>
+&lt;li>레디스 저장소에 값을 저장하기 위한 필요 공간
+&lt;ul>
+&lt;li>&lt;code>8qkdlxm * 200m * 3가지 정밀도 = ~5GB&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>레디스 저장소에 키를 저장하기 위핸 필요 공간
+&lt;ul>
+&lt;li>무시할 만한 수준&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>전체 메모리 요구량은 대략 5GB&lt;/li>
+&lt;/ul>
+&lt;p>메모리 요구량으로 봤을 때 서버 한 대로도 충분할 것 같지만, 고가용성을 보장하고 대륙 경계를 넘는 트래픽의 전송 지연을 방지하기 위해 &lt;strong>레디스 클러스터를 전 세계에 각 지역별로 두고, 동일한 데이터를 각 지역에 중복해서 저장&lt;/strong>해 두어야 한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>클라이언트 애플리케이션에 표시할 사업장 정보&lt;/strong>&lt;/p>
+&lt;p>&lt;code>business_id&lt;/code>를 키로 사용하고 이름, 주소, 사진 드으이 정보를 담는다.&lt;/p>
+&lt;h3 id="지역-및-가용성-구역">지역 및 가용성 구역&lt;/h3>
+&lt;p>지금까지 설펴본 위치 기반 서버스는 &lt;strong>여러 지역과 가용성 구역에 설치&lt;/strong>한다.&lt;/p>
+&lt;ul>
+&lt;li>사용자와 시스템 사이의 물리적 거리를 최소한으로 줄일 수 있다.&lt;/li>
+&lt;li>트래픽을 인구에 따라 고르게 분산하는 유연성을 확보할 수 있다.
+&lt;ul>
+&lt;li>인구 밀도가 아주 높은 국가는 별도 지역으로 빼거나, 아예 한 지역 안에서도 여러 가용성 구역을 활용하여 부하를 분산시키는 것이 바람직할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>그 지역의 사생활 보호법(privacy law)에 맞는 운영이 가능하다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="시간대-혹은-사업장-유형별-검색">시간대, 혹은 사업장 유형별 검색&lt;/h3>
+&lt;p>지오해시나 쿼드트리 같은 메커니즘을 통해 전 세계를 작은 격자들로 분할하면 검색 결과로 얻어지는 사업장 수는 상대적으로 적다.&lt;/p>
+&lt;p>일단은 근처 사업장 ID부터 전부 확보한 다음 사업장 정보를 전부 추출해서 영업시간이나 사업장 유형에 따라 필터링한다.&lt;/p>
+&lt;h3 id="최종-설계도">최종 설계도&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_13.png"
+width="798"
+height="548"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_13_hubc23af0bc58b4886e737580b3528b6eb_150645_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_13_hubc23af0bc58b4886e737580b3528b6eb_150645_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최종 설계도"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="349px"
+>&lt;/p>
+&lt;h4 id="주변-사업장-검색">주변 사업장 검색&lt;/h4>
+&lt;ol>
+&lt;li>클라이언트앱은 사용자의 우치와 검색 반경을 로드밸런서로 전송&lt;/li>
+&lt;li>해당 요청을 LBS로 보냄&lt;/li>
+&lt;li>LBS는 검색 요건을 만족할 지오해시 길이를 계산(예시에선 6)&lt;/li>
+&lt;li>LBS는 인접한 지오해시를 계산한 후 목록에 추가
+&lt;ul>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">list_of_geohashes = [my_geohash, neigbor1_geohash ...]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>list_of_geohashes&lt;/code> 내에 있는 지오해시 각가에 대해 지오해시 레디스 서버를 호출하여 해당 지오해시에 대응하는 모든 사업장 ID를 추출
+&lt;ul>
+&lt;li>가져오는 연산을 병렬적으로 수행하면 검색 결과를 내는 지연시간을 줄일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>반환된 사업장 ID들을 가지고 사업장 정보 레디스 서버를 조회하여 각 사업장의 상세 정보를 취득
+&lt;ul>
+&lt;li>상세 정보에 의거하여 사업장과 사용자 간 거리를 계산하고, 우선순위를 매긴 다음 클라이언트앱에 반환&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="사업장-정보-조회-갱신-추가-그리고-삭제">사업장 정보 조회, 갱신, 추가 그리고 삭제&lt;/h4>
+&lt;p>모든 사업장 정보 관련 API는 분리되어 있다.&lt;/p>
+&lt;ul>
+&lt;li>사업장 상세정보를 확인하기 위해 사업장 정보 서비스는 우선 해당 데이터가 사업장 정보 레디스 서버에 기록되어 있는지 살핀다.
+&lt;ul>
+&lt;li>캐시되어 있는 경우 해당 데이터를 읽어 클라이언트로 반환한다.&lt;/li>
+&lt;li>없는 경우 데이터베이스 클러스터에서 사업장 정보를 읽어 캐시에 저장한 다음 반환&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>새로 추가하거나 갱신한 정보는 다음날 반영된다는 정책으로 인해 캐시에 보관된 정보 갱신은 밤 사이 작업을 돌려 처리할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>주변 검색 기능의 핵심인 근접성 서비스를 설계해 보았다.&lt;/p>
+&lt;p>지리 정보 색인 기법을 활용하는 전형적인 LBS 서비스다.&lt;/p>
+&lt;ul>
+&lt;li>색인 방안
+&lt;ul>
+&lt;li>2차원 검색&lt;/li>
+&lt;li>균등 분할 격자&lt;/li>
+&lt;li>지오해시&lt;/li>
+&lt;li>쿼드트리&lt;/li>
+&lt;li>구글 S2&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지오해시를 사용한 지리정보 색인 동작 원리&lt;/li>
+&lt;li>캐시를 활용한 지연 시간 감소 방법&lt;/li>
+&lt;li>캐시 대상 정보&lt;/li>
+&lt;li>바르게 주변 사업장을 검색하기 위한 캐시 활용법&lt;/li>
+&lt;li>복제와 샤딩을 통한 데이터베이스 규모 확장법&lt;/li>
+&lt;li>LBS를 여러 지역과 가용성 구역에 설치
+&lt;ul>
+&lt;li>가용성 상승&lt;/li>
+&lt;li>사용자와 서버 사이 통신 지연 감소&lt;/li>
+&lt;li>각 지역 별 사생활 보호법 준수하는 방법&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="요약">요약&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/1/img_14.png"
+width="701"
+height="1207"
+srcset="https://codemario318.github.io/post/system-design-interview-2/1/img_14_hu6714b850b52f80eaff9bcd05f8c595a9_271468_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/1/img_14_hu6714b850b52f80eaff9bcd05f8c595a9_271468_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1장 요약"
+class="gallery-image"
+data-flex-grow="58"
+data-flex-basis="139px"
+>&lt;/p></description></item><item><title>14. 유튜브 설계</title><link>https://codemario318.github.io/post/system-design-interview/14/</link><pubDate>Thu, 11 Jul 2024 11:07:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/14/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/14/cover.png" alt="Featured image of post 14. 유튜브 설계" />&lt;p>유튜브 시스템을 설계하는 방식은 넷플릭스나 훌루 같은 &lt;strong>비디오 플랫폼&lt;/strong>을 설계하는 문제에도 적용 가능하다.&lt;/p>
 &lt;p>유튜브 시스템에서 제공하는 기능들은 단순해보이지만, 엄청난 트래픽으로 인해 매우 복잡한 수많은 기술들이 숨어있다.&lt;/p>
 &lt;ul>
 &lt;li>MAU: 20억&lt;/li>
