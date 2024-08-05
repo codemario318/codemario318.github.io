@@ -119,6 +119,34 @@ Allow: /post/boostcamp-9th/review/challenge/3/
 
 
 
+
+
+Allow: /post/git/add-commit/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/boostcamp-9th/review/challenge/2/
 
 

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Github on Mario Blog</title><link>https://codemario318.github.io/tags/github/</link><description>Recent content in Github on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 31 Jul 2024 13:17:42 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/github/index.xml" rel="self" type="application/rss+xml"/><item><title>Git 객체로 살펴보는 add와 commit</title><link>https://codemario318.github.io/post/git/add-commit/</link><pubDate>Wed, 31 Jul 2024 13:17:42 +0900</pubDate><guid>https://codemario318.github.io/post/git/add-commit/</guid><description>&lt;img src="https://codemario318.github.io/post/git/add-commit/cover.png" alt="Featured image of post Git 객체로 살펴보는 add와 commit" />&lt;p>&lt;strong>Git&lt;/strong>은 분산형 버전 관리 시스템(Distributed Version Control System, DVCS)으로, 소스 코드와 파일의 변경 이력을 관리하는 도구입니다.&lt;/p>
+&lt;p>&lt;strong>Git&lt;/strong>을 활용하려면 원하는 디렉토리 경로에 &lt;code>git init&lt;/code> 명령을 실행하게되는데, 이때 &lt;code>.git&lt;/code> 디렉토리가 만들어집니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/git/add-commit/img_1.png"
+width="471"
+height="311"
+srcset="https://codemario318.github.io/post/git/add-commit/img_1_hu2a5eb33a792f1a5359f11c4937882c21_37732_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/git/add-commit/img_1_hu2a5eb33a792f1a5359f11c4937882c21_37732_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt=".git 내부 구조"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="363px"
+>&lt;/p>
+&lt;p>이 때 만들어지는 &lt;code>.git&lt;/code> 디렉토리는 저장소(repository)의 &lt;strong>메타데이터&lt;/strong>와 &lt;strong>Git 객체&lt;/strong>들을 저장하는 장소이며, 그 중 &lt;strong>Git 객체&lt;/strong>는 저장소의 데이터를 관리하고 추적하는데 핵심입니다.&lt;/p>
+&lt;p>&lt;strong>Git&lt;/strong>은 &lt;strong>Git 객체&lt;/strong>와 워킹 디렉토리의 파일들을 기준으로 변경을 감지하고, &lt;code>Git 객체&lt;/code>의 정보를 통해 코드의 버전들을 관리하고 추적하게됩니다.&lt;/p>
+&lt;p>이를 조금 더 자세히 살펴보겠습니다.&lt;/p>
+&lt;h2 id="git-객체">Git 객체&lt;/h2>
+&lt;p>&lt;code>.git&lt;/code> 디렉토리 아래에 있는 &lt;code>/objects&lt;/code> 디렉토리에 파일로 저장되는 &lt;strong>Git 객체&lt;/strong>는 Git의 핵심으로, 모든 데이터의 내용과 실제 저장 위치를 의미하게 됩니다.&lt;/p>
+&lt;p>실제 &lt;code>/objects&lt;/code>의 경로를 확인하면 아래와 같은 구조를 확인할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/objects
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── 0d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── df0ae059b771e502af67931f9f8a4a17632661
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── 24
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── 643cc37449b4bde54411a80b8ed61258225e34
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── 35
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── eb1ddfbbc029bcab630581847471d7f238ec53
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── 6c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── 435e543633035641c810e97681b078d627a946
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── a6
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── d422786b4daf0d8cbd7466a02e4a4fa9fd8570
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── b1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│   └── 7d46df496e1a6aef89fc6d67937a2ba47b5d33
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── pack
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── pack-15a971ce7fbb8c9997e7e167347a23bbfe438d71.idx
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── pack-15a971ce7fbb8c9997e7e167347a23bbfe438d71.pack
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>파일의 경로가 &lt;strong>2글자로 시작하는 디렉토리&lt;/strong> 아래에 &lt;strong>불특정한 38자 이름&lt;/strong>을 가진 파일이 저장되어있는데, 이 저장된 파일이 &lt;strong>Git 객체&lt;/strong>입니다.&lt;/p>
+&lt;h3 id="git-객체의-이름-상태가">Git 객체의 이름 상태가&amp;hellip;?&lt;/h3>
+&lt;p>저장되는 파일 이름을 보시면 어느정도 눈치 채셨을 것 같은데요.&lt;/p>
+&lt;p>&lt;code>Git&lt;/code> 객체가 위치와 이름은 총 40자, 16진수 문자열로 파일의 전체 내용을 &lt;code>SHA-1&lt;/code> 함수로 해싱한 결과입니다.&lt;/p>
+&lt;p>이로인해 파일 내용의 무결성을 보장함은 물론 파일을 거의 유일하게 식별할 수 있습니다.&lt;/p>
+&lt;p>해시값을 사용하는 이유는 파일의 내용이 변경되면 아예 다른 결과가 반환되는 해시 함수의 특징을 활용해 &lt;strong>파일의 변경&lt;/strong>을 간편하게 확인하기 위함입니다.&lt;/p>
+&lt;p>파일 내용이 &lt;code>e69de29bb2d1d6434b8b29ae775ad8c2e48c5391&lt;/code> 해시 값을 가진다면, &lt;code>.git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391&lt;/code>에 저장됩니다.&lt;/p>
+&lt;p>앞에 2자를 분리해 굳이 디렉토리로 만든 이유는 2가지 정도로 확인됩니다.&lt;/p>
+&lt;ul>
+&lt;li>성능 최적화
+&lt;ul>
+&lt;li>한 디렉토리 내에 너무 많은 파일을 저장하면 성능이 저하됨&lt;/li>
+&lt;li>수천 개 또는 수십만 개 파일을 하나의 디렉토리에 저장하면 검색, 파일 생성 및 접근 속도가 느려질 수 있음&lt;/li>
+&lt;li>객체들을 고르게 분산하여 저장할 수 있어 성능 저하를 방지할 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>관리 용이
+&lt;ul>
+&lt;li>디렉토리 구조로 나눔으로써 객체 파일을 관리하고 탐색하는 것이 더 쉬워짐(2자로 디렉터리를 바로 찾을 수 있음)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="내용물은">내용물은?&lt;/h3>
+&lt;p>문서 혹은 파일의 내용으로 만들어지는 해시값을 경로로 저장되는 Git 객체 파일에는 해시값을 만드는데 사용하기도 했던 파일의 전체 내용을 압축하여 저장합니다.&lt;/p>
+&lt;h3 id="git-객체의-종류">Git 객체의 종류&lt;/h3>
+&lt;p>&lt;strong>Git 객체&lt;/strong>는 3가지 유형이 존재합니다.&lt;/p>
+&lt;ul>
+&lt;li>파일의 저장 경로와 파일의 내용은 모두 위와 동일하게 만들어집니다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>블롭(&lt;code>Blob&lt;/code>)&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>파일의 내용 자체를 저장&lt;/li>
+&lt;li>파일의 이름이나 메타데이터는 저장하지 않고 파일의 원본 내용만 저장함&lt;/li>
+&lt;/ul>
+&lt;p>블롭 유형의 파일은 데이터 원본의 내용만을 압축하여 저장합니다.&lt;/p>
+&lt;p>압축하여 저장된 원본 데이터는 복구 등의 처리에서 활용됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>트리(&lt;code>Tree&lt;/code>)&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>디렉터리의 구조를 저장&lt;/li>
+&lt;li>디렉터리의 파일 및 하위 디렉터리와 그에 대한 블롭 객체 객체의 참조를 포함(트리는 블롭과 또 다른 트리로 구성됨)&lt;/li>
+&lt;/ul>
+&lt;p>트리 객체를 통해 디렉토리 구조를 관리할 수 있게 됩니다.&lt;/p>
+&lt;p>트리 객체가 의미하는 디렉토리의 존재하는 모든 &lt;strong>파일&lt;/strong>, &lt;strong>디렉토리&lt;/strong>들의 경로(파일 주소)를 Git 객체의 값으로 압축하여 저장하게 됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>커밋(&lt;code>Commit&lt;/code>)&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>커밋 정보를 저장&lt;/li>
+&lt;li>커밋 메시지, 작성자, 날짜 및 커밋 시점의 트리 객체를 포함&lt;/li>
+&lt;/ul>
+&lt;p>직전 루트 트리 객체의 주소(파일 경로), 현재 루트 트리 객체의 주소(파일 경로)와 커밋 메시지 등 메타데이터를이 압축되어 저장됩니다.&lt;/p>
+&lt;h2 id="git-add">&lt;code>git add&lt;/code>&lt;/h2>
+&lt;p>&lt;code>git add&lt;/code> 명령어는 작업 디렉토리에서 변경된 파일들을 스테이징 영역에 추가하여 다음 커밋에 포함될 파일들을 준비하게됩니다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>작업 디렉토리&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>사용자가 작업 중인 실제 파일들이 존재하는 디렉토리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>인덱스(스테이징 영역)&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>커밋을 준비하기 위해 변경된 파일들이 추가되는 영역&lt;/li>
+&lt;li>인덱스는 &lt;code>.git/index&lt;/code> 파일에 저장됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>먼저 변경된 파일들을 어떻게 관리하는지 확인해보겠습니다.&lt;/p>
+&lt;h3 id="파일의-추적-상태">파일의 추적 상태&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/git/add-commit/img.png"
+width="800"
+height="330"
+srcset="https://codemario318.github.io/post/git/add-commit/img_hu0d2cd540fc510e4ec1c1a61158d3600f_25950_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/git/add-commit/img_hu0d2cd540fc510e4ec1c1a61158d3600f_25950_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파일 상태 변화"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="581px"
+>&lt;/p>
+&lt;p>Git은 작업 디렉토리의 파일을 4가지 상태로 추적, 관리합니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>UnTracked&lt;/code>: 추적되지 않는 파일
+&lt;ul>
+&lt;li>Git에 등록되지않아 추적되지 않는 상태&lt;/li>
+&lt;li>Git이 버전 관리하고 있지 않은 파일&lt;/li>
+&lt;li>새로 생성된 파일이거나, 추적되지 않도록 명시적으로 설정된 파일(.gitignore)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Unmodified&lt;/code>: 수정되지 않은 파일
+&lt;ul>
+&lt;li>Git이 추적하고 있는 파일이지만, 마지막 커밋 이후 변경되지 않은 상태&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Modified&lt;/code>: 수정된 파일
+&lt;ul>
+&lt;li>Git이 추적하고 있는 파일이지만, 마지막 커밋 이후로 파일의 내용이 변경된 상태&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Staged&lt;/code>: 스테이징된 파일
+&lt;ul>
+&lt;li>&lt;code>git add&lt;/code> 명령을 통해 스테이징 영역에 추가된 상태&lt;/li>
+&lt;li>다음 커밋에 포함될 준비가 되었다는 의미&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>Untracked&lt;/code> -&amp;gt; &lt;code>Staged&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>Git으로 관리되고 있는 프로젝트에 처음 생성된 파일은 &lt;code>UnTracked&lt;/code> 상태입니다. 즉 Git이 추적하고 있지 않은 상태임을 의미합니다.&lt;/p>
+&lt;p>&lt;code>git add&lt;/code> 명령을 수행하면 해당 파일이 스태이징 영역에 추가되며 &lt;code>Staged&lt;/code> 상태로 변경됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>Unmodified&lt;/code> -&amp;gt; &lt;code>Modified&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>Git을 통해 추적하고 있지만, 마지막 변경 이후 수정되지 않았다면 &lt;code>Unmodifed&lt;/code> 상태입니다.&lt;/p>
+&lt;p>&lt;code>Unmodifed&lt;/code> 상태의 파일에 변경이 발생하면(이전과 다른 부분이 발생하면) &lt;code>Modifed&lt;/code> 상태가 됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>Modified&lt;/code> -&amp;gt; &lt;code>Staged&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>&lt;code>Unmodified&lt;/code> 상태인 파일에 변경이 발생하여 &lt;code>Modifed&lt;/code> 상태가 되었을 때 &lt;code>git add&lt;/code> 명령로 스테이징 영역에 추가할 수 있습니다.&lt;/p>
+&lt;h3 id="git에서-일어나는-일">&lt;code>.git&lt;/code>에서 일어나는 일&lt;/h3>
+&lt;p>이제는 &lt;code>.git&lt;/code> 내부에 어떤 일들이 발생하는지 살펴보겠습니다.&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>변경된 파일의 해시 계산&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>&lt;code>git add&lt;/code> 명령어가 실행되면, Git은 현재 인덱스 파일(&lt;code>.git/index&lt;/code>)의 기록된 정보를 활용하여 작업 디렉토리에서 변경된 파일의 내용을 찾아 읽습니다.
+&lt;ul>
+&lt;li>&lt;code>Untracked&lt;/code>, &lt;code>Modified&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>변경된 파일의 내용을 기반으로 SHA-1 해시를 계산하여 고유한 해시 값을 생성합니다.(Git 객체의 이름, 저장될 경로)&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>&lt;strong>객체 생성 및 저장&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>생성된 해시값을 이용하여 파일의 내용을 Git 객체로 저장합니다.(Blob)
+&lt;ul>
+&lt;li>Blob 객체는 파일의 바이너리 데이터를 담고 있으며, &lt;code>.git/obects&lt;/code> 디렉토리에 저장&lt;/li>
+&lt;li>저장 경로는 해시값의 처음 두자리를 디렉토리 이름으로 사용하고, 나머지 38자리를 파일 이름으로 사용하여 저장&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>&lt;strong>인덱스 업데이트&lt;/strong>
+&lt;ul>
+&lt;li>Blob 객체가 생성되고 저장된 후, Git은 인덱스 파일(&lt;code>.git/index&lt;/code>)을 업데이트합니다.
+&lt;ul>
+&lt;li>파일의 모드, 해시 값, 파일 이름 등을 기록합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="index">&lt;strong>&lt;code>index&lt;/code>&lt;/strong>&lt;/h3>
+&lt;p>&lt;code>index&lt;/code> 파일은 &lt;code>stage&lt;/code> 영역에 있는 파일들 즉 작업 디렉토리 내 추적중인 파일을 의미하며, 다음 &lt;code>commit&lt;/code>에 포함될 파일의 정보들을 의미하게됩니다.&lt;/p>
+&lt;p>만약 &lt;code>git init&lt;/code> 명령을 수행하고 &lt;code>README.md&lt;/code>와 &lt;code>src/index.js&lt;/code>를 추가한 후 &lt;code>git add&lt;/code> 명령을 수행했다면 &lt;code>.git/index&lt;/code> 파일의 내용은 아래와 같이 수정됩니다.(해시 값은 임의로 설정하였습니다.)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">100644 e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 0 README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">100644 24643cc37449b4bde54411a80b8ed61258225e34 0 src/index.js
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>띄어쓰기로 구분되는 각 요소는 &lt;code>파일 모드&lt;/code>, &lt;code>해시값&lt;/code>, &lt;code>스테이지 번호&lt;/code>, &lt;code>파일 경로&lt;/code>를 의미합니다.&lt;/p>
+&lt;p>여기서 주의해야할 점은 &lt;code>.git/index&lt;/code>에는 &lt;code>Blob&lt;/code> 객체만 저장된다는 점 입니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>파일 모드&lt;/strong>&lt;/p>
+&lt;p>맨 앞의 &lt;code>100644&lt;/code>는 파일 식별자로 흔히 알려진 파일의 권한을 포함하게됩니다.&lt;/p>
+&lt;p>그 역할은 아래와 같습니다.&lt;/p>
+&lt;ul>
+&lt;li>읽기, 쓰기 파일(블롭): &lt;code>100644&lt;/code> (&lt;code>chmod 644&lt;/code>)&lt;/li>
+&lt;li>실행 파일(블롭): &lt;code>100755&lt;/code> (&lt;code>chmod 755&lt;/code>)&lt;/li>
+&lt;li>디렉터리(트리): &lt;code>040000&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>.git/index&lt;/code>는 &lt;code>Blob&lt;/code> 객체 정보만 관리하므로 읽기 파일, 실행 파일만 저장됩니다.&lt;/p>
+&lt;p>&lt;code>Tree&lt;/code> 객체를 를 의미하는 &lt;code>040000&lt;/code>는 이후 커밋에 활용됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>스테이지 번호&lt;/strong>&lt;/p>
+&lt;p>스테이지 번호는 병합 충돌 시 사용되는 필드입니다. 파일이 정상적으로 추가되었을 때는 &lt;code>0&lt;/code> 입니다.&lt;/p>
+&lt;ul>
+&lt;li>0: 기본 스테이지. 충돌이 없는 파일이 여기에 위치합니다.&lt;/li>
+&lt;li>1: 공통 조상 (ancestor) 버전.&lt;/li>
+&lt;li>2: 현재 브랜치 (our) 버전.&lt;/li>
+&lt;li>3: 병합하려는 브랜치 (their) 버전.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>.git/index&lt;/code>의 역할&lt;/strong>&lt;/p>
+&lt;p>인덱스 파일의 역할을 정리해보면 아래와 같습니다.&lt;/p>
+&lt;ul>
+&lt;li>인덱스 파일은 다음 커밋에 포함될 파일들을 추적합니다.&lt;/li>
+&lt;li>인덱스에 추가된 파일들은 다음 &lt;code>git commit&lt;/code> 명령어가 실행될 때 커밋 히스토리에 포함됩니다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="git-commit">&lt;code>git commit&lt;/code>&lt;/h2>
+&lt;p>&lt;code>git commit&lt;/code> 명령어가 실행되었을 때 어떤 흐름이 발생하는지 확인해보겠습니다.&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>Tree&lt;/code> 객체 생성
+&lt;ul>
+&lt;li>인덱스 파일에 기록된 내용을 바탕으로 트리 객체가 생성됩니다.&lt;/li>
+&lt;li>트리 객체는 디렉토리 구조와 파일 정보를 담고 있으며, 각 파일은 &lt;code>Blob&lt;/code> 객체와 &lt;code>Tree&lt;/code> 객체를 가리킵니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>Commit&lt;/code> 객체 생성
+&lt;ul>
+&lt;li>트리 객체가 생성된 후, 커밋 객체가 생성됩니다.
+&lt;ul>
+&lt;li>트리 객체의 해시 값&lt;/li>
+&lt;li>부모 커밋(이전 커밋)의 해시 값(최초 커밋인 경우 제외)&lt;/li>
+&lt;li>커밋 메시지&lt;/li>
+&lt;li>작성자와 커미터 정보(이름, 이메일, 타임스탬프 등)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>객체 저장 및 참조 업데이트
+&lt;ul>
+&lt;li>객체 저장
+&lt;ul>
+&lt;li>생성된 커밋 객체와 트리 객체는 &lt;code>.git/objects&lt;/code> 디렉토리에 저장됩니다.&lt;/li>
+&lt;li>&lt;code>Blob&lt;/code> 객체와 마찬가지로 각 객체는 해시값을 기반으로 저장됩니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>참조 업데이트
+&lt;ul>
+&lt;li>새로운 커밋 객체가 생성되면, 현재 브랜치의 참조가 새로운 커밋을 가리키도록 업데이트 합니다.
+&lt;ul>
+&lt;li>현재 브랜치의 참조는 &lt;code>.git/refs/heads/&amp;lt;브랜치 이름&amp;gt;&lt;/code> 파일에 저장&lt;/li>
+&lt;li>&lt;code>main&lt;/code>인 경우 &lt;code>.git/refs/heads/main&lt;/code> 파일의 내용이 새로운 커밋의 해시값으로 업데이트&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>새 커밋이 생성되면서 Git은 버전 히스토리를 관리합니다.&lt;/p>
+&lt;p>각 커밋 객체는 이전 커밋 객체(부모 객체)를 가르키며, 이를 통해 커밋 히스토리가 마치 &lt;strong>연결 리스트&lt;/strong> 형태로 구성됩니다.&lt;/p>
+&lt;h3 id="tree-객체의-구성">&lt;code>Tree&lt;/code> 객체의 구성&lt;/h3>
+&lt;p>처음 &lt;code>git commit&lt;/code> 명령이 수행되면 작업 디렉토리를 기반으로 트리 객체를 만들게됩니다.&lt;/p>
+&lt;p>트리 객체는 특정 디렉터리 내부에 포함되는 모든 파일(&lt;code>Blob&lt;/code> 객체), 디렉토리(&lt;code>Tree&lt;/code> 객체)의 해시값을 내용으로 가지며, 작업 디렉토리가 아래와 같은 구조를 가진다고 가정하고 내부 구조를 확인해보겠습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">project/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── src/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── index.js
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>작업 디렉터리의 루트 &lt;code>Tree&lt;/code> 객체는 아래와 같은 내용을 가지게됩니다.(해시값은 임의로 작성하였습니다.)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">040000 tree d8329fc1cc938780ffdd9f94e0d364e0ea0ea1e1 src
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>src&lt;/code> 디렉토리를 의미하는 &lt;code>Tree&lt;/code> 객체는 아래와 같은 내용을 가집니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">100644 24643cc37449b4bde54411a80b8ed61258225e34 index.js
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>각 내용들이 디렉토리를 구성하는 &lt;code>Git&lt;/code> 객체의 주소값을 가르키게됩니다.&lt;/p>
+&lt;h3 id="commit-객체의-구성">&lt;code>Commit&lt;/code> 객체의 구성&lt;/h3>
+&lt;p>&lt;code>Tree&lt;/code> 객체가 만들어지면 작업 디렉토리의 &lt;code>Tree&lt;/code> 객체(루트 &lt;code>Tree&lt;/code> 객체)의 주소를 이용하여 &lt;code>Commit&lt;/code> 객체를 만들게됩니다.&lt;/p>
+&lt;p>&lt;code>Commit&lt;/code> 객체의 내용에는 작업 디렉토리의 루트 &lt;code>Tree&lt;/code> 객체의 해시값, 부모 커밋의 해시값, 커밋 메시지, 작성자와 커밋터의 정보가 담깁니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">tree &amp;lt;작업 디렉토리의 Tree 객체의 해시 값&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">parent &amp;lt;이전 커밋의 해시 값(첫 커밋이라면 생략)&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">author John Doe &amp;lt;john.doe@example.com&amp;gt; 1609459200 +0000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">committer John Doe &amp;lt;john.doe@example.com&amp;gt; 1609459200 +0000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;lt;커밋 메시지&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="요약">요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>git commit&lt;/code> 명령어는 스테이징 영역의 파일들을 기반으로 트리 객체를 생성하고, 이를 참조하는 커밋 객체를 생성합니다.&lt;/li>
+&lt;li>생성된 커밋 객체는 &lt;code>.git/objects&lt;/code> 디렉토리에 저장되며, 현재 브랜치의 참조가 새로운 커밋 객체를 가리키도록 업데이트됩니다.&lt;/li>
+&lt;li>이 과정은 Git의 분산 버전 관리 시스템이 효율적으로 파일의 변경 이력을 관리하고 추적할 수 있게 합니다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>이전부터 &lt;code>.git&lt;/code>의 존재는 알았지만, 왜 존재하는지, 어떻게 구성되어있는지, 역할이 뭔지 등에 대해서는 큰 관심이 없었습니다.&lt;/p>
+&lt;p>이번 기회를 통해 &lt;code>.git&lt;/code>의 내부 파일들(&lt;code>Git&lt;/code> 객체)의 상태 변화를 확인하면서 &lt;code>add&lt;/code>와 &lt;code>commit&lt;/code> 명령이 어떻게 수행되는지 더 깊이 이해할 수 있어 좋은 경험이었네요 😁&lt;/p>
+&lt;p>읽어보시고 잘못된 정보나, 이해가 어려운 부분이 있다면 댓글 남겨주세요!&lt;/p>
+&lt;p>틀린 내용이 있다면 빠르게 반영하고, 이해가 어려운 부분은 같이 다시 고민해볼 기회가 될 수 있을것 같습니다🔥&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다.😊&lt;/p></description></item></channel></rss>
