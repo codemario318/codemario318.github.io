@@ -592,7 +592,7 @@ data-flex-basis="346px"
 &lt;blockquote>
 &lt;p>소프트웨어 장인 책 부분에 성장을 위한 자세에 관해 읽었는데요, 이 부분에서 &amp;ldquo;훈련&amp;quot;을 어떻게 해야 좋은지에 대한 언급이 있습니다.&lt;/p>
 &lt;p>훈련을 할 때는 시간이 아무리 많이 걸린다고 하더라도 본인이 할 수 있는 최선의 결과를 만들지 않는다면 성장에는 큰 의미가 없기 때문에 최선을 다하는 것이 중요하다고해요!&lt;/p>
-&lt;p>지금까지도 열심히 해오셨지만 앞으로도 최선을 다해서 성장하셨으면 좋겠습니다.&lt;/p>
+&lt;p>우리 모두 지금까지 열심히 해오고있지만, 앞으로도 최선을 다해서 함께 성장했으면 좋겠어요&lt;/p>
 &lt;p>한 주간 정말 고생 많으셨습니다! 맴버쉽에서 꼭 뵈어요 :D&lt;/p>
 &lt;/blockquote></description></item><item><title>[MovieLens] 2. DB 설계</title><link>https://codemario318.github.io/post/movielens/2/</link><pubDate>Tue, 19 Mar 2024 16:00:01 +0900</pubDate><guid>https://codemario318.github.io/post/movielens/2/</guid><description>&lt;img src="https://codemario318.github.io/post/movielens/2/cover.jpeg" alt="Featured image of post [MovieLens] 2. DB 설계" />&lt;p>앞서 진행한 데이터셋 구조 확인을 바탕으로, 간단하게 데이터베이스 설계를 해봤습니다.&lt;/p>
 &lt;p>&lt;code>TAGS&lt;/code>, &lt;code>RATINGS&lt;/code> 테이블은 &lt;code>user_id&lt;/code>, &lt;code>movie_id&lt;/code> 컬럼을 활용한 관계 테이블인데 &lt;code>USERS&lt;/code> 테이블에 관련된 데이터들을 별도로 제공하지 않았기 때문에 있다고 가정하고 진행했습니다.&lt;/p>

@@ -592,7 +592,7 @@ data-flex-basis="346px"
 &lt;blockquote>
 &lt;p>소프트웨어 장인 책 부분에 성장을 위한 자세에 관해 읽었는데요, 이 부분에서 &amp;ldquo;훈련&amp;quot;을 어떻게 해야 좋은지에 대한 언급이 있습니다.&lt;/p>
 &lt;p>훈련을 할 때는 시간이 아무리 많이 걸린다고 하더라도 본인이 할 수 있는 최선의 결과를 만들지 않는다면 성장에는 큰 의미가 없기 때문에 최선을 다하는 것이 중요하다고해요!&lt;/p>
-&lt;p>지금까지도 열심히 해오셨지만 앞으로도 최선을 다해서 성장하셨으면 좋겠습니다.&lt;/p>
+&lt;p>우리 모두 지금까지 열심히 해오고있지만, 앞으로도 최선을 다해서 함께 성장했으면 좋겠어요&lt;/p>
 &lt;p>한 주간 정말 고생 많으셨습니다! 맴버쉽에서 꼭 뵈어요 :D&lt;/p>
 &lt;/blockquote></description></item><item><title>1. 사용자 수에 따른 규모 확장성</title><link>https://codemario318.github.io/post/system-design-interview/1/</link><pubDate>Mon, 22 Apr 2024 14:53:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview/1/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview/1/cover.png" alt="Featured image of post 1. 사용자 수에 따른 규모 확장성" />&lt;p>수백만 사용자를 지원하는 시스템을 설계하는 것은 도전적인 과제이며, 지속적인 계량과 끝없는 개선이 요구되는 여정이다.&lt;/p>
 &lt;p>이번 장은 한 명의 사용자를 지원하는 시스템에서 시작하여, 최종적으로 몇백만 사용자를 지원하는 시스템을 설계해본다.&lt;/p>
