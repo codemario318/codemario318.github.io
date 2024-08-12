@@ -1,0 +1,374 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="부스트캠프 웹・모바일 9기"><title>챌린지 과정 4주차 회고</title><link rel=canonical href=https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="챌린지 과정 4주차 회고"><meta property="og:description" content="부스트캠프 웹・모바일 9기"><meta property="og:url" content="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="부스트캠프"><meta property="article:tag" content="Boostcamp"><meta property="article:tag" content="성장"><meta property="article:tag" content="Growth"><meta property="article:tag" content="회고"><meta property="article:tag" content="Review"><meta property="article:tag" content="개발자"><meta property="article:tag" content="Developer"><meta property="article:tag" content="커뮤니티"><meta property="article:tag" content="Community"><meta property="article:tag" content="기록"><meta property="article:tag" content="Write"><meta property="article:tag" content="네이버"><meta property="article:tag" content="Naver"><meta property="article:tag" content="커넥트"><meta property="article:tag" content="Connect"><meta property="article:tag" content="주니어"><meta property="article:tag" content="Junior"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="DB"><meta property="article:tag" content="Database"><meta property="article:tag" content="RDBMS"><meta property="article:tag" content="소켓"><meta property="article:tag" content="Socket"><meta property="article:tag" content="웹소켓"><meta property="article:tag" content="Websocket"><meta property="article:tag" content="레이어드 아키텍처"><meta property="article:tag" content="Layered Architecture"><meta property="article:published_time" content="2024-08-12T10:44:49+09:00"><meta property="article:modified_time" content="2024-08-12T10:44:49+09:00"><meta property="og:image" content="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/cover.png"><meta name=twitter:title content="챌린지 과정 4주차 회고"><meta name=twitter:description content="부스트캠프 웹・모바일 9기"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>55</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>2</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#day16--17-데이터베이스>Day16 ~ 17: 데이터베이스</a><ol><li><a href=#mysql>MySQL</a></li><li><a href=#스토리지-엔진>스토리지 엔진</a></li><li><a href=#짝-개선>짝 개선</a></li></ol></li><li><a href=#day18--19-네트워크>Day18 ~ 19: 네트워크</a><ol><li><a href=#레이어드-아키텍처>레이어드 아키텍처</a></li><li><a href=#의존성-주입>의존성 주입</a></li><li><a href=#단단한-테스트-코드>단단한 테스트 코드</a></li></ol></li><li><a href=#day20-3차-문제해결력-테스트>Day20: 3차 문제해결력 테스트</a></li><li><a href=#마무리>마무리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/boostcamp-9th/review/challenge/4/><img src=/post/boostcamp-9th/review/challenge/4/cover_hu19d27c1827c5e9fb407a4e610db031e0_130036_800x0_resize_box_3.png srcset="/post/boostcamp-9th/review/challenge/4/cover_hu19d27c1827c5e9fb407a4e610db031e0_130036_800x0_resize_box_3.png 800w, /post/boostcamp-9th/review/challenge/4/cover_hu19d27c1827c5e9fb407a4e610db031e0_130036_1600x0_resize_box_3.png 1600w" width=800 height=133 loading=lazy alt="Featured image of post 챌린지 과정 4주차 회고"></a></div><div class=article-details><header class=article-category><a href=/categories/boostcamp/>부스트캠프</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/boostcamp-9th/review/challenge/4/>챌린지 과정 4주차 회고</a></h2><h3 class=article-subtitle>부스트캠프 웹・모바일 9기</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2024/08/12</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>11 minute read</time></div></footer></div></header><section class=article-content><p>부스트캠프 챌린지 과정이 4주차로 마무리되었습니다🥳</p><p>주말을 이용하여 미뤄왔던 대청소와 약속들 덕분에 월요일이 되어서야 회고를 쓰게 되네요</p><p>이번주는 미션들을 수행하지는 않겠지만, 그동안 바빠서 마무리하지 못했던 학습 정리로 바쁠 것 같습니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img.png width=900 height=752 srcset="/post/boostcamp-9th/review/challenge/4/img_huc5e3bd9d0538c93e5f494cd205f8c424_816479_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_huc5e3bd9d0538c93e5f494cd205f8c424_816479_1024x0_resize_box_3.png 1024w" loading=lazy alt="아직 한발 남았다." class=gallery-image data-flex-grow=119 data-flex-basis=287px></p><p>이번 주는 저번주와 마찬가지로 <strong>짝 활동</strong>을 기본으로 한 주가 구성되었습니다.</p><p><strong>각자 개발</strong>후 <strong>짝 개선</strong>하기, <strong>짝 개발</strong>후 <strong>각자 개선</strong>하기로 <strong>데이터베이스</strong>와 <strong>네트워크</strong>를 깊게 이해해야만 해결할 수 있는 미션들이 주어졌습니다.</p><p>그리고 마지막 테스트를 위한 <strong>히든 미션</strong>을 금요일에 수행하였습니다.</p><p>개인적으로 데이터베이스 관련 미션은 많이 어려웠네요 🙃</p><p>이번 회고에는 미션들에 대한 접근 방법에 더해 짝 활동이 어떻게, 무엇을 중심으로 진행되었는지 설명해보겠습니다.</p><h2 id=day16--17-데이터베이스>Day16 ~ 17: 데이터베이스</h2><p>데이터베이스 관련 미션은 <strong>각자 구현</strong> 후 <strong>짝 개선</strong>을 수행해야하는 미션이었습니다.</p><p>파일 기반 데이터베이스를 직접 구현해야하는 미션이었는데, 위에서 말씀드렸던 것처럼 개인적으로 많이 어려웠습니다.</p><h3 id=mysql>MySQL</h3><p>이전 직장에서 풀스택 개발자로 업무를 수행해오며 오랜기간 유지되어온 PHP 백엔드 레거시를 운영하는 것이 주 업무였는데요</p><p>그렇다보니 예전 방식으로 그대로 개발을 수행할 수 밖에 없었고, <a class=link href=https://www.php.net/manual/en/book.pdo.php target=_blank rel=noopener>PDO</a>(PHP Data Object)를 사용하고 있었기 때문에 직접 쿼리를 작성해야하는 것은 필수적이었습니다.</p><p>예전 개발 환경과 싱글 스레드 기반으로 순차적인 처리에 중점을 두는 PHP의 특성으로 인해 지금처럼 ORM을 이용하여 작은 쿼리를 여러개 보내는 것 보다는, 굉장히 많은 테이블들을 조인하는 큰 쿼리 하나를 작성해야하는 일도 매우 빈번했습니다.</p><p>그렇다보니 쿼리 튜닝은 저에게 필수적인 역량이었고, 학습에 꽤 많은 공을 들였었습니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_5.png width=371 height=136 srcset="/post/boostcamp-9th/review/challenge/4/img_5_hu6fb17a4b1ba75a00ca79acad9d84d206_8737_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_5_hu6fb17a4b1ba75a00ca79acad9d84d206_8737_1024x0_resize_box_3.png 1024w" loading=lazy alt=MySQL class=gallery-image data-flex-grow=272 data-flex-basis=654px></p><p>이러한 이유로 MySQL 내부 동작을 꽤 잘 알고 있다고 생각하여 이번 미션은 MySQL을 모방하는 방식으로 접근했었습니다.</p><h3 id=스토리지-엔진>스토리지 엔진</h3><p>기존 요구사항만을 만족하기 위해서는 단순하게 전체 읽기, 전체 쓰기 방식으로 접근해도 괜찮았지만, 이러한 경우 데이터가 많아지면 급격한 성능 저하가 발생하게됩니다.</p><p>이러한 문제를 해결해보고 싶어 많은 고민을 했는데 이 부분이 정말 어려웠습니다🥲</p><hr><p><strong>InnoDB</strong></p><p>데이터베이스의 성능을 나쁘게 만드는 원인은 <strong>디스크 I/O</strong>에서 발생하는 <strong>병목 현상</strong>입니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_1.png width=904 height=456 srcset="/post/boostcamp-9th/review/challenge/4/img_1_hu5128e5d7946208d35600b2a8a7d0222a_52925_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_1_hu5128e5d7946208d35600b2a8a7d0222a_52925_1024x0_resize_box_3.png 1024w" loading=lazy alt="MySQL 구조" class=gallery-image data-flex-grow=198 data-flex-basis=475px></p><p>MySQL은 크게 <strong>MySQL 엔진</strong>, <strong>스토리지 엔진</strong>으로 영역을 구분할 수 있는데, 디스크 I/O에 접근하는 역할은 <strong>스토리지 엔진</strong>이 전담하여 수행하게 됩니다.</p><p>여러 스토리지 엔진이 있지만 주로 사용되는 <code>InnoDB</code> 스토리지 엔진은 <strong>버퍼풀</strong>이라는 메모리 영역을 통해 사용하는 주요 데이터를 대부분 캐싱하여 디스크에 접근하는 것을 최소화합니다.</p><p>또한 쓰기 작업을 버퍼링하여 하드웨어 자원의 여유가 있을 때 백그라운드에서 실행하는 방식들을 통해 데이터베이스의 성능을 크게 끌어올리고 있습니다.</p><p>이를 반영하기 위해서 데이터를 저장하고 관리하는 기본 단위인 <strong>페이지</strong>를 구현하야할 필요가 있었습니다만&mldr;.</p><p>페이지를 직접 구현하고 이를 이용해서 데이터 저장이나 캐싱등을 구현해야한다고 생각하니 현기증이 나는 것 같다라구요😅</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_2.png width=632 height=523 srcset="/post/boostcamp-9th/review/challenge/4/img_2_huaf81590ee5a0b6795972f97e2fb827b9_593519_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_2_huaf81590ee5a0b6795972f97e2fb827b9_593519_1024x0_resize_box_3.png 1024w" loading=lazy class=gallery-image data-flex-grow=120 data-flex-basis=290px></p><p>그래서 MySQL 인덱스의 기본 단위인 PK만을 이용해서 저장된 파일에서의 레코드 위치만을 가지게 구현하는 방식으로 접근했습니다.</p><p><strong>B+ Tree</strong> 같은 자료 구조를 통해서 <code>Index Range Scan</code> 같은 방식도 적용해보려고 했었는데, 마찬가지로 어려워서 <code>PK</code> 단일 조건 처리에 관한 부분만 적용할 수 있었습니다.</p><h3 id=짝-개선>짝 개선</h3><p>짝 개선은 이전과 마찬가지로 새로운 기능을 추가하는 것 보다는 기존 코드를 개선하는 방향으로 지침이 주어졌습니다.</p><p>저 같은 경우는 <strong>HTTP 요청/응답 분리</strong>를, 짝은 <strong>DBMS 아키텍처 반영</strong>을 통한 <strong>코드 구조</strong>를 개선하는 것을 목표로 함께 개선을 진행하였습니다.</p><hr><p><strong>예외 처리</strong></p><p>저의 개선 목표였던 <strong>HTTP 요청/응답 분리</strong> 부분 작업을 수행하면서 자연스럽게 <strong>응답 코드</strong>에 관한 내용들이 개선되어야 했고, 응답을 만들기위해 <strong>예외 처리</strong>를 추가하는 부분에서 짝과 의견을 나눌 수 있는 기회가 생겼습니다.</p><p>저 같은 경우는 서비스 로직에서 에러 또는 예외를 발생시켜 해당 에러를 최상위 지점에서 한번에 핸들링하는 것을 선호하는데(<a class=link href=/post/clean-code/7/>클린코드 - 에러 처리</a>) 어떠한 장점이 있는지에 대해서 물어봐 주셨습니다.</p><p>코드를 보면서 확인해보면 아래와 같습니다.</p><hr><p><strong>개선 전</strong></p><p>이전 처리를 복기해보면 아래와 같은 방식으로 처리가 구현되어 있었습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>class</span> <span class=nx>어떤_서비스_클래스</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>원하는_동작</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>값_검증</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=p>{</span> <span class=nx>status</span><span class=o>:</span> <span class=s1>&#39;value&#39;</span><span class=p>,</span> <span class=nx>message</span><span class=o>:</span> <span class=s1>&#39;입력 값을 확인해주세요.&#39;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>서비스로직을_사용하는_클래스</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>어떤_기능</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>결과</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>어떤_서비스_객체</span><span class=p>.</span><span class=nx>원하는_동작</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>{</span> <span class=nx>code</span><span class=o>:</span> <span class=mi>200</span><span class=p>,</span> <span class=nx>message</span><span class=o>:</span> <span class=s1>&#39;OK&#39;</span><span class=p>,</span> <span class=nx>body</span><span class=o>:</span> <span class=p>{</span> <span class=nx>결과</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=p>{</span> <span class=nx>status</span><span class=p>,</span> <span class=nx>message</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>err</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>switch</span> <span class=p>(</span><span class=nx>status</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=k>case</span> <span class=s1>&#39;value&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>code</span><span class=o>:</span> <span class=mi>400</span><span class=p>,</span> <span class=nx>message</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>          <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>code</span><span class=o>:</span> <span class=mi>500</span><span class=p>,</span> <span class=nx>message</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>이러한 방식에는 몇 가지 문제가 있습니다.</p><ul><li>예외를 발생 시킬 때 사용자가 직접 사유를 기억해서 매직넘버(상수가 아닌 직접 입력해야하는 값, 하드코딩)를 사용해야합니다.</li><li>응답도 같은 문제를 가지고 있습니다.</li></ul><p>이러한 방식은 개발자가 실수를 쉽게 할 수 있는 여지가 많아지게됩니다.</p><hr><p><strong>개선 후</strong></p><p>이러한 부분을 아래와 같이 개선하게 되었습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>BadRequestException</span> <span class=kr>extends</span> <span class=nb>Error</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>UnauthorizedException</span> <span class=kr>extends</span> <span class=nb>Error</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>ForbiddenException</span> <span class=kr>extends</span> <span class=nb>Error</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>NotFoundException</span> <span class=kr>extends</span> <span class=nb>Error</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>NotAcceptableException</span> <span class=kr>extends</span> <span class=nb>Error</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>HttpStatusCodes</span> <span class=o>=</span> <span class=nb>Object</span><span class=p>.</span><span class=nx>freeze</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>OK</span><span class=o>:</span> <span class=mi>200</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>BAD_REQUEST</span><span class=o>:</span> <span class=mi>400</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>UNAUTHORIZED</span><span class=o>:</span> <span class=mi>401</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>FORBIDDEN</span><span class=o>:</span> <span class=mi>403</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>NOT_FOUND</span><span class=o>:</span> <span class=mi>404</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>NOT_ACCEPTABLE</span><span class=o>:</span> <span class=mi>406</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>INTERNAL_SERVER_ERROR</span><span class=o>:</span> <span class=mi>500</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>각 예외 상황에 맞는 예외 클래스를 구현하였습니다.<ul><li>Nest.js 표준 에러 참조</li></ul></li><li>Http 응답 코드에 대해 Enum을 선언하였습니다.</li></ul><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>class</span> <span class=nx>어떤_서비스_클래스</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>원하는_동작</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>값_검증</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nx>BadRequestException</span><span class=p>(</span><span class=s2>&#34;입력 값을 확인해주세요.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>서비스로직을_사용하는_최상위_클래스</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>어떤_기능</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kr>const</span> <span class=nx>결과</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>어떤_서비스_객체</span><span class=p>.</span><span class=nx>원하는_동작</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>code</span><span class=o>:</span> <span class=nx>HttpStatusCode</span><span class=p>.</span><span class=nx>OK</span><span class=p>,</span> <span class=nx>body</span><span class=o>:</span> <span class=p>{</span> <span class=nx>결과</span> <span class=p>}</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kr>const</span> <span class=p>{</span> <span class=nx>message</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>err</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=nx>err</span> <span class=k>instanceof</span> <span class=nx>BadRequestException</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=p>{</span><span class=nx>code</span><span class=o>:</span> <span class=nx>HttpStatusCodes</span><span class=p>.</span><span class=nx>BAD_REQUEST</span><span class=p>,</span> <span class=nx>message</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=nx>err</span> <span class=k>instanceof</span> <span class=nx>NotFoundException</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=p>{</span><span class=nx>code</span><span class=o>:</span> <span class=nx>HttpStatusCodes</span><span class=p>.</span><span class=nx>NOT_FOUND</span><span class=p>,</span> <span class=nx>message</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=p>{</span><span class=nx>code</span><span class=o>:</span> <span class=nx>HttpStatusCodes</span><span class=p>.</span><span class=nx>INTERNAL_SERVER_ERROR</span><span class=p>,</span> <span class=nx>message</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>발생한 예외 클래스를 확인하여 Enum으로 선언된 응답 코드를 상황에 맞게 반환할 수 있도록 변경</li></ul><hr><p>이러한 형식으로 개선되어 아래와 같은 장점을 취할 수 있었습니다.</p><ul><li>예외 클래스를 직접 확인하므로 어떤 에러가 발생했는지 쉽게 파악할 수 있다.</li><li>에외 코드가 어떤 의미인지 확실히 구분할 수 있다. 등</li></ul><p>발생하는 예외가 HTTP 응답에 대해 직접적인 연관성이 있어 또 하나의 세부사항인 HTTP와 관계가 생겨버린다는 것이 아쉬운 점이지만 충분히 개선되었다고 생각합니다.</p><p>제가 생각하는 장점을 코드를 함께 개선해가는 과정을 통해서 설명해 드렸고, 많은 도움이 되었다는 이야기를 들을 수 있었습니다😁</p><h2 id=day18--19-네트워크>Day18 ~ 19: 네트워크</h2><p>네트워크 관련 미션은 <strong>페어 프로그래밍</strong>을 통해 함께 결과물을 만들고, 이후 <strong>각자 개선</strong>을 수행하는 미션이었습니다.</p><p><strong>웹 소켓</strong> 서버를 직접 구현하는 것이 전제되어있는 미션이었는데, <strong>레이어드 아키텍처</strong>를 쉽게 적용할 수 있는 요구사항이어서 짝에게 설계를 적극적으로 제안하여 적용하게 되었습니다.</p><p>이전과 달랐던 점은 짝이 이전부터 <strong>TDD</strong>를 적용해오셨던 분이셔서, 자연스럽게 <strong>TDD</strong>로 진행되었습니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_3.png width=816 height=454 srcset="/post/boostcamp-9th/review/challenge/4/img_3_hu05ec6f48f861dd6127467224c3c8452c_617786_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_3_hu05ec6f48f861dd6127467224c3c8452c_617786_1024x0_resize_box_3.png 1024w" loading=lazy class=gallery-image data-flex-grow=179 data-flex-basis=431px></p><p>기능 요구사항을 돌아가며 <strong>드라이버</strong>, <strong>네비게이터</strong> 역할을 수행하는 방식으로 진행되었는데, 원할하게 <strong>TDD</strong>가 진행되어서 참 즐거운 경험이었습니다😁</p><p>그리고 짝 캠퍼분이 이전부터 FE 개발을 해오셨던 경험이 있으셔서 JS에 매우 능숙하셨기 때문에 아주 원할하게 진행될 수 있었던 것 같네요</p><p><strong>레이어드 아키텍처</strong> 기반의 설계와, <strong>TDD</strong>가 합쳐지니 지금까지 결과물 중 가장 만족스러운 결과물을 만들 수 있었습니다. 👍</p><p><del>그래도 새벽 3시가 넘어서야 마무리 할 수 있었어요🤣</del></p><h3 id=레이어드-아키텍처>레이어드 아키텍처</h3><p><code>Socket</code>을 이용하여 <strong>CLI 기반 클라이언트</strong>와 <strong>서버</strong>를 구현해야했습니다.</p><p>서버와 클라이언트의 연결을 만들고, 클라이언트의 요청마다 HTTP 응답을 처리하는 구조가 필요했기 때문에 짝에게 <strong>레이어드 아키텍처</strong>를 적극적으로 제안하여 반영하였습니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_4.png width=1127 height=843 srcset="/post/boostcamp-9th/review/challenge/4/img_4_hu4e52c0ad343a0efa02fd57875f5ec4d4_47956_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_4_hu4e52c0ad343a0efa02fd57875f5ec4d4_47956_1024x0_resize_box_3.png 1024w" loading=lazy alt="레이어드 아키텍처" class=gallery-image data-flex-grow=133 data-flex-basis=320px></p><p><strong>HTTP 요청 수신 및 응답</strong>, <strong>비즈니스 로직 처리</strong>, <strong>데이터 조작</strong>을 각 레이어로 구현하여 분리하여, 좋은 코드 구조를 만들 수 있었습니다.</p><p>짝과 함께 개발하는 과정에서 뿐만이 아니라, 다음 피어세션에서도 해당 설계를 보고 많은 영감을 얻으셨다는 반응이 많아서 뿌듯했네요 😎</p><h3 id=의존성-주입>의존성 주입</h3><p><img src=/post/boostcamp-9th/review/challenge/4/img_6.png width=271 height=186 srcset="/post/boostcamp-9th/review/challenge/4/img_6_hua164b4f218d2ddb10286229f1ed50614_9292_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_6_hua164b4f218d2ddb10286229f1ed50614_9292_1024x0_resize_box_3.png 1024w" loading=lazy alt="의존성 주입" class=gallery-image data-flex-grow=145 data-flex-basis=349px></p><p>레이어드 아키텍처를 구성하며 각 의존성이 있는 레이어를 <strong>의존성 주입</strong>을 통해 <strong>구성</strong>하였습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Model</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>#</span><span class=nx>items</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>constructor</span><span class=p>(</span><span class=nx>items</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>items</span> <span class=o>=</span> <span class=nx>items</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>    <span class=nx>getItem</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>collection</span><span class=p>.</span><span class=nx>find</span><span class=p>(</span><span class=nx>condition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Service</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>#</span><span class=nx>model</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>constructor</span><span class=p>(</span><span class=nx>model</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>model</span> <span class=o>=</span> <span class=nx>model</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>businessLogic</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>data</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>model</span><span class=p>.</span><span class=nx>getItem</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>     
+</span></span><span class=line><span class=cl>        <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span>      
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>data</span><span class=p>;</span>    
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Handler</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>#</span><span class=nx>service</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>constructor</span> <span class=p>(</span><span class=nx>service</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>service</span> <span class=o>=</span> <span class=nx>service</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>handler</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>code</span><span class=o>:</span> <span class=nx>HttpStatusCode</span><span class=p>.</span><span class=nx>OK</span><span class=p>,</span> <span class=nx>body</span><span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=err>#</span><span class=nx>service</span><span class=p>.</span><span class=nx>businessLogic</span><span class=p>()</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>//...
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>const</span> <span class=nx>items</span> <span class=o>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>model</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Model</span><span class=p>(</span><span class=nx>items</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>service</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Service</span><span class=p>(</span><span class=nx>model</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>handler</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Handler</span><span class=p>(</span><span class=nx>service</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>이러한 구조를 통해 결합을 낮추고 유연성을 높힐 수 있었으며, 구현 과정에서 훨씬 테스트가 용이하다는 장점을 취할 수 있었습니다.</p><h3 id=단단한-테스트-코드>단단한 테스트 코드</h3><p><strong>각자 개선하기</strong>에서 저는 테스트 코드 부분을 개선하였습니다.</p><p>단단한 테스트 코드 즉 깨지지 않는 테스트 코드를 작성하기 위해서 개인적으로 테스트 원칙인 단일 책임 원칙, 독립적 테스트 부분을 개선했습니다.</p><ul><li>단일 책임 원칙<ul><li>테스트 코드는 하나의 동작이나 기능만을 테스트 해야함</li></ul></li><li>독립적 테스트<ul><li>테스트 간에 의존성이 있으면 한 테스트의 실패가 다른 테스트에도 영양을 줌</li><li>테스트 간 상태 공유를 피하고, 각 테스트 케이스가 독립적으로 실행될 수 있도록 보장해야함</li></ul></li></ul><hr><p><strong>단일 책임 원칙</strong></p><p>하나의 테스트 코드는 한 가지의 동작과 기능을 테스트해야 이후 변경이 적고 오래사용할 수 있는 테스트 코드를 만들 수 있습니다.</p><p>기존 작성되어있던 테스트를 유사하게 다시 만들어봤습니다.</p><p>어떠한 모델에서 id를 이용해 특정 무언가를 찾는 처리입니다. (어떤 내용인지 추론할 수 있으면 안되기 때문에 추상적으로 쓸 수 밖에 없는 점 양해 부탁드립니다.)</p><hr><p><strong>변경 전</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=kr>const</span> <span class=nx>makeIds</span> <span class=o>=</span> <span class=p>(</span><span class=nx>count</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=nb>Array</span><span class=p>.</span><span class=nx>from</span><span class=p>({</span> <span class=nx>length</span><span class=o>:</span> <span class=nx>count</span> <span class=p>},</span> <span class=p>(</span><span class=nx>_</span><span class=p>,</span> <span class=nx>idx</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=sb>`</span><span class=si>${</span><span class=nx>idx</span><span class=p>.</span><span class=nx>toString</span><span class=p>().</span><span class=nx>padStart</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=s1>&#39;0&#39;</span><span class=p>)</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;ID를 활용하여 무언가를 찾아 배정하고 반환하는 처리 테스트&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>it</span><span class=p>.</span><span class=nx>each</span><span class=p>([</span>
+</span></span><span class=line><span class=cl>      <span class=p>[</span><span class=nx>makeIds</span><span class=p>(</span><span class=mi>1</span><span class=p>),</span> <span class=nx>id1</span><span class=p>,</span> <span class=mi>0</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>      <span class=p>[</span><span class=nx>makeIds</span><span class=p>(</span><span class=mi>4</span><span class=p>),</span> <span class=nx>id2</span><span class=p>,</span> <span class=mi>1</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>      <span class=p>[</span><span class=nx>makeIds</span><span class=p>(</span><span class=mi>8</span><span class=p>),</span> <span class=nx>id3</span><span class=p>,</span> <span class=mi>2</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>      <span class=p>[</span><span class=nx>makeIds</span><span class=p>(</span><span class=mi>12</span><span class=p>),</span> <span class=nx>id4</span><span class=p>,</span> <span class=mi>3</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>      <span class=p>[</span><span class=nx>makeIds</span><span class=p>(</span><span class=mi>16</span><span class=p>),</span> <span class=nx>id5</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=p>])(</span><span class=s2>&#34;무언가를 찾아 배정하고, 배정된 무언가를 반환&#34;</span><span class=p>,</span> <span class=p>(</span><span class=nx>prevIds</span><span class=p>,</span> <span class=nx>nextId</span><span class=p>,</span> <span class=nx>expected</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>prevIds</span><span class=p>.</span><span class=nx>forEach</span><span class=p>((</span><span class=nx>id</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=nx>model</span><span class=p>.</span><span class=nx>assignById</span><span class=p>(</span><span class=nx>id</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=nx>expect</span><span class=p>(</span><span class=nx>model</span><span class=p>.</span><span class=nx>assignById</span><span class=p>(</span><span class=nx>nextCampId</span><span class=p>)).</span><span class=nx>toBe</span><span class=p>(</span><span class=nx>expected</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>많은 상황에 대해 정상적인 처리를 테스트하고 있습니다.</p><p>많은 테스트케이스를 확인하고 있었기 때문에 예외가 발생해야하는 상황은 별도로 확인하고 있지 않았습니다.</p><p>개인적인 의견으로는 알아보기 힘들다고 판단했습니다.</p><hr><p><strong>변경 후</strong></p><p>여러 상황을 나누어 테스트하도록 했으며, 테스트 케이스의 숫자도 줄였습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;ID를 활용하여 무언가를 찾아 배정하고 반환하는 처리 테스트&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>it</span><span class=p>(</span><span class=s2>&#34;정상 처리 확인&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=nx>assignedId</span> <span class=o>=</span> <span class=nx>model</span><span class=p>.</span><span class=nx>assignById</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nx>expect</span><span class=p>(</span><span class=nx>assignedId</span><span class=p>).</span><span class=nx>toEqual</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>it</span><span class=p>(</span><span class=s2>&#34;특정 조건이 넘으면 다른 값 반환 확인&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=nx>clients</span> <span class=o>=</span> <span class=nb>Array</span><span class=p>(</span><span class=nx>MAX_ASSIGN_CLIENT</span><span class=p>).</span><span class=nx>map</span><span class=p>((</span><span class=nx>_</span><span class=p>,</span> <span class=nx>i</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=sb>`J</span><span class=si>${</span><span class=nx>i</span><span class=p>.</span><span class=nx>toString</span><span class=p>().</span><span class=nx>padStart</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=s2>&#34;0&#34;</span><span class=p>)</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nx>arr</span><span class=p>.</span><span class=nx>push</span><span class=p>({</span><span class=nx>clients</span><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=nx>assigned</span> <span class=o>=</span> <span class=nx>model</span><span class=p>.</span><span class=nx>assignById</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nx>expect</span><span class=p>(</span><span class=nx>assignedId</span><span class=p>).</span><span class=nx>toEqual</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>it</span><span class=p>(</span><span class=s1>&#39;먼저 만들어진 무언가에 빈 자리가 있다면 해당 무언가를 반환&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>arr</span><span class=p>.</span><span class=nx>push</span><span class=p>({</span><span class=nx>clients</span><span class=o>:</span><span class=p>[]});</span>
+</span></span><span class=line><span class=cl>      <span class=nx>arr</span><span class=p>.</span><span class=nx>push</span><span class=p>({</span><span class=nx>clients</span><span class=o>:</span><span class=p>[]});</span>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=nx>assignedId</span> <span class=o>=</span> <span class=nx>model</span><span class=p>.</span><span class=nx>assignById</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nx>expect</span><span class=p>(</span><span class=nx>assignedId</span><span class=p>).</span><span class=nx>toEqual</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p><strong>독립적 테스트</strong></p><p>일부 테스트가 스스로의 다른 기능을 호출하는 부분들이 있었습니다. 이는 기능의 변경에 취약한 테스트가 될 수 있다고 판단하여 수정하였습니다.</p><hr><p><strong>변경 전</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;count&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>it</span><span class=p>(</span><span class=s1>&#39;횟수 반환&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>service</span><span class=p>.</span><span class=nx>increaseCount</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>expect</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>count</span><span class=p>(</span><span class=nx>id</span><span class=p>)).</span><span class=nx>toBe</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>})</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>service.count</code> 메소드를 통해 현재 <code>count</code>을 확인하기 위해 <code>service.increaseCount</code>메소드를 통해 <code>count</code>를 증가시키고 있습니다.</p><p>이는 자기 자신의 메소드를 재 호출하는 구조로 인해 <code>service.increaseCount</code>에 미쳐 검증하지 못한 케이스가 있거나, 요구사항 변경으로 인해 검증해야 할 내용이 바뀐다면, <code>service.count</code>의 테스트 코드도 변경이 불가피한 상황입니다.</p><hr><p><strong>변경 후</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;count&#34;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>it</span><span class=p>(</span><span class=s1>&#39;횟수 반환&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>expect</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>count</span><span class=p>(</span><span class=nx>id</span><span class=p>)).</span><span class=nx>toBe</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>map</span><span class=p>.</span><span class=nx>get</span><span class=p>(</span><span class=nx>id</span><span class=p>).</span><span class=nx>clap</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>expect</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>count</span><span class=p>(</span><span class=nx>id</span><span class=p>)).</span><span class=nx>toBe</span><span class=p>(</span><span class=mi>10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>})</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>service</code>의 데이터 보관을 위해 주입받은 <code>Map</code>에 직접 데이터를 저장, 조작하여 자기 자신의 메소드를 활용하는 테스트 처리의 의존성을 제거하였습니다.</p><h2 id=day20-3차-문제해결력-테스트>Day20: 3차 문제해결력 테스트</h2><p>기존 모집 정보에 3차 문제해결력 테스트가 8월 10일 토요일로 예정되어 있었는데, 마지막 날인 20일차 릴레이 프로젝트를 수행해야하는 시간에 테스트가 진행되었습니다.</p><p>대략적으로 말씀드리면, 부캠에서 제공했던 모든 과정들이 단시간에 종합되어있는 테스트였습니다.</p><p><img src=/post/boostcamp-9th/review/challenge/4/img_7.png width=491 height=340 srcset="/post/boostcamp-9th/review/challenge/4/img_7_hu5fb8e3cf3fed11573f93053e9937564e_404795_480x0_resize_box_3.png 480w, /post/boostcamp-9th/review/challenge/4/img_7_hu5fb8e3cf3fed11573f93053e9937564e_404795_1024x0_resize_box_3.png 1024w" loading=lazy alt="부캠 종합 선물세트" class=gallery-image data-flex-grow=144 data-flex-basis=346px></p><p>부캠에 성실히 참여했다면 방식 자체는 생소하지는 않았겠지만, 역시나 시간은 많이 부족했네요🥲</p><h2 id=마무리>마무리</h2><p>마지막 주차에는 같이 학습을 진행한 캠퍼분들에게 영감을 줄 수 있었던것 같아 1주차 이후로 가장 뿌듯했던 한 주 였던 것 같습니다.</p><p>마지막 주차여서 챌린지 과정 전체에대한 회고를 포함해야하나 고민했는데, 따로 작성하기로 결정하여 4주차 회고만 남기게 되었네요</p><p>다음 글은 챌린지 과정 전체에 대한 회고를 올릴 예정이니 기대해주세요😁</p><p>이번에는 3주차 그룹 회고에 남겼던 글로 마무리하겠습니다.</p><p>끝까지 읽어주셔서 감사합니다☺️ 모두 정말 고생 많으셨어요🔥🔥🔥</p><blockquote><p>소프트웨어 장인 책 부분에 성장을 위한 자세에 관해 읽었는데요, 이 부분에서 &ldquo;훈련"을 어떻게 해야 좋은지에 대한 언급이 있습니다.</p><p>훈련을 할 때는 시간이 아무리 많이 걸린다고 하더라도 본인이 할 수 있는 최선의 결과를 만들지 않는다면 성장에는 큰 의미가 없기 때문에 최선을 다하는 것이 중요하다고해요!</p><p>지금까지도 열심히 해오셨지만 앞으로도 최선을 다해서 성장하셨으면 좋겠습니다.</p><p>한 주간 정말 고생 많으셨습니다! 맴버쉽에서 꼭 뵈어요 :D</p></blockquote></section><footer class=article-footer><section class=article-tags><a href=/tags/%EB%B6%80%EC%8A%A4%ED%8A%B8%EC%BA%A0%ED%94%84/>부스트캠프</a>
+<a href=/tags/boostcamp/>Boostcamp</a>
+<a href=/tags/%EC%84%B1%EC%9E%A5/>성장</a>
+<a href=/tags/growth/>Growth</a>
+<a href=/tags/%ED%9A%8C%EA%B3%A0/>회고</a>
+<a href=/tags/review/>Review</a>
+<a href=/tags/%EA%B0%9C%EB%B0%9C%EC%9E%90/>개발자</a>
+<a href=/tags/developer/>Developer</a>
+<a href=/tags/%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0/>커뮤니티</a>
+<a href=/tags/community/>Community</a>
+<a href=/tags/%EA%B8%B0%EB%A1%9D/>기록</a>
+<a href=/tags/write/>Write</a>
+<a href=/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/>네이버</a>
+<a href=/tags/naver/>Naver</a>
+<a href=/tags/%EC%BB%A4%EB%84%A5%ED%8A%B8/>커넥트</a>
+<a href=/tags/connect/>Connect</a>
+<a href=/tags/%EC%A3%BC%EB%8B%88%EC%96%B4/>주니어</a>
+<a href=/tags/junior/>Junior</a>
+<a href=/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/>데이터베이스</a>
+<a href=/tags/db/>DB</a>
+<a href=/tags/database/>Database</a>
+<a href=/tags/rdbms/>RDBMS</a>
+<a href=/tags/%EC%86%8C%EC%BC%93/>소켓</a>
+<a href=/tags/socket/>Socket</a>
+<a href=/tags/%EC%9B%B9%EC%86%8C%EC%BC%93/>웹소켓</a>
+<a href=/tags/websocket/>Websocket</a>
+<a href=/tags/%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98/>레이어드 아키텍처</a>
+<a href=/tags/layered-architecture/>Layered Architecture</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://boostcamp.connect.or.kr/program_wm.html target=_blank rel=noopener><div class=article-details><h2 class=article-title>부스트캠프 웹・모바일</h2><footer class=article-time>소프트웨어를 통해 미래를 바꾸는 Web·Mobile</footer></div></a></article><article><a href=post/real-mysql/4/1/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>4.1 MySQL 엔진 아키텍처</h2><footer class=article-time>Real MySQL 8.0</footer></div></a></article><article><a href=/post/clean-code/7/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>7. 에러 처리</h2><footer class=article-time>클린코드 정리</footer></div></a></article><article><a href=https://www.oreilly.com/library/view/software-architecture-patterns/9781491971437/ch01.html target=_blank rel=noopener><div class=article-details><h2 class=article-title>Layered Architecture</h2><footer class=article-time>O'REILLY</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/boostcamp-9th/review/challenge/3/><div class=article-image><img src=/post/boostcamp-9th/review/challenge/3/cover.1a9a8e05cdd87c13be1cd4efdcd8d800_hu19d27c1827c5e9fb407a4e610db031e0_130036_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 챌린지 과정 3주차 회고" data-key=boostcamp-9th/review/challenge/3 data-hash="md5-GpqOBc3YfBO+HNTv3NjYAA=="></div><div class=article-details><h2 class=article-title>챌린지 과정 3주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/challenge/2/><div class=article-image><img src=/post/boostcamp-9th/review/challenge/2/cover.1a9a8e05cdd87c13be1cd4efdcd8d800_hu19d27c1827c5e9fb407a4e610db031e0_130036_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 챌린지 과정 2주차 회고" data-key=boostcamp-9th/review/challenge/2 data-hash="md5-GpqOBc3YfBO+HNTv3NjYAA=="></div><div class=article-details><h2 class=article-title>챌린지 과정 2주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/challenge/1/><div class=article-image><img src=/post/boostcamp-9th/review/challenge/1/cover.1a9a8e05cdd87c13be1cd4efdcd8d800_hu19d27c1827c5e9fb407a4e610db031e0_130036_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 챌린지 과정 1주차 회고" data-key=boostcamp-9th/review/challenge/1 data-hash="md5-GpqOBc3YfBO+HNTv3NjYAA=="></div><div class=article-details><h2 class=article-title>챌린지 과정 1주차 회고</h2></div></a></article><article class=has-image><a href=/post/movielens/2/><div class=article-image><img src=/post/movielens/2/cover.b58f190c97e00f5e1877639742b37ab3_hu223669cbbbe5efa1c70286790dba8a54_16582_250x150_fill_q75_box_smart1.jpeg width=250 height=150 loading=lazy alt="Featured image of post [MovieLens] 2. DB 설계" data-key=movielens/2 data-hash="md5-tY8ZDJfgD14Yd2OXQrN6sw=="></div><div class=article-details><h2 class=article-title>[MovieLens] 2. DB 설계</h2></div></a></article><article class=has-image><a href=/post/network-flow-tcp/><div class=article-image><img src=/post/network-flow-tcp/cover.09acb61863d661d92951bcf31dab4b9b_hu921294c61d7852328c837af9604b2db0_140490_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Socket" data-key=network-flow-tcp data-hash="md5-Cay2GGPWYdkpUbzzHatLmw=="></div><div class=article-details><h2 class=article-title>Socket</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

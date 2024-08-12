@@ -1,4 +1,600 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 03 Aug 2024 11:22:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>챌린지 과정 3주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/</link><pubDate>Sat, 03 Aug 2024 11:22:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/cover.png" alt="Featured image of post 챌린지 과정 3주차 회고" />&lt;p>챌린지 3주차가 마무리되었습니다🥳&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 12 Aug 2024 10:44:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>챌린지 과정 4주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</link><pubDate>Mon, 12 Aug 2024 10:44:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/cover.png" alt="Featured image of post 챌린지 과정 4주차 회고" />&lt;p>부스트캠프 챌린지 과정이 4주차로 마무리되었습니다🥳&lt;/p>
+&lt;p>주말을 이용하여 미뤄왔던 대청소와 약속들 덕분에 월요일이 되어서야 회고를 쓰게 되네요&lt;/p>
+&lt;p>이번주는 미션들을 수행하지는 않겠지만, 그동안 바빠서 마무리하지 못했던 학습 정리로 바쁠 것 같습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img.png"
+width="900"
+height="752"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_huc5e3bd9d0538c93e5f494cd205f8c424_816479_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_huc5e3bd9d0538c93e5f494cd205f8c424_816479_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="아직 한발 남았다."
+class="gallery-image"
+data-flex-grow="119"
+data-flex-basis="287px"
+>&lt;/p>
+&lt;p>이번 주는 저번주와 마찬가지로 &lt;strong>짝 활동&lt;/strong>을 기본으로 한 주가 구성되었습니다.&lt;/p>
+&lt;p>&lt;strong>각자 개발&lt;/strong>후 &lt;strong>짝 개선&lt;/strong>하기, &lt;strong>짝 개발&lt;/strong>후 &lt;strong>각자 개선&lt;/strong>하기로 &lt;strong>데이터베이스&lt;/strong>와 &lt;strong>네트워크&lt;/strong>를 깊게 이해해야만 해결할 수 있는 미션들이 주어졌습니다.&lt;/p>
+&lt;p>그리고 마지막 테스트를 위한 &lt;strong>히든 미션&lt;/strong>을 금요일에 수행하였습니다.&lt;/p>
+&lt;p>개인적으로 데이터베이스 관련 미션은 많이 어려웠네요 🙃&lt;/p>
+&lt;p>이번 회고에는 미션들에 대한 접근 방법에 더해 짝 활동이 어떻게, 무엇을 중심으로 진행되었는지 설명해보겠습니다.&lt;/p>
+&lt;h2 id="day16--17-데이터베이스">Day16 ~ 17: 데이터베이스&lt;/h2>
+&lt;p>데이터베이스 관련 미션은 &lt;strong>각자 구현&lt;/strong> 후 &lt;strong>짝 개선&lt;/strong>을 수행해야하는 미션이었습니다.&lt;/p>
+&lt;p>파일 기반 데이터베이스를 직접 구현해야하는 미션이었는데, 위에서 말씀드렸던 것처럼 개인적으로 많이 어려웠습니다.&lt;/p>
+&lt;h3 id="mysql">MySQL&lt;/h3>
+&lt;p>이전 직장에서 풀스택 개발자로 업무를 수행해오며 오랜기간 유지되어온 PHP 백엔드 레거시를 운영하는 것이 주 업무였는데요&lt;/p>
+&lt;p>그렇다보니 예전 방식으로 그대로 개발을 수행할 수 밖에 없었고, &lt;a class="link" href="https://www.php.net/manual/en/book.pdo.php" target="_blank" rel="noopener"
+>PDO&lt;/a>(PHP Data Object)를 사용하고 있었기 때문에 직접 쿼리를 작성해야하는 것은 필수적이었습니다.&lt;/p>
+&lt;p>예전 개발 환경과 싱글 스레드 기반으로 순차적인 처리에 중점을 두는 PHP의 특성으로 인해 지금처럼 ORM을 이용하여 작은 쿼리를 여러개 보내는 것 보다는, 굉장히 많은 테이블들을 조인하는 큰 쿼리 하나를 작성해야하는 일도 매우 빈번했습니다.&lt;/p>
+&lt;p>그렇다보니 쿼리 튜닝은 저에게 필수적인 역량이었고, 학습에 꽤 많은 공을 들였었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_5.png"
+width="371"
+height="136"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_5_hu6fb17a4b1ba75a00ca79acad9d84d206_8737_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_5_hu6fb17a4b1ba75a00ca79acad9d84d206_8737_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MySQL"
+class="gallery-image"
+data-flex-grow="272"
+data-flex-basis="654px"
+>&lt;/p>
+&lt;p>이러한 이유로 MySQL 내부 동작을 꽤 잘 알고 있다고 생각하여 이번 미션은 MySQL을 모방하는 방식으로 접근했었습니다.&lt;/p>
+&lt;h3 id="스토리지-엔진">스토리지 엔진&lt;/h3>
+&lt;p>기존 요구사항만을 만족하기 위해서는 단순하게 전체 읽기, 전체 쓰기 방식으로 접근해도 괜찮았지만, 이러한 경우 데이터가 많아지면 급격한 성능 저하가 발생하게됩니다.&lt;/p>
+&lt;p>이러한 문제를 해결해보고 싶어 많은 고민을 했는데 이 부분이 정말 어려웠습니다🥲&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>InnoDB&lt;/strong>&lt;/p>
+&lt;p>데이터베이스의 성능을 나쁘게 만드는 원인은 &lt;strong>디스크 I/O&lt;/strong>에서 발생하는 &lt;strong>병목 현상&lt;/strong>입니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_1.png"
+width="904"
+height="456"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_1_hu5128e5d7946208d35600b2a8a7d0222a_52925_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_1_hu5128e5d7946208d35600b2a8a7d0222a_52925_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MySQL 구조"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="475px"
+>&lt;/p>
+&lt;p>MySQL은 크게 &lt;strong>MySQL 엔진&lt;/strong>, &lt;strong>스토리지 엔진&lt;/strong>으로 영역을 구분할 수 있는데, 디스크 I/O에 접근하는 역할은 &lt;strong>스토리지 엔진&lt;/strong>이 전담하여 수행하게 됩니다.&lt;/p>
+&lt;p>여러 스토리지 엔진이 있지만 주로 사용되는 &lt;code>InnoDB&lt;/code> 스토리지 엔진은 &lt;strong>버퍼풀&lt;/strong>이라는 메모리 영역을 통해 사용하는 주요 데이터를 대부분 캐싱하여 디스크에 접근하는 것을 최소화합니다.&lt;/p>
+&lt;p>또한 쓰기 작업을 버퍼링하여 하드웨어 자원의 여유가 있을 때 백그라운드에서 실행하는 방식들을 통해 데이터베이스의 성능을 크게 끌어올리고 있습니다.&lt;/p>
+&lt;p>이를 반영하기 위해서 데이터를 저장하고 관리하는 기본 단위인 &lt;strong>페이지&lt;/strong>를 구현하야할 필요가 있었습니다만&amp;hellip;.&lt;/p>
+&lt;p>페이지를 직접 구현하고 이를 이용해서 데이터 저장이나 캐싱등을 구현해야한다고 생각하니 현기증이 나는 것 같다라구요😅&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_2.png"
+width="632"
+height="523"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_2_huaf81590ee5a0b6795972f97e2fb827b9_593519_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_2_huaf81590ee5a0b6795972f97e2fb827b9_593519_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="290px"
+>&lt;/p>
+&lt;p>그래서 MySQL 인덱스의 기본 단위인 PK만을 이용해서 저장된 파일에서의 레코드 위치만을 가지게 구현하는 방식으로 접근했습니다.&lt;/p>
+&lt;p>&lt;strong>B+ Tree&lt;/strong> 같은 자료 구조를 통해서 &lt;code>Index Range Scan&lt;/code> 같은 방식도 적용해보려고 했었는데, 마찬가지로 어려워서 &lt;code>PK&lt;/code> 단일 조건 처리에 관한 부분만 적용할 수 있었습니다.&lt;/p>
+&lt;h3 id="짝-개선">짝 개선&lt;/h3>
+&lt;p>짝 개선은 이전과 마찬가지로 새로운 기능을 추가하는 것 보다는 기존 코드를 개선하는 방향으로 지침이 주어졌습니다.&lt;/p>
+&lt;p>저 같은 경우는 &lt;strong>HTTP 요청/응답 분리&lt;/strong>를, 짝은 &lt;strong>DBMS 아키텍처 반영&lt;/strong>을 통한 &lt;strong>코드 구조&lt;/strong>를 개선하는 것을 목표로 함께 개선을 진행하였습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>예외 처리&lt;/strong>&lt;/p>
+&lt;p>저의 개선 목표였던 &lt;strong>HTTP 요청/응답 분리&lt;/strong> 부분 작업을 수행하면서 자연스럽게 &lt;strong>응답 코드&lt;/strong>에 관한 내용들이 개선되어야 했고, 응답을 만들기위해 &lt;strong>예외 처리&lt;/strong>를 추가하는 부분에서 짝과 의견을 나눌 수 있는 기회가 생겼습니다.&lt;/p>
+&lt;p>저 같은 경우는 서비스 로직에서 에러 또는 예외를 발생시켜 해당 에러를 최상위 지점에서 한번에 핸들링하는 것을 선호하는데(&lt;a class="link" href="https://codemario318.github.io/post/clean-code/7/" >클린코드 - 에러 처리&lt;/a>) 어떠한 장점이 있는지에 대해서 물어봐 주셨습니다.&lt;/p>
+&lt;p>코드를 보면서 확인해보면 아래와 같습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>개선 전&lt;/strong>&lt;/p>
+&lt;p>이전 처리를 복기해보면 아래와 같은 방식으로 처리가 구현되어 있었습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">어떤_서비스_클래스&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">원하는_동작&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">값_검증&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;value&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;입력 값을 확인해주세요.&amp;#39;&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">서비스로직을_사용하는_클래스&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">어떤_기능&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">결과&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">어떤_서비스_객체&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">원하는_동작&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;OK&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">body&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">결과&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">status&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">status&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="s1">&amp;#39;value&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">400&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">default&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">500&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이러한 방식에는 몇 가지 문제가 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>예외를 발생 시킬 때 사용자가 직접 사유를 기억해서 매직넘버(상수가 아닌 직접 입력해야하는 값, 하드코딩)를 사용해야합니다.&lt;/li>
+&lt;li>응답도 같은 문제를 가지고 있습니다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 방식은 개발자가 실수를 쉽게 할 수 있는 여지가 많아지게됩니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>개선 후&lt;/strong>&lt;/p>
+&lt;p>이러한 부분을 아래와 같이 개선하게 되었습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">BadRequestException&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nb">Error&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">UnauthorizedException&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nb">Error&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">ForbiddenException&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nb">Error&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">NotFoundException&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nb">Error&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">NotAcceptableException&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nb">Error&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">HttpStatusCodes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">Object&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">freeze&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">OK&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">BAD_REQUEST&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">400&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">UNAUTHORIZED&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">401&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">FORBIDDEN&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">403&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">NOT_FOUND&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">404&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">NOT_ACCEPTABLE&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">406&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">INTERNAL_SERVER_ERROR&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">500&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>각 예외 상황에 맞는 예외 클래스를 구현하였습니다.
+&lt;ul>
+&lt;li>Nest.js 표준 에러 참조&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Http 응답 코드에 대해 Enum을 선언하였습니다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">어떤_서비스_클래스&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">원하는_동작&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">값_검증&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">BadRequestException&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;입력 값을 확인해주세요.&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">서비스로직을_사용하는_최상위_클래스&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">어떤_기능&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">결과&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">어떤_서비스_객체&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">원하는_동작&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HttpStatusCode&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">OK&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">body&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">결과&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">message&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span> &lt;span class="k">instanceof&lt;/span> &lt;span class="nx">BadRequestException&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HttpStatusCodes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">BAD_REQUEST&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span> &lt;span class="k">instanceof&lt;/span> &lt;span class="nx">NotFoundException&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HttpStatusCodes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">NOT_FOUND&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HttpStatusCodes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">INTERNAL_SERVER_ERROR&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>발생한 예외 클래스를 확인하여 Enum으로 선언된 응답 코드를 상황에 맞게 반환할 수 있도록 변경&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>이러한 형식으로 개선되어 아래와 같은 장점을 취할 수 있었습니다.&lt;/p>
+&lt;ul>
+&lt;li>예외 클래스를 직접 확인하므로 어떤 에러가 발생했는지 쉽게 파악할 수 있다.&lt;/li>
+&lt;li>에외 코드가 어떤 의미인지 확실히 구분할 수 있다. 등&lt;/li>
+&lt;/ul>
+&lt;p>발생하는 예외가 HTTP 응답에 대해 직접적인 연관성이 있어 또 하나의 세부사항인 HTTP와 관계가 생겨버린다는 것이 아쉬운 점이지만 충분히 개선되었다고 생각합니다.&lt;/p>
+&lt;p>제가 생각하는 장점을 코드를 함께 개선해가는 과정을 통해서 설명해 드렸고, 많은 도움이 되었다는 이야기를 들을 수 있었습니다😁&lt;/p>
+&lt;h2 id="day18--19-네트워크">Day18 ~ 19: 네트워크&lt;/h2>
+&lt;p>네트워크 관련 미션은 &lt;strong>페어 프로그래밍&lt;/strong>을 통해 함께 결과물을 만들고, 이후 &lt;strong>각자 개선&lt;/strong>을 수행하는 미션이었습니다.&lt;/p>
+&lt;p>&lt;strong>웹 소켓&lt;/strong> 서버를 직접 구현하는 것이 전제되어있는 미션이었는데, &lt;strong>레이어드 아키텍처&lt;/strong>를 쉽게 적용할 수 있는 요구사항이어서 짝에게 설계를 적극적으로 제안하여 적용하게 되었습니다.&lt;/p>
+&lt;p>이전과 달랐던 점은 짝이 이전부터 &lt;strong>TDD&lt;/strong>를 적용해오셨던 분이셔서, 자연스럽게 &lt;strong>TDD&lt;/strong>로 진행되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_3.png"
+width="816"
+height="454"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_3_hu05ec6f48f861dd6127467224c3c8452c_617786_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_3_hu05ec6f48f861dd6127467224c3c8452c_617786_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="179"
+data-flex-basis="431px"
+>&lt;/p>
+&lt;p>기능 요구사항을 돌아가며 &lt;strong>드라이버&lt;/strong>, &lt;strong>네비게이터&lt;/strong> 역할을 수행하는 방식으로 진행되었는데, 원할하게 &lt;strong>TDD&lt;/strong>가 진행되어서 참 즐거운 경험이었습니다😁&lt;/p>
+&lt;p>그리고 짝 캠퍼분이 이전부터 FE 개발을 해오셨던 경험이 있으셔서 JS에 매우 능숙하셨기 때문에 아주 원할하게 진행될 수 있었던 것 같네요&lt;/p>
+&lt;p>&lt;strong>레이어드 아키텍처&lt;/strong> 기반의 설계와, &lt;strong>TDD&lt;/strong>가 합쳐지니 지금까지 결과물 중 가장 만족스러운 결과물을 만들 수 있었습니다. 👍&lt;/p>
+&lt;p>&lt;del>그래도 새벽 3시가 넘어서야 마무리 할 수 있었어요🤣&lt;/del>&lt;/p>
+&lt;h3 id="레이어드-아키텍처">레이어드 아키텍처&lt;/h3>
+&lt;p>&lt;code>Socket&lt;/code>을 이용하여 &lt;strong>CLI 기반 클라이언트&lt;/strong>와 &lt;strong>서버&lt;/strong>를 구현해야했습니다.&lt;/p>
+&lt;p>서버와 클라이언트의 연결을 만들고, 클라이언트의 요청마다 HTTP 응답을 처리하는 구조가 필요했기 때문에 짝에게 &lt;strong>레이어드 아키텍처&lt;/strong>를 적극적으로 제안하여 반영하였습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_4.png"
+width="1127"
+height="843"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_4_hu4e52c0ad343a0efa02fd57875f5ec4d4_47956_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_4_hu4e52c0ad343a0efa02fd57875f5ec4d4_47956_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="레이어드 아키텍처"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>&lt;strong>HTTP 요청 수신 및 응답&lt;/strong>, &lt;strong>비즈니스 로직 처리&lt;/strong>, &lt;strong>데이터 조작&lt;/strong>을 각 레이어로 구현하여 분리하여, 좋은 코드 구조를 만들 수 있었습니다.&lt;/p>
+&lt;p>짝과 함께 개발하는 과정에서 뿐만이 아니라, 다음 피어세션에서도 해당 설계를 보고 많은 영감을 얻으셨다는 반응이 많아서 뿌듯했네요 😎&lt;/p>
+&lt;h3 id="의존성-주입">의존성 주입&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_6.png"
+width="271"
+height="186"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_6_hua164b4f218d2ddb10286229f1ed50614_9292_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_6_hua164b4f218d2ddb10286229f1ed50614_9292_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="의존성 주입"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="349px"
+>&lt;/p>
+&lt;p>레이어드 아키텍처를 구성하며 각 의존성이 있는 레이어를 &lt;strong>의존성 주입&lt;/strong>을 통해 &lt;strong>구성&lt;/strong>하였습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">Model&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">#&lt;/span>&lt;span class="nx">items&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">constructor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">items&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">items&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">items&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">getItem&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">collection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">condition&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">Service&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">#&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">constructor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">businessLogic&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getItem&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">Handler&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">#&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">constructor&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">service&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">service&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">handler&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">code&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HttpStatusCode&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">OK&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">body&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">businessLogic&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">//...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">items&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Model&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">items&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">service&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Service&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">handler&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Handler&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이러한 구조를 통해 결합을 낮추고 유연성을 높힐 수 있었으며, 구현 과정에서 훨씬 테스트가 용이하다는 장점을 취할 수 있었습니다.&lt;/p>
+&lt;h3 id="단단한-테스트-코드">단단한 테스트 코드&lt;/h3>
+&lt;p>&lt;strong>각자 개선하기&lt;/strong>에서 저는 테스트 코드 부분을 개선하였습니다.&lt;/p>
+&lt;p>단단한 테스트 코드 즉 깨지지 않는 테스트 코드를 작성하기 위해서 개인적으로 테스트 원칙인 단일 책임 원칙, 독립적 테스트 부분을 개선했습니다.&lt;/p>
+&lt;ul>
+&lt;li>단일 책임 원칙
+&lt;ul>
+&lt;li>테스트 코드는 하나의 동작이나 기능만을 테스트 해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>독립적 테스트
+&lt;ul>
+&lt;li>테스트 간에 의존성이 있으면 한 테스트의 실패가 다른 테스트에도 영양을 줌&lt;/li>
+&lt;li>테스트 간 상태 공유를 피하고, 각 테스트 케이스가 독립적으로 실행될 수 있도록 보장해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>단일 책임 원칙&lt;/strong>&lt;/p>
+&lt;p>하나의 테스트 코드는 한 가지의 동작과 기능을 테스트해야 이후 변경이 적고 오래사용할 수 있는 테스트 코드를 만들 수 있습니다.&lt;/p>
+&lt;p>기존 작성되어있던 테스트를 유사하게 다시 만들어봤습니다.&lt;/p>
+&lt;p>어떠한 모델에서 id를 이용해 특정 무언가를 찾는 처리입니다. (어떤 내용인지 추론할 수 있으면 안되기 때문에 추상적으로 쓸 수 밖에 없는 점 양해 부탁드립니다.)&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>변경 전&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">makeIds&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="nb">Array&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">from&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">length&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">count&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">idx&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="sb">`&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">idx&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">toString&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">padStart&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;0&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ID를 활용하여 무언가를 찾아 배정하고 반환하는 처리 테스트&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">each&lt;/span>&lt;span class="p">([&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">makeIds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">id1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">makeIds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">id2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">makeIds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">8&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">id3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">makeIds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">id4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">makeIds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nx">id5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">])(&lt;/span>&lt;span class="s2">&amp;#34;무언가를 찾아 배정하고, 배정된 무언가를 반환&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">prevIds&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">nextId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">expected&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">prevIds&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">forEach&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">assignById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">assignById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nextCampId&lt;/span>&lt;span class="p">)).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">expected&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>많은 상황에 대해 정상적인 처리를 테스트하고 있습니다.&lt;/p>
+&lt;p>많은 테스트케이스를 확인하고 있었기 때문에 예외가 발생해야하는 상황은 별도로 확인하고 있지 않았습니다.&lt;/p>
+&lt;p>개인적인 의견으로는 알아보기 힘들다고 판단했습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>변경 후&lt;/strong>&lt;/p>
+&lt;p>여러 상황을 나누어 테스트하도록 했으며, 테스트 케이스의 숫자도 줄였습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ID를 활용하여 무언가를 찾아 배정하고 반환하는 처리 테스트&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;정상 처리 확인&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">assignedId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">assignById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">assignedId&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toEqual&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;특정 조건이 넘으면 다른 값 반환 확인&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">clients&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">Array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">MAX_ASSIGN_CLIENT&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">map&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="sb">`J&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">toString&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">padStart&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">arr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">clients&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">assigned&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">assignById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">assignedId&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toEqual&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;먼저 만들어진 무언가에 빈 자리가 있다면 해당 무언가를 반환&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">arr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">clients&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">[]});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">arr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="nx">clients&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">[]});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">assignedId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">assignById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">assignedId&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toEqual&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>&lt;strong>독립적 테스트&lt;/strong>&lt;/p>
+&lt;p>일부 테스트가 스스로의 다른 기능을 호출하는 부분들이 있었습니다. 이는 기능의 변경에 취약한 테스트가 될 수 있다고 판단하여 수정하였습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>변경 전&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;횟수 반환&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">increaseCount&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">)).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>service.count&lt;/code> 메소드를 통해 현재 &lt;code>count&lt;/code>을 확인하기 위해 &lt;code>service.increaseCount&lt;/code>메소드를 통해 &lt;code>count&lt;/code>를 증가시키고 있습니다.&lt;/p>
+&lt;p>이는 자기 자신의 메소드를 재 호출하는 구조로 인해 &lt;code>service.increaseCount&lt;/code>에 미쳐 검증하지 못한 케이스가 있거나, 요구사항 변경으로 인해 검증해야 할 내용이 바뀐다면, &lt;code>service.count&lt;/code>의 테스트 코드도 변경이 불가피한 상황입니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>변경 후&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;count&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;횟수 반환&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">)).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">clap&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">count&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">)).&lt;/span>&lt;span class="nx">toBe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>service&lt;/code>의 데이터 보관을 위해 주입받은 &lt;code>Map&lt;/code>에 직접 데이터를 저장, 조작하여 자기 자신의 메소드를 활용하는 테스트 처리의 의존성을 제거하였습니다.&lt;/p>
+&lt;h2 id="day20-3차-문제해결력-테스트">Day20: 3차 문제해결력 테스트&lt;/h2>
+&lt;p>기존 모집 정보에 3차 문제해결력 테스트가 8월 10일 토요일로 예정되어 있었는데, 마지막 날인 20일차 릴레이 프로젝트를 수행해야하는 시간에 테스트가 진행되었습니다.&lt;/p>
+&lt;p>대략적으로 말씀드리면, 부캠에서 제공했던 모든 과정들이 단시간에 종합되어있는 테스트였습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_7.png"
+width="491"
+height="340"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_7_hu5fb8e3cf3fed11573f93053e9937564e_404795_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img_7_hu5fb8e3cf3fed11573f93053e9937564e_404795_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="부캠 종합 선물세트"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>&lt;/p>
+&lt;p>부캠에 성실히 참여했다면 방식 자체는 생소하지는 않았겠지만, 역시나 시간은 많이 부족했네요🥲&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>마지막 주차에는 같이 학습을 진행한 캠퍼분들에게 영감을 줄 수 있었던것 같아 1주차 이후로 가장 뿌듯했던 한 주 였던 것 같습니다.&lt;/p>
+&lt;p>마지막 주차여서 챌린지 과정 전체에대한 회고를 포함해야하나 고민했는데, 따로 작성하기로 결정하여 4주차 회고만 남기게 되었네요&lt;/p>
+&lt;p>다음 글은 챌린지 과정 전체에 대한 회고를 올릴 예정이니 기대해주세요😁&lt;/p>
+&lt;p>이번에는 3주차 그룹 회고에 남겼던 글로 마무리하겠습니다.&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다☺️ 모두 정말 고생 많으셨어요🔥🔥🔥&lt;/p>
+&lt;blockquote>
+&lt;p>소프트웨어 장인 책 부분에 성장을 위한 자세에 관해 읽었는데요, 이 부분에서 &amp;ldquo;훈련&amp;quot;을 어떻게 해야 좋은지에 대한 언급이 있습니다.&lt;/p>
+&lt;p>훈련을 할 때는 시간이 아무리 많이 걸린다고 하더라도 본인이 할 수 있는 최선의 결과를 만들지 않는다면 성장에는 큰 의미가 없기 때문에 최선을 다하는 것이 중요하다고해요!&lt;/p>
+&lt;p>지금까지도 열심히 해오셨지만 앞으로도 최선을 다해서 성장하셨으면 좋겠습니다.&lt;/p>
+&lt;p>한 주간 정말 고생 많으셨습니다! 맴버쉽에서 꼭 뵈어요 :D&lt;/p>
+&lt;/blockquote></description></item><item><title>챌린지 과정 3주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/</link><pubDate>Sat, 03 Aug 2024 11:22:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/cover.png" alt="Featured image of post 챌린지 과정 3주차 회고" />&lt;p>챌린지 3주차가 마무리되었습니다🥳&lt;/p>
 &lt;p>이번주 역시 저번주와 마찬가지로, 저번주보다 훨씬 더 빠르게 지나간 것 같네요.&lt;/p>
 &lt;p>미션도 어려웠지만 이번주는 날씨가 역대급으로 더웠는데, 에어컨 고장 이슈가 발생하는 바람에 육체적, 정신적으로 정말 힘들었던 한 주 였습니다🥵&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/3/img.png"
