@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네트워크 on Mario Blog</title><link>https://codemario318.github.io/categories/network/</link><description>Recent content in 네트워크 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 07 Aug 2024 13:40:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>Socket</title><link>https://codemario318.github.io/post/network-flow-tcp/</link><pubDate>Wed, 07 Aug 2024 13:40:47 +0900</pubDate><guid>https://codemario318.github.io/post/network-flow-tcp/</guid><description>&lt;img src="https://codemario318.github.io/post/network-flow-tcp/cover.png" alt="Featured image of post Socket" />&lt;p>Socket은 네트워크에서 데이터를 송수신하기 위한 프로그래밍 인터페이스입니다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네트워크 on Mario Blog</title><link>https://codemario318.github.io/categories/network/</link><description>Recent content in 네트워크 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 07 Aug 2024 13:40:47 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>Socket</title><link>https://codemario318.github.io/post/socket/</link><pubDate>Wed, 07 Aug 2024 13:40:47 +0900</pubDate><guid>https://codemario318.github.io/post/socket/</guid><description>&lt;img src="https://codemario318.github.io/post/socket/cover.png" alt="Featured image of post Socket" />&lt;p>Socket은 네트워크에서 데이터를 송수신하기 위한 프로그래밍 인터페이스입니다.&lt;/p>
 &lt;p>클라이언트와 서버 간의 통신을 가능하게 하는 네트워크 애플리케이션에서 기본적인 구성 요소로 애플리케이션과 네트워크 프로토콜 간의 중개 역할을 하며, 네트워크에서의 데이터 교환을 관리합니다.&lt;/p>
 &lt;h2 id="소켓의-구성-요소">소켓의 구성 요소&lt;/h2>
 &lt;p>소켓은 네트워크 상의 두 지점 간에 연결을 설정(&lt;strong>TCP&lt;/strong>, &lt;strong>UDP&lt;/strong>)하고 데이터를 송수신하는 데 사용되는 소프트웨어 구조입니다.&lt;/p>
@@ -9,10 +9,10 @@
 &lt;li>프로토콜: 데이터 송수신을 위한 규칙을 정의합니다. 가장 일반적인 프로토콜은 TCP (Transmission Control Protocol)와 UDP (User Datagram Protocol)입니다.&lt;/li>
 &lt;/ul>
 &lt;h2 id="소켓의-동작-원리">소켓의 동작 원리&lt;/h2>
-&lt;p>&lt;img src="https://codemario318.github.io/post/network-flow-tcp/img_10.png"
+&lt;p>&lt;img src="https://codemario318.github.io/post/socket/img_10.png"
 width="448"
 height="660"
-srcset="https://codemario318.github.io/post/network-flow-tcp/img_10_hu10a0c348be8017303d3be7bde9441a54_60492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/network-flow-tcp/img_10_hu10a0c348be8017303d3be7bde9441a54_60492_1024x0_resize_box_3.png 1024w"
+srcset="https://codemario318.github.io/post/socket/img_10_hu10a0c348be8017303d3be7bde9441a54_60492_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/socket/img_10_hu10a0c348be8017303d3be7bde9441a54_60492_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="소켓의 동작"
 class="gallery-image"
