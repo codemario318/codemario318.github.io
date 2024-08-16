@@ -19,17 +19,27 @@ User-agent: *
 
 
 
-
-
-
-
-
-
 Allow: /post/
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/boostcamp-9th/reason/
 
 
 
@@ -64,10 +74,6 @@ Allow: /post/
 
 
 Allow: /post/boostcamp-9th/review/challenge/4/
-
-
-
-
 
 
 
