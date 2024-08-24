@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Geohashing on Mario Blog</title><link>https://codemario318.github.io/tags/geohashing/</link><description>Recent content in Geohashing on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 24 Aug 2024 16:38:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/geohashing/index.xml" rel="self" type="application/rss+xml"/><item><title>3. 구글 맵</title><link>https://codemario318.github.io/post/system-design-interview-2/3/</link><pubDate>Sat, 24 Aug 2024 16:38:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/3/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/cover.png" alt="Featured image of post 3. 구글 맵" />&lt;p>구글 맵은 위성 이미지, 거리 뷰, 실시간 교통 상항, 경로 계획 등 다양한 서비스를 제공하고 있다.&lt;/p>
+&lt;p>엄청나게 복잡한 제품이므로, 설계에 앞서 어떤 기능에 초점을 맞추어야 하는지 확인해야 한다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;ul>
+&lt;li>Q. 일간 능동 사용자 수는?
+&lt;ul>
+&lt;li>A. 10억 DAU&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 초점을 두어야하는 기능은?
+&lt;ul>
+&lt;li>A. 위치 갱신, 경로 안내, ETA, 지도 표시&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 도로 데이터는 어느정도, 데이터는 확보 되었다고 가정?
+&lt;ul>
+&lt;li>A. 도로 데이터는 다양한 결로로 확보해 두었다고 가정, 수 TB 수준의 가공되지 않은 데이터&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 교통 상황도 고려해야하는가?
+&lt;ul>
+&lt;li>A. Y&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 여러 이동 수단 고려?
+&lt;ul>
+&lt;li>A. Y&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 경유지 선택 가능?
+&lt;ul>
+&lt;li>A. N&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 사업장 정보도 포함?
+&lt;ul>
+&lt;li>A. N&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="기능-요구사항">기능 요구사항&lt;/h3>
+&lt;p>이번 장에서는 3가지 기능에 집중 할 것이며, 지원할 주 단말은 스마트폰이다.&lt;/p>
+&lt;ul>
+&lt;li>사용자 위치 갱신&lt;/li>
+&lt;li>경로 안내 서비스(ETA 포함)&lt;/li>
+&lt;li>지도 표시&lt;/li>
+&lt;/ul>
+&lt;h3 id="비기능-요구사항-및-제약사항">비기능 요구사항 및 제약사항&lt;/h3>
+&lt;ul>
+&lt;li>정확도
+&lt;ul>
+&lt;li>사용자에게 잘못된 경로를 안내하면 안됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>부드러운 경로 표시
+&lt;ul>
+&lt;li>제공되는 경로는 화면에 부드럽게 표시되고 갱신되어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 및 배터리 사용량
+&lt;ul>
+&lt;li>클라이언트가 최소한의 데이터와 배터리를 사용해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>일반적으로 널리 통용되는 가용성 및 규모 확장성 요구사항을 만족해야함&lt;/li>
+&lt;/ul>
+&lt;h3 id="지도-101">지도 101&lt;/h3>
+&lt;p>&lt;strong>측위 시스템&lt;/strong>&lt;/p>
+&lt;p>측위 시스템은 구 표면상의 위치를 표현하는 체계를 말한다.&lt;/p>
+&lt;p>위경도 기반 측위 시스템의 경우, 최상단에는 북극이 있고 최하단에는 남극이 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img.png"
+width="469"
+height="460"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_hu4ecfd35b0eaef394414174e94c849f4b_312747_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_hu4ecfd35b0eaef394414174e94c849f4b_312747_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="위도와 경도"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="244px"
+>&lt;/p>
+&lt;ul>
+&lt;li>위도(Latitude, Lat.)
+&lt;ul>
+&lt;li>주어진 위치가 얼마나 남/북쪽인지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경도(Longitude)
+&lt;ul>
+&lt;li>얼마나 동/서 쪽인지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>3차원 위치를 2차원 변환&lt;/strong>&lt;/p>
+&lt;p>3차원 구 위의 위치를 2차원 평면에 대응시키는 절차를 &lt;strong>지도 투영법&lt;/strong>(map projection)또는 &lt;strong>도법&lt;/strong>이라 부른다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_1.png"
+width="1920"
+height="1108"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_1_hu6679b85ef3a54a92f40f68b74cd7f354_2863712_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_1_hu6679b85ef3a54a92f40f68b74cd7f354_2863712_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="지도 투영법 사이의 차이점"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="415px"
+>&lt;/p>
+&lt;p>여러 도법이 있으며 각각 차별되는 장점이 있으나 공통적으로 실제 지형의 기하학적 틍성을 왜곡한다는 공통점을 갖는다.&lt;/p>
+&lt;p>구글 맵은 메르카토르 도법을 조금 변경한 &lt;strong>웹 메르카토르&lt;/strong>(WebMercator) 도법을 사용한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>지오코딩&lt;/strong>&lt;/p>
+&lt;p>지오코딩은 주소를 지리적 측위 시스템의 좌표로 변환하는 프로세스이다.&lt;/p>
+&lt;p>지오 코딩을 수행하는 한 가지 방법은 GIS와 같은 다양한 시스템이 제공하는 데이터를 결합하는 인터폴레이션(interpolation)이 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>GIS - Geographic Information System&lt;/strong>&lt;br>
+도로망을 지리적 좌표 공간에 대응시키는 방법을 제공하는 시스템들 중 하나&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>&lt;strong>지오해싱&lt;/strong>&lt;/p>
+&lt;p>지도 위 특정 영역을 영문자와 숫자로 구성된 짧은 문자열에 대응시키는 인코딩 체계이다.&lt;/p>
+&lt;p>2차원의 평면 공간으로 표현된 지리적 영역 위의 격자를 더 작은 격자로 재귀적으로 분할해나간다.&lt;/p>
+&lt;ul>
+&lt;li>각 격자는 정사각형, 사각형 일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>격자를 재귀적으로 분할한 결과로 생성된 더 작은 격자에는 0~3의 번호를 부여한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_2.png"
+width="623"
+height="365"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_2_hue1d5f8bcb8e879d614ad41727ff0e80a_250766_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_2_hue1d5f8bcb8e879d614ad41727ff0e80a_250766_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="지오해싱"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="409px"
+>&lt;/p>
+&lt;p>이번 설계에서는 &lt;strong>맵 타일&lt;/strong>관리를 위해 지오해싱을 활용한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>지도 표시&lt;/strong>&lt;/p>
+&lt;p>지도를 화면에 표시하는 데 가장 기본이 되는 개념은 &lt;strong>타일&lt;/strong>(Tile)이다.&lt;/p>
+&lt;ul>
+&lt;li>지도 전부를 하나의 이미지로 표시하는 대신, 작은 타일로 쪼개어 표현한다.&lt;/li>
+&lt;li>클라이언트는 보려는 영역에 관계된 타일만 다운받아 모자이크처럼 이어 붙인 다음 화면에 뿌린다.&lt;/li>
+&lt;/ul>
+&lt;p>확대/축소를 지원하기 위해 확대 수준에 따라 다른 종류의 타일을 준비한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>경로 안내 알고리즘을 위한 도로 데이터 처리&lt;/strong>&lt;/p>
+&lt;p>대부분의 경로 탐색 알고리즘은 &lt;strong>데이크스트라 알고리즘&lt;/strong>이나 &lt;strong>A* 알고리즘&lt;/strong>의 변종이다.(그래프 기반 최단거리 탐색)&lt;/p>
+&lt;p>따라서 모든 경로 탐색 알고리즘은 교차로를 노드, 도로를 간선으로 표현하는 그래프 자료 구조를 가정한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_3.png"
+width="1400"
+height="639"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_3_hu7451bd66519cb9a67ca931e55612e325_1658967_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_3_hu7451bd66519cb9a67ca931e55612e325_1658967_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="그래프로 표현한 지도"
+class="gallery-image"
+data-flex-grow="219"
+data-flex-basis="525px"
+>&lt;/p>
+&lt;p>대부분 경로 탐색 알고리즘은 주어진 그래프 크기에 성능이 좌우된다.&lt;/p>
+&lt;p>따라서 성능을 위해 전 세계 도로망을 하나의 그래프로 표현하는 것이 아닌 &lt;strong>관리 가능 단위로 분할&lt;/strong>해야한다.&lt;/p>
+&lt;p>타일 기반 분할법을 적용하여 세계를 작은 격자로 나누고, 각 격자 안의 도로망을 노드와 간선으로 구성된 그래프 자료구조로 변환한다.&lt;/p>
+&lt;ul>
+&lt;li>경로 안내 타일로 분할한다.&lt;/li>
+&lt;li>각 타일은 도로로 연결된 다른 타일에 대한 참조를 유지한다.&lt;/li>
+&lt;/ul>
+&lt;p>도로망을 언제든 불러올 수 있는 경로 안내 타일로 분할해 놓으면 여러 장점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>경로 탐색 알고리즘이 동ㅈ가하는 데 필요한 메모리 요구량을 낮출 수 있다.&lt;/li>
+&lt;li>한 번에 처리해야 하는 경로의 양이 준다.&lt;/li>
+&lt;li>필요한 만큼 만 불러오면 되므로 경로 탐색 성능도 좋아진다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>경로 안내 타일은 지도와 다르게 도로 데이터로 이루어진 이진 파일(binary file)이다.&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>&lt;strong>계층적 경로 안내 타일&lt;/strong>&lt;/p>
+&lt;p>경로 안내가 효과적으로 동작하려면 &lt;strong>필요한 수준의 구체성&lt;/strong>을 갖춘 도로 데이터가 필요하다.&lt;/p>
+&lt;p>보통 구체성 정도를 상, 중, 하로 구분하여 세 가지 종류의 경로 안내 타일을 준비한다.&lt;/p>
+&lt;ul>
+&lt;li>상
+&lt;ul>
+&lt;li>지방도(local roads) 데이터를 둔다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>중
+&lt;ul>
+&lt;li>규모가 비교적 큰 관할구(district)를 잇는 간선 도로 데이터를 둔다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>하
+&lt;ul>
+&lt;li>도시와 주를 연결하는 주요 고속도로 데이터만 둔다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_4.png"
+width="1109"
+height="910"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_4_hu07eab4d6f4ef51d47536904f92e584d5_498010_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_4_hu07eab4d6f4ef51d47536904f92e584d5_498010_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="크기가 서로 다른 경로 안내 타일"
+class="gallery-image"
+data-flex-grow="121"
+data-flex-basis="292px"
+>&lt;/p>
+&lt;h3 id="개략적-규모-추정">개략적 규모 추정&lt;/h3>
+&lt;p>설계 초점이 모바일 단말이므로, 데이터 사용량과 배터리 효율을 중요하게 따져 봐야 한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>저장소 사용량 - 세계 지도&lt;/strong>&lt;/p>
+&lt;p>지원하는 확대 수준(Zoom level)별로 지도 타일을 한 벌씩 두어야 한다.&lt;/p>
+&lt;p>지도를 확대할 때 마다 하나의 타일을 네 장의 타일로 펼친다고 가정하면, 세계 지도를 21번 확대하여 볼 수 있으려면 최대 확대 수준을 대산으로 하였을 때 약 &lt;strong>4.4조&lt;/strong>개의 타일이 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>한 장의 타일이 &lt;code>256 * 256&lt;/code> PNG 파일이라면 장당 100KB의 저장 공간이 필요하므로 440PB 만큼의 저장 공간이 필요하다.&lt;/li>
+&lt;/ul>
+&lt;p>하지만 지구 표면 가운데 90%는 인간이 살지 않는 자연 그대로의 바다, 사막, 호수, 산간 지역이라 아주 높은 비유롤 압축할 수 있다.&lt;/p>
+&lt;p>보수적으로 80% ~ 90% 저장 용량을 절감할 수 있다고 가정하면, 50PB 정도 필요하다.&lt;/p>
+&lt;p>1 ~ 21 까지 수준을 지원하기 위해 &lt;code>50 + (50/4) + (50/16) ... = ~ 67PB&lt;/code> 정도로 대충 100PB 정도가 소요된다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>서버 대역폭&lt;/strong>&lt;/p>
+&lt;p>서버 대역폭을 추정하기 위해서는 어떤 유형의 요청을 처리해야 하는지 살펴 봐야 한다.&lt;/p>
+&lt;ul>
+&lt;li>경로 안내 요청
+&lt;ul>
+&lt;li>클라이언트가 경로 안내 세션을 시작할 때 전송하는 메시지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>위치 갱신 요청
+&lt;ul>
+&lt;li>클라이언트가 경로 안내를 진행하는 동안 변경된 사용자 위치를 전송하는 메시지&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>경로 안내 요청을 처리하기 위한 대역폭을 계산해본다.&lt;/p>
+&lt;ul>
+&lt;li>DAU 10억, 평균 주당 35분 사용한다고 가정
+&lt;ul>
+&lt;li>하루에 50억 분&lt;/li>
+&lt;li>요청을 클라이언트 쪽에 모아두었다가 덜 자주보내도록 하면 QPS를 낮출 수 있다.&lt;/li>
+&lt;li>15초마다 한 번씩 보낸다고 가정하면 QPS는 20만&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_5.png"
+width="710"
+height="489"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_5_hu4e7e3e07d71836bb687df78814d2fbb6_116709_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_5_hu4e7e3e07d71836bb687df78814d2fbb6_116709_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="348px"
+>&lt;/p>
+&lt;ul>
+&lt;li>위치 서비스&lt;/li>
+&lt;li>경로 안내 서비스&lt;/li>
+&lt;li>지도 표시&lt;/li>
+&lt;/ul>
+&lt;h3 id="위치-서비스">위치 서비스&lt;/h3>
+&lt;p>사용자의 위치를 기록하는 역할을 담당한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart TD
+mobile([모바일 사용자]) -->
+loadBalancer[로드밸런서] -->
+location[위치 서비스] -->
+db[(사용자 위치 DB)]
+&lt;/pre>
+&lt;p>클라이언트가 &lt;strong>t&lt;/strong>초마다 자기 위치를 전송한다고 가정하는데, 주기적으로 위치 정보를 전송하면 몇 가지 좋은 점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>해당 데이터 스트림을 활용하여 시스템을 점차 개선할 수 있다.
+&lt;ul>
+&lt;li>실시간 교통 상황 모니터링&lt;/li>
+&lt;li>새로 만들어진 도로나 폐쇄된 도로 탐지&lt;/li>
+&lt;li>사용자 행동 양태를 분석하여 활용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>클라이언트가 보내는 위치 정보가 실시간 정보에 가까우므로 ETA를 좀 더 정확하게 산출할 수 있다.
+&lt;ul>
+&lt;li>교통 상황에 따라 다른 경로를 안내할 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>위치 이력을 클라이언트에 버퍼링해 두었다가 일괄 요청하면 전송 빈도를 줄일 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_6.png"
+width="768"
+height="230"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_6_hu4c9106ced49971975257ab1b7be74bab_135532_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_6_hu4c9106ced49971975257ab1b7be74bab_135532_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="일괄 요청"
+class="gallery-image"
+data-flex-grow="333"
+data-flex-basis="801px"
+>&lt;/p>
+&lt;p>위치 갱신 요청 빈도를 줄여도 여전히 많은 쓰기 요청을 처리해야하므로 아주 높은 쓰기 요청 빈도에 최적화되어 있고 규모 확장이 용이한 카산드라같은 데이터베이스가 필요하다.&lt;/p>
+&lt;p>카프카 같은 스트림 처리 엔진을 활용하여 위치 데이터를 로깅해야 할 수도 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">POST /v1/locations
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">body:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> locs: JSON으로 인코딩한 (위도, 경도, 시각) 순서쌍 배열
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="경로-안내-서비스">경로 안내 서비스&lt;/h3>
+&lt;p>A에서 B 지점으로 가는 합리적으로 빠른 경로를 찾아 주는 역할을 담당한다.&lt;/p>
+&lt;ul>
+&lt;li>결과를 얻는 데 드는 시간 지연은 어느 정도 감내할 수 있다.&lt;/li>
+&lt;li>최단 시간 경로일 필요는 없으나 정확도는 보장되어야 한다.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">GET /v1/nav?origin=1355+market+street,SF&amp;amp;destination=Disneyland
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="지도-표시">지도 표시&lt;/h3>
+&lt;p>확대 수준별로 한 벌씩 지도 타일을 저장하려면 수백 PB가 필요하므로, 그 모두를 클라이언트가 가지고 있는 것은 실용적이지 않다.&lt;/p>
+&lt;p>클라이언트의 위치 및 현재 클라이언트가 보는 확대 수준에 따라 필요한 타을을 서버에서 가져오는 접근법이 바람직하다.&lt;/p>
+&lt;ul>
+&lt;li>사용자가 지도를 확대 또는 이동시키며 주변을 탐색&lt;/li>
+&lt;li>경로 안내가 진행되는 동안 사용자의 위치가 현재 지도 타일을 벗어나 인접한 타일로 이동&lt;/li>
+&lt;/ul>
+&lt;p>다량의 지도 타일 데이터를 효과적으로 가져오기 위해 아래와 같은 방법들을 고려할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>선택지 1&lt;/strong>&lt;/p>
+&lt;p>클라이언트가 보는 지도의 확대 수준에 근거하여 필요한 지도 타일을 즉석에서 만든다.&lt;/p>
+&lt;p>사용자 위치 및 확대 수준의 조합이 무한하므로 몇 가지 심각한 문제가 있다.&lt;/p>
+&lt;ul>
+&lt;li>모든 지도 타일을 동적으로 만들어야 하는 서버 클러스터에 심각한 부하가 걸린다.&lt;/li>
+&lt;li>캐시를 활용하기 어렵다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>선택지 2&lt;/strong>&lt;/p>
+&lt;p>미리 만들어 둔 지도 타일을 클라이언트에 전달하기만 한다.&lt;/p>
+&lt;p>지도 타일이 담당하는 지리적 영역은 지오해싱 같은 분할법을 사용해 만든 고정된 사각형의 격자로 표현되어 정적이다.&lt;/p>
+&lt;ul>
+&lt;li>지도 타일이 필요할 경우 현재 확대 수준에 근거하여 필요한 지도 타일 집합을 결정하고, 각 위치를 지오해시 URL로 변환하여 보낸다.&lt;/li>
+&lt;li>미리 만들어 둔 정적 이미지를 CDN을 통해 서비스한다.&lt;/li>
+&lt;/ul>
+&lt;p>이 접근법은 규모 확장이 용이하고 성능 측면에서도 유리하다.&lt;/p>
+&lt;ul>
+&lt;li>가장 가까운 POP에서 파일을 서비스한다.&lt;/li>
+&lt;li>지도 타일은 정적이므로 캐시를 통해 서비스하기 아주 적합하다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_7.png"
+width="659"
+height="633"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_7_hu95af23d21653015c716fa288ebdc0b72_148322_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_7_hu95af23d21653015c716fa288ebdc0b72_148322_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="CDN 기반 서비스 구조의 강점"
+class="gallery-image"
+data-flex-grow="104"
+data-flex-basis="249px"
+>&lt;/p>
+&lt;p>지도 타일은 이미 정의된 격자에 맞게 확대 수준별로 한 벌식 미리 만들어 둔 것을 사용하게 된다.&lt;/p>
+&lt;p>지오해시를 사용해 격자를 나누므로 모든 격자는 고유한 지오해시 값을 갖는다.&lt;/p>
+&lt;p>따라서 위도/경도로 표현된 클라이언트의 위치 및 현재 지도 확대 수준을 입력으로 화면에 표시할 지도 타일에 대응되는 지오해시는 아주 쉽게 계산해 낼 수 있다.&lt;/p>
+&lt;p>이 계산은 클라이언트가 수행하며, 해당 지오해시 및 URL로 CDN에서 지도 타일을 가져오면 된다.&lt;/p>
+&lt;hr>
+&lt;p>지오해시 계산은 클라이언트가 수행해되 괜찮지만, 알고리즘을 클라이언트 단에 구현할 경우 지원해야 할 플랫폼이 많을 때 문제가 될 수 있다.&lt;/p>
+&lt;p>모바일 앱 업데이트 배포는 시간도 많이 걸리고 때로는 위험하므로 앞으로 오랫동안 맵 타일 인코딩에는 지오해싱을 사용해야한다는 전제가 있어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>다른 방식으로 변경이 필요하다면 많은 노력과 위험이 따른다.&lt;/li>
+&lt;/ul>
+&lt;p>이에따라 주어진 위도/경도 및 확대 수준을 타일 URL로 변환하는 알고리즘 구현을 &lt;strong>별도 서비스&lt;/strong>에 두는 방법을 고려할 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+user([user])
+lb[로드밸런서]
+service[지도 타일 서비스&lt;br/> 3. 타일 URL들을 생성]
+cdn((CDN))
+user---|'1. 타일 URL 집합 요청'| lb
+lb---|'2. 요청 전달'| service
+user---|'4. 타일 다운로드'| cdn
+&lt;/pre>
+&lt;p>새로운 위치로 이동하거나 확대 수준을 변경하면 지도 타일 서비스는 어떤 타일이 필요한지 결정하여 해당 타일들을 가져오는 데 필요한 URL 집합을 계산하여 응답한다.&lt;/p>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="데이터-모델">데이터 모델&lt;/h3>
+&lt;h4 id="경로-안내-타일">경로 안내 타일&lt;/h4>
+&lt;p>확보한 도로 데이터는 가공되지 않았기 때문에 &lt;strong>경로 안내 타일 처리 서비스&lt;/strong>라 불리는 오프라인 데이터 가공 파이프라인을 주기적으로 실행하여 경로 안내 타일로 변환해야한다.&lt;/p>
+&lt;ul>
+&lt;li>도로 데이터에 발생한 새로운 변경사항을 반영하기 위해 주기적으로 실행한다.&lt;/li>
+&lt;/ul>
+&lt;p>경로 안내 타일을 만들 때는 해당도를 달리 하여 세 벌(상, 중, 하) 만든다.&lt;/p>
+&lt;ul>
+&lt;li>그래프의 노드와 간선으로 표현된 해당 지역 내 교차로와 도로 정보&lt;/li>
+&lt;li>다른 타일의 도로와 연결되는 경우 해당 타일에 대한 참조 정보 포함&lt;/li>
+&lt;/ul>
+&lt;p>경로 안내 알고리즘은 이들 타일이 모인 결과로 만들어지는 도로망 데이터를 점진적으로 소비한다.&lt;/p>
+&lt;p>가공 결과로 만들어진 타일은 어디에 저장해야 할까?&lt;/p>
+&lt;p>일반적으로 그래프 데이터는 메모리에 인접 리스트 형태로 보관하나, 메모리에 두기에는 양이 너무 많다.&lt;/p>
+&lt;p>그래프의 노드와 간선을 데이터베이스 레코드로 저장하는 것 도 방법이겠지만 비용이 많이 들 것이며, 경로 안내 타일의 경우 데이터베이스가 제공하는 기능이 필요 없다.&lt;/p>
+&lt;p>따라서 &lt;strong>S3 같은 객체 저장소에 파일을 보관&lt;/strong>하고 그 파일을 이용할 &lt;strong>경로 안내 서비스에서 적극적으로 캐싱&lt;/strong>하는 방법을 고려할 수 있다.&lt;/p>
+&lt;p>위도와 경도가 주어졌을 때 타일을 신속하게 찾기 위해 지오해시 기준으로 분류해 두는 것이 좋다.&lt;/p>
+&lt;h4 id="사용자-위치-데이터">사용자 위치 데이터&lt;/h4>
+&lt;p>사용자의 위치 정보는 아주 값진 데이터다.&lt;/p>
+&lt;ul>
+&lt;li>도로 데이터 및 경로 안내 타일을 갱신하는데 이용된다.&lt;/li>
+&lt;li>실시간 교통 상황 데이터나 교통 상황 이력 데이터베이스를 구축하는 데도 활용된다.&lt;/li>
+&lt;li>데이터 스트림 프로세싱 서비스는 이 위치 데이터를 처리하여 지도 데이터를 갱신한다.&lt;/li>
+&lt;/ul>
+&lt;p>사용자 위치 데이터를 저장하려면 엄청난 양의 쓰기 연산을 잘 처리할 수 있으면서 수평적 규모 확장이 가능한 데이터베이스가 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>카산드라&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>user_id&lt;/th>
+&lt;th>timestamp&lt;/th>
+&lt;th>user_mode&lt;/th>
+&lt;th>driving_mode&lt;/th>
+&lt;th>location&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>101&lt;/td>
+&lt;td>1635740977&lt;/td>
+&lt;td>active&lt;/td>
+&lt;td>driving&lt;/td>
+&lt;td>(20.0, 30.5)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="지오코딩-데이터베이스">지오코딩 데이터베이스&lt;/h4>
+&lt;p>주소를 위도/경도 쌍으로 변환하는 정보를 보관한다.&lt;/p>
+&lt;p>읽기 연산은 빈번한 반면 쓰기 연산은 드물게 발생하는 특성으로 레디스와 같이 빠른 읽기 연산을 제공하는 키-값 저장소가 적합하다.&lt;/p>
+&lt;p>출발지와 목적지 주소는 경로 계획 서비스에 전달하기 전 이 데이터베이스를 통해 위도/경도 쌍으로 변환된다.&lt;/p>
+&lt;h4 id="미리-만들어-둔-지도-이미지">미리 만들어 둔 지도 이미지&lt;/h4>
+&lt;p>단말이 특정 영역의 지도를 요청하면 인근 도로 정보를 취합하여 모든 도로 및 관련 상세 정보가 포함된 이미지를 만들어 내야 한다.&lt;/p>
+&lt;ul>
+&lt;li>계산 자원을 많이 사용한다.&lt;/li>
+&lt;li>같은 이미지를 중복 요청하는 경우가 많다.&lt;/li>
+&lt;/ul>
+&lt;p>이미지느 ㄴ한 번만 계산하고 그 결과는 캐시해 두는 전략을 쓰는 것이 좋다.&lt;/p>
+&lt;p>이미지는 지도 표시에 사용하는 확대 수준 별로 미리 만들어 두고 CDN을 통해 전송한다.&lt;/p>
+&lt;h3 id="서비스">서비스&lt;/h3>
+&lt;h4 id="위치-서비스-1">위치 서비스&lt;/h4>
+&lt;p>데이터베이스 설계 및 사용자 위치 정보가 이용되는 방식에 초점을 맞추어 상세 설계를 진행해본다.&lt;/p>
+&lt;p>사용자 위치 데이터 저장에는 키-값 저장소를 활용한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart TD
+mobile([모바일 사용자]) -->
+loadBalancer[로드밸런서] -->
+location[위치 서비스] -->
+db[(사용자 위치 DB)]
+&lt;/pre>
+&lt;ul>
+&lt;li>초당 백만 건의 위치 정보 업데이트가 발생한다는 점을 감안하면 쓰기 연산 지원에 탁월한 데이터베이스가 필요하다.&lt;/li>
+&lt;li>사용자 위치는 계속 변화하며, 일단 변경되고 나면 이전 정보는 바로 무용해지므로, 데이터 일관성 보다는 가용성이 더 중요하다.
+&lt;ul>
+&lt;li>CAP 정리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 요구사항에는 &lt;strong>NoSQL 키-값 데이터베이스&lt;/strong>나 &lt;em>&lt;em>열-중심&lt;/em> 데이터베이스&lt;/em>(column-oriented database)가 적합하며, 이 중 가용성과 분할 내성 두가지를 만족 시키는 데이터베이스에는 &lt;strong>카산드라&lt;/strong>가 있다.&lt;/p>
+&lt;hr>
+&lt;p>데이터 베이스 키로는 &lt;code>(user_id, timestamp)&lt;/code> 조합을 사용하며, 해당 키에 매달리는 값으로 &lt;code>위도/경도&lt;/code> 쌍을 저장한다.&lt;/p>
+&lt;ul>
+&lt;li>user_id는 파티션 키
+&lt;ul>
+&lt;li>같은 파티션 키를 갖는 데이터는 함께 저장됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>timestamp는 클러스터링 키
+&lt;ul>
+&lt;li>클러스터링 키 값에 따라 정렬된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이렇게 해 두면 특정 사용자의 특정 기간 내 위치도 효율적으로 읽어낼 수 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>key(uesr_id)&lt;/th>
+&lt;th>timestamp&lt;/th>
+&lt;th>lat&lt;/th>
+&lt;th>long&lt;/th>
+&lt;th>user_mode&lt;/th>
+&lt;th>navigation_mode&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>51&lt;/td>
+&lt;td>132053000&lt;/td>
+&lt;td>21.9&lt;/td>
+&lt;td>89.8&lt;/td>
+&lt;td>active&lt;/td>
+&lt;td>driving&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="사용자-위치-데이터는-어떻게-이용되는가">사용자 위치 데이터는 어떻게 이용되는가&lt;/h4>
+&lt;p>사용자 위치는 쓰임새가 다양한 중요 데이터다.&lt;/p>
+&lt;ul>
+&lt;li>새로 개설되었거나 폐쇄된 도로를 감지할 수 있다.&lt;/li>
+&lt;li>지도 데이터의 정확성을 점차로 개선하는 입력으로 활용될 수 있다.&lt;/li>
+&lt;li>실시간 교통 현황을 파악하는 입력이 될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 용례를 지원하기 위해 사용자 위치를 데이터베이스에 기록하는 것과 별도로 &lt;strong>카프카&lt;/strong>와 같은 메시지 큐에 로깅한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_8.png"
+width="802"
+height="437"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_8_hu7e5de397c61cacf1f854f32e04691977_149242_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_8_hu7e5de397c61cacf1f854f32e04691977_149242_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="여러 서비스에 위치 데이터 제공"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="440px"
+>&lt;/p>
+&lt;p>개별 서비스들은 카프카를 통해 전달되는 사용자 위치 데이터 스트림을 각자 용도에 맞게 활용할 수 있다.&lt;/p>
+&lt;h3 id="지도-표시-1">지도 표시&lt;/h3>
+&lt;p>지도 타일을 미리 만들어 놓는 방법과 지도 표시 최적화 기법을 살펴본다.&lt;/p>
+&lt;h4 id="지도-타일-사전-계산">지도 타일 사전 계산&lt;/h4>
+&lt;p>사용자가 보는 지도 크기나 확대 수준에 맞는 세부사항을 보여주기 위해 확대 수준별 지도 타일을 미리 만들어 둘 필요가 있다.&lt;/p>
+&lt;ul>
+&lt;li>구글맵은 21단계로 지도를 확대할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>확대 수준 0은 세계 전부를 256 * 256 픽셀짜리 타일 하나로 표현하며, 1단계 올릴 때마다 동서, 남북 방향으로 2배 씩 늘어난다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_9.png"
+width="623"
+height="365"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_9_hufe332efd68ce7553509f6a6bfaaa3fd6_248243_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_9_hufe332efd68ce7553509f6a6bfaaa3fd6_248243_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="확대 수준별 지도"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="409px"
+>&lt;/p>
+&lt;p>따라서 해상도도 4배 증가하게 된다.&lt;/p>
+&lt;p>이렇게 늘어난 해상도 덕에 사용자에게 더 상세한 정보를 제공할 수 있으며, 클라이언트는 해당 정보를 제공하기 위한 타을을 다운 받는 데 많은 네트워크 대역폭을 소진하지 않고도 클라이언트에 설정된 확대 수준에 최적인 크기의 지도를 표시할 수 있다.&lt;/p>
+&lt;h4 id="최적화-벡터-사용">최적화: 벡터 사용&lt;/h4>
+&lt;p>지도 표시에 WebGL 기술을 채택하여 이미지 대신 경로와 다각형 등의 벡터 정보를 보낸다.&lt;/p>
+&lt;ul>
+&lt;li>벡터 타일은 이미지에 비해 월등한 압축률을 가지므로 네트워크 대역폭을 많이 아낄 수 있다.&lt;/li>
+&lt;li>레스터 방식 이미지(Rasterized image)는 확대 수준을 높이는 순간 이미지가 늘어지고 픽셀이 도드라져 보이는 것과 달리 벡터화 된 이미지는 이러한 단점이 없다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="경로-안내-서비스-1">경로 안내 서비스&lt;/h3>
+&lt;p>경로 안내 서비스는 가장 빠른 경로를 안내하는 역할을 담당한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+ac(모바일 사용자)
+lb[로드밸런서]
+ns[경로 안내 서비스]
+gs[지오코딩 서비스]
+nps[경로 계획 서비스]
+rnks[순위 결정 서비스]
+fsns[최단 경로 서비스]
+arrs[예상 도착 서비스]
+pss[실시간 교통 상황 서비스]
+gdb(지오코딩 DB)
+ndb(경로 안내 타일 DB)
+pdb(교통량 DB)
+udb(사용자 위치 DB)
+ac-->lb
+lb-->ns
+ns-->gs
+ns-->nps
+gs-->gdb
+nps-->fsns
+nps-->rnks
+nps-->arrs
+fsns-->ndb
+arrs-->pdb
+pss-->pdb
+pss-->udb
+&lt;/pre>
+&lt;h4 id="지오코딩-서비스">지오코딩 서비스&lt;/h4>
+&lt;p>주소를 위도와 경도 쌍으로 바꾸어준다.&lt;/p>
+&lt;p>주소의 표현 방식은 다양할 수 있다는 점을 고려해야한다.&lt;/p>
+&lt;ul>
+&lt;li>장소 이름으로 나타낸 주소&lt;/li>
+&lt;li>지번 형태로 나타낸 주소 등&lt;/li>
+&lt;/ul>
+&lt;p>경로 안내 서비스는 이 서비스를 호출하여 출발지와 목적지 주소를 위도/경도 쌍으로 변환한 뒤 추후 다른 서비스 호출에 이용한다.&lt;/p>
+&lt;h4 id="경로-계획-서비스">경로 계획 서비스&lt;/h4>
+&lt;p>경로 계획 서비스(route planner service)는 현재 교통 상황과 도로 상태에 입각하여 이동 시간 측면에서 최적화된 경로를 제안한다.&lt;/p>
+&lt;h4 id="최단-경로-서비스">최단 경로 서비스&lt;/h4>
+&lt;p>최단 경로 서비스(shortest path service)는 출발지와 목적지 위도/경도를 입력으로 받아 k개의 최단 경로를 반환하는 서비스이다.&lt;/p>
+&lt;p>이때 교통이나 도로 상황은 고려하지 않고, 도로 구조에만 의존하여 계산을 수행한다.&lt;/p>
+&lt;ul>
+&lt;li>도로망 그래프는 거의 정적이므로 캐시해 두면 좋다.&lt;/li>
+&lt;/ul>
+&lt;p>최단 경로 서비스는 객체 저장소에 저장된 경로 안내 타일에 대해 A* 경로 탐색 알고리즘의 한 형태를 실행한다.&lt;/p>
+&lt;ol>
+&lt;li>입력으로 출발지와 목적지의 위도/경도를 받는다.
+&lt;ul>
+&lt;li>이 위치 정보를 지오해시로 변호나한 다음 출발지와 목적지 경로 안내 타일을 얻는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>출발지 타일에서 시작하여 그래프 자료 구조를 탐색해 나간다.
+&lt;ul>
+&lt;li>탐색 범위를 넓히는 과정에서 필요한 주변 타일은 객체 저장소(캐시)에서 가져온다.&lt;/li>
+&lt;li>같은 지역의 다른 확대 수준 타일로도 연결이 존재할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>최단 경로가 충분히 확보될 때까지 알고리즘은 검색 범위를 계속 확대해 나가면서 필요한 만큼 타일을 가져오는 작업을 반복한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_11.png"
+width="1080"
+height="458"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_11_huf7f7afc7caa46f16dc28ef7b8c08d390_800218_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_11_huf7f7afc7caa46f16dc28ef7b8c08d390_800218_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="그래프 탐색"
+class="gallery-image"
+data-flex-grow="235"
+data-flex-basis="565px"
+>&lt;/p>
+&lt;h4 id="예상-도착-시간-서비스">예상 도착 시간 서비스&lt;/h4>
+&lt;p>경로 계획 서비스는 최단 경로 목록을 수신하면 예상 도착 시간 서비스를 호출하여 그 경로 각각에 대한 소요 시간 추정치를 구한다.&lt;/p>
+&lt;p>기계 학습을 활용해 현재 교통 상황 및 과거 이력에 근거하여 예상 도착 시간을 계산한다.&lt;/p>
+&lt;p>이 때 실시간 교통 상황 데이터 뿐만 아니라 앞으로 10분에서 20분 뒤의 교통 상황이 어떻게 달라질지도 예측해야한다.&lt;/p>
+&lt;h4 id="순위-결정-서비스">순위 결정 서비스&lt;/h4>
+&lt;p>ETA 예상치를 구하고 나면 순위 결정 서비스(ranker)에 관련 정보를 모두 전달하여 사용자가 정의한 필터링 조건을 적용한다.&lt;/p>
+&lt;ul>
+&lt;li>유료 도로 제외, 고속도로 제외 등&lt;/li>
+&lt;/ul>
+&lt;p>필터링이 끝나고 남은 경로를 소요 시간 순으로 정렬하여 최단 시간 경로 k개를 구한 후 경로 안내 서비스에 결과를 반환한다.&lt;/p>
+&lt;h4 id="중요-정보-갱신-서비스들">중요 정보 갱신 서비스들&lt;/h4>
+&lt;p>이 부류의 서비스는 &lt;strong>카프카 위치 데이터 스트림&lt;/strong>을 구독하고 있다가 중요 데이터를 비동기적으로 업데이트하여 그 상태를 항상 최신으로 유지하는 역할을 담당한다.&lt;/p>
+&lt;ul>
+&lt;li>실시간 교통 정보 데이터베이스
+&lt;ul>
+&lt;li>활성화 상태 사용자가 보내는 위치 데이터 스트림에서 교통 상황 정보를 추출&lt;/li>
+&lt;li>실시간 교통 상황 데이터베이스에 반영되어 예상 도착 시간 서비스가 더욱 정확한 결과를 내는데 쓰인다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경로 안내 타일
+&lt;ul>
+&lt;li>도로 데이터에 새로 발견된 도로, 폐쇄되었음이 확인된 도로 정보를 반영하여 경로 안내 타일을 지속적으로 갱신&lt;/li>
+&lt;li>최단 경로 서비스는 더 정확한 결과를 낼 수 있게 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="적응형-eta와-경로-변경">적응형 ETA와 경로 변경&lt;/h4>
+&lt;p>이 문제를 해결하려면 서버는 현재 경로 안내를 받고 있는 모든 사용자를 추적하면서 교통 상황이 달라질 때마다 각 사용자의 ETA를 변경해 주어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>현재 경로 안내를 받고 있는 사용자는 어떻게 추적하나?&lt;/li>
+&lt;li>수백만 경로 가운데 교통 상황 변화에 영향을 받는 경로와 사용자를 효율적으로 가려낼 방법은?&lt;/li>
+&lt;/ul>
+&lt;p>사용자 &lt;code>user_1&lt;/code>이 안내받은 경로가 경로 안내 타일 &lt;code>r_1&lt;/code> &amp;hellip; &lt;code>r_7&lt;/code> 구성되어 있다고 가정한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_12.png"
+width="460"
+height="179"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_12_hu280e0708fed9cf1f12a8aef8bbdf84a8_41297_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_12_hu280e0708fed9cf1f12a8aef8bbdf84a8_41297_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="안내된 경로"
+class="gallery-image"
+data-flex-grow="256"
+data-flex-basis="616px"
+>&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>효율적이지 않은 방법&lt;/strong>&lt;/p>
+&lt;p>사용자와 경로 정보를 데이터 베이스에 저장한다고 하면 아래와 같을 것 이다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">user_1: r_1, r_2 ..., r_k
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user_2: r_1, r_2 ..., r_n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user_3: r_2, r_3 ..., r_m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user_4: r_3, r_10 ..., r_l
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이 때 r_2에서 교통 사고가 발생했다면, 어떤 사용자가 영향을 받는지 알아내기 위해 레코드를 전수 조사해야한다.&lt;/p>
+&lt;p>테이블에 보관된 레코드 수가 n이고 안내되는 경로의 평균 길이가 m이라면 모든 사용자 검색의 시간 복잡도는 &lt;code>O(n * m)&lt;/code>이다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>개선된 방법&lt;/strong>&lt;/p>
+&lt;p>경로 안내를 받는 사용자 각가의 현재 경로 안내 타일, 그 타일을 포함하는 상위 타일(확대 수준이 더 낮은 타일), 그 상위 타일의 상위 타일을 출발지와 목적지가 모두 포함된 타일을 찾을 때까지 재귀적으로 더하여 보관한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">user_1, r_1, super(r_1), super(super(r_1)), ...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_13.png"
+width="626"
+height="576"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_13_hue7d0c9d50a34906b9535c0723874c0aa_123912_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_13_hue7d0c9d50a34906b9535c0723874c0aa_123912_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="재귀적인 경로 타일 수집"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="260px"
+>&lt;/p>
+&lt;p>어떤 타일의 교통 상황이 변했을 때 경로 안내 ETA가 달라지는 사용자는, 해당 사용자의 데이터베이스 레코드 마지막 타일에 그 타일이 속하는 사용자가 된다.&lt;/p>
+&lt;p>그 이외의 사용자에게는 아무런 영향이 없으므로 검색 시간 복잡도가 &lt;code>O(n)&lt;/code>으로 줄어들어 좀 더 효율적이다.&lt;/p>
+&lt;p>그러나 이 접근법은 교통 상황이 개선되었을 때 해야 하는 일까지 해결해 주지는 않는다.&lt;/p>
+&lt;p>예를 들어 타일 2의 교통 상황이 회복되어서 사용자가 옛날 경로로 돌아가도 된다고 할 때 경로 재설정이 가능하다는 사실을 감지하고 알려야한다.&lt;/p>
+&lt;p>한 가지 방안은 현재 경로 안내를 받는 사용자가 이용 가능한 경로의 ETA를 주기적으로 재계산하여 더 짧은 ETA를 간즞 경로가 발견되면 알리는 것 이다.&lt;/p>
+&lt;h4 id="전송-프로토콜">전송 프로토콜&lt;/h4>
+&lt;p>경로 안내 중에 경로 상황이 변경될 수 있으므로, 데이터를 모바일 클라이언트에 전송할 안정적인 방법이 필요하다.&lt;/p>
+&lt;p>이 경우 서버에서 클라이언트로 데이터를 보내는 데 활용할 수 있는 프로토콜로는 모바일 푸시 알림, 롱 폴링, 웹소켓, 서버 전송 이벤트 등이 있다.&lt;/p>
+&lt;ul>
+&lt;li>모바일 푸시 알림
+&lt;ul>
+&lt;li>메시지 크기가 매우 제한적이므로 사용하지 않는 게 바람직하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>웹소켓
+&lt;ul>
+&lt;li>서버에 주는 부담이 크지 않아 일반적으로 롱 폴링보다 좋은 방안으로 본다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>웹소켓 SSE 모두 괜찮은 방법이지만 본 설계안에서는 웹소켓을 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>양방향 통신을 지원하여 패키지나 상품이 목적지에 가까워졌을 때는 실시간 양방향 통신이 필요한 경우도 있기 때문&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/3/img_10.png"
+width="1540"
+height="1240"
+srcset="https://codemario318.github.io/post/system-design-interview-2/3/img_10_huef52c7d9d52a678b3a7058ace4c6f3a8_129189_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/3/img_10_huef52c7d9d52a678b3a7058ace4c6f3a8_129189_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최종 설계안"
+class="gallery-image"
+data-flex-grow="124"
+data-flex-basis="298px"
+>&lt;/p>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>시스템의 확장에 관심이 있다면, 기업 고객 대상으로 중간 경유지 설정 기능을 제공하는 것을 고려해보면 좋다.&lt;/p>
+&lt;ul>
+&lt;li>하나가 아닌 여러 목적지를 입력으로 하면 그 모두를 어떤 순서로 방문해야 가장 빨리 경유할 수 있을지 실시간 교통 상황을 고려하여 안내&lt;/li>
+&lt;li>도어대시, 우버, 리프트 같은 배달 서비스에 유용&lt;/li>
+&lt;/ul></description></item></channel></rss>
