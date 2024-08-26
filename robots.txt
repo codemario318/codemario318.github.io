@@ -3,7 +3,23 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/3/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -45,6 +61,70 @@ Allow: /post/
 
 
 
+
+
+
+
+Allow: /post/boostcamp-9th/review/membership/1/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview-2/3/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/system-design-interview-2/2/
 
 
@@ -55,45 +135,7 @@ Allow: /post/system-design-interview-2/2/
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Allow: /post/boostcamp-9th/reason/
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -231,15 +273,7 @@ Allow: /post/boostcamp-9th/review/challenge/2/
 
 
 
-
-
 Allow: /post/jest-unit-test/
-
-
-
-
-
-
 
 
 
@@ -1484,8 +1518,6 @@ Allow: /post/nginx_vs_apache/
 
 
 Allow: /post/web/
-
-
 
 
 
