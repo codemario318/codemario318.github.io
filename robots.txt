@@ -39,6 +39,22 @@ User-agent: *
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/
 
 
@@ -65,27 +81,47 @@ Allow: /post/
 
 
 
+
+
+Allow: /post/boostcamp-9th/review/membership/2/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/boostcamp-9th/review/membership/1/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -136,10 +172,6 @@ Allow: /post/system-design-interview-2/2/
 
 
 Allow: /post/boostcamp-9th/reason/
-
-
-
-
 
 
 
@@ -678,8 +710,6 @@ Allow: /post/clean-architecture/17/
 
 
 Allow: /post/movielens/2/
-
-
 
 
 

@@ -1,4 +1,340 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 25 Aug 2024 21:00:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>멤버십 과정 1주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/1/</link><pubDate>Sun, 25 Aug 2024 21:00:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/1/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/1/cover.png" alt="Featured image of post 멤버십 과정 1주차 회고" />&lt;p>멤버십 과정 첫 주가 마무리 되었습니다. 🥳&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 01 Sep 2024 21:00:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>멤버십 과정 2주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</link><pubDate>Sun, 01 Sep 2024 21:00:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/cover.png" alt="Featured image of post 멤버십 과정 2주차 회고" />&lt;p>멤버십 과정 두 번째 주가 마무리 되었습니다. 🥳&lt;/p>
+&lt;p>이번주는 예상대로 1주차에 만든 결과물에 새로운 기술들을 이용하여 개선하는 미션이 주어졌습니다.&lt;/p>
+&lt;p>&lt;strong>프론트엔드&lt;/strong>는 &lt;code>DOM API&lt;/code>, &lt;code>Event&lt;/code>, &lt;code>Fetch API&lt;/code>를 활용하여 클라이언트 영역에서의 동적인 UI로 개선하는 내용이 주어졌고, &lt;strong>백엔드&lt;/strong>는 가상환경에 데이터베이스를 설치하고, 서버에서 연동하는 미션이 주어졌습니다.&lt;/p>
+&lt;p>사실 프론트엔드 영역은 처음부터 CSR로 아예 분리해서 진행하고 있었기 때문에 큰 변경은 없었어요, 그래서 리펙토링을 위주로 진행했던 것 같습니다.&lt;/p>
+&lt;p>백엔드도 리포지토리를 인터페이스를 통해 잘 분리했었기 때문에 큰 이슈 없이 진행되었어요&lt;/p>
+&lt;p>그럼에도 불구하고 새롭게 배운 내용들은 제법 있었는데, 그 내용들을 언급해보면 좋을 것 같아요😁&lt;/p>
+&lt;h2 id="프론트엔드">프론트엔드&lt;/h2>
+&lt;p>프론트엔드 영역은 이미 언급했던 것 처럼 큰 변경사항은 없었습니다. HTML, CSS 구조를 조금 개선하고, TS 코드들을 조금 개선하였어요&lt;/p>
+&lt;p>그 중 가장 큰 개선을 꼽으라면 &lt;strong>이벤트 위임&lt;/strong>(Event Delegation)을 통해 TS 코드를 개선했던 것을 꼽을 수 있을 것 같습니다.&lt;/p>
+&lt;h3 id="이벤트-위임">이벤트 위임&lt;/h3>
+&lt;p>저는 현업에서 &lt;strong>Vue3&lt;/strong>로 프론트엔드를 개발했었는데요, 그렇기 때문에 &lt;code>v-on&lt;/code>을 이용하여 DOM 요소에 이벤트를 직접 바인딩 하는 방식에 적응되어있었습니다.&lt;/p>
+&lt;p>그리고 혼자 사용해봤던 &lt;strong>React&lt;/strong>에서도 &lt;code>onClick&lt;/code> 같은 방식으로 직접 바인딩해줬었어요.&lt;/p>
+&lt;p>그래서 이번 &lt;strong>Vanilla TypeScript&lt;/strong>로 개발을 진행하면서도 별 생각없이 &lt;code>&amp;lt;li&amp;gt;&lt;/code> 처럼 반복적으로 들어가는 요소의 &lt;strong>이벤트 등록&lt;/strong>을 각각 바인딩 해주는 방식을 사용했습니다. 아래처럼요!&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">renderItemListElement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">items&lt;/span>: &lt;span class="kt">Item&lt;/span>&lt;span class="p">[])&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HTMLUListElement&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$ul&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">querySelector&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;ul.item-list&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$items&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">items&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">map&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">makeItemElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">replaceChildren&lt;/span>&lt;span class="p">(...&lt;/span>&lt;span class="nx">items&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">$ul&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">makeItemElement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span>: &lt;span class="kt">Item&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HTMLLIElement&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$li&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;li&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$li&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;item&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$button&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;button&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$button&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;item-btn&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$button&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">addEventListener&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;click&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handleClickItemButton&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">li&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">handleClickItemButton&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">event&lt;/span>: &lt;span class="kt">Event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>그런데 문제는 &lt;strong>Vue&lt;/strong>에서는 동적으로 생성된 DOM 이라고 하더라도 언마운트될 때 자동으로 바인딩 된 이벤트 리스너들이 정리되어 신경 쓸 필요가 없고, &lt;strong>React&lt;/strong>같은 경우는 &lt;strong>Synthetic Event System&lt;/strong>을 통해 최상위 루트 노드에서 모든 이벤트들을 위임받아 각 컴포넌트로 전달하는 방식으로 처리하여 성능상의 이점을 제공한다는 것을 알게 되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img.png"
+width="840"
+height="650"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_hu06827f719d27f9740548ce869145ec8d_92734_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_hu06827f719d27f9740548ce869145ec8d_92734_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Synthetic Event System"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="310px"
+>&lt;/p>
+&lt;p>위 예시처럼 이벤트 위임을 사용하지 않을 경우 몇 가지 문제가 발생할 수 있습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>성능 문제&lt;/strong>&lt;/p>
+&lt;p>동적으로 생성된 여러 개의 요소에 이벤트 리스너를 개별적으로 추가하면, DOM에 많은 수의 이벤트 리스너가 바인딩됩니다.&lt;/p>
+&lt;p>이로 인해 매우 많은 요소가 있을 경우 각각의 리스너가 메모리에 로드되면서 렌더링 속도가 느려지거나 메모리 사용량이 급격히 증가할 수 있습니다.&lt;/p>
+&lt;p>또한 이벤트가 발생할 때마다 모든 이벤트 핸들러가 독립적으로동작하므로 성능 저하가 발생할 수도 있습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>유지보수성 문제&lt;/strong>&lt;/p>
+&lt;p>동일한 유형의 이벤트를 처리하기 위해 여러 요소에 유사한 이벤트 핸들러가 중복으로 작성되어 수정이 필요할 때 실수를 유발할 수 있습니다.&lt;/p>
+&lt;p>또한 코드의 복잡성을 높히게 될 수 있습니다. 특히 동적으로 요소가 추가, 삭제되는 경우, 각각의 이벤트 핸들러를 적절하게 관리하는 것이 어려워 질 수 있습니다.&lt;/p>
+&lt;hr>
+&lt;p>그래서 저는 아래와 같은 형식으로 코드들을 개선하였습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">renderItemListElement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">$ul&lt;/span>: &lt;span class="kt">HTMLUListElement&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">items&lt;/span>: &lt;span class="kt">Item&lt;/span>&lt;span class="p">[])&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$items&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">items&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">map&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">makeItemElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">replaceChildren&lt;/span>&lt;span class="p">(...&lt;/span>&lt;span class="nx">$items&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// ...items 대신 ...$items
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">$ul&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">bindItemListElement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">$ul&lt;/span>: &lt;span class="kt">HTMLUListElement&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$ul&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">addEventListener&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;click&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">event&lt;/span>: &lt;span class="kt">Event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">target&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">event&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">target&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="nx">HTMLElement&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">target&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nx">target&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">contains&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;item-btn&amp;#39;&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">handleClickItemButton&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">event&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">makeItemElement&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">item&lt;/span>: &lt;span class="kt">Item&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">HTMLLIElement&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$li&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;li&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$li&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;item&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">$button&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createElement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;button&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$button&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">classList&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;item-btn&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">$li&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">appendChild&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">$button&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">$li&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">handleClickItemButton&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">event&lt;/span>: &lt;span class="kt">Event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="백엔드">백엔드&lt;/h2>
+&lt;p>백엔드 미션에서는 위에서 언급했던대로 데이터베이스를 연동해야하는 미션이 주어졌습니다.&lt;/p>
+&lt;p>처음 가상 환경으로 리눅스 서버를 구성하고 데이터베이스 서버를 만들었어야 했는데, 마스터이신 &lt;strong>호눅스&lt;/strong>님이 &lt;strong>AWS EC2&lt;/strong>로 해보는 것도 허용하셔서 &lt;strong>EC2&lt;/strong>를 띄워 데이터베이스 서버를 구성하였어요&lt;/p>
+&lt;p>이번 미션에서 데이터베이스에 관련하여 새롭게 알게된 점을 공유해보려고합니다.&lt;/p>
+&lt;h3 id="외래키-제약조건-설정-문제">외래키 제약조건 설정 문제&lt;/h3>
+&lt;p>저는 지금까지 데이터베이스를 설계할 때는 외래키 제약 조건을 표시하지만 실제 데이터베이스에서는 외래키를 설정하지 않는 것이 일반적인 것으로 알고 있었습니다.&lt;/p>
+&lt;p>사실 틀린 말은 아닌 것 같아요. 이전 직장에서 제가 활용했던 대부분의 테이블에는 외래키 제약 조건이 설정되어있지 않았고, 몇몇 강의에서도 관련 내용들을 언급합니다.&lt;/p>
+&lt;p>이전 직장에서 꽤 큰 개편 프로젝트를 수행하며 기존 테이블을 마이그레이션 했었는데, 이때 DBA 에게 물어봤을 때는 &lt;strong>성능 문제&lt;/strong>와 &lt;strong>작업 편의성&lt;/strong> 등을 이유로 말씀해주셨었습니다.&lt;/p>
+&lt;p>그리고 제가 학습했던 책인 &lt;strong>Real MySQL 8.0&lt;/strong>에서도 &lt;code>InnoDB&lt;/code> 스토리지 엔진을 설명하는 부분에서 &lt;strong>&lt;code>외래 키는 데이터베이스 서버 운영의 불편함 때문에 서비스용 데이터베이스에서는 생성하지 않는 경우도 자주 있다.&lt;/code>&lt;/strong> 라는 내용을 언급하고 있습니다.&lt;/p>
+&lt;p>그런데 이번 마스터 세션에서 관련 이야기가 나왔고, 조금 다른 의견을 들을 수 있었어요&lt;/p>
+&lt;p>&lt;strong>일단 외래키를 사용하지 않아야 한다고 주장하는 이유&lt;/strong>를 조금 더 자세히 살펴보겠습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>성능 문제&lt;/strong>&lt;/p>
+&lt;p>외래키 제약조건은 데이터베이스가 데이터 무결성을 유지하기 위해 참조 무결성을 확인해야하므로, 데이터 삽입, 수정, 삭제 시 추가적인 연산(잠금)이 발생하고, 이러한 처리가 성능의 저하를(데드락 등) 발생시킨다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>데이터 마이그레이션&lt;/strong>&lt;/p>
+&lt;p>데이터 마이그레이션 작업 중 외래키 제약 조건이 있는 경우, 데이터 삽입 순서에 따라 제약조건 위반이 발생할 수 있기 때문에, 이러한 문제를 피하기 위해 외래키 제약조건을 사용하지 않거나, 일시적으로 비활성화한 후 작업을 수행해야한다.&lt;/p>
+&lt;hr>
+&lt;p>대표적으로 언급된 두 가지 문제로 인해 어플리케이션단에서의 처리를 통해 외래키 제약 조건 문제를 해소하려고 하는 시도가 많은 것 같습니다.&lt;/p>
+&lt;p>두 가지 이유 모두 타당하지만 외래키 제약 조건으로 인해 발생하는 &lt;strong>성능 저하&lt;/strong>는 대부분의 서비스에서는 의미있는 수준은 아니라고 해요&lt;/p>
+&lt;p>다만 데이터가 꽤 많이 적재되어있는 상태에서 복잡한 외래키 제약조건이 설정되어있는 컬럼을 수정하는 작업은 위험하고, 비용이 많이 발생하는 작업이기 때문에, 변경이 많이 필요할 수 있는 테이블에는 외래키 제약 조건을 설정하지 않는 것이 타당할 수 있다고 합니다.&lt;/p>
+&lt;p>그렇기 때문에 프로젝트가 충분히 안정화되었다면, 이후 제약 조건을 추가하는 것이 좋다는 것이 좋다는 의견이었습니다.&lt;/p>
+&lt;hr>
+&lt;p>그래서 결론적으로 이야기하면 &lt;strong>&lt;code>외래키 제약조건을 사용하지 않는 것은 국룰은 아니다.&lt;/code>&lt;/strong> &lt;strong>&lt;code>외래키 제약조건을 무분별하게 사용하는 것은 지양하자&lt;/code>&lt;/strong> 정도로 요약할 수 있을 것 같습니다. &lt;del>사실 개인 취향인가 싶어요&lt;/del>&lt;/p>
+&lt;h3 id="uuid-성능-문제">UUID 성능 문제&lt;/h3>
+&lt;p>이번 데이터 모델을 설계하면서 모든 ID 컬럼은 &lt;strong>UUID&lt;/strong>로 설정했습니다.&lt;/p>
+&lt;p>사실 UUID는 생성되는 특징으로 인해 전역적으로 충돌 가능성이 매우 낮은 고유한 ID를 만들 수 있어, 분산 환경에서 많이 사용하게됩니다.&lt;/p>
+&lt;p>이번 미션은 RDBMS를 사용하는 것 이었고, RDBMS는 동기화의 어려움으로 인해 마스터 DB를 여러대 두는 방식을 적극적으로 고려하지는 않습니다.&lt;/p>
+&lt;p>그래서인지 스터디 그룹원 중 한분이 &lt;code>AUTO_INCREMENT&lt;/code>를 사용하지 않고 UUID를 사용한 이유를 질문해주셨어요. 그래서 저는 아래와같이 답변을 했습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>키 생성 처리를 데이터베이스와 분리&lt;/strong>&lt;/p>
+&lt;p>일단 저는 키값을 데이터베이스에서 생성한다는 것 자체가 비즈니스 로직과 데이터베이스에 의존의 생긴다고 생각했어요! 이는 추후 데이터베이스를 NoSQL로 변경한다던가 분산 데이터베이스로 전환한다던가 하는 문제에서 비교적 자유로울 수 있습니다.&lt;/p>
+&lt;p>&lt;code>AUTO_INCREMENT&lt;/code>가 충돌없는 키 값을 만들어야하는 규칙에서도 자유로울 수 있다고 생각했습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>키 생성을 서버가 담당&lt;/strong>&lt;/p>
+&lt;p>RDBMS의 &lt;code>AUTO_INCREMENT&lt;/code>를 사용한다는 것은 결국 관련 처리를 위한 자원이 필요하다는 것을 의미해요&lt;/p>
+&lt;p>대부분 웹 서버는 HTTP를 활용한 무상태성을 유지하도록 구현되기 때문에 수평 확장이 비교적 쉬운 반면, RDBMS는 동기화의 어려움으로 인해 읽기 작업 외의 기능은 결국 마스터 데이터베이스 1대가 처리하게 됩니다.&lt;/p>
+&lt;p>말씀해주신것처럼 &lt;code>AUTO_INCREMENT&lt;/code>를 사용한다면 웹 서버가 관련 처리를 하지 않기 때문에 부하가 덜 발생하는 것 처럼 보이지만, 결과적으로 성능의 병목이되기 쉬운 RDBMS의 부하를 증가 시키게 되는 것이죠&lt;/p>
+&lt;p>UUID 생성에는 많은 부하가 발생하지 않고, 웹 서버는 수평적 확장이 쉽기 때문에 많은 처리가 필요하다면 데이터베이스에서 발생하는 부하를 조금이나마 줄일 수 있을 것이라고 생각했어요&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>코드 품질&lt;/strong>&lt;/p>
+&lt;p>첫 번째와 많이 겹치는 부분이긴한데, 제 백엔드 처리를 보시면 서비스 로직에서 사용자의 요청으로 받은 입력으로 엔티티를 만들어 사용하는 것을 보실 수 있을거에요&lt;/p>
+&lt;p>이 때 최초 생성하는 엔티티에 대해서는 UUID를 직접 만들어주고 있는데, &lt;code>AUTO_INCREMENT&lt;/code>를 사용하게되면 RDBMS에서 값을 생성해주기 전 까지는 id 값을 알 수 없기 때문에 해당 값에 null을 허용해야한다는 문제? 도 있다고 생각했어요&lt;/p>
+&lt;p>&lt;code>null&lt;/code> 허용하게 되었을 때 발생할 수 있는 문제들과 &lt;code>null&lt;/code>을 처리해야함으로 인해 만들어지는 비즈니스 로직, 그리고 &lt;code>null&lt;/code>로 인한 코드 오염을 예방하기 위해 조금 더 엄격한 타입을 사용하려는 의도도 있었습니다.&lt;/p>
+&lt;hr>
+&lt;p>이러한 이유를 들어서 설명했는데 작업하다보니 두 번째 이유인 &lt;strong>키 생성을 서버가 담당하여 RDBMS의 부하를 조금이나마 덜겠다.&lt;/strong> 는 이유는 틀릴수도 있지 않을까라는 생각을 하게 되었습니다.&lt;/p>
+&lt;h4 id="mysql의-pk">MySQL의 PK&lt;/h4>
+&lt;p>MySQL의 InnoDB 스토리지 엔진을 사용하게되면, 모든 테이블은 기본적으로 &lt;strong>프라이머리 키&lt;/strong>를 기준으로 &lt;strong>클러스터링&lt;/strong>되어 저장됩니다.&lt;/p>
+&lt;p>&lt;strong>PK&lt;/strong>를 B-Tree 계열 자료 구조를 통해 값의 순서대로 디스크에 저장하게되고, 모든 세컨더리 인덱스는 레코드의 주소 대신 프라이머리의 키 값을 논리적은 주소로 사용하게되어요&lt;/p>
+&lt;p>이러한 특성 때문에 충돌 가능성이 지극히 낮은 랜덤한 값을 만들어내는 &lt;code>UUID v4&lt;/code>로 PK로 설정하면, 성능의 저하가 발생할 수 있습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_2.png"
+width="926"
+height="657"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_2_hu4c15cba2b4aacfb7cc2a03a3c364cd6f_50081_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_2_hu4c15cba2b4aacfb7cc2a03a3c364cd6f_50081_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="v4 - Random 포함"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="338px"
+>&lt;br>
+&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_1.png"
+width="926"
+height="657"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_1_hu9678aa1d8eaa8f3bbabd1ff9874b8021_56627_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_1_hu9678aa1d8eaa8f3bbabd1ff9874b8021_56627_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="v4 - Random 제외"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="338px"
+>&lt;/p>
+&lt;p>위 그래프는 배치당 100,000건의 데이터를 &lt;code>INSERT&lt;/code>하는 쿼리에서 성능 차이를 보여줍니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_3.png"
+width="885"
+height="588"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_3_hu7772b5810b6ad334b763624da5431ad0_25600_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/2/img_3_hu7772b5810b6ad334b763624da5431ad0_25600_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="테스트가 실행되는 데 걸린 시간"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>극단적인 상황이긴 하지만, 히스토그램을 살펴보면 &lt;code>AUTO_INCREMENT&lt;/code>에 비해서 &lt;code>UUID v4&lt;/code>가 성능이 크게 떨어지는 것을 볼 수 있습니다.&lt;/p>
+&lt;p>그래서 &lt;strong>데이터베이스의 부하를 줄인다.&lt;/strong> 는 말은 틀렸다고 볼 수 있을 것 같습니다.&lt;/p>
+&lt;p>물론 이 그래프의 출처에서는 &lt;code>Sequential UUID v4&lt;/code>를 사용했을 경우 성능이 의미있는 수준의 차이는 아니기 때문에 사용할 것을 권하고는 있습니다.🤣&lt;/p>
+&lt;h4 id="mysql의-uuid-처리-방식">MySQL의 UUID 처리 방식&lt;/h4>
+&lt;p>MySQL은 컬럼 타입으로 UUID를 제공하고 있지는 않습니다. 그래서 사용하려면 몇가지 절차가 필요합니다.&lt;/p>
+&lt;p>아래는 테이블을 생성하는 예시입니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>UUID를 &lt;code>CHAR(36)&lt;/code> 형식으로 사용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">CHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">36&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UUID&lt;/span>&lt;span class="p">()),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">email&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">created_at&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TIMESTAMP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CURRENT_TIMESTAMP&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>UUID를 생성하는 함수는 존재하지만 컬럼 타입으로는 존재하지 않기 때문에, &lt;code>CHAR(36)&lt;/code>으로 지정한 모습입니다.&lt;/p>
+&lt;p>여기에서 컬럼의 크기를 작게 만드는 방법도 적용 가능해요&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>UUID를 &lt;code>BINARY(16)&lt;/code> 형식으로 사용&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">BINARY&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UUID_TO_BIN&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UUID&lt;/span>&lt;span class="p">())),&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">email&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">created_at&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TIMESTAMP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CURRENT_TIMESTAMP&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>UUID를 &lt;code>BINARY(16)&lt;/code>으로 선언하고, 저장할 떼 UUID를 &lt;code>BINARY&lt;/code>로 변환하여 저장하는 방법입니다.&lt;/p>
+&lt;p>성능을 테스트하지는 않았지만, 함수로 인한 처리가 필요하다는 부분이 조금 꺼림직하더라구요😅&lt;/p>
+&lt;hr>
+&lt;p>위와 같이 &lt;code>BINARY(16)&lt;/code>으로 선언했다면, 읽어올때도 변환이 필요하게됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">BIN_TO_UUID&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">email&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">created_at&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>UUID_TO_BIN&lt;/code>과 반대로 &lt;code>BIN_TO_UUID&lt;/code>를 써서 변환해줘야해요&lt;/p>
+&lt;hr>
+&lt;p>물론 UUID를 애플리케이션 단에서 생성하고있고, 애플리케이션 단에서 변환하는 처리가 들어가면 문제가 작아질 것 같지만 그래도 뭔가&amp;hellip; 좀 불편한 느낌은 지울 수 없는 것 같아요🥲&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>이번주는 생각보다 많은 내용들을 배워가는 것 같아요.&lt;/p>
+&lt;p>책들로 학습했던 내용들을 저의 코드에 반영해보려고하니 여러 다른 것들도 알 수 있게 되어 뜻 깊은 것 같습니다.&lt;/p>
+&lt;p>다음주 부터는 멘토님이 붙어 직접 코드리뷰를 해주신다고 하는군요! 그리고 어떤 미션들이 나올까 정말 기대됩니다.&lt;/p>
+&lt;p>또 2주간 함께했던 스터디 그룹원들과도 헤어지고 새로운 스터디 그룹원들을 만나는데 어떤 분들일지 기대되네요&lt;/p>
+&lt;p>한 주간 모두 고생 많으셨습니다. 다음주도 최선을 다해봐요🔥&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다.😊&lt;/p></description></item><item><title>멤버십 과정 1주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/1/</link><pubDate>Sun, 25 Aug 2024 21:00:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/1/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/1/cover.png" alt="Featured image of post 멤버십 과정 1주차 회고" />&lt;p>멤버십 과정 첫 주가 마무리 되었습니다. 🥳&lt;/p>
 &lt;p>멤버십 과정은 실무형 프로젝트를 반복 수행하며 &lt;strong>도메인 지식&lt;/strong>과 &lt;strong>기술&lt;/strong>을 학습하는 &lt;strong>학습 스프린트&lt;/strong> 8주, &lt;strong>팀&lt;/strong>을 이뤄 기술적으로 완성도 있는 &lt;strong>서비스&lt;/strong>를 만드는 &lt;strong>그룹프로젝트&lt;/strong> 6주로 구성되어 있습니다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/1/img.png"
 width="660"
