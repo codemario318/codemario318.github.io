@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kafka on Mario Blog</title><link>https://codemario318.github.io/tags/kafka/</link><description>Recent content in Kafka on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 07 Sep 2024 15:12:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/kafka/index.xml" rel="self" type="application/rss+xml"/><item><title>4. 분산 메시지 큐</title><link>https://codemario318.github.io/post/system-design-interview-2/4/</link><pubDate>Sat, 07 Sep 2024 15:12:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/4/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/cover.png" alt="Featured image of post 4. 분산 메시지 큐" />&lt;p>현대적 소프트웨어 아키텍처를 따르는 시스템은 &lt;strong>잘 정의된 인테피이스를 경계로 나뉜 작고 독립적인 블록들로 구성&lt;/strong>된다.&lt;/p>
+&lt;p>메시지 큐는 이 &lt;strong>블록 사이의 통신과 조율을 담당&lt;/strong>하며, 아래와 같은 이득을 얻을 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>결합도 완화(decoupling)
+&lt;ul>
+&lt;li>메시지 큐를 사용하면 컴포넌트 사이의 강한 결합이 사라지므로 각각을 독립적으로 갱신할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>규모 확장성 개선
+&lt;ul>
+&lt;li>메시지 큐에 데이터를 생산하는 생산자와 큐에서 메시지를 소비하는 소비자 시스템 규모를 트래픽 부하에 맞게 독립적으로 늘릴 수 있다.&lt;/li>
+&lt;li>ex) 트래픽이 많이 몰리는 시간에는 더 많은 소비자를 추가하여 처리 용량을 늘릴 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>가용성 개선
+&lt;ul>
+&lt;li>시스템의 특정 컴포넌트에 장애가 발생해도 다른 컴포넌트는 큐와 계속 상호작용을 이어갈 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>성능 개선
+&lt;ul>
+&lt;li>비동기 통신이 쉽게 가능하다.&lt;/li>
+&lt;li>생산자는 응답을 기다리지 않고도 메시지를 보낼 수 있고, 소비자는 읽을 메시지가 있을 때만 해당 메시지를 소비한다.
+&lt;ul>
+&lt;li>서로 기다릴 필요가 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>메시지 큐 VS 이벤트 스트리밍 플랫폼&lt;/strong>&lt;/p>
+&lt;p>엄밀하게 따지면 카프카나 펄사는 메시지 큐가 아니라 이벤트 스트리밍 플랫폼이다.&lt;/p>
+&lt;p>하지만 메시키 큐와 이벤트 스트리밍 플랫폼 사이의 차이는 지원하는 기능이 서로 수렴하면서 점차 희미해지고 있다.&lt;/p>
+&lt;ul>
+&lt;li>전형적인 메시지 큐 RabbitMQ는 옵션으로 제공되는 스트리밍 기능을 추가하면 메시지를 반복적으로 소비할 수 있는 동시에 장기 보관도 가능하다.
+&lt;ul>
+&lt;li>그 기능은 이벤트 스트리밍 플랫폼처럼 데이터 추가만 가능한 로그를 통해 구현되어 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>이번 장에서는 &lt;strong>데이터 장기 보관(long data retention)&lt;/strong>, &lt;strong>메시지 반복 소비(repeated consumption of messages)&lt;/strong> 등의 &lt;strong>부가 기능을 갖춘 분산 메시지 큐를 설계&lt;/strong>한다.&lt;/p>
+&lt;p>통상적으로 언급한 부가 기능은 이벤트 스트리밍 플랫폼에서만 이용 가능하며 좀 더 까다롭다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>메시지 큐는 생산자는 메시지를 큐에 보내고, 소비자는 큐에서 메시지를 꺼낼 수 있으면 된다.&lt;/p>
+&lt;p>하지만 이 기본 기능 외에도 성능, 메시지 전달 방식, 데이터 보관 기간 등 고려할 사항은 다양하다.&lt;/p>
+&lt;ul>
+&lt;li>Q. 메시지의 형태와 평균 크기는?
+&lt;ul>
+&lt;li>A. 텍스트 형태 메시지만 지원, 크기는 수 킬로바이트 수준&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 메시지는 반복적으로 소비될 수 있어야 하는가?
+&lt;ul>
+&lt;li>A. Y, 하나의 메시지를 여러 소비자가 수신하는 것이 가능(부가 기능)
+&lt;ul>
+&lt;li>전통적인 분산 메시지 큐는 한 소비자라도 받아간 메시지는 지워버리므로 반복해서 전달할 수 없음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 메시지 큐에 전달된 순서대로 소비되어야 하는가?
+&lt;ul>
+&lt;li>A. Y
+&lt;ul>
+&lt;li>전통적인 메시지 큐는 보통 소비 순서는 보증하지 않음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 데이터의 지속성 보장?
+&lt;ul>
+&lt;li>A. 2주
+&lt;ul>
+&lt;li>전통적인 메시지 큐는 메시지의 지속성 보관을 보증하지 않음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 지원해야 하는 생산자와 소비자 수
+&lt;ul>
+&lt;li>A. 많을 수록 좋음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 어떤 메시지 전달 방식을 지원?
+&lt;ul>
+&lt;li>A. &lt;strong>최소 한번&lt;/strong> 방식은 반드시 지원, 이상적으로는 모든 전송방식 지원 및 선택 가능
+&lt;ul>
+&lt;li>최대 한 번, 최소 한 번, 정확히 한 번&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 목표 대역폭과 단대단 지연 시간은?
+&lt;ul>
+&lt;li>A. 로그 수집 등을 위해 사용할 수도 있어야 하므로 높은 수준의 대역폭을 제공해야함, 일반적인 메시지 큐가 지원하는 정통적 방법도 지원해야 하므로 낮은 전송 지연도 필수&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="기능-요구사항">기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>생산자는 메시지 큐에 메시지를 보낼 수 있어야 함&lt;/li>
+&lt;li>소비자는 메시지 큐를 통해 메시지를 수신할 수 있어야 함.&lt;/li>
+&lt;li>메시지는 반복적으로 수신할 수도 있어야 하고, 단 한 번만 수신하도록 설정될 수도 있어야 함.&lt;/li>
+&lt;li>오래된 이력 데이터는 삭제될 수 있음&lt;/li>
+&lt;li>메시지 크기는 킬로바이트 수준&lt;/li>
+&lt;li>메시지가 생산된 순서대로 소비자에게 전달할 수 있어야 함&lt;/li>
+&lt;li>메시지 전달 방식은 최소 한 번, 최대 한 번, 정확히 한 번 가운데 설정할 수 있어야 함.&lt;/li>
+&lt;/ul>
+&lt;h3 id="비기능-요구사항">비기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>높은 대역폭과 낮은 전송 지연 가운데 하나를 설정으로 선택 가능하게 하는 기능&lt;/li>
+&lt;li>규모 확장성
+&lt;ul>
+&lt;li>시스템 특성상 분산 시스템일 수 밖에 없으므로 메시지 양이 급증해도 처리 가능해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지속성 및 내구성(persistency and durability)
+&lt;ul>
+&lt;li>데이터는 디스크에 지속적으로 보관되어야 하며 여러 노드에 복제되어야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="전통적인-메시지-큐와-다른점">전통적인 메시지 큐와 다른점&lt;/h3>
+&lt;p>RabbitMQ와 같은 전통적인 메시지 큐는 이벤트 스트리밍 플랫폼처럼 메시지 보관문제를 중요하게 다루지 않고, 메시지 소비 순서도 보존하지 않는다(생산 순서와 소비 순서가 다를 수 있다).&lt;/p>
+&lt;ul>
+&lt;li>전통적인 메시지 큐는 메시지가 소비자에 전달되기 충분한 기간 동안만 메모리에 보관한다.&lt;/li>
+&lt;li>처리 용량을 넘어선 메시지는 디스크에 보관하기도 하지만 아주 낮은 수준이다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 차이를 감안하면 설계는 크게 단순해질 수 있다.&lt;/p>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>메시지 큐의 기본 기능부터 살펴본다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img.png"
+width="796"
+height="93"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_hud3c73ae83a383271eeea8d3b288e965d_27768_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_hud3c73ae83a383271eeea8d3b288e965d_27768_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="메시지 큐의 핵심 컴포넌트"
+class="gallery-image"
+data-flex-grow="855"
+data-flex-basis="2054px"
+>&lt;/p>
+&lt;ul>
+&lt;li>생산자는 메시지를 메시지 큐에 발행&lt;/li>
+&lt;li>소비자는 큐를 구독하고, 구독한 메시지를 소비&lt;/li>
+&lt;li>메시지 큐는 생산자와 소비자 사이의 결합을 느슨하게 하는 서비스로, 생산자와 소비자의 독립적인 운영 및 규모 확장을 가능하게 하는 역할 담당&lt;/li>
+&lt;li>생산자와 소비자는 모두 클라이언트/서버 모델 관점에서 클라이언트고 서비 역할을 하는 것은 메시지큐이며 이 클라이언트와 서버는 네트워크를 통해 통신&lt;/li>
+&lt;/ul>
+&lt;h3 id="메시지-모델">메시지 모델&lt;/h3>
+&lt;p>가장 널리 쓰이는 메시지 모델은 &lt;strong>일대일&lt;/strong>과 &lt;strong>발행-구독&lt;/strong> 모델이다.&lt;/p>
+&lt;p>&lt;strong>일대일 모델&lt;/strong>&lt;/p>
+&lt;p>전통적인 메시지 큐에서 흔히 발견되는 모델로, 전송된 메시지는 오직 한 소비자만 가져갈 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_1.png"
+width="719"
+height="252"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_1_hu6243c8cf95b1f74f2b4ae180825e53e8_76030_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_1_hu6243c8cf95b1f74f2b4ae180825e53e8_76030_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="일대일 모델"
+class="gallery-image"
+data-flex-grow="285"
+data-flex-basis="684px"
+>&lt;/p>
+&lt;ul>
+&lt;li>어떤 소비자가 메시지를 가져갔다는 사실을 큐에 알리면 해당 미시지는 큐에서 삭제된다.&lt;/li>
+&lt;li>데이터 보관을 지원하지 않는다.&lt;/li>
+&lt;/ul>
+&lt;p>요구하는 설계안은 메시지르 ㄹ두 주 동안은 보관할 수 있도록 하는 지속성 계층을 포함하고, 해당 계층을 통해 메시지가 반복적으로 소비될 수 있도록 한다.&lt;/p>
+&lt;p>일대일 모델도 지원할 수 있기는 하지만, 그 기능은 발행 구독 모델 쪽에 좀 더 자연스럽게 부합한다.&lt;/p>
+&lt;p>&lt;strong>발행-구독 모델&lt;/strong>&lt;/p>
+&lt;p>밸행-구독 모델을 설명하려면 &lt;strong>토픽&lt;/strong>이라는 새로운 개념을 도입해야한다.&lt;/p>
+&lt;p>토픽은 메시지를 주제별로 정리하는 데 사용하며, 각 토픽은 메시지 큐 서비스 전반에 고유한 이름을 가진다.&lt;/p>
+&lt;ul>
+&lt;li>메시지를 보내고 받을 때는 토픽에 보내고 받게 된다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_2.png"
+width="713"
+height="249"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_2_hu2b876e024ea5ccc2f05fba9fb104dbda_50063_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_2_hu2b876e024ea5ccc2f05fba9fb104dbda_50063_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="발행 구독 모델"
+class="gallery-image"
+data-flex-grow="286"
+data-flex-basis="687px"
+>&lt;/p>
+&lt;p>토픽에 전달된 메시지는 해당 토픽을 구독하는 모든 소비자에게 전달된다.&lt;/p>
+&lt;h3 id="토픽-파티션-브로커">토픽, 파티션, 브로커&lt;/h3>
+&lt;p>토픽에 보관되는 데이터의 양이 커져서 서버 한 대로 감당하기 힘등 상황을 해결하기 위한 방법으로 파티션(partition), 즉 샤딩(sharding) 기법을 활용할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_3.png"
+width="664"
+height="114"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_3_huce8fd381ea066eed08d42899755ce49a_46411_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_3_huce8fd381ea066eed08d42899755ce49a_46411_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파티션"
+class="gallery-image"
+data-flex-grow="582"
+data-flex-basis="1397px"
+>&lt;/p>
+&lt;p>토픽을 여러 파티션으로 분할한 다음, 메시지를 모든 파티션에 균등하게 나눠 보낸다.&lt;/p>
+&lt;ul>
+&lt;li>토픽에 보낼 메시지의 작은 부분집합으로 생각하면 좋다.&lt;/li>
+&lt;/ul>
+&lt;p>파티션을 메시지 큐 클러스터 내의 서버에 고르게 분산 배치하는데, 이 때 파티션을 유지하는 서버는 보통 브로커라 부른다.&lt;/p>
+&lt;ul>
+&lt;li>파티션을 브로커에 분산하는 것이 높은 규모 확장성을 달성하는 비결이다. 토픽의 용량을 확장하고 싶으면 파티션 개수를 늘린다.&lt;/li>
+&lt;/ul>
+&lt;p>각 토픽 파티션은 FIFO 큐처럼 동작하며, 파티션 내에서의 메시지 위치는 오프셋(offset)이라고 한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_4.png"
+width="791"
+height="138"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_4_hu3cf93e0b7544d405aa6d70143e0a360a_47706_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_4_hu3cf93e0b7544d405aa6d70143e0a360a_47706_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="메시지 큐 클러스터"
+class="gallery-image"
+data-flex-grow="573"
+data-flex-basis="1375px"
+>&lt;/p>
+&lt;p>생산자가 보낸 메시지는 해당 토픽의 파티션 가운데 하나로 보내지며, 메시지에는 사용자 ID 같은 키를 붙일 수 있는데, 같은 키를 가진 모든 메시지는 같은 파티션으로 보내지고, 없는 메시지는 무작위로 산택된 파티션으로 전송된다.&lt;/p>
+&lt;hr>
+&lt;p>토픽을 구독하는 소비자는 하나 이상의 파티션에서 데이터를 가져오게 되는데, 토픽을 구독하는 소비자가 여럿인 경우, 각 구독자는 해당 토픽을 구성하는 파티션의 일부를 담당하게 된다.&lt;/p>
+&lt;p>이 소비자들을 해당 토픽의 소비자 그룹이라 부른다.&lt;/p>
+&lt;h3 id="소비자-그룹">소비자 그룹&lt;/h3>
+&lt;p>소비자 그룹 내 소비자는 토픽에서 메시지를 소비하기 위해 서로 협력한다.&lt;/p>
+&lt;p>하나의 소비자 그룹은 여러 토픽을 구독할 수 있고 오프셋을 별도로 관리하며, 같은 그룹 내의 소비자는 메시지를 병렬로 소비할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>과금(billing)용 그룹, 회계(accounting)용 그룹 등&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_5.png"
+width="643"
+height="294"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_5_hu1c9434fd43963d97c2725b4ec9376291_145540_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_5_hu1c9434fd43963d97c2725b4ec9376291_145540_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="소비자 그룹"
+class="gallery-image"
+data-flex-grow="218"
+data-flex-basis="524px"
+>&lt;/p>
+&lt;ul>
+&lt;li>소비자 그룹 1은 토픽 A를 구독한다.&lt;/li>
+&lt;li>소비자 그룹 2는 토픽 A와 토픽 B를 구독한다.&lt;/li>
+&lt;li>토픽 A는 그룹-1과 그룹-2가 구독하므로, 해당 토픽 내 메시지는 그룹-1과 그룹-2 내의 소비자에게 전달된다.
+&lt;ul>
+&lt;li>발행-구독 모델을 지원한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>데이터르 병렬로 읽으면 대역폭 측면에서는 좋지만 같은 파티션 안에 있는 메시지를 순서대로 소비할 수는 없다.&lt;/p>
+&lt;p>예를 들어 소비자-1과 소비자-2가 같은 파티션-1의 메시지를 읽어야 한다고 가정하면, 파티션-1 내의 메시지 소비 순서를 보장할 수 없게 된다(최종 처리 순서)&lt;/p>
+&lt;p>따라서 어떤 &lt;strong>파티션의 메시지&lt;/strong>는 &lt;strong>한 그룹 안에서는 오직 한 소비자&lt;/strong>만 읽을 수 있도록 하면(토픽은 병렬로 처리되지만 파티션은 직렬로 처리된다.) 최종 처리 순서를 보장할 수 있게된다.&lt;/p>
+&lt;p>그룹 내 소비자의 수가 구독하는 토픽의 파티션 수보다 크면, 어떤 소비자는 해당 토픽에서 데이터를 읽지 못하게 된다.&lt;/p>
+&lt;ul>
+&lt;li>토픽-B의 경우 파티션 하나이므로, 소비자 그룹 중 한 소비자만 담당할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>이 제약사항을 도입한 후 모든 소비자를 같은 소비자 그룹에 두면 같은 파티션의 메시지는 오직 한 소비자만 가져갈 수 있으므로 결국 일대일 모델에 수렴하게 된다.&lt;/p>
+&lt;p>파티션은 가장 작은 저장 단위이므로 &lt;strong>미리 충분한 파티션을 할당&lt;/strong>해 두면파티션의 수를 동적으로 늘리는 일은 피할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>처리 용량을 늘리려면 단순히 소비자를 더 추가하면 된다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-설계안">개략적 설계안&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_6.png"
+width="800"
+height="356"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_6_hudca1eecd3fd48e92a1dbd2173b098881_116817_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_6_hudca1eecd3fd48e92a1dbd2173b098881_116817_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안"
+class="gallery-image"
+data-flex-grow="224"
+data-flex-basis="539px"
+>&lt;/p>
+&lt;p>&lt;strong>클라이언트&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>생산자
+&lt;ul>
+&lt;li>메시지를 특정 토픽으로 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>소비자 그룹
+&lt;ul>
+&lt;li>토픽을 구독하고 메시지를 소비한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>핵심 서비스 및 저장소&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>브로커
+&lt;ul>
+&lt;li>파티션들을 유지한다.&lt;/li>
+&lt;li>하나의 파티션은 특정 토픽에 대한 메시지의 부분 집합을 유지한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>저장소
+&lt;ul>
+&lt;li>데이터 저장소
+&lt;ul>
+&lt;li>메시지는 파티션 내 데이터 저장소에 보관된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상태 저장소
+&lt;ul>
+&lt;li>소비자 상태는 이 저장소에 유지된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메타데이터 저장소
+&lt;ul>
+&lt;li>토픽 설정, 토픽 속성 등은 이 저장소에 유지된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>조정 서비스(coordination service)
+&lt;ul>
+&lt;li>서비스 탐색(service discovery)
+&lt;ul>
+&lt;li>어떤 브로커가 살아있는지 알려준다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>리더 선출(leader election)
+&lt;ul>
+&lt;li>브로커 가운데 하나는 컨트롤러 역할을 담당해야 하며, 한 클러스터에는 반드시 활성 상태 컨트롤러가 하나 있어야한다.&lt;/li>
+&lt;li>이 컨트롤러가 파티션 배치를 책임진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>아파치 주키퍼(Apache ZooKeeper)나 etcd가 보통 컨트롤러 선출을 담당하는 컴포넌트로 널리 이용된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;p>&lt;strong>데이터의 장기 보관&lt;/strong> 요구사항을 만족하면서 &lt;strong>높은 대역폭&lt;/strong>을 제공하기 위해 세가지 중요한 결정을 내려야한다.&lt;/p>
+&lt;ul>
+&lt;li>회전 디스크(rotational disk)의 &lt;strong>높은 순차 탐색 성능&lt;/strong>과 현대적 운영체제가 제공하는 **적극적 디스크 캐시 전략(aggressive disk caching strategy)**을 잘 이용하는 &lt;strong>디스크 기반 자료 구조(on-disk data structure)&lt;/strong> 를 활용한다.&lt;/li>
+&lt;li>메시지가 생산자로부터 소비자에게 전달되는 순간까지 &lt;strong>아무 수정 없이도 전송이 가능하도록 하는 메시지 자료 구조&lt;/strong>를 설계하고 활용할 것이다.
+&lt;ul>
+&lt;li>전송 데이터의 양이 막대한 경우에 메시지 복사에 드는 비용을 최소화한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>일괄 처리(batching)&lt;/strong> 를 우선하는 시스템을 설계한다.
+&lt;ul>
+&lt;li>소규모의 I/O가 많으면 높은 대역폭을 지원하기 어렵다.&lt;/li>
+&lt;li>생산자는 메시지를 일괄 전송하고, 메시지 큐는 그 메시지들을 더 큰 단위로 묶어 보관한다.&lt;/li>
+&lt;li>소비자도 가능하면 메시지를 일괄 수신하도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="데이터-저장소">데이터 저장소&lt;/h3>
+&lt;p>가장 좋은 메시지 저장 방법을 선택하기 위해 메시지 큐의 트래픽 패턴을 분석해봐야한다.&lt;/p>
+&lt;ul>
+&lt;li>읽기와 쓰기가 빈번하게 일어난다.&lt;/li>
+&lt;li>갱신/삭제 연산은 발생하지 않는다.
+&lt;ul>
+&lt;li>전통적인 메시지 큐는 메시지가 신속하게 전달되지 못해 큐가 제때 비워지지 않는 경우를 제외하면 메시지를 지속적으로 보관하지 않는다.&lt;/li>
+&lt;li>큐에서 메시지가 제때 소비되기 시작하면 저장된 메시지에 대한 삭제 연산이 발생하기는 할 것이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>순차적인 읽기/쓰기가 대부분이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>선택지 1: 데이터베이스&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>관계형 데이터베이스
+&lt;ul>
+&lt;li>토픽별로 테이블을 만든다.&lt;/li>
+&lt;li>토픽에 보내는 메시지는 해당 테이블에 새로운 레코드로 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>NoSQL 데이터베이스
+&lt;ul>
+&lt;li>토픽별로 컬렉션(collection)을 만든다.&lt;/li>
+&lt;li>토픽에 보내는 메시지는 하나의 문서가 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>데이터베이스라면 데이터 저장 요구사항을 맞출수는 있으나, 읽기 연산과 쓰기 연산이 동시에 대규모로 빈번하게 발생하는 상황을 잘 처리하는 데이터베이스는 설계하기 매우 어렵다.&lt;/p>
+&lt;p>데이터베이스는 오히려 시스템 병목이 될 수 있으므로 고려할 수 없다.&lt;/p>
+&lt;p>&lt;strong>선택지 2: 쓰기 우선 로그(Write-Ahead Log, WAL)&lt;/strong>&lt;/p>
+&lt;p>WAL은 새로운 항목이 추가되기만 하는(append-only) 일반 파일을 의미한다.&lt;/p>
+&lt;ul>
+&lt;li>MySQL의 리두 로그, 아파치 주키퍼 등에서 활용한다.&lt;/li>
+&lt;/ul>
+&lt;p>WAL에 대한 접근 패턴은 읽기/쓰기 모두 순차적이며, 디스크는 접근 패턴이 순차적일 때 아주 좋은 성능을 보인다.&lt;/p>
+&lt;ul>
+&lt;li>회전식 디스크 기반 저장장치는 큰 용량을 저렴한 가격에 구매할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_7.png"
+width="848"
+height="170"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_7_hub33e63d77387077d4f2174f1aa5478c0_78215_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_7_hub33e63d77387077d4f2174f1aa5478c0_78215_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="새로운 메시지 추가"
+class="gallery-image"
+data-flex-grow="498"
+data-flex-basis="1197px"
+>&lt;/p>
+&lt;p>새로운 메시지는 파티션 꼬리 부분에 추가되며, 오프셋은 그 결과로 점진저긍로 증가한다.&lt;/p>
+&lt;p>가장 쉬운 방법은 로그 파일 줄 번호(line number)를 오프셋으로 사용하는 것 인데, 파일의 크기도 무한정 커질 수 없으니, 세그먼트(segment) 단위로 나누는 것이 바람직하다.&lt;/p>
+&lt;p>세그먼트를 사용하는 경우 새 메시지는 활성 상태의 세그먼트 파일에만 추가되며, 해당 세그먼트의 크기가 일정 한계에 도달하면 새 활성 세그먼트 파일이 만들어져 새로운 메시지를 수용하고, 종전까지 활성 상태였던 세그먼트 파일은 다른 나머지 세그먼트 파일과 마찬가지로 비활성 상태로 바뀐다.&lt;/p>
+&lt;ul>
+&lt;li>비활성 세그먼트 파일은 읽기 요청만 처리한다.&lt;/li>
+&lt;li>낡은 비활성 세그먼트 파일은 보관 기한이 만료되거나 용량 한계에 도달하면 삭제해버릴 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_8.png"
+width="509"
+height="169"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_8_hu5bf82b188277228248c30eb11c97039a_45371_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_8_hu5bf82b188277228248c30eb11c97039a_45371_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="토픽 파티션에 분산된 데이터 세그먼트 파일"
+class="gallery-image"
+data-flex-grow="301"
+data-flex-basis="722px"
+>&lt;/p>
+&lt;p>같은 파티션에 속한 세그먼트 파일은 &lt;code>Partition-{:partition_id}&lt;/code> 폴도 아래에 저장된다.&lt;/p>
+&lt;p>&lt;strong>디스크 성능 관련 유의사항&lt;/strong>&lt;/p>
+&lt;p>데이터 장기 보관에 대한 요구사항 때문에 본 설계안은 디스크 드라이브를 활용하여 다량의 데이터를 보관한다.&lt;/p>
+&lt;p>회전식 디스크가 정말로 느려지는 것은 데이터 접근 패턴이 무작위일 때인데, 순차적 데이터 접근 패턴을 적극 활용하는 디스크 기반 자료 구조를 사용하면, RAID로 구성된 현대적 디스크 드라이브에서 수백 MB/s 수준의 읽기/쓰기 성능을 달성하는 것은 어렵지 않다.&lt;/p>
+&lt;p>또한 현대적 운영체제는 디스크 데이터를 메모리에 아주 적극적으로 캐시하므로, 가용한 메모리 전부를 디스크 데이터를 캐시하는 데 활용할 수 있다.&lt;/p>
+&lt;h3 id="메시지-자료-구조">메시지 자료 구조&lt;/h3>
+&lt;p>메시지 구조는 &lt;strong>높은 대역폭 달성의 열쇠&lt;/strong>이다.&lt;/p>
+&lt;p>메시지 자료 구조는 생산자, 메시지 큐, 소비자 사이의 &lt;strong>계약(contract)&lt;/strong> 이다.&lt;/p>
+&lt;p>메시지가 큐를 거쳐 소비자에게 전달되는 과정에서 &lt;strong>불필요한 복사&lt;/strong>가 일어나지 않도록 함으로 높은 대역폭을 달성할 수 있다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>필드 이름&lt;/th>
+&lt;th>데이터 자료형&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>key&lt;/td>
+&lt;td>byte[]&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>value&lt;/td>
+&lt;td>byte[]&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>topic&lt;/td>
+&lt;td>string&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>partition&lt;/td>
+&lt;td>integer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>offset&lt;/td>
+&lt;td>long&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>timestamp&lt;/td>
+&lt;td>long&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>size&lt;/td>
+&lt;td>integer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>crc&lt;/td>
+&lt;td>integer&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>시스템의 컴포넌트 가운데 이 &lt;strong>계약을 있는 그대로 받아들이지 못하는 것&lt;/strong>이 있으면 메시지는 변경되어야하기 때문에, 변경되는 과정에서 값비싼 복사가 발생하게되고, 그로 인해 전밙거인 성능이 심각하게 낮아질 수 있다.&lt;/p>
+&lt;p>&lt;strong>메시지의 키&lt;/strong>&lt;/p>
+&lt;p>메시지의 키는 파티션을 정할 때 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>키가 주어지지 않은 메시지의 파티션은 무작위적으로 결정된다.&lt;/li>
+&lt;li>키가 주어진 경우 파티션은 &lt;code>hash(key) % numPartitions&lt;/code>로 결정된다.&lt;/li>
+&lt;li>더 유연한 설계가 필요하다면 생산자는 파티션 설정 매커니즘을 직접 정의할 수도 있다.&lt;/li>
+&lt;li>메시지 키는 파티션의 번호가 아니다.&lt;/li>
+&lt;/ul>
+&lt;p>키는 문자열 일 수도 있고 숫자일 수도 있다. 보통 비즈니스 관련 정보가 담긴다.&lt;/p>
+&lt;p>파티션 번호는 메시지 큐 내부적으로 사용되는 개념이므로 클라이언트에게 노출되어서는 안된다.&lt;/p>
+&lt;p>키를 파티션에 대앙시키는 알고리즘을 적절히 정의해놓으면 파티션의 수가 달라져도 모든 파티션에 메시지가 계속 균등히 분산되도록 할 수 있다.&lt;/p>
+&lt;p>&lt;strong>메시지 값&lt;/strong>&lt;/p>
+&lt;p>메시지 값(message value)는 메시지의 내용, 즉 페이로드를 말한다.&lt;/p>
+&lt;p>메시지 값은 일반 텍스트일 수도 있고 압축된 이진 블록(block)일 수도 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>메시지의 키과 값은 키-값 저장소에서 이야기하는 키나 값과는 다르다.&lt;br>
+키-값 저장소의 경우 키는 고유하므로 원하는 값은 키를 통해 찾을 수 있지만, 메시지의 키는 메시지마다 고유할 필요가 없다.
+메시지에 반드시 키를 두어야 하는 것도 아니고 키를 사용해 값을 찾을 필요도 없다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>메시지의 기타 필드&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>토픽
+&lt;ul>
+&lt;li>메시지가 속한 토픽의 이름&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션
+&lt;ul>
+&lt;li>메시지가 속한 파티션의 ID&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>오프셋
+&lt;ul>
+&lt;li>파티션 내 메시지의 위치&lt;/li>
+&lt;li>토픽, 파티션, 오프셋 세 가지 정보를 알면 찾을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>타임스탬프
+&lt;ul>
+&lt;li>메시지가 저장된 시각&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>크기
+&lt;ul>
+&lt;li>메시지의 크기&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>CRC(Cyclic Redundancy Check)
+&lt;ul>
+&lt;li>데이터의 무결성을 보장하는데 이용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이 외에도 더 많은 기능을 지원하기 위한 선택적 필드가 있을 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>tags 필드가 있다면 메시지를 태그를 사용해 필터링 하는 등&lt;/li>
+&lt;/ul>
+&lt;h3 id="일괄-처리">일괄 처리&lt;/h3>
+&lt;p>이번 설계에서는 생산자, 소비자, 메시지 큐는 메시지를 가급적 일괄 처리한다.&lt;/p>
+&lt;p>일괄 처리가 성능 개선에 중요한 이유는 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>여러 메시지르 한 번의 네트워크 요청으로 전송할 수 있기 때문에 값비싼 네트워크 왕복 비용을 제거할 수 있다.&lt;/li>
+&lt;li>브로커가 여러 메시지를 한 번에 로그에 기록하면 더 큰 규모의 순차 쓰기 연산이 발생하고, 운영체제가 관리하는 디스크 매시에서 더 큰 규모의 연속된 공간을 점유하여 더 높은 디스크 접근 대역폭을 달성할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>높은 대역폭과 낮은 응답 지연은 동시에 달성하기 어려운 목표이다.&lt;/p>
+&lt;p>시스템이 낮은 응답 지연이 중요한 전통적 메시지 큐로 이용된다면 디스크 성능은 다소 낮아질 수 있으나 일괄 처리 메시지 양을 낮춰야한다.&lt;/p>
+&lt;p>처리량을 높여야 한다면 토픽 당 파티션의 수는 늘려 낮아진 순차 쓰기 연산 대역폭을 벌충할 수 있다.&lt;/p>
+&lt;h3 id="생산자-측-작업-흐름">생산자 측 작업 흐름&lt;/h3>
+&lt;p>라우팅 계층을 도입하여 생산자 적절한 브로커에 메시지를 보낼 수 있도록 한다.&lt;/p>
+&lt;ul>
+&lt;li>브로커를 여러 개로 복제하여 운용하는 경우에 메시지를 받을 적절한 브로커는 리더 브로커이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_9.png"
+width="484"
+height="363"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_9_hu682f5586b862f452ea7e931840c3195c_79133_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_9_hu682f5586b862f452ea7e931840c3195c_79133_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="라우팅 계층"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;ol>
+&lt;li>생산자는 메시지를 라우팅 계층으로 보낸다.&lt;/li>
+&lt;li>라우팅 계층은 메타데이터 저장소에서 사본 분산 계획(replica distribution plan)을 읽어 자기 캐시에 보관한다.
+&lt;ul>
+&lt;li>메시지가 도착하면 라우팅 계층은 파티션-1의 리더 사본에 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>리더 사본이 우선 메시지를 받고 해당 리더를 따르는 다른 사본은 해당 리더로부터 데이터를 받는다.&lt;/li>
+&lt;li>충분한 수의 사본이 동기화되면 리더는 데이터를 디스크에 기록한다.
+&lt;ul>
+&lt;li>데이터가 소비 가능 상태가 된다.&lt;/li>
+&lt;li>기록이 끝나면 생산자에게 회신을 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>리더와 사본은 장애 감내가 가능한 시스템을 만들기 위해 필요하다.&lt;/p>
+&lt;hr>
+&lt;p>이러한 라우팅 계층 활용은 동작하지만 몇가지 단점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>라우팅 계층을 도입하면 거쳐야 할 네트워크 노드가 하나 더 늘어나게 되므로 오버헤드가 발생하여 네트워크 전송 지연이 늘어난다.&lt;/li>
+&lt;li>일괄 처리가 고려되지 않은 설계이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_10.png"
+width="507"
+height="358"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_10_hu2c25722b044080ce5de76ff2546d60df_97659_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_10_hu2c25722b044080ce5de76ff2546d60df_97659_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="생산자 측 버퍼 및 라우팅"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>위 설계안은 생산자 클라이언트 라이브러리(producer client library)의 일부로 생산자에 설치하는 방법으로 생산자 내부로 라우팅 계층을 편입 시키고 버퍼를 도입한다.&lt;/p>
+&lt;ul>
+&lt;li>네트워크를 거칠 필요가 줄어들기 때문에 전송 지연도 줄어든다.&lt;/li>
+&lt;li>생산자는 메시지를 어느 파티션에 보낼 지 결정하는 자신만의 로직을 가질 수 있다.&lt;/li>
+&lt;li>전송할 메시지를 버퍼 메모리에 보관했다가 목적지로 일괄 전송하여 대역폭을 높일 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>일괄 처리하는 메시지의 양을 결정하는 것은 대역폭과 응답 지연 사이에서 타협접을 찾는 문제이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_11.png"
+width="669"
+height="461"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_11_huae1fa3968af168a994b53fd3910f54d4_49538_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_11_huae1fa3968af168a994b53fd3910f54d4_49538_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="일괄 처리 메시지 양 선택"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="348px"
+>&lt;/p>
+&lt;p>메시지의 양을 늘리면 대역폭은 늘어나지만 일괄 처리가 가능할 양의 메시지가 쌓이길 기다려야 하므로 응답 속도는 느려진다.&lt;/p>
+&lt;p>양을 줄이면 메시지를 더 빨리 보낼 수 있어 지연은 줄어들지만 대역폭은 손해를 보게된다.&lt;/p>
+&lt;p>따라서 생산자는 메시지 큐의 용도를 감안하여 일괄 처리 메시지 양을 조절해야한다.&lt;/p>
+&lt;h3 id="소비자-측-작업-흐름">소비자 측 작업 흐름&lt;/h3>
+&lt;p>소비자는 특정 파티션의 오프셋을 주고 해당 위치에서부터 이벤트를 묶어 가져온다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_12.png"
+width="762"
+height="216"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_12_huabc33028cbe25541b3a80429ecc16432_89945_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_12_huabc33028cbe25541b3a80429ecc16432_89945_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="소비자 측 메시지 흐름"
+class="gallery-image"
+data-flex-grow="352"
+data-flex-basis="846px"
+>&lt;/p>
+&lt;h3 id="푸시-vs-풀">푸시 vs 풀&lt;/h3>
+&lt;p>브로커가 데이터를 소비자에게 보낼 것인지, 소비자가 브로커에서 가져갈 것인지 결정하는 것은 중요한 문제이다.&lt;/p>
+&lt;p>&lt;strong>푸시 모델&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>낮은 지연: 브로커는 메시지르 받는 즉시 소비자에게 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>소비자가 메시지를 처리하는 속도가 생산자가 메시지를 만드는 속도보다 느릴 경우, 소비자에게 큰 부하가 걸린다.&lt;/li>
+&lt;li>생산자가 데이터 전송 속도를 좌우하므로, 소비자는 항상 그에 맞는 처리가 가능한 컴퓨팅 자원을 준비해 두어야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>풀 모델&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>메시지를 소비하는 속도는 소비자가 알아서 결정하므로 어떤 소비자는 실시간으로, 어떤 소비자는 일괄로 가져가는 등의 구성이 가능하다.&lt;/li>
+&lt;li>메시지를 소비하는 속도가 생산 속도보다 느려지면 소비자를 늘려 해결할 수 있고, 생산 속도를 따라잡을 때 까지 기다려도 된다.&lt;/li>
+&lt;li>일괄 처리에 적합하다.
+&lt;ul>
+&lt;li>푸시 모델은 브로커가 소비자의 여건을 할 수 없으므로 제 때 처리하지 못한 메시지는 버퍼에 쌓여 처리를 기다리게된다.&lt;/li>
+&lt;li>반면 풀 모델은 소비자가 지난번 마지막으로 가져간 로그 위치 다음에 오는 모든 메시지를 가져갈 수 있다.&lt;/li>
+&lt;li>공격적인 일괄 처리에 좀 더 적합하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>브로커에 메시지가 없어도 소비자는 계속 데이터를 끌어가려 시도하여 컴퓨팅 자원이 낭비된다.
+&lt;ul>
+&lt;li>롱 폴링 모드를 지원하여 당장 가져갈 메시지가 없더라도 일정 시간은 기다린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 이유들로 대부분의 메시지 큐는 푸시 모델 대신 풀 모델을 지원한다.&lt;/p>
+&lt;h3 id="소비자-재조정">소비자 재조정&lt;/h3>
+&lt;p>소비자 재조정(consumer rebalancing)은 어떤 소비자가 어떤 파티션을 책임지는지 다시 정하는 프로세스로 아래와 같은 상황에 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>새로운 소비자가 합류&lt;/li>
+&lt;li>기존 소비자가 그룹을 이탈&lt;/li>
+&lt;li>어떤 소비자에 장애가 발생&lt;/li>
+&lt;li>파티션들이 조정&lt;/li>
+&lt;/ul>
+&lt;p>이 절차에 &lt;strong>코디네이터&lt;/strong>가 중요한 역할을 하게된다.&lt;/p>
+&lt;p>&lt;strong>코디네이터&lt;/strong>&lt;/p>
+&lt;p>코디네이터는 &lt;strong>소비자 재조정을 위해 소비자들과 통신하는 브로커 노드&lt;/strong>로 소비자로 부터 오는 박동(heartbeat) 메시지를 살펴 각 소비자의 파티션 내 오프셋 정보를 관리한다.&lt;/p>
+&lt;p>&lt;strong>코디네이터와 소비자의 상호작용&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_13.png"
+width="1360"
+height="616"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_13_hu24cbfeb4b1c798006e6153fbaff3b8b2_57699_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_13_hu24cbfeb4b1c798006e6153fbaff3b8b2_57699_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="529px"
+>&lt;/p>
+&lt;ul>
+&lt;li>같은 그룹의 모든 소비자는 같은 코디네이터에 연결한다.
+&lt;ul>
+&lt;li>소비자는 특정 그룹에 속하며, 새당 그룹 전담 코디네이터는 그룹 이름을 해싱하여 찾을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>코디네이터는 자신에 연결한 소비자 목록을 유지한다.
+&lt;ul>
+&lt;li>목록에 변화가 생기면 코디네이터는 해당 그룹의 새로운 리더를 선출한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>새 리더는 새 파티션 배치 계획(partition dispatch plan)을 만들고 코디네이터에게 전달한다.
+&lt;ul>
+&lt;li>코디네이터는 해상 계획을 그룹 내 다른 모든 소비자에게 알린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>분산 시스템이므로 소비자는 네트워크 이슈를 비롯한 다양한 장애를 겪을 수 있다.&lt;/p>
+&lt;p>코디네이터는 박동 신호가 사라지는 현상을 통해 소비자에게 발생한 장애를 감지할 수 있다.&lt;/p>
+&lt;p>소비자의 장애를 감지하면 코디네이터가 재조정 프로세스를 시작하여 파티션을 재배치한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_14.png"
+width="781"
+height="482"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_14_hu3040dd236ada7e3d9279896ed998b74d_164489_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_14_hu3040dd236ada7e3d9279896ed998b74d_164489_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="재조정 시나리오 - 새로운 소비자 합류"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="388px"
+>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_15.png"
+width="800"
+height="490"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_15_hu9d2b8f9b37fff9f5b29f06699c525f6a_160195_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_15_hu9d2b8f9b37fff9f5b29f06699c525f6a_160195_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="재조정 시나리오 - 기존 소비자 이탈"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="391px"
+>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_16.png"
+width="767"
+height="478"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_16_hu75378ad62a32d64e2ec0020ea6667922_146955_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_16_hu75378ad62a32d64e2ec0020ea6667922_146955_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="재조정 시나리오 - 기존 소비자 장애 발생"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+>&lt;/p>
+&lt;h3 id="상태-저장소">상태 저장소&lt;/h3>
+&lt;p>메시지 큐 브로커의 상태 저장소(state storage)에는 다음과 같은 정보가 저장된다.&lt;/p>
+&lt;ul>
+&lt;li>소비자에 대한 파티션의 배치 관계&lt;/li>
+&lt;li>각 소비자 그룹이 각 파티션에서 마지막으로 가져간 메시지의 오프셋&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_17.png"
+width="1112"
+height="470"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_17_hucf9712152cd51944aef5c8d0743e4d4e_55614_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_17_hucf9712152cd51944aef5c8d0743e4d4e_55614_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="567px"
+>&lt;/p>
+&lt;p>소비자에 장애가 생기면 같은 그룹의 새로운 소비자가 이어받아 해당 위치부터 다음 메시지를 읽어간다.&lt;/p>
+&lt;p>소비자 상태 정보 데이터가 이용되는 패턴은 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>읽기와 쓰기가 빈번하게 발생하지만 양은 많지 않다.&lt;/li>
+&lt;li>데이터 갱신은 빈번하게 일어나지만 삭제되는 일은 거의 없다.&lt;/li>
+&lt;li>읽기와 쓰기 연산은 무작위적 패턴을 보인다.&lt;/li>
+&lt;li>데이터의 일관성(consistency)가 중요하다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 데이터 일관성 및 높은 읽기/쓰기 속도에 대한 요구사항을 고려하였을 때, 아파치 주키퍼(Apache ZooKeeper) 같은 기-값 저장소를 사용하는 것이 바람직 할 수 있다.&lt;/p>
+&lt;blockquote>
+&lt;p>카프카는 오프셋 저장소로 주키퍼를 사용하다가 카프카 브로커로 이전하였다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="메타데이터-저장소">메타데이터 저장소&lt;/h3>
+&lt;p>메타데이터 저장소에는 토픽 설정이나 속성 정보를 보관한다.&lt;/p>
+&lt;ul>
+&lt;li>파티션 수, 메시지 보관 기간, 사본 배치 정보 등&lt;/li>
+&lt;/ul>
+&lt;p>메타데이터는 자주 변경되지 않으며 양도 적지만 높은 일관성을 요구한다.&lt;/p>
+&lt;p>이러한 데이터 보관에는 주키퍼가 적절하다.&lt;/p>
+&lt;h3 id="주키퍼">주키퍼&lt;/h3>
+&lt;p>주키퍼는 계층적 키-값 저장소 기능을 제공하는 분산 시스템에 필수적인 서비스이다.&lt;/p>
+&lt;p>보통 분산 설정 서비스(distributed configuration service), 동기화 서비스(synchronization service), 이름 레지스트리(naming registry) 등으로 이용된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_18.png"
+width="737"
+height="308"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_18_hu90fa82f22cf60b50eaf21e4fa4006d02_55640_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_18_hu90fa82f22cf60b50eaf21e4fa4006d02_55640_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="주키퍼"
+class="gallery-image"
+data-flex-grow="239"
+data-flex-basis="574px"
+>&lt;/p>
+&lt;ul>
+&lt;li>메타데이터와 상태 저장소는 주키퍼를 이용해 구현&lt;/li>
+&lt;li>브로커는 이제 메시지 데이터 저장소만 유지함&lt;/li>
+&lt;li>주키퍼가 브로커 클러스터의 리더 선출 과정을 도움&lt;/li>
+&lt;/ul>
+&lt;h3 id="복제">복제&lt;/h3>
+&lt;p>분산 시스템에서 하드웨어 장애는 흔한 일이므로 무시해서는 안 된다.&lt;/p>
+&lt;p>디스크에 손상이나 영구적 장애가 발생하면 데이터는 사라지는데, 이런 문제를 해결하고 높은 가용성을 보장하기 위해 전통적으로 많이 사용된 방법이 복제(replication)다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_19.png"
+width="1450"
+height="600"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_19_hue931ac2e5cb001645a892d19201e2d77_109852_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_19_hue931ac2e5cb001645a892d19201e2d77_109852_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="580px"
+>&lt;/p>
+&lt;p>짙은 색으로 강조한 사본은 해당 파티션의 리더이고, 나머지는 단순 사본이다.&lt;/p>
+&lt;p>생산자는 파티션에 메시지를 보낼 때 리더에게만 보내며, 다른 사본은 리더에서 새 메시지를 지속적으로 가져와 동기화한다.&lt;/p>
+&lt;p>메시지를 환전히 동기화한 사본의 개수가 지정된 임계값을 넘으면 리더는 생산자에게 메시지를 잘 받았다는 응답을 보낸다.&lt;/p>
+&lt;p>사본을 파티션에 어떻게 분산할 지 기술하는 것을 사본 분산 계획(replica distribution plan)이라고 하며 조정 서비스의 도움으로 브로커 노드 가운데 하나가 리더로 선출되면 해당 리더 브로커 노드가 사본 분산 계획을 만드록 메타데이터 저장소에 보관하게된다.&lt;/p>
+&lt;h3 id="사본-동기화">사본 동기화&lt;/h3>
+&lt;p>어떤 한 노드의 장애로 메시지가 소실되는 것을 막기 위해 메시지는 여러 파티션에 두며, 각 파티션은 다시 여러 사본으로 복제한다.&lt;/p>
+&lt;p>메시지는 리더로만 보내고 다른 단순 사본은 리더에서 메시지를 가져가 동기화 하는데, 그 모두를 어떻게 동기화 시킬 것 인지가 중요하다.&lt;/p>
+&lt;p>동기화된 사본(In-Sync Replicas, ISR)은 리더와 동기화된 사본을 일컫는 용어로, &lt;strong>동기화되었다&lt;/strong>는 것이 무엇을 의미하느냐는 토픽의 설정에 따라 달라진다.&lt;/p>
+&lt;p>예를 들면 &lt;code>replica.lag.max.messages&lt;/code>의 값이 4로 설정되어 있다면, 단순 사본에 보관된 메시지 개수와 리더 사이의 차이가 3이라면 해당 사본은 여전히 ISR이다(리더는 항상 ISR).&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_20.png"
+width="574"
+height="441"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_20_hue79f5998456d6ee5bbb016967d9923d2_94011_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_20_hue79f5998456d6ee5bbb016967d9923d2_94011_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="ISR의 동작 원리"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+>&lt;/p>
+&lt;p>ISR은 성능과 영속성 사이의 타협점이다.&lt;/p>
+&lt;p>생산자가 보낸 어떤 메시지도 소실하지 않는 가장 안전한 방법은 생산자에게 메시지를 잘 받았다는 응답을 보내기 전에 모든 사본을 동기화하는 것 이다.&lt;/p>
+&lt;p>하지만 어느 사본 하나라도 동기화를 신속하게 처리하지 못하게 되면 파티션 전부가 느려지거나 아예 못 쓰게 되는 일이 발생할 수 있다.&lt;/p>
+&lt;p>&lt;strong>ACK=all&lt;/strong>&lt;/p>
+&lt;p>&lt;code>ACK=all&lt;/code>로 설정된 경우 생산자는 모든 ISR이 메시지를 수신한 뒤에 ACK 응답을 받는다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_21.png"
+width="795"
+height="432"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_21_hu2ea44a0ceef07650f341f77a4a9a920c_93394_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_21_hu2ea44a0ceef07650f341f77a4a9a920c_93394_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="ACK=all"
+class="gallery-image"
+data-flex-grow="184"
+data-flex-basis="441px"
+>&lt;/p>
+&lt;p>느린 ISR의 응답을 기다려야 하므로 메시지를 보내기 위한 시간이 길어지지만, 영속성 측면에서는 가장 좋은 구성이다.&lt;/p>
+&lt;p>&lt;strong>ACK=1&lt;/strong>&lt;/p>
+&lt;p>리더가 메시지를 저장하고 나면 바로 ACK 응답을 받는다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_22.png"
+width="795"
+height="427"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_22_hu46cba1bc30512512288c80e0145df945_144131_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_22_hu46cba1bc30512512288c80e0145df945_144131_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="ACK=1"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>데이터가 동기화될 때까지 기다리지 않으므로 응답 지연은 개선되지만, 메시지 ACK을 보낸 직후 리더에 장애가 생기면 해당 메시지는 다른 사본에 반영되지 못하였으므로 소실된다.&lt;/p>
+&lt;p>이런 구성은 &lt;strong>데이터가 사라져도 상관없는 대신 낮은 응답 지연을 보장해야 하는 시스템에 적합&lt;/strong>하다.&lt;/p>
+&lt;p>&lt;strong>ACK=0&lt;/strong>&lt;/p>
+&lt;p>보낸 메시지에 대한 수신 확인 메시지를 기다리지 않고 계속 메시지를 전송하며 어떤 재시도도 하지 않는다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_23.png"
+width="762"
+height="426"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_23_hu4b1fd6178d17accfc9f3e08a31796b97_117457_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_23_hu4b1fd6178d17accfc9f3e08a31796b97_117457_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="ACK=0"
+class="gallery-image"
+data-flex-grow="178"
+data-flex-basis="429px"
+>&lt;/p>
+&lt;p>낮은 응답 지연을 달성하기 위해 메시지 손실은 감수하는 구성으로, 지표 수집이나 데이터 로깅 등 처리해야하는 메시지의 양이 많고 때로 데이터 손실이 밸생해도 상관 없는 경우 사용된다.&lt;/p>
+&lt;hr>
+&lt;p>이처럼 ACK 설정을 변경 가능하도록 해 두면 성능을 높여야 할 경우 영속성을 다소 희생할 수도 있게 된다.&lt;/p>
+&lt;p>소비자 측면에서 가장 쉬운 구성은 소비자로 하여금 리더에서 메시지를 읽어가도록 하는 것이다.&lt;/p>
+&lt;p>ISR 요건을 만족하는 사보넹서는 메시지를 가져가지 않는 이유는 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>설계 및 운영이 단순하다.&lt;/li>
+&lt;li>특정 파티션의 메시지는 같은 소비자 그룹 안에서는 오직 한 소비자만 읽어갈 수 있으므로 리더 사본에 대한 연결은 많지 않다.&lt;/li>
+&lt;li>아주 인기 있는 토픽이 아니라면 리더 사본에 대한 연결의 수는 그렇게 많지 않다.&lt;/li>
+&lt;li>아주 인기 있는 토픽의 경우에는 파티션 및 소비자 수를 늘려 규모를 확장하면 된다.&lt;/li>
+&lt;/ul>
+&lt;p>하지만 소비자가 리더 사본에서 메시지를 가져올 때 비용이 훨씬 더 크다면 다른 ISR 사본을 사용하는 방법을 고려할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>ISR은 아주 중요한데, 어떤 사본이 ISR인지는 어떻게 판별할 수 있을까?&lt;/p>
+&lt;p>보통 각 파티션 담당 리더는 자기 사본들이 어느 메시지가지 가져갔는지 추적하여 ISR 목록을 관리한다.&lt;/p>
+&lt;h3 id="규모-확장성">규모 확장성&lt;/h3>
+&lt;p>주요 시스템 컴포넌트의 규모 확장성을 알아본다.&lt;/p>
+&lt;p>&lt;strong>생산자&lt;/strong>&lt;/p>
+&lt;p>그룹 단위의 조정에 가담할 필요가 전혀 없으므로 소비자에 비해 개념적으로는 훨씬 간단하다.&lt;/p>
+&lt;p>새로운 생산자를 추가하거나 삭제함으로써 쉽게 달성할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>소비자&lt;/strong>&lt;/p>
+&lt;p>소비자 그룹은 서로 독립적이므로 새 소비자 그룹은 쉽게 추가하고 삭제할 수 있다.&lt;/p>
+&lt;p>같은 소비자 그룹 내의 소비자가 새로 추가/삭제 되거나 장애로 제거되어야 하는 경우 &lt;strong>재조정(rebalancing) 매커니즘&lt;/strong>이 맡아 처리한다.&lt;/p>
+&lt;p>소비자 측의 규모 확장성과 결함 내성을 보장하는 것은 바로 &lt;strong>소비자 그룹&lt;/strong>과 &lt;strong>재조정 매커니즘&lt;/strong>이다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>브로커&lt;/strong>&lt;/p>
+&lt;p>브로커의 규모 확장성을 살펴보기 전에 브로커의 결함 내성에 대해 먼저 확인해볼 필요가 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_24.png"
+width="900"
+height="754"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_24_hu7dba5ff09423fbf7a358f5bbbcce9707_378518_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_24_hu7dba5ff09423fbf7a358f5bbbcce9707_378518_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="브로커 노드의 장애"
+class="gallery-image"
+data-flex-grow="119"
+data-flex-basis="286px"
+>&lt;/p>
+&lt;p>특정 브로커 노드에 장애가 발생하여 해당 노드의 모든 파티션이 소실되었다면 파티션 계획이 변경되고, 브로커 컨트롤러가 브로커 노드가 사라졌음을 감지한 후 새로운 파티션 분산 계획을 만들어내며, 새로 추가된 사본은 단순 사본으로 리더에 보관된 메시지를 따라잡는 동작을 개시하게된다.&lt;/p>
+&lt;p>브로커의 결함 내성을 높이기 위해 다음과 같은 사항을 추가 고려해야한다.&lt;/p>
+&lt;ul>
+&lt;li>메시지가 성공적으로 합의 되었다고 판단하려면 얼마나 만은 사본에 메시지가 반영되어야하는가
+&lt;ul>
+&lt;li>높을수록 안전하지만 응답 지연이 발생한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션의 모든 사본이 같은 브로커 노드에 있으면 해당 노드에 장애가 발생할 경우 해당 파티션은 완전히 소실된다.
+&lt;ul>
+&lt;li>같은 노드에 데이터를 복제하는 것은 자원 낭비이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션의 모든 사본에 문제가 생기면 해당 파티션의 데이터는 영원히 사라진다.
+&lt;ul>
+&lt;li>여러 데이터 센터에 분산하는 것이 안전하다.&lt;/li>
+&lt;li>데이터 미러링을 도입하여 데이터 센터 간 데이터 복사를 용이하게 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>브로커의 규모 확정성의 가장 간단한 해법은 &lt;strong>브로커 노드가 추가되거나 삭제될 때 사본을 재배치하는 것&lt;/strong>이다.&lt;/p>
+&lt;p>더 나은 방법은 &lt;strong>브로커 컨트롤러로 하여금 한시적으로 시스템에 설정된 사본 수보다 많은 사본을 허용하도록 하는 것&lt;/strong>이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_25.png"
+width="822"
+height="587"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_25_hu3e4307ede215c73c092ff52f854da68b_300452_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_25_hu3e4307ede215c73c092ff52f854da68b_300452_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="새 브로커 노드의 추가"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="336px"
+>&lt;/p>
+&lt;p>새로 추가된 브로커 노드가 기존 브로커 상태를 따라잡고 나면 더 이상 필요없는 노드는 제거한다.&lt;/p>
+&lt;p>이러한 절차를 통해 브로커를 추가하는 도중 발생할 수 있는 데이터 손실을 피할 수 있다. (제거할 때도 비슷한 방법을 적용하면 안전하게 제거할 수 있다.)&lt;/p>
+&lt;h3 id="파티션">파티션&lt;/h3>
+&lt;p>운영상의 이유로 파티션의 수를 조정해야 하는 일이 생길 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>토픽의 규모를 늘린다.&lt;/li>
+&lt;li>대역폭을 조정한다.&lt;/li>
+&lt;li>가용성과 대역폭 사이의 균형을 맞춘다. 등&lt;/li>
+&lt;/ul>
+&lt;p>생산자는 브로커와 통신할 때 그 사실을 통지 받으며, 소비자는 재조정을 시행한다.&lt;/p>
+&lt;p>따라서 파티션 수의 조정은 생산자와 소비자의 안전성에는 영향을 끼치지 않는다.&lt;/p>
+&lt;p>그러니 파티션의 수가 달라지면 데이터 저장 계층에는 변화를 살펴본다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>파티션 추가&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_26.png"
+width="617"
+height="303"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_26_hu66853cbe1681a457578fa72d7205fe64_66657_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_26_hu66853cbe1681a457578fa72d7205fe64_66657_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파티션 추가"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="488px"
+>&lt;/p>
+&lt;ul>
+&lt;li>지속적으로 보관된 메시지는 여전히 기존 파티션에 존재하며 해당 데이터는 이동하지 않는다.&lt;/li>
+&lt;li>새로운 파티션이 추가되면 그 이후 오는 메시지는 3개 파티션 전부에 지속적으로 보관되어야 한다.&lt;/li>
+&lt;/ul>
+&lt;p>따라서 파티션을 늘리면 간단히 토픽의 규모를 늘릴 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>파티션 삭제&lt;/strong>&lt;/p>
+&lt;p>파티션 삭제 절차는 좀 더 까다롭다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_27.png"
+width="575"
+height="284"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_27_hub7aceadd98b0fd0d12299b2adc1860dc_112613_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_27_hub7aceadd98b0fd0d12299b2adc1860dc_112613_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="파티션 삭제"
+class="gallery-image"
+data-flex-grow="202"
+data-flex-basis="485px"
+>&lt;/p>
+&lt;ul>
+&lt;li>파티션을 퇴역 시킨다는 결정이 내려지면 새로운 메시지는 다른 파티션에만 보관된다.&lt;/li>
+&lt;li>퇴역된 파티션은 바로 제거하지 않고 일정 시간 동안 유지한다.
+&lt;ul>
+&lt;li>해당 파티션의 데이터를 읽고 있는 소비자가 있을 수 있기 때문&lt;/li>
+&lt;li>유지 기간이 지나고 나면 데이터를 삭제하고 저장 공간을 반환한다.&lt;/li>
+&lt;li>파티션을 줄요도 저장 용량은 바로 늘지 않는다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>파티션 퇴역 후 실제로 제거가 이루어지는 시점까지 생산자는 메시지를 남은 두 파티션으로만 보내지만 소비자는 세 파티션 모두에서 메시지를 읽는다.
+&lt;ul>
+&lt;li>실제로 파티션이 제거되는 시점이 오면 생산자 그룹은 재조정 작업을 개시해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="메시지-전달-방식">메시지 전달 방식&lt;/h3>
+&lt;p>분산 메시지 큐가 지원해야 하는 다양한 메시지 전달 방식을 살펴본다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>최대 한 번&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_28.png"
+width="734"
+height="89"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_28_huf3810f0a17ca0835cfe78b52b0dd077e_35741_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_28_huf3810f0a17ca0835cfe78b52b0dd077e_35741_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최대 한 번"
+class="gallery-image"
+data-flex-grow="824"
+data-flex-basis="1979px"
+>&lt;/p>
+&lt;p>메시지를 &lt;strong>최대 한 번(at-most once)&lt;/strong> 만 전달하는 방식으로 메시지가 전달 과정에서 소실되더라도 다시 전달되는 일은 없다.&lt;/p>
+&lt;ul>
+&lt;li>생산자는 토픽에 비동기적으로 메시지를 보내고 수신 응답을 기다리지 않는다.(ACK=0)
+&lt;ul>
+&lt;li>재시도 X&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>소비자는 메시지를 읽고 처리하기 전에 오프셋부터 갱신한다.
+&lt;ul>
+&lt;li>오프셋이 갱신된 직후에 소비자가 장애로 죽으면 메시지는 다시 소비될 수 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>최소 한 번&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_29.png"
+width="825"
+height="95"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_29_hudf42c4b9d0c9e871861fa602c69e702c_30939_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_29_hudf42c4b9d0c9e871861fa602c69e702c_30939_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최소 한 번"
+class="gallery-image"
+data-flex-grow="868"
+data-flex-basis="2084px"
+>&lt;/p>
+&lt;p>같은 메시지가 한 번 이상 전달될 수는 있으나 메시지 소실은 발생하지 않는 전달 방식이다.&lt;/p>
+&lt;ul>
+&lt;li>생산자는 메시지를 동기적/비동기적으로 보낼 수 있으며, &lt;code>ACK=1&lt;/code> 또는 &lt;code>ACK=all&lt;/code>의 구성을 이용한다.
+&lt;ul>
+&lt;li>메시지가 브로커에게 전달되었음을 반드시 확인한다.&lt;/li>
+&lt;li>메시지 전달이 실패하거나 타임아웃이 발생한 경우 계속 재시도한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>소비자는 데이터를 성공적으로 처리한 뒤에만 오프셋을 갱신한다.
+&lt;ul>
+&lt;li>메시지 처리가 실패한 경우에는 메시지를 다시 가져오므로 데이터가 손실되는 일은 없다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>메시지는 브로커나 소비자에게 한 번 이상 전달될 수 있다.
+&lt;ul>
+&lt;li>메시지를 처리한 소비자가 미처 오프셋을 갱신하지 못하고 죽었다가 다시 시작하면 메시지는 중복 처리된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>정확히 한 번&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/4/img_30.png"
+width="831"
+height="91"
+srcset="https://codemario318.github.io/post/system-design-interview-2/4/img_30_hu6cc94579eea89128ec5ed3e9911f6f15_40121_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/4/img_30_hu6cc94579eea89128ec5ed3e9911f6f15_40121_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="정확히 한 번"
+class="gallery-image"
+data-flex-grow="913"
+data-flex-basis="2191px"
+>&lt;/p>
+&lt;p>구현하기 가장 까다로운 전송 방식으로, 사용자 입장에서는 편리하지만, 시스템의 성능 및 구현 복잡도 측면에서는 큰 대가를 지불해야한다.&lt;/p>
+&lt;ul>
+&lt;li>지불, 매매, 회계 등 금융 관련 응용에는 이 전송 방식이 적합하다.&lt;/li>
+&lt;/ul>
+&lt;p>중복을 허용하지 않으며, 구현에 이용할 서비스나 제3자 제품이 같은 입력에 항상 같은 결과를 내 놓도록 구현되어 있지 않은 애플리케이션에 특히 중요한 방식이다.&lt;/p>
+&lt;h3 id="고급-기능">고급 기능&lt;/h3>
+&lt;p>메시지 필터링, 지연 전송, 예약 전송 등의 고급 기능을 살펴본다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>메시지 필터링&lt;/strong>&lt;/p>
+&lt;p>토픽은 같은 유형의 메시지를 담아 처리하기 위해 도입된 논리적 개념(abstraction)이다.&lt;/p>
+&lt;p>어떤 소비자 그룹은 그 가운데서도 특정한 세부/하위 유형의 메시지에만 관심이 있는데, 특정 토픽을 만들어 분리하는 것은 아래와 같은 우려가 있을 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>비슷한 요구사항마다 전용 토픽을 만들 것 인가?&lt;/li>
+&lt;li>같은 메시지를 여러 토픽에 저장하는 것은 자원 낭비이다.&lt;/li>
+&lt;li>새로운 소비차 측 요구사항이 등장할 때마다 생산자 구현을 바꿔야할 수 있다.
+&lt;ul>
+&lt;li>생산자와 소비자의 결합이 높아졌으므로&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>메시지 필터링을 사용하면 이런 문제를 피할 수 있다.&lt;/p>
+&lt;p>가장 쉬운 방법은 소비자가 일단 모든 메시지를 받은 다음 필요없는 메시지를 버리는 방법인데, 유연성이 높지만 불필요한 트래픽이 발생하여 시스템 성능이 저하되는 문제가 있을 수 있다.&lt;/p>
+&lt;p>더 나은 방법은 브로커에서 메시지를 필터링하여 소비자는 원하는 메시지만 받을 수 있도록 하는 것이며, 이를 위해 세심하게 살펴야할 것들이 많다.&lt;/p>
+&lt;ul>
+&lt;li>복호화와 역직렬화가 필요하다면 브로커 성능은 저하되므로, 브로커에 구현할 필터링 로직은 메시지의 내용을 추출해서는 안된다.&lt;/li>
+&lt;li>필터링에 사용될 데이터는 메시지의 메타데이터 영역에 두어 브로커로 하여금 효율적으로 읽어갈 수 있도록 해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>메시지마다 태그를 두면 소비자는 어떤 태그를 가진 메시지를 구독할지 지정할 수 있게 된다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>메시지의 지연 전송 및 예약 전송&lt;/strong>&lt;/p>
+&lt;p>소비자에게 보낼 메시지를 일정 시간만큼 지연시켜야 하는 일이 있을 수 있다.&lt;/p>
+&lt;p>발송 즉시 전달되는 메시지와는 달리, 이런 메시지는 토픽에 바로 저장하지 ㅇ낳고 브로커 내부의 임시 저장소에 넣어 두었다가 시간이 되면 토픽으로 옮긴다.&lt;/p>
+&lt;p>이 시스템의 핵심 컴포넌트는 임시 저장소 및 타이밍 기능이다.&lt;/p>
+&lt;ul>
+&lt;li>하나 이상의 특별 메시지 토픽을 임시 저장소로 활용할 수 있다.&lt;/li>
+&lt;li>타이밍 기능은 두 범주의 기술이 널리 활용되고 있다
+&lt;ul>
+&lt;li>메시지 지연 전송 전용 메시지 큐를 사용
+&lt;ul>
+&lt;li>특정 메시지 큐는 임의 시간 동안 메시지 전송을 지연하는 기능을 가지고 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>계층적 타이밍 휠&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>메시지 예약 전송은 지정된 시간에 소비자에게 메시지를 보낼 수 있도록 하는 기능으로, 메시지 지연 전송 시스템과 유사하다.&lt;/p>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>이번 장에서는 데이터 스트리밍 플랫폼에서 흔히 발견되는 고급 기능을 지원하는 분산 메시지 큐 시스템 설계안을 살펴보았다.&lt;/p>
+&lt;p>실제 면접 시 시간이 조금 남는다면 면접관과 다음 사항에 대해 이야기해보면 좋을 것 이다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>프로토콜&lt;/p>
+&lt;ul>
+&lt;li>노드 사이에 오고 가는 데이터에 대한 규칙, 문법, API로 분산 메시지 큐 시스템의 경우 프로토콜은 다음 사항을 기술해야한다.
+&lt;ul>
+&lt;li>메시지 생산과 소비, 박동 메시지 교환 드으이 모든 활동&lt;/li>
+&lt;li>대용량 데이터를 효과적으로 전송할 방법&lt;/li>
+&lt;li>데이터의 무결성을 검증할 방법&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>AMQP, 카프카 프로토콜 등이 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>메시지 소비 재시도&lt;/p>
+&lt;ul>
+&lt;li>재대로 받아 처리하지 못한 메시지는 일정 시간 뒤에 다시 처리를 시도해야한다.
+&lt;ul>
+&lt;li>실패한 메시지는 재시도 전용 토픽에 보낸 다음 나중에 다시 소비 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>이력 데이터 아카이브
+&lt;ul>
+&lt;li>시간 기반 혹은 용량 기반 로그 보관 메커니즘이 있다고 가정할 때 이미 삭제된 메시지를 다시 처리하길 원하는 사용자가 있다면, HDFS같은 대용량 저장소 시스템이나 객체 저장소에 보관해둘 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>
