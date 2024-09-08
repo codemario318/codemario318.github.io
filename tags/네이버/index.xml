@@ -1,4 +1,327 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 01 Sep 2024 21:00:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>멤버십 과정 2주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</link><pubDate>Sun, 01 Sep 2024 21:00:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/cover.png" alt="Featured image of post 멤버십 과정 2주차 회고" />&lt;p>멤버십 과정 두 번째 주가 마무리 되었습니다. 🥳&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>네이버 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/</link><description>Recent content in 네이버 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 08 Sep 2024 17:34:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%84%A4%EC%9D%B4%EB%B2%84/index.xml" rel="self" type="application/rss+xml"/><item><title>멤버십 과정 3주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/3/</link><pubDate>Sun, 08 Sep 2024 17:34:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/3/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/3/cover.png" alt="Featured image of post 멤버십 과정 3주차 회고" />&lt;p>멤버십 과정 세 번째 주가 마무리 되었습니다. 🥳&lt;/p>
+&lt;p>저번주에 언급했던 것 처럼 이번주 부터는 멘토님의 코드리뷰가 시작되었는데, 저희 그룹을 담당해주신 멘토님이 타입스크립트에 대한 경험이 많으셨습니다.&lt;/p>
+&lt;p>코드리뷰에서 제가 활용하던 타입스크립트에서 몇 가지 주의할 점을 짚어주셨고 덕분에 큰 도움이 되었어요!&lt;/p>
+&lt;p>이러한 부분들을 같이 확인해보면 좋을 것 같습니다.&lt;/p>
+&lt;h2 id="타입스크립트에서의-인터페이스">타입스크립트에서의 인터페이스&lt;/h2>
+&lt;p>저 같은 경우는 백엔드를 설계할 때 여러 프레임워크들의 장점들을 뽑아 구성해보려고 했었습니다.&lt;/p>
+&lt;p>그 중 실제 데이터에 접근이 필요한 부분을 &lt;code>Spring data&lt;/code>를 참고하여 &lt;strong>저장소 패턴(Repository Pattern)&lt;/strong> 을 적용하였습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img.png"
+width="543"
+height="190"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img_hue156cc0d8f93bfe7bfbcecea2be046a0_11819_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img_hue156cc0d8f93bfe7bfbcecea2be046a0_11819_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="저장소 패턴"
+class="gallery-image"
+data-flex-grow="285"
+data-flex-basis="685px"
+>&lt;/p>
+&lt;p>저장소 패턴은 객체지향 설계에서 &lt;strong>도메인 모델(핵심 비즈니스 로직)&lt;/strong> 과 &lt;strong>데이터 소스&lt;/strong> 사이의 추상화를 통해 &lt;strong>비즈니스 로직과 실제 데이터 저장 처리의 관심사를 분리&lt;/strong>하는 패턴입니다.&lt;/p>
+&lt;p>사실 이 자체는 문제가 없었지만 이를 활용하기 위한 코드에 약간의 문제가 있었습니다.&lt;/p>
+&lt;p>인터페이스를 구현하도록 하여 서비스 로직에서 활용하도록 했는데, 제가 작성한 코드를 게시글을 의미하는 &lt;code>Post&lt;/code>로 바꾸어 확인해보면 아래와 같습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">Post&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">title&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">content&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">createdAt&lt;/span>: &lt;span class="kt">Date&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">updatedAt&lt;/span>: &lt;span class="kt">Date&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">PostRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Post&lt;/span> &lt;span class="err">|&lt;/span> &lt;span class="na">null&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">PostDummyRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">data&lt;/span>: &lt;span class="kt">Post&lt;/span>&lt;span class="p">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">findById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Post&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">post&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">PostService&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">postRepository&lt;/span>: &lt;span class="kt">PostRepository&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">findPost&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">post&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">postRepository&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">findById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">post&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">에 해당하는 글이 없습니다.`&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">post&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* ... */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>언뜻 보면 나쁘지 않아 보이죠? 멘토님은 아래와 같은 코멘트를 남겨주셨어요.&lt;/p>
+&lt;blockquote>
+&lt;p>이 인터페이스가 타입스크립트 개발 느낌보다는 자바로 개발을 하는거 같다는 느낌을 많이 주네요&lt;br>
+타입스크립트에서 이런 인터페이스는 어떤 의미를 가지게 될까요?&lt;/p>
+&lt;/blockquote>
+&lt;p>그래서 왜 이런 코멘트를 남기셨을까 고민해본결과는 바로 &lt;strong>덕 타이핑&lt;/strong>이었습니다.&lt;/p>
+&lt;h3 id="덕-타이핑">덕 타이핑&lt;/h3>
+&lt;p>덕 타이핑(duck typing)은 동적 타이핑의 한 종류로, &lt;strong>객체의 변수 및 메소드의 집합이 객체의 타입을 결정&lt;/strong>하는 것을 의미합니다. 아래와 같은 문구는 한번 쯤 들어보셨을거에요&lt;/p>
+&lt;blockquote>
+&lt;p>만약 어떤 새가 오리처럼 걷고, 헤엄치고, 꽥꽥거리는 소리를 낸다면 나는 그 새를 오리라고 부를 것이다.&lt;/p>
+&lt;/blockquote>
+&lt;p>타입스크립트도 타입을 덕 타이핑으로 타입을 처리합니다. 그렇다면 제가 작성한 코드는 어떠한 문제가 있었던걸까요? 새로운 예시를 한번 보겠습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">Comment&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">postId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">title&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">content&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">createdAt&lt;/span>: &lt;span class="kt">Date&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">updatedAt&lt;/span>: &lt;span class="kt">Date&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">CommentRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span> &lt;span class="err">|&lt;/span> &lt;span class="na">null&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findByPostId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">postId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">CommentDummyRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">data&lt;/span>: &lt;span class="kt">Post&lt;/span>&lt;span class="p">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">findById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">comment&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">comment&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">findByPostId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">postId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">filter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">comment&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">comment&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">postId&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">postId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위처럼 &lt;code>Comment&lt;/code>라는 도메인 모델이 있다고 가정해보면 아래와 같은 코드는 오류를 발생시키지 않습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">data&lt;/span>: &lt;span class="kt">Comment&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">repository&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">CommentDummyRepository&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">service&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">PostService&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">repository&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이게 바로 덕 타이핑 덕뿐인데요, &lt;code>PostRepository&lt;/code>가 요구하는 구성 요소들을 &lt;code>CommentDummyRepository&lt;/code>가 모두 포함하고 있고, 반환값으로 사용되는 &lt;code>Comment&lt;/code>도 &lt;code>Post&lt;/code>가 요구하는 구성 요소들을 모두 포함하고 있기 때문에 &lt;code>CommentDummyRepository&lt;/code>를 &lt;code>PostRepository&lt;/code>로 보는것이죠&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img_1.png"
+width="350"
+height="350"
+srcset="https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img_1_hud55745bf13d67a9be94260657be56e3a_36113_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/boostcamp-9th/review/membership/3/img_1_hud55745bf13d67a9be94260657be56e3a_36113_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="덕 타이핑"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>멘토님이 &lt;strong>자바&lt;/strong>같다고 하신 이유도, 자바였다면 전혀 문제가 없을 코드였기 때문이었겠죠?&lt;/p>
+&lt;p>그래서 제가 생각한 근본적인 문제는 &lt;strong>인터페이스에 선언된 메소드가 충분히 서술적이지 않은 것&lt;/strong>이 문제였던 것이었습니다.&lt;/p>
+&lt;p>엔티티는 어쩔수없다고 하더라도 리포지토리 인터페이스는 아래와 같이 만든다면 문제를 충분히 예방할 수 있을 것으로 보입니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">PostRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findPostById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Post&lt;/span> &lt;span class="err">|&lt;/span> &lt;span class="na">null&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">CommentRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findCommentById&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span> &lt;span class="err">|&lt;/span> &lt;span class="na">null&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">findCommentsByPostId&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">postId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Comment&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="no-return-await">no-return-await&lt;/h2>
+&lt;p>ESLint에서 제공하는 규칙 중 하나인 &lt;code>no-return-await&lt;/code>는 코드에서 &lt;code>return await&lt;/code>을 사용하는 것을 금지하는 규칙입니다. 저는 사실 아래 예시처럼 &lt;code>await&lt;/code>를 쓰고 있었어요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">example() {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">someAsyncFunction&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>저렇게 &lt;code>return await&lt;/code>를 하지 않으면 &lt;code>Promise&amp;lt;Promise&amp;lt;??&amp;gt;&amp;gt;&lt;/code> 형식으로 반환될 것이라고 생각했었기 때문인데요..😅&lt;/p>
+&lt;p>&lt;code>async&lt;/code> 함수는 자동으로 &lt;code>Promise&lt;/code>를 반환하므로, &lt;code>await&lt;/code> 없이도 &lt;code>Promise&lt;/code>가 제대로 처리되는걸 이제야 알았습니다. 그래서 아래와 같은 코드도 동일하게 처리됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">example() {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">someAsyncFunction&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>return await&lt;/code>는 일반적으로 추가적인 &lt;code>Promise&lt;/code> 처리 단계를 유발하기 때문에 사용하지 않는 걸 권하고 있었습니다.&lt;/p>
+&lt;p>아래와 같은 경우는 &lt;code>return await&lt;/code>가 필요한 경우입니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">example() {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">someAsyncFunction&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Error occurred:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">error&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="nx">error&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 경우는 &lt;code>await return&lt;/code>을 하지 않으면, 로직 실행이 비동기로 처리되기때문에 &lt;code>try...catch&lt;/code> 블록 내에서 에러가 발생할 때 의도대로 처리되지 않습니다.&lt;/p>
+&lt;h2 id="타입-추론">타입 추론&lt;/h2>
+&lt;p>타입 추론(Type Inference)은 개발자가 명시적으로 타입을 지정하지 않아도 타입스크립트 컴파일러가 변수나 표현식의 타입을 자동으로 추론하는 것을 의미합니다.&lt;/p>
+&lt;p>사실 타입스크립트 뿐만 아니라 Go, Kotlin 같은 언어에서도 제공합니다.&lt;/p>
+&lt;p>매주 금요일 진행되는 마스터 세션에서는 지원자의 코드를 마스터님이 직접 리뷰해주시는데, 그때 나왔던 주제 중 하나였어요&lt;/p>
+&lt;p>결론은 &lt;strong>타입을 적게 쓸수록 좋다.&lt;/strong> 였습니다.&lt;/p>
+&lt;p>개인적으로 찾아보니 타입 추론을 잘 활용하면 아래와 같은 장점이 있다고 합니다.&lt;/p>
+&lt;ul>
+&lt;li>코드 간결성&lt;/li>
+&lt;li>개발 생산성 향상
+&lt;ul>
+&lt;li>개발자가 타입을 일일이 지정하는 수고를 덜 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>조금 더 생각해보니 &lt;strong>타입 추론이 잘 이루어지는 코드&lt;/strong>들은 처리해야할 작업의 시작, 끝 정도만 타입을 명시적으로 지정해도 잘 동작하는 코드이더군요&lt;/p>
+&lt;p>그래서 사실 본체는 &lt;strong>타입 추론이 잘 되는 코드를 작성하는 것이 세부사항에 대한 설계, 관심사 분리나 기능 분리가 잘 된 코드&lt;/strong>였던게 아닐까 싶습니다.&lt;/p>
+&lt;p>아직 확신은 없지만 타입 추론을 최대한 활용하는 방식으로 구현을 해봐야할 것 같아요 🤣&lt;/p>
+&lt;h2 id="의견과-모르는-것">의견과 모르는 것&lt;/h2>
+&lt;p>이번 주 그룹 회고에서 한 캠퍼분이 본인의 아쉬운 점으로 아래와 같은 이야기를 하셨습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>다른 분들의 질문에 대해 잘 몰라서 많은 답변을 해드릴 수 없었던 부분이 아쉬웠어요&lt;/p>
+&lt;/blockquote>
+&lt;p>그래서 저는 아래와 같은 답변을 드렸어요&lt;/p>
+&lt;blockquote>
+&lt;p>꼭 알아야만 답변을 할 수 있는걸까요?&lt;br>
+답변이 맞고 틀리고는 상관 없이 의견 자체를 공유하는 것이 중요한 것 아닐까요?&lt;/p>
+&lt;/blockquote>
+&lt;p>돌이켜보면 저도 이런 고민들을 많이 했던 것 같고, 지금도 조금은 하고 있는 것 같아요.&lt;/p>
+&lt;p>뭔가 나의 의견이 정답이 아니었으면 큰 잘못을 한 것 같고, 내 답변이 하찮아서 도움이 안되면 창피하기도 하고, 등등 이런 생각들을 주로 했던 것 같습니다.&lt;/p>
+&lt;p>그런데 시간이 지나면서 이런 생각들을 많이 하지 않게된 것 같아요&lt;/p>
+&lt;hr>
+&lt;p>그러한 &lt;strong>첫 번째&lt;/strong> 이유로 실제 일을 해보면서 이미 널리 알려진 방법들이 내가 풀어야하는 문제에 딱 들어맞는 경우는 많이 없었던 것 같습니다.(그래서 어려운 것 이겠지만요 ㅎㅎ)&lt;/p>
+&lt;p>그래서 정답에 대한 의견은 거의 들을 수 없었을 뿐더러, 방향성이나 문제에 대한 의견을 많이 들었을 때 그 상황에서 할 수 있는 &lt;strong>최선의 선택&lt;/strong>을 찾을 수 있었던 것 같아요&lt;/p>
+&lt;hr>
+&lt;p>두 번째 이유로는 개발자는 결국 &lt;strong>문제를 해결하는 사람&lt;/strong>이라는 점 인 것 같습니다.&lt;/p>
+&lt;p>어떠한 문제를 해결하려고 할 때 다른 사람들이 같은 문제를 어떻게 해석하는지, 어떤 부분들을 중요하게 생각하는지 와 같은 생각들을 들었을 때 실제로 저의 문제를 바라보는 시야라던가, 문제를 해석하는 근본적인 역량이 향상된다고 느껴졌었기 때문이에요&lt;/p>
+&lt;hr>
+&lt;p>그래서 저는 다른 사람들이 어떠한 문제에 대해 질문 했을 때, 제가 생각할 수 있는 모든 것을 다 동원해서 같이 고민해주고 있는 것 같아요, 그 사람이 저의 관점을 어떻게 해석하는지도 너무 궁금하거든요&lt;/p>
+&lt;p>그래서 결론은 &lt;strong>개인의 의견은 너무나도 소중하고 값진 것 이니까 서로 많이 공유해요&lt;/strong> 였네요😄&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>아직 멘토님의 피드백을 모두 반영하지 못했는데 다음주는 더욱 더 바쁠 것 같습니다.&lt;/p>
+&lt;p>다음주까지 끝나면 첫번째 개인 프로젝트가 끝나고 &lt;strong>인터미션&lt;/strong>기간이 주어진다고해요&lt;/p>
+&lt;p>이번 주는 할일이 많이 남은 만큼 열심히 불태우고 인터미션 기간에 푹 쉬어야겠습니다.&lt;/p>
+&lt;p>한 주 모두 고생 많으셨습니다🔥&lt;/p></description></item><item><title>멤버십 과정 2주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</link><pubDate>Sun, 01 Sep 2024 21:00:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/2/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/2/cover.png" alt="Featured image of post 멤버십 과정 2주차 회고" />&lt;p>멤버십 과정 두 번째 주가 마무리 되었습니다. 🥳&lt;/p>
 &lt;p>이번주는 예상대로 1주차에 만든 결과물에 새로운 기술들을 이용하여 개선하는 미션이 주어졌습니다.&lt;/p>
 &lt;p>&lt;strong>프론트엔드&lt;/strong>는 &lt;code>DOM API&lt;/code>, &lt;code>Event&lt;/code>, &lt;code>Fetch API&lt;/code>를 활용하여 클라이언트 영역에서의 동적인 UI로 개선하는 내용이 주어졌고, &lt;strong>백엔드&lt;/strong>는 가상환경에 데이터베이스를 설치하고, 서버에서 연동하는 미션이 주어졌습니다.&lt;/p>
 &lt;p>사실 프론트엔드 영역은 처음부터 CSR로 아예 분리해서 진행하고 있었기 때문에 큰 변경은 없었어요, 그래서 리펙토링을 위주로 진행했던 것 같습니다.&lt;/p>
