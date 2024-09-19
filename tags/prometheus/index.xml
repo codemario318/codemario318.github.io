@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Prometheus on Mario Blog</title><link>https://codemario318.github.io/tags/prometheus/</link><description>Recent content in Prometheus on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 19 Sep 2024 14:13:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/prometheus/index.xml" rel="self" type="application/rss+xml"/><item><title>5. 지표 모니터링 및 경보 시스템</title><link>https://codemario318.github.io/post/system-design-interview-2/5/</link><pubDate>Thu, 19 Sep 2024 14:13:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/5/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/cover.png" alt="Featured image of post 5. 지표 모니터링 및 경보 시스템" />&lt;p>이번 장에서는 &lt;strong>규모 확장이 용이한 지표 모니터링 및 경보 시스템&lt;/strong>의 설계안을 살펴본다.&lt;/p>
+&lt;p>잘 서례된 지표 모니터링 및 경보 시스템은 &lt;strong>인프라의 상태를 선명하게 볼 수 있도록 하여 높은 가용성과 안정성을 달성하는 데 중추적 역할을 한다.&lt;/strong>&lt;/p>
+&lt;p>대형 IT 업체에서 내부적으로 사용하는 것과 유사한 서비스를 설계해본다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>지표 모니터링 및 경소 비스템의 의미는 회사마다 다를 수 있으므로, 정확한 요구사항을 알아내는 것이 중요하다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>인프라 지표&lt;/strong>에 관심이 있다면 웹서버 &lt;strong>에러 로그&lt;/strong>나 &lt;strong>엑세스 로그&lt;/strong>에 초점을 맞춘 시스템을 만들면 곤란하다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 시스템의 사용자는? 대형 IT 업체가 &lt;strong>내부에서 사용할 시스템&lt;/strong> 혹은 데이터독, 스플펑크 같은 &lt;strong>SasS&lt;/strong>?&lt;/p>
+&lt;ul>
+&lt;li>A. 회사 내부에서 사용할 시스템&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 어떤 지표를 수집?&lt;/p>
+&lt;ul>
+&lt;li>A. 시스템 운영 지표(Operational system metrics) 수집. CPU 부하, 메모리 사용률, 디스크 사용량 같은 저수준 지표와 서버가 처리하는 초당 요청 수(Requests per second)나 웹 서버 프로세스 개수 같은 고차원적 개념 지표. 사업 지표(Business metrics)는 제외&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 모니터링 할 인프라의 규모는?&lt;/p>
+&lt;ul>
+&lt;li>A. 일간 능동 사용자 수는 &lt;strong>1억 명&lt;/strong>, &lt;strong>1000개의 서버 풀&lt;/strong>이 있고, 풀마다 &lt;strong>100개의 서버 하드웨어&lt;/strong>를 유지하고 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 지표 보관 기간&lt;/p>
+&lt;ul>
+&lt;li>A. 1년&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 장기 보관 전영 저장소로 옮길 때 지표의 해상도(resolution)을 낮추어도 괜찮은가?&lt;/p>
+&lt;ul>
+&lt;li>A. 새로 수집한 데이터는 7일 보관, 7일 뒤에는 1분 단위로 30일, 그 뒤에는 1시간 단위로 변환하여 보관&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 경보 채널로 지원해야하는 것들&lt;/p>
+&lt;ul>
+&lt;li>A. 이메일, 전화, 페이저듀티(PagerDuty), 웹훅(Webhook, 즉 HTTP 프로토콜을 지원하는 엔드포인트) 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 에러 로그나 엑세스 로그 등에 대한 수집 기능 제공?&lt;/p>
+&lt;ul>
+&lt;li>A. NO&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Q. 분산 시스템 추적(distributed system tracing) 기능 제공?&lt;/p>
+&lt;ul>
+&lt;li>A. NO&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-요구사항-및-가정">개략적 요구사항 및 가정&lt;/h3>
+&lt;p>요구사항을 다시 정리하면 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>대규모 인프라를 모니터링 해야함
+&lt;ul>
+&lt;li>DAU 1억&lt;/li>
+&lt;li>서버 풀 1,000개, 풀당 서버 수 100개, 서버당 100개의 운영 지표 수집한다면 모니터링 해야 하는 지표의 수는 &lt;strong>천만 개&lt;/strong> 수준&lt;/li>
+&lt;li>데이터 보관 기간은 1년&lt;/li>
+&lt;li>수집한 그대로 데이터를 보관하는 기간은 일주일, 그 뒤에는 1분 단위 데이터로 변호나 후에 30일 보관, 그 뒤에는 1시간 단위 데이터롤 변환한 뒤에 1년 보관&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모니터링 해야하는 지표
+&lt;ul>
+&lt;li>CPU 사용률&lt;/li>
+&lt;li>요청 수&lt;/li>
+&lt;li>메모리 사용량&lt;/li>
+&lt;li>메시지 큐 내의 메시지 수&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="비기능-요구사항">비기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>규모 확장성
+&lt;ul>
+&lt;li>시스템은 늘어나는 지표 수와 정보의 양에 맞게 확장될 수 있어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>낮은 응답 지연
+&lt;ul>
+&lt;li>대시보드(dashboard)와 경보(alert)을 신속하게 처리할 수 있도록, 질의(query)에 대한 낮은 응답 지연을 보장해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>안정성
+&lt;ul>
+&lt;li>높은 안정성을 제공하여 중요 정보를 놓치지 않도록 해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>유연성
+&lt;ul>
+&lt;li>기술은 계속 변화하므로, 미래의 신기술을 쉽게 통합할 수 있도록 유연하게 변경 가능한 파이프라인을 이용해 구축한 시스템이어야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>고려하지 않아도 괴는 요구사항은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>로그 모니터링(log monitoring)
+&lt;ul>
+&lt;li>엘라스틱서치, 로그스태시, 키바나 등이 로그 모니터링 용도록 널리 사용되는 시스템&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>분산 시스템 추적(distributed system tracing)
+&lt;ul>
+&lt;li>서비스에 대한 요청이 분산시스템 내부를 어떻게 흘러 다니는지 추적할 수 있도록 하는 시스템&lt;/li>
+&lt;li>요청이 한 서비스에서 다른 서비스로 이동할 때마다 데이터를 수집&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>시스템 구축을 위한 &lt;strong>기본적 사항&lt;/strong>과 &lt;strong>데이터 모델&lt;/strong>, 그리고 &lt;strong>개략적 설계안&lt;/strong>을 논의한다.&lt;/p>
+&lt;h3 id="기본적-사항">기본적 사항&lt;/h3>
+&lt;p>지표 모니터링 및 경보 시스템은 일반적으로 다섯 가지 컴포넌트를 이용한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+mo[[지표 모니터링 및 경보 시스템]]
+mo --> o[데이터 수집]
+mo --> t[데이터 전송]
+mo --> th[데이터 저장소]
+mo --> f[경보]
+mo --> ff[시각화]
+&lt;/pre>
+&lt;ul>
+&lt;li>데이터 수집(data collection)
+&lt;ul>
+&lt;li>여러 출처로부터 지표 데이터를 수집&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 전송(data transmission)
+&lt;ul>
+&lt;li>지표 데이터를 지표 모니터링 시스템으로 전송&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터 저장소(data storage)
+&lt;ul>
+&lt;li>전송되어 오는 데이터를 정리하고 저장&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경보(alerting)
+&lt;ul>
+&lt;li>데이터를 분석하고 이상 징후 감지하여 경보를 발생시킴&lt;/li>
+&lt;li>다양한 통신 채널로 경보 발송 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>시각화(visualization)
+&lt;ul>
+&lt;li>데이터를 차트나 그래프 등으로 제공&lt;/li>
+&lt;li>데이터를 시각적으로 황인하면 패턴, 추이, 문제점을 더 쉽게 파악할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="데이터-모델">데이터 모델&lt;/h3>
+&lt;p>지표 데이터는 통상 &lt;strong>시계열(time series)&lt;/strong> 데이터 형태로 기록한다.&lt;/p>
+&lt;ul>
+&lt;li>값 집합에 타임스탬프가 붙은 형태&lt;/li>
+&lt;li>각각에 고유한 이름이 붙고, 선택적으로 레이블(label)을 붙이기도 함&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>테이블로 표현한 데이터&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img.png"
+width="854"
+height="221"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_huc678e2a34ee556abcc1d0e6ca4c5382b_123819_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_huc678e2a34ee556abcc1d0e6ca4c5382b_123819_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="서버 부하 모니터링 사례"
+class="gallery-image"
+data-flex-grow="386"
+data-flex-basis="927px"
+>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>metric_name&lt;/th>
+&lt;th>cpu.load&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>labels&lt;/td>
+&lt;td>host:i631,env:prod&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>timestamp&lt;/td>
+&lt;td>1613707265&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>value&lt;/td>
+&lt;td>0.29&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>시계열 데이터&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">CPU.load host=webserver01,region=us-west 1613707265 50
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>이름&lt;/th>
+&lt;th>자료형&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>지표 이름&lt;/td>
+&lt;td>문자열&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>태그/레이블 집합&lt;/td>
+&lt;td>&amp;lt;키:값&amp;gt; 쌍의 리스트&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>지표 값 및 그 타임스탬프의 배열&lt;/td>
+&lt;td>&amp;lt;값, 타임스탬프&amp;gt; 쌍의 배열&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>데이터 접근 패턴&lt;/strong>&lt;/p>
+&lt;p>y축에 붙은 레이블은 하나의 시계열 데이터를 나타내고(이름과 레이블을 통해 유일하게 식별되는 데이터), x축에 붙은 레이블은 시간이다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img_1.png"
+width="760"
+height="479"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_1_hud1c090fe36757b28416ad0906c575c18_144927_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_1_hud1c090fe36757b28416ad0906c575c18_144927_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터 접근 패턴"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;p>이 시스템에 대한 쓰기 부하는 시점을 막론하고 막대한 시계열 데이터가 기록될 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>매일 천만 개 운영 지표 기록&lt;/li>
+&lt;li>상당수의 지표는 발생 빈도도 높다.&lt;/li>
+&lt;/ul>
+&lt;p>반면 읽기 부하는 일시적으로 치솟핬다 사라지는(spiky)한 편이다.&lt;/p>
+&lt;ul>
+&lt;li>시각화와 경보 서비스는 데이터베이스에 대한 읽기 연산을 발생시키므로 그래프나 경보를 확인하는 패턴에 따라 일시적으로 증가하였다가 잠잠해진다.&lt;/li>
+&lt;/ul>
+&lt;p>다시 말하면 이 시스템은 &lt;strong>언제나 많은 양의 쓰기 연산 부하를 감당해야하지만, 읽기 연산의 부하는 감시 급등했다가 곧 사라지곤 한다는 것&lt;/strong>이다.&lt;/p>
+&lt;h3 id="데이터-저장소-시스템">데이터 저장소 시스템&lt;/h3>
+&lt;p>데이터 저장소 스스템은 설계안의 핵심이다.&lt;/p>
+&lt;p>지표 모니터링 및 경보 시스템을 위한 저장소 시스템을 직접 설계하거나, MySQL 같은 범용 저장소 시스템을 사용하는 선택지 가운데 어떤 것도 추천하지 않는다.&lt;/p>
+&lt;hr>
+&lt;p>범용 데이터베이스는 이론적으로 시계열 데이터를 처리할 수 있지만, 설계안이 감당하려는 부하 규모에 맞추려면 전문가 수준의 튜닝이 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>관계형 데이터베이스는 시계열 데이터를 대상으로 통상적으로 수행하는 연산에 최적화되어 있지 않다.
+&lt;ul>
+&lt;li>시계열 데이터의 지수 이동 평균(exponential moving average) 값을 지속적으로 갱신하는 것 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>태그/레이블에 대한 질의를 지원하려면 태그마다 인덱스를 지정해야한다.&lt;/li>
+&lt;li>많은 양의 쓰기 연산이 저속적으로 발생하는 환경에서는 좋은 성능을 보이지 못한다.&lt;/li>
+&lt;/ul>
+&lt;p>설계안이 감당하려는 연산 규모에 맞추려면 데이터베이스 튜닝에 상당한 노력을 기울여야만 할 것이고, 설사 그렇게 하다러도 만족할 만한 성능이 나오지 않을 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>카산드라, 빅테이블 처럼 시계열 데이터를 효율적으로 처리할 수 있다고 알려진 NoSQL 데이터베이스들이 나와있긴 하지만 여러 문제들이 있다.&lt;/p>
+&lt;ul>
+&lt;li>시계열 데이터를 효과적으로 저장하고 질의하기 위해서는 확장이 용이한 스키마를 설계해야하며, 그로인해 데이터베이스의 내부 구조에 대한 해박한 지식이 필요하다.&lt;/li>
+&lt;li>시계열 데이터에 최적화된 저장소 시스템은 시장에 많고, 잘 최적화된 덕에 같은 양의 시계열 데이터를 더 적은 서버에 보관할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>시계열 데이터에 최적화된 저장소 시스템의 상당수는 시계열 데이터 분석에 적합하며 SQL보다 사용하기 쉬운 질의 인테페이스도 갖추고 있으며, 데이터 보관 기간을 설정하거나 데이터 집계(aggregation) 기능을 제공하는 제품도 나와있다.&lt;/p>
+&lt;ul>
+&lt;li>OpenTSDB, MetricsDB, Timestream, 등&lt;/li>
+&lt;/ul>
+&lt;p>시장에서 가장 인기있는 시계열 데이터베이스는 InfluxDB, Prometheus 이다.&lt;/p>
+&lt;ul>
+&lt;li>다량의 시계열 데이터를 저장하고 빠른 실시간 분석을 지원한다.&lt;/li>
+&lt;li>메모리 캐시와 디스크 저장소를 함께 사용한다.
+&lt;ul>
+&lt;li>영속성 요건과 높은 성능 요구사항도 잘 만족한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>좋은 시계열 데이터베이스는 막대한 양의 시계열 데이터를 레이블(태그) 기준으로 집계하고 분석하는 기능을 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>InfluxDB는 레이블 기반 신속한 데이터 질의를 위해 레이블별로 인덱스를 구축하며, 레이블을 이용할 때 데이터베이스 과부하를 피하는 지침도 제공한다.&lt;/li>
+&lt;li>각 레이블이 가질 수 있는 값의 가짓수(cardinality)가 낮아야한다.&lt;/li>
+&lt;li>데이터 시각화에 특히 중요하며, 범용 데이터베이스로 구축하기 매우 까다롭다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-설계안">개략적 설계안&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+a[지표 출처] --> b[지표 수집기] --> c[(시계열 데이터 베이스)]
+d[질의 시스템] --> c
+e[경보 시스템] -.질의 전송.-> d
+f[시각화 시스템] -.질의 전송.-> d
+e --> g[이메일]
+e --> h[단문 메시지]
+e --> i[페이저듀티]
+e --> j[HTTPS 서비스 엔드포인트]
+&lt;/pre>
+&lt;ul>
+&lt;li>지표 출처(metrics source)
+&lt;ul>
+&lt;li>지표 데이터가 만들어지는 곳&lt;/li>
+&lt;li>애플리케이션 서버, SQL 데이터베이스, 메시지 큐 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지표 수집기(metrics collector)
+&lt;ul>
+&lt;li>지표 데이터를 수집하고 시계열 데이터에 기록&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>시계열 데이터베이스(time-series database)
+&lt;ul>
+&lt;li>지표 데이터를 시계열 데이터 형태로 보관&lt;/li>
+&lt;li>다량의 시계열 데이터를 분석하고 요약하는 데 적합하도록 설계된 질의 인터페이스 제공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>질의 서비스(query service)
+&lt;ul>
+&lt;li>시계열 데이터베이스에 보관된 데이터를 질의하고 가져오는 과정을 돕는 서비스&lt;/li>
+&lt;li>좋은 시계열 데이터베이스를 골랐다면, 이 서비스는 많은 일을 하지 않아도됨(질의 인터페이스로 대체할 수도 있음)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경보 시스템(alerting system)
+&lt;ul>
+&lt;li>경보를 받아야 하는 다양한 대상으로 경보 알림을 전송하는 역할 담당&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>시각화 시스템(visualization system)
+&lt;ul>
+&lt;li>지표를 다양한 형태의 그래프/차트로 시각화 하는 기능 제공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;p>몇 가지 핵심적 컴포넌트나 처리 흐름에 대한 상세 설계안을 제시할 수 있어야 한다.&lt;/p>
+&lt;h3 id="지표-수집">지표 수집&lt;/h3>
+&lt;p>카운터(counter)나 CPU 사용량 같은 지표를 수집할 때는 때로 데이터가 소실되어도 아주 심각한 문제는 아니다.&lt;/p>
+&lt;p>지표를 보내는 클라이언트는 성공적으로 데이터가 전송되었는지 신경 쓰지 않아도 상관 없다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+subgraph 지표 수집
+a[지표 출처] --> b[지표 수집]
+end
+b --> c[(시계열 데이터베이스)]
+&lt;/pre>
+&lt;h4 id="풀-vs-푸시-모델">풀 vs 푸시 모델&lt;/h4>
+&lt;p>지표 데이터를 수집 방법에는 두 가지 모델이 있다. 딱히 정답은 없다.&lt;/p>
+&lt;p>&lt;strong>풀 모델&lt;/strong>&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+e[지표 수집기]
+subgraph 지표 출처
+a[웹 서버]
+b[DB 클러스터]
+c[큐 클러스터]
+d[캐시 클러스터]
+end
+subgraph SDS
+f[etcd]
+g[주키퍼]
+end
+e --> SDS
+e -."지표 수집 (pull)".-> a
+e -."지표 수집 (pull)".-> b
+e -."지표 수집 (pull)".-> c
+e -."지표 수집 (pull)".-> d
+&lt;/pre>
+&lt;p>HTTP 기반 풀 모델을 이용하는 지표 수집 흐름으로, 실행 중인 애플리케이션에서 주기적으로 지표 데이터를 가져오는 지표 수집가가 이 흐름의 중심이다.&lt;/p>
+&lt;p>이러한 접근법에서는 지표 수집기는 데이터를 가져올 서비스 목록을 알아야한다.&lt;/p>
+&lt;ul>
+&lt;li>지표 수집기 서버 안에 모든 서비스 엔드포인트의 DNS/IP 정보를 담은 파일을 두면 가장 간단하다.
+&lt;ul>
+&lt;li>서버가 수시로 추가/삭제되는 대규모 운영 환경에서는 적용하기 어렵다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>etcd나 아파치 주키퍼 같은 서비스 탐색(Service Discovery) 기술을 활용하면 이 문제는 해결할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>각 서비스는 자신의 가용성 관련 정보를 서비스 탐색 서비스(SDS)에 기록하고, SDS는 서비스 엔드포인터 목록에 변화가 생길 때마다 지표 수집기에 통보한다.&lt;/li>
+&lt;li>SDS에는 언제 어디서 지표를 수집하면 되는지에 관한 설정 정보를 기록한다.&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+metricsCollector[지표 수집기]
+subgraph SDS
+etcd[etcd]
+zookeeper[주키퍼]
+end
+metricsCollector -- "1 > 지표 수집 대상 목록 확보" --> SDS
+webServer[웹 서버]
+metricsCollector -- "2 > /metrics 엔드포인트 제공" --> webServer
+&lt;/pre>
+&lt;ol>
+&lt;li>지표 수집기는 SDS에서 서비스 엔드포인트 설정 메타데이터 목록을 가져온다.
+&lt;ul>
+&lt;li>지표 수집 주기(pulling interval), IP 주소, 타임아웃(timeout), 재시도 인자(retry parameter) 등&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지표 수집기는 사전 합의된 HTTP 엔드포인트(&lt;code>/metrics&lt;/code>) 지표 데이터를 가져온다.
+&lt;ul>
+&lt;li>엔드포인트를 수집기에 노출하기 위해, 통상 서비스에 특정 클라이언트 라이브러리를 추가한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지표 수집기는 서비스 엔드포인트 목록의 변화를 통지 받기 위한 변경 이벤트 알림(change event notification) 콜백을 서비스 탐색 컴포넌트에 등록할 수 있다.
+&lt;ul>
+&lt;li>주기적으로 서비스 탐색 컴포넌트에서 엔드포인트 목록을 다시 가져와도 된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>수천 대 서버가 만들어내는 지표 데이터를 수집하려면 지표 수집기 서버 한대로는 부족하기 때문에 &lt;strong>지표 수집기 서버 풀&lt;/strong>을 만들어야 설계안에서 다루는 지표 데이터 규모를 감당할 수 있다.&lt;/p>
+&lt;p>지표 수집기 서버를 여러 대 둘 때 &lt;strong>여러 서버가 같은 출처에서 데이터를 중복해서 가져올 가능성&lt;/strong>이 있으므로, &lt;strong>안정 해시 링&lt;/strong>(consistent hash ring)을 통해 지표 수집 서버간에 중재 매커니즘을 만든다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img_2.png"
+width="746"
+height="516"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_2_hu19df0509573056ae55682cc2dd294aef_83940_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_2_hu19df0509573056ae55682cc2dd294aef_83940_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="안정 해시"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>&lt;/p>
+&lt;p>해시 링 구간마다 해당 구간에 속한 서버로부터 생산되는 지표의 수집을 담당하는 수집기 서버를 지정하여 특정 서버의 지표 데이터가 항상 하나의 수집 서버가 처리함을 보장할 수 있다.&lt;/p>
+&lt;p>&lt;strong>푸시 모델&lt;/strong>&lt;/p>
+&lt;p>푸시 모델은 &lt;strong>지표 출처에 해당하는 서버가 직접 지표를 수집기에 전송&lt;/strong>하는 모델이다.&lt;/p>
+&lt;ul>
+&lt;li>웹서버, 데이터베이스 서버 등&lt;/li>
+&lt;/ul>
+&lt;p>푸시 모델의 경우, 모니터링 대상 서버에 통상 &lt;strong>수집 에이전트&lt;/strong>(Collection agent)라고 부르는 소프트웨어를 설치한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>수집 에이전트&lt;/strong>&lt;br>
+해당 장비에서 실행되는 서비스가 생산하는 지표 데이터를 받아 모은 후 주기적으로 수집기에 전달한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>간단한 카운터 지표는 수집기에 보내기 전 에이전트가 직접 데이터 집계 등의 작업을 처리할 수도 있다.&lt;/p>
+&lt;p>데이터 집계(aggregation)는 &lt;strong>수집기에 보내는 데이터의 양을 줄이는 효과적인 방법&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 전송 트래픽의 양이 막대하여 수집가가 일시적으로 전송되는 데이터를 처리하지 못하게 되어 오류를 반환하면, 에이전트는 내부의 소규모 버퍼에 데이터를 일시적으로 보관한 다음 나중에 재전송 할 수 있다.&lt;/li>
+&lt;li>에이전트가 위치한 서버 클러스터가 자동 규모 확장이 가능하도록 설정되어 있다면 서버가 동적으로 추가되거나 삭제되는 과정에서 해당 데이터는 소실될 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+subgraph 지표 출처
+webServer[웹 서버]
+subgraph agents
+direction TB
+metric1[지표 1] ~~~
+metric2[지표 2] ~~~
+metric3[지표 3]
+end
+webServer --> agents
+end
+agents --메시지 전송--> lb[로드벨런서]
+lb --> metricsCollectorCluster[[지표 수집기 서버 클러스터]]
+&lt;/pre>
+&lt;p>푸시 모델을 채택한 지표 수집기가 밀려드는 지표 데이터를 제때 처리하지 못하는 일을 방지하려면, 지표 수집기 클러스터 자체도 자동 규모 확장이 가능하도록 구성하고 그 앞에 로드밸런서를 두는 것이 바람직하다.&lt;/p>
+&lt;p>&lt;strong>풀 모델 vs 푸시 모델 장단점 비교&lt;/strong>&lt;/p>
+&lt;p>상황에 적합한 모델이 무엇인지는 정답이 없으며, 실제로 이 두 모델은 구분 없이 널리 사용되고 있다.&lt;/p>
+&lt;ul>
+&lt;li>풀 모델: 프로메테우스&lt;/li>
+&lt;li>푸시 모델: 아마존 클라우드 와치(CloudWatch), 그래파이트(Graphite)&lt;/li>
+&lt;/ul>
+&lt;p>두 모델의 장단점을 비교하여 적절히 이용한다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>풀 모델&lt;/th>
+&lt;th>푸시 모델&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>손쉬운 디버깅&lt;/td>
+&lt;td>애플리케이션 서버에 &lt;code>/metrics&lt;/code> 엔드포인트를 두도록 강제하므로 필요하다면 언제든 지표 데이터를 볼 수 있다.&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>상태 진단(health check)&lt;/td>
+&lt;td>애플리케이션 서버가 풀 요청에 응답하지 않으면 바로 해당 서버에 장애가 발생한 것으로 진단할 수 있다(더 쉽다)&lt;/td>
+&lt;td>지표 수집기가 지표를 받지 못하면 네트워크 장애가 원인인지 서버 장애가 원인인지 알기 어렵다.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>생존 기간이 짧은 프로세스&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>생명 주기가 짧은 일괄 작업 프로세스의 경우 수집기가 미처 지표를 끌어가기도 전에 종료될 수 있다. 그런 점에서 푸시 모델이 조금더 낫다(풀 모델도 푸시 게이트웨이를 도입하면 해당 문제점을 해결할 수 있다&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>방화벽 등의 복잡한 네트워크 구성&lt;/td>
+&lt;td>수집기 서버가 지표 데이터를 제대로 끌어가려면 모든 &lt;code>/metrics&lt;/code> 엔드포인트가 접근 가능하도록 구성되어야한다. 데이터센터를 여러 개 사용하는 경우에는 문제가 될 수 있으므로 네트워크 인프라를 세심히 설계해야한다.&lt;/td>
+&lt;td>지표 수집기가 로드밸런서 및 자동 규모 확장 클러스터 형태로 구성되었다면 어디서 오는 지표라도 수집 가능하다.(더 낫다)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>성능&lt;/td>
+&lt;td>풀 모델은 일반적으로 TCP를 사용한다.&lt;/td>
+&lt;td>푸시 모델은 보통 UDP를 사용하여 지표 전송 지연이 더 낮다.(TCP보다 오버헤드가 낮으므로)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 신빙성&lt;/td>
+&lt;td>지표 데이터를 가져올 애플리케이션 서버의 목록이 이미 정의된 상태이므로 해당 서버에서 수집한 데이터는 믿을 수 있다.&lt;/td>
+&lt;td>아무나 지표 수집기에 데이터를 보낼 수 있어, 지표 전송을 허용할 서버의 목록을 수집기 측에 유지하거나 인증을 강제하면 문제를 해결할 수 있다.&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>풀 모델과 푸시 모델 가운데 무엇이 나은지는 논쟁적인 주제이고 정답도 없다.&lt;/p>
+&lt;p>서버리스(serverless) 기술이 각광 받음에 따라 많은 조직이 두 모델을 모두 지원하고 있다.&lt;/p>
+&lt;ul>
+&lt;li>지표 수집 에이전트를 설치할 서버가 마땅히 존재하지 않을 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="지표-전송-파이프라인의-규모-확장">지표 전송 파이프라인의 규모 확장&lt;/h3>
+&lt;p>지표 수집기와 시계열 데이터베이스를 좀 더 자세히 살펴보자.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+metricsOrigin[지표 출처] --> metricsCollector
+subgraph " "
+metricsCollector[지표 수집기] -->
+timeseriesDB[(시계열 데이터베이스)]
+end
+querySystem[쿼리 시스템] --> timeseriesDB
+&lt;/pre>
+&lt;p>풀 모델과 푸시 모델 가운데 무엇을 채택할지 여부와 관계없이, &lt;strong>지표 수집기는 서버 클러스터 형태이며 엄청난 양의 데이터를 받아 처리&lt;/strong>해야한다.&lt;/p>
+&lt;ul>
+&lt;li>이 클러스터는 자동으로 규모 확장이 가능하도록 설정하여 언제나 데이터 처리에 충분한 수집기 서버가 존재하도록 해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>하지만 시계열 데이터베이스에 장애가 생기면 데이터 손실이 발생할 가능성이 있는데, 큐를 두면 그런 문제들을 해소할 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart LR
+metricsOrigin[지표 출처] --> kafka
+subgraph " "
+kafka[[카프카]] -->
+metricsCollector[지표 수집기] -->
+timeseriesDB[(시계열 데이터베이스)]
+end
+querySystem[쿼리 시스템] --> timeseriesDB
+&lt;/pre>
+&lt;p>자료 수집기는 지표 데이터를 카프카와 같은 큐 시스템에 전송하면 &lt;strong>스트림 처리 서비스가 해당 데이터를 받아 시계열 데이터베이스에 저장&lt;/strong>한다.(아파치 스톰이나 플링크, 스파크 같은 소비자)&lt;/p>
+&lt;p>이러한 구조는 몇 가지 장점이 있다.&lt;/p>
+&lt;ul>
+&lt;li>카프카는 고도로 안정적이고 규모 확장성이 뛰어난 분산 메시지 플랫폼이다.&lt;/li>
+&lt;li>데이터 수집 컴포넌트와 처리 컴포넌트 사이의 결합도를 낮춘다.&lt;/li>
+&lt;li>데이터베이스에 장애가 생겨도 카프카에 보관해 두면 되므로 데이터가 소실되지 않는다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="카프카를-이용한-규모-확장">카프카를 이용한 규모 확장&lt;/h4>
+&lt;p>카프카에 내장된 파티션 매커니즘을 활용하여 시스템의 규모를 다양한 방법으로 확장할 수 있다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+metricsCollector[지표 수집기]
+subgraph Kafka
+partition0["파티션 0 (지표 1)"]
+partition1["파티션 1 (지표 2)"]
+partition2["파티션 2 (지표 3)"]
+end
+&lt;/pre>
+&lt;ul>
+&lt;li>대역폭 요구사항에 따라 파티션의 수를 결정한다.&lt;/li>
+&lt;li>지표 이름에 따라 어떤 지표를 어느 파티션에 배치할 지 결정하면 소비자는 지표 이름에 따라 데이터를 집계할 수 있다.&lt;/li>
+&lt;li>테그/레이블에 따라 지표 데이터를 더욱 세분화한 파티션으로 나눈다.&lt;/li>
+&lt;li>중요 지표가 먼저 처리될 수 있도록 지표를 분류하고 우선순위를 지정한다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="카프카의-대안">카프카의 대안&lt;/h4>
+&lt;p>상용 구묘의 카프카 시스템 구축은 쉽지 않기 때문에 반대할 수도 있다.&lt;/p>
+&lt;p>시장에는 큐 없이도 대규모 데이터 처리가 가능한 모니터링 시스템이 있다.&lt;/p>
+&lt;ul>
+&lt;li>페이스북의 메모리 기반 시계열 데이터베이스 시스템 &lt;strong>고릴라(Gorilla)&lt;/strong> 등&lt;/li>
+&lt;/ul>
+&lt;p>고릴라는 일부에 네트워크 장애가 발생해도 높은 수준의 쓰기 연산 가용성을 유지하는데, 이런 시스템을 쓴다면 카프카 같은 메시지 큐가 없어도 같은 수준의 안정성을 제공할 수 있다.&lt;/p>
+&lt;h3 id="데이터-집계-지점">데이터 집계 지점&lt;/h3>
+&lt;p>지표 집계는 다양한 지점에서 실행 가능하다.&lt;/p>
+&lt;ul>
+&lt;li>수집 에이전트(클라이언트 집계 방안)&lt;/li>
+&lt;li>데이터 수집(ingestion) 파이프라인(저장소 기록 전에 집계 하는 방안)&lt;/li>
+&lt;li>질의 시점(저장소 기록 후에 집계)&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>수집 에이전트가 집계하는 방안&lt;/strong>&lt;/p>
+&lt;p>클라이언트에 설치된 수집 에이전트는 복잡한 집계 로직은 지원하기 어렵다.&lt;/p>
+&lt;ul>
+&lt;li>어떤 카운터 값을 분 단위로 집계하여 지표 수집기에 보내는 정도는 가능&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>데이터 수집 파이프라인에서 집계하는 방안&lt;/strong>&lt;/p>
+&lt;p>보통 플링크 같은 스트림 프로세싱 엔진이 필요하다.&lt;/p>
+&lt;p>데이터베이스에는 계산 결과만 기록하므로, 실제로 기록되는 양은 업청나게 줄어든다.&lt;/p>
+&lt;ul>
+&lt;li>늦게 도착하는 지표 데이터의 처리가 어렵다.&lt;/li>
+&lt;li>원본 데이터를 보관하지 않기 때문에 정밀도나 유연성 측변에서 손해를 보게된다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>질의 시에 집계하는 방안&lt;/strong>&lt;/p>
+&lt;p>데이터를 날것 그대로 보관한 다음 질의할 때 필요한 시간 구간에 맞게 집계한다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 손실 문제는 없으나 질의를 처리하는 순간에 전체 데이터세트를 대상으로 집게 결과를 계산해야 하므로 속도는 느릴 것이다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="질의-서비스">질의 서비스&lt;/h3>
+&lt;p>질의 서버 클러스터 형태로 구현되며, 시각화 또는 경보 시스템에서 접수된 요청을 시계열 데이터베이스를 통해 처리하는 역할을 담당한다.&lt;/p>
+&lt;p>질의 처리 전담 서비스를 두면 &lt;strong>클라이언트(시각화 또는 경보 시스템)&lt;/strong> 와 시계열 데이터베이스 사이의 결합도를 낮출 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>시계열 데이터베이스를 자유롭게 다른 제품으로 교체할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="캐시-계층">캐시 계층&lt;/h4>
+&lt;pre class="mermaid" style="text-align: center;">flowchart
+timeseriesDB[시계열 데이터 베이스]
+subgraph " "
+queryService[질의 서비스] -->
+cache[캐시]
+end
+queryService --> timeseriesDB
+alertSystem[경보 시스템] --> queryService
+monitoringSystem[시각화 시스템] --> queryService
+&lt;/pre>
+&lt;p>질의 결과를 저장할 캐시 서버를 도입하면 시계열 데이터베이스에 대한 질의 부하를 낮추고 질의 서비스의 성능을 높일 수 있다.&lt;/p>
+&lt;h4 id="질의-서비스를-두면-곤란한-경우">질의 서비스를 두면 곤란한 경우&lt;/h4>
+&lt;p>대부분 상용 시각화 및 경보 시스템은 &lt;strong>시장에서 널리 사용되는 시계열 데이터베이스와의 연동을 처리하는 강력한 플러그인을 이미 갖추고 있는 경우가 많다.&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>별도 캐시를 도입할 필요가 없는 시계열 데이터베이스를 고려할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="시계열-데이터베이스-질의어">시계열 데이터베이스 질의어&lt;/h4>
+&lt;p>프로메테우스나 InfluxDB 같은 널리 사용되는 지표 모니터링 시스템들은 시계열 데이터가 SQL로는 질의하기가 까다롭다는 특성 때문에 &lt;strong>SQL이 아닌 독자 질의어를 제공&lt;/strong>한다.&lt;/p>
+&lt;h3 id="저장소-계층">저장소 계층&lt;/h3>
+&lt;h4 id="시계열-데이터베이스는-신중하게-선택할-것">시계열 데이터베이스는 신중하게 선택할 것&lt;/h4>
+&lt;p>페이스북에서 내놓은 연구 논문에 다르면 &lt;strong>운영 데이터 저장소에 대한 질의의 80%는 지난 26시간 내에 수집된 데이터를 대상으로 한다.&lt;/strong>&lt;/p>
+&lt;p>이 사실을 잘 활용하는 시계열 데이터베이스를 고르면 성능 측면에서 큰 이득을 볼 수 있다.&lt;/p>
+&lt;h4 id="저장-용량-최적화">저장 용량 최적화&lt;/h4>
+&lt;p>지표 모니터링 시스템에 저장할 데이터 야은 막대하므로, 이를 위한 몇 가지 전략이 있다.&lt;/p>
+&lt;p>&lt;strong>데이터 인코딩 및 압축&lt;/strong>&lt;/p>
+&lt;p>데이터를 인고딩하고 압축하면 크기를 상당히 줄일 수 있으며, 좋은 시계열 데이터베이스는 대부분 이 기능을 내장하고 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img_3.png"
+width="781"
+height="258"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_3_hu56036a484ad679241b4af54eee2f0b6a_59647_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_3_hu56036a484ad679241b4af54eee2f0b6a_59647_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터 인코딩 - 이중-델타 인코딩"
+class="gallery-image"
+data-flex-grow="302"
+data-flex-basis="726px"
+>&lt;/p>
+&lt;p>시계열 데이터는 특정 시간대에 연속적으로 수집된다는 특징을 가진다.&lt;/p>
+&lt;p>따라서 1610087371과 1610087381은 10초 만큼만 다른 값이므로 값의 차이를 저장한다면 용량을 크게 아낄 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>데이터를 완전한 형태가 아닌 기준 값과 차이를 저장한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>다운 샘플링&lt;/strong>&lt;/p>
+&lt;p>데이터의 해상도를 낮춰 저장소 요구량을 줄이는 기법이다.&lt;/p>
+&lt;p>요구된 데이터 보관 기간은 1년이므로, 낡은 데이터는 해상도를 줄일 수 있다.&lt;/p>
+&lt;p>&lt;strong>냉동 저장소&lt;/strong>&lt;/p>
+&lt;p>냉동 저장소(cold storage)는 잘 사용되지 않는 비활성 상태 데이터를 보관하는 곳으로 일반 저장소에 비해 비용이 훨씬 싸다.&lt;/p>
+&lt;h3 id="경보-시스템">경보 시스템&lt;/h3>
+&lt;p>대체적으로 시각화와 경보 시스템은 직접 만들기보다 사용품을 가져다 쓰는 편이 훨씬 낫지만 경보 시스템의 구성 방법을 살펴보면 좋다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img_4.png"
+width="852"
+height="291"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_4_hu0d21b347337e0c4ab1ec37425a58c14b_102706_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_4_hu0d21b347337e0c4ab1ec37425a58c14b_102706_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="경보 시스템"
+class="gallery-image"
+data-flex-grow="292"
+data-flex-basis="702px"
+>&lt;/p>
+&lt;ol>
+&lt;li>설정 파일을 가져와 캐시 서버에 보관한다.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>경보 규칙은 디스크에 파일 상태로 보관하며, YAML이 널리 사용된다.&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>경보 관리자(alert manager)는 정보 설정 내역을 캐시에서 가져온다.&lt;/li>
+&lt;li>설정된 규칙에 근거하여 경보 관리자는 지정된 시간마다 질의 서비스를 호출하고, 질의 결과가 설정된 임계값을 위반하면 경보 이벤트를 생성한다.
+&lt;ul>
+&lt;li>경보 필터링 , 병합, 중복 제거
+&lt;ul>
+&lt;li>짧은 시간 동안 같은 인스턴스에서 발생한 경보를 병합한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>접근 제어
+&lt;ul>
+&lt;li>특정한 경보 관리 작업은 방드시 특정한 개인만이 수행할 수 있도록 제한해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>재시도
+&lt;ul>
+&lt;li>경보 상태를 확인하고 알림이 최소 한번은 전달됨을 보장해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경보 저장소는 카산드라 같은 형태의 키-값 저장소로, 모든 경보의 상태(비활성, 응답 대기, 경보 발령, 문제 해결 등)가 보관되어, 알람이 적어도 한 번 이상 전달되도록 보장하는데 쓰인다.&lt;/li>
+&lt;li>경보 이벤트를 카프카에 전달한다.&lt;/li>
+&lt;li>경보 소비자는 카프카에서 경보 이벤트를 읽는다.&lt;/li>
+&lt;li>경보 소비자는 카프카에서 읽은 경보 이벤트를 처리하여 이메일, 단문 메시지, 페이저듀티, HTTP 서비스 엔드포인트 드으이 다양한 채널로 알림을 전송한다.&lt;/li>
+&lt;/ol>
+&lt;h4 id="만들-것인가-구매할-것인가">만들 것인가 구매할 것인가&lt;/h4>
+&lt;p>기업이 필요로하는 규모를 바로 지원 가능한 경보 시스템은 시장에 많으며, 대부분 유명 시계열 데이터베이스와 통합되어 있고, 다양한 알림 채널을 지원한다.&lt;/p>
+&lt;p>따라서 실무에서는 경보 시스템을 밑바닥부터 구현하겠다는 아이디어는 수용되기 어렵다.&lt;/p>
+&lt;h3 id="시각화-시스템">시각화 시스템&lt;/h3>
+&lt;p>시각화 시스템은 데이터 계층 위에 만들어진다.&lt;/p>
+&lt;p>지표 대시보드에는 다양한 시간 범위로 표시하고, 경보 대시보드에는 다양한 경보의 상태를 표시한다.&lt;/p>
+&lt;p>품질 좋은 시각화 시스템은 구현하기 어려우므로, 상용품을 구입해서 쓰자고 주장하는 것이 바람직하다.&lt;/p>
+&lt;ul>
+&lt;li>그라파나 등&lt;/li>
+&lt;/ul>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>지표 모니터링 경보 시스템에 대한 설계안을 살펴보았다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/5/img_5.png"
+width="835"
+height="362"
+srcset="https://codemario318.github.io/post/system-design-interview-2/5/img_5_hu7475e8ccf38dbe0aaf1a5ea62e5bf8df_98216_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/5/img_5_hu7475e8ccf38dbe0aaf1a5ea62e5bf8df_98216_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="최종 설계안"
+class="gallery-image"
+data-flex-grow="230"
+data-flex-basis="553px"
+>&lt;/p>
+&lt;ul>
+&lt;li>지표 데이터 수집 모델: 풀 모델 VS 푸시 모델&lt;/li>
+&lt;li>카프카를 활용한 규모 확장 방안&lt;/li>
+&lt;li>최적 시계열 데이터베이스의 선정&lt;/li>
+&lt;li>다운샘플링을 통한 데이터 크기 절감&lt;/li>
+&lt;li>경보/시각화 시스템: 구현할 것인가 구입할 것인가&lt;/li>
+&lt;/ul></description></item></channel></rss>
