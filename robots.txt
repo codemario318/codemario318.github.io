@@ -3,7 +3,17 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/5/
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -45,6 +55,7 @@ Allow: /post/
 
 
 
+Allow: /post/boostcamp-9th/review/membership/4/
 
 
 
@@ -52,6 +63,27 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview-2/5/
 
 
 
@@ -88,26 +120,6 @@ Allow: /post/
 
 
 Allow: /post/boostcamp-9th/review/membership/3/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1612,8 +1624,6 @@ Allow: /post/jvm_gc/
 
 
 Allow: /post/jvm/
-
-
 
 
 
