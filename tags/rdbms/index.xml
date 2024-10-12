@@ -1,4 +1,769 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RDBMS on Mario Blog</title><link>https://codemario318.github.io/tags/rdbms/</link><description>Recent content in RDBMS on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 12 Aug 2024 10:44:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/rdbms/index.xml" rel="self" type="application/rss+xml"/><item><title>챌린지 과정 4주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</link><pubDate>Mon, 12 Aug 2024 10:44:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/cover.png" alt="Featured image of post 챌린지 과정 4주차 회고" />&lt;p>부스트캠프 챌린지 과정이 4주차로 마무리되었습니다🥳&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RDBMS on Mario Blog</title><link>https://codemario318.github.io/tags/rdbms/</link><description>Recent content in RDBMS on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 12 Oct 2024 14:59:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/rdbms/index.xml" rel="self" type="application/rss+xml"/><item><title>7. 호텔 예약 시스템</title><link>https://codemario318.github.io/post/system-design-interview-2/7/</link><pubDate>Sat, 12 Oct 2024 14:59:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/7/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/cover.png" alt="Featured image of post 7. 호텔 예약 시스템" />&lt;p>이번 장에서는 호텔 체인의 예약 시스템을 설계한다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>호텔 예약 시스템은 복잡하고 그 컴포넌트는 시스템을 사업에 어떻게 이용할지에 따라 달라지므로 범위를 명확히 해야한다.&lt;/p>
+&lt;h3 id="비기능-요구사항">비기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>높은 수준의 동시성 지원
+&lt;ul>
+&lt;li>성수기, 대규모 이벤트 기간에는 일부 인기 호텔의 특정 객실을 예약하려는 고객이 많이 몰릴 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>적절한 지연 시간
+&lt;ul>
+&lt;li>사용자가 예약을 할 때는 응답 시간이 빠르면 이상적이겠으나 &lt;strong>예약 요청 처리&lt;/strong>에 &lt;strong>몇 초 정도&lt;/strong> 걸리는 것은 괜찮다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-규모-추정">개략적 규모 추정&lt;/h3>
+&lt;ul>
+&lt;li>총 5,000개 호텔, 100만 개의 객실이 있다고 가정&lt;/li>
+&lt;li>평균 &lt;strong>객실의 70%가 사용 중&lt;/strong>, 평균 &lt;strong>투숙 기간은 3일&lt;/strong>이라고 가정&lt;/li>
+&lt;li>&lt;code>일일 예상 예약 건수 = (1백만 * 0.7) / 3 ~= 240,000&lt;/code>&lt;/li>
+&lt;li>&lt;code>초당 예약 건수 = 240,000 / 하루에 10^5초 ~= 3&lt;/code>
+&lt;ul>
+&lt;li>초당 예약 트랜잭션 수(TPS)는 높지 않다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>시스템 내 모든 페이지의 QPS를 계산해본다.&lt;/p>
+&lt;p>호텔 예약 시스템은 일반적으로 고객이 아래와 같은 흐름을 거친다.&lt;/p>
+&lt;ol>
+&lt;li>호텔/객실 상세 페이지
+&lt;ul>
+&lt;li>사용자가 호텔/객실 정보를 확인한다.(조회)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>예약 상세 정보 페이지
+&lt;ul>
+&lt;li>날짜, 투숙 인원, 결제 방법 등의 상세 정보를 예약 전에 확인한다.(조회)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>객실 예약 페이지
+&lt;ul>
+&lt;li>사용자가 &amp;lsquo;예약&amp;rsquo; 버튼을 눌러 객실을 예약한다.(트랜잭션 발생)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img.png"
+width="1290"
+height="630"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_hudca757551e48c8d1d2e333630b9f6cbe_51951_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_hudca757551e48c8d1d2e333630b9f6cbe_51951_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="QPS 분포"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>대략 10%의 사용자가 간 단계에서 다음 단계를 진행한다고 가정하면 최종 예약 TPS는 3이므로, 예약 페이지의 QPS는 30, 객실 정보 확인 페이지의 QPS는 300이다.&lt;/p>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;h3 id="api-설계">API 설계&lt;/h3>
+&lt;p>호텔 예약 시스템의 가장 중요한 API만 RESTful 관례에 따라 표현하면 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>검색 기능 등의 직관적인 기능도 필요하나, 기술적으로 도전적이지는 않다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>호텔 관련 API&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>API&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>GET /v1/hotels/id&lt;/td>
+&lt;td>호텔의 상세 정보 반환&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>POST /v1/hotels&lt;/td>
+&lt;td>신규 호텔 추가(관리자)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PUT /v1/hotels/id&lt;/td>
+&lt;td>호텔 정보 갱신(관리자)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DELETE /v1/hotels/id&lt;/td>
+&lt;td>호텔 정보 삭제(관리자)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>객실 관련 API&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>API&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>GET /v1/hotels/:id/rooms/id&lt;/td>
+&lt;td>객실 상세 정보 반환&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>POST /v1/hotels/:id/rooms&lt;/td>
+&lt;td>신규 객실 추가(관리자)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PUT /v1/hotels/:id/rooms/id&lt;/td>
+&lt;td>객실 정보 갱신(관리자)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DELETE /v1/hotels/:id/rooms/id&lt;/td>
+&lt;td>객실 정보 삭제(관리자)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>예약 관련 API&lt;/strong>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>API&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>GET /v1/reservations&lt;/td>
+&lt;td>로그인 사용자의 예약 이력 반환&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GET /v1/reservations/id&lt;/td>
+&lt;td>특정 예약의 상세 정보 반환&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>POST /v1/reservations&lt;/td>
+&lt;td>신규 예약&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DELETE /v1/reservations/id&lt;/td>
+&lt;td>예약 취소&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>신규 예약 접수는 아주 중요한 기능으로, 새 예약을 만들 때 전달하는 인자의 형태는 아래와 같은데&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;startDate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;2021-04-28&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;endDate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;2021-04-30&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;hotelID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;245&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;roomID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;U12354673389&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;reservationID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;13422445&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>researvationID&lt;/code>는 &lt;strong>이중 예약을 방지하고 동일한 예약은 단 한 번만 이루어지도록 보증하는 멱등 키(idempotent key)다.&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>멱등성?&lt;/strong>
+연산을 여러 번 적용하더라도 결과가 달라지지 않는 성질&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="데이터-모델">데이터 모델&lt;/h3>
+&lt;p>어떤 데이터베이스를 사용할지 결정하기위해 데이터 접근 패턴을 확인해야한다.&lt;/p>
+&lt;ol>
+&lt;li>호텔 상세 정보 확인&lt;/li>
+&lt;li>지정된 날짜 범위에 사용 가능한 객실 유형 확인&lt;/li>
+&lt;li>예약 정보 기록&lt;/li>
+&lt;li>예약 내역 또는 과거 예약 이력 정보 조회&lt;/li>
+&lt;/ol>
+&lt;p>시스템 규모가 크지 않지만 대규모 이벤트 등으로 인해 트래픽이 급증할 수도 있으니 대비가 필요하다.&lt;/p>
+&lt;p>이런 요구사항을 종합적으로 고려하였을 때 &lt;strong>관계형 데이터베이스&lt;/strong>가 적절해보인다.&lt;/p>
+&lt;ul>
+&lt;li>읽기 빈도가 쓰기 연산에 비해 높은 작업 흐름을 잘 지원한다.
+&lt;ul>
+&lt;li>읽기 반도가 압도적인 작업 흐름은 충분히 잘 지원한다.&lt;/li>
+&lt;li>NoSQL 데이터베이스는 대체로 쓰기 연산에 최적화되어 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>ACID 속성(원자성, 일관성, 격리성, 영속성)을 보장한다.
+&lt;ul>
+&lt;li>예약이라는 도메인 특성으로 인해 ACID 속성은 매우 중요하다.&lt;/li>
+&lt;li>ACID를 보장하지 않으면 잔액 마이너스 문제, 이중 청구 문제, 이중 예약 문제 등을 방지하기 어렵다.&lt;/li>
+&lt;li>ACID 속성이 충족되는 데이터베이스를 사용하면 코드는 단순해지고 이해하기 쉬워진다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터를 쉽게 모델링 할 수 있다.
+&lt;ul>
+&lt;li>비즈니스 데이터의 구조를 명확하게 표현할 수 있을 뿐 아니라 엔티티 간의 간계를 안정적으로 지원할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_1.png"
+width="1622"
+height="1138"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_1_hude4e50a98d4fd9adb0d8d3f89cda06c5_259967_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_1_hude4e50a98d4fd9adb0d8d3f89cda06c5_259967_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터베이스 스키마"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>&lt;code>reservation&lt;/code> 테이블의 &lt;code>status&lt;/code> 필드는 &lt;code>Pending&lt;/code>, &lt;code>Paid&lt;/code>, &lt;code>Refunded&lt;/code>, &lt;code>Canceled&lt;/code>, &lt;code>Rejected&lt;/code> 다섯 상태 가운데 하나를 값으로 가질 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_2.png"
+width="1320"
+height="630"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_2_hu654fdd7d1e7937dbeca03f4655f81aa1_21966_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_2_hu654fdd7d1e7937dbeca03f4655f81aa1_21966_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="예약 상태"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="502px"
+>&lt;/p>
+&lt;p>이 스키마에서 &lt;code>room_id&lt;/code>는 에어비엔비 같은 회사에는 적합하나, 특정 호텔의 특정 객실 유형을 예약하는 호텔에는 적절하지 않을 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>객실 번호는 예약할 때가 아닌, 투숙객이 체크인 하는 시점에 부여된다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-설계안">개략적 설계안&lt;/h3>
+&lt;p>이번 호텔 예약 시스템에는 마이크로서비스 아키텍처를 사용한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_3.png"
+width="1946"
+height="1100"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_3_hu282c3b24ada39ab6809ed01eac989c4e_87808_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_3_hu282c3b24ada39ab6809ed01eac989c4e_87808_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="개략적 설계안"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>마이크로 서비스 간 상호작용을 나타내는 화살표 상당수를 생략하였다.&lt;/p>
+&lt;p>실제 상업적으로 이용되는 시스템의 서비스 간 통신에는 gRPC와 같은 고성능 원격 프로세서 호출 프레임워크를 사용하곤 한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>gRPC?&lt;/strong>&lt;br>
+gRPC는 Google에서 개발한 고성능, 오픈 소스 원격 프로시저 호출(Remote Procedure Call, RPC) 프레임워크이다.
+클라이언트와 서버 간에 원격 프로시저를 호출할 수 있게 해 주며, 마치 로컬에서 함수를 호출하는 것처럼 네트워크를 통해 다른 시스템의 메서드를 실행할 수 있다.
+주로 프로토콜 버퍼(Protocol Buffers, protobuf)라는 직렬화 방식을 사용해 데이터를 효율적으로 전송하며, HTTP/2를 기반으로 동작해 성능과 확장성을 높인다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;h3 id="개선된-데이터-모델">개선된 데이터 모델&lt;/h3>
+&lt;p>호텔 객실을 예약할 때는 특정 객실이 아니라 특정한 객실 유형을 예약하게 된다.&lt;/p>
+&lt;p>이러한 특성을 반영하기 위해 예약 API의 경우 호출 인자 가운데 &lt;code>roomID&lt;/code>는 &lt;code>roomTypeID&lt;/code>로 변경한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;startDate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;2021-04-28&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;endDate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;2021-04-30&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;hotelID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;245&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;roomTypeID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;U12354673389&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;reservationID&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;13422445&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>스키마는 아래와 같이 변경된다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_4.png"
+width="1366"
+height="1028"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_4_hu481f8e14d20d4e775dd6afb82166b25a_281965_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_4_hu481f8e14d20d4e775dd6afb82166b25a_281965_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="갱신된 스키마"
+class="gallery-image"
+data-flex-grow="132"
+data-flex-basis="318px"
+>&lt;/p>
+&lt;p>주요 변경 사항은 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>room&lt;/code>: 객실에 관계된 정보&lt;/li>
+&lt;li>&lt;code>room_type_rate&lt;/code>: 특정 객실 유형의 특정 일자 요금 정보&lt;/li>
+&lt;li>&lt;code>reservation&lt;/code>: 투숙객 예약 정보&lt;/li>
+&lt;li>&lt;code>room_type_inventory&lt;/code>: 호텔의 모든 객실 유형
+&lt;ul>
+&lt;li>&lt;code>hotel_id&lt;/code>: 호텔 식별자&lt;/li>
+&lt;li>&lt;code>room_type_id&lt;/code>: 객실 유형 식별자&lt;/li>
+&lt;li>&lt;code>date&lt;/code>: 일자&lt;/li>
+&lt;li>&lt;code>total_inventory&lt;/code>: 총 객실 수에서 일시적으로 제외한 객실 수를 뺀 값
+&lt;ul>
+&lt;li>유지 보수를 위해 예약 가능 목록에서 제외할 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>total_reserved&lt;/code>: 저정된 hotel_id, room_type_id, date에 예약된 모든 객실의 수&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>날짜당 하나의 레코드를 사용하면 날짜 범위 내에서 예약을 쉽게 관리하고 질의할 수 있다.&lt;/p>
+&lt;p>이 테이블의 기본키는 &lt;code>(hotel_id, room_type_id, date)&lt;/code>의 복합키로, 2년 이내 모든 미래 날짜에 대한 가용 객실 데이터 질의 결과를 토대로 미리 채워 놓고, 시간이 흐름에 따라 새로 추가해야 하는 객실 정보는 매일 한 번씩 일괄 작업을 돌려 반영한다.&lt;/p>
+&lt;hr>
+&lt;p>5,000개의 호텔이 있고 각 호텔에는 20개의 객실 유형이 있으므로 테이블에 저장해야 하는 레코드의 수는 &lt;code>5,000 * 20 * 2년 * 365일 = 7,300만 개&lt;/code> 정도이다.&lt;/p>
+&lt;p>많은 데이터가 아니므로 데이터베이스 하나면 저장하기 충분하지만, 하나만 둔다면 SPOF 문제를 피할 수 없게된다.&lt;/p>
+&lt;p>고가용성을 달성하려면 여러 지역, 또는 가용성 구역에 데이터베이스를 복제해 두어야 한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;code>room_type_inventory&lt;/code> 테이블은 고객이 특정 유형의 객실을 예약할 수 있는지 여부를 확인할 때 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>입력
+&lt;ul>
+&lt;li>&lt;code>startDate&lt;/code>&lt;/li>
+&lt;li>&lt;code>endDate&lt;/code>&lt;/li>
+&lt;li>&lt;code>roomTypeId&lt;/code>&lt;/li>
+&lt;li>&lt;code>hotelId&lt;/code>&lt;/li>
+&lt;li>&lt;code>numberOfRoomsToReserve&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>출력
+&lt;ul>
+&lt;li>해당 유형의 객실에 여유가 있고 예약 가능한 상태라면 &lt;code>True&lt;/code>, 아니면 &lt;code>False&lt;/code>를 반환한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>SQL 관점에서 두 절차를 거친다.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>주어진 기간에 해당하는 레코드를 구한다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_inventory&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_reserved&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">room_type_inventory&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">room_type_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">${&lt;/span>&lt;span class="n">roomTypeId&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">hotel_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">${&lt;/span>&lt;span class="n">hotelId&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">AND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BETWEEN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">${&lt;/span>&lt;span class="n">startDate&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">and&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">${&lt;/span>&lt;span class="n">endDate&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>반환한 각 레코드마다 다음 조건을 확인한다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">if ((total_reserved + ${numberOfRoomsToReserve}) &amp;lt;= total_inventory)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>레코드의 모든 행을 검사한 결과 &lt;code>True&lt;/code>가 반환되면 주어진 기간 내 모든 날짜에 충분한 객실이 있다는 뜻 이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;p>예약 데이터가 단을 데이터베이스에 담기에 너무 크다면 다음과 같은 방안을 생각해 볼 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>현재 및 향후 예약 데이터만 저장한다.
+&lt;ul>
+&lt;li>예약 이력은 자주 접근하지 않으므로 아카이빙 하거나 냉동 저장소로 옮길 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>데이터베이스를 샤딩한다.
+&lt;ul>
+&lt;li>자주 사용되는 질의는 &lt;strong>예약&lt;/strong> 및 &lt;strong>예약 확인&lt;/strong>이므로, 두 질의에서 모두 먼저 알아야하는 &lt;code>hotel_id&lt;/code>를 샤딩키로 사용한다.&lt;/li>
+&lt;li>데이터는 &lt;code>hash(hotel_id) % number_of_service&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="동시성-문제">동시성 문제&lt;/h3>
+&lt;p>또 하나의 중요한 문제는 &lt;strong>이중 예약 방지&lt;/strong>이며, 이를 위해 두가지 문제를 해결해야한다.&lt;/p>
+&lt;ul>
+&lt;li>같은 사용자가 예약 요청을 여러번 시도할 수 있다.&lt;/li>
+&lt;li>여러 사용자가 같은 객실을 동시에 예약하려 할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="같은-사용자가-같은-예약-요청을-시도하는-경우">&lt;strong>같은 사용자가 같은 예약 요청을 시도하는 경우&lt;/strong>&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_5.png"
+width="1508"
+height="986"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_5_hueb9926d5bdf21d1ae178c13f6ba855ec_83059_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_5_hueb9926d5bdf21d1ae178c13f6ba855ec_83059_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="같은 고객의 이중 예약"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="367px"
+>&lt;/p>
+&lt;p>이 문제를 푸는 일반적인 접근법으로는 다음 두가지가 있다.&lt;/p>
+&lt;ul>
+&lt;li>클라이언트 측 구현
+&lt;ul>
+&lt;li>요청 전송 후 예약 버튼을 비활성화 한다.
+&lt;ul>
+&lt;li>클라이언트에서 우회 가능하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>멱등 API
+&lt;ul>
+&lt;li>예약 API 요청에 멱등 키를 추가하는 방안&lt;/li>
+&lt;li>&lt;code>reservation_id&lt;/code>를 멱등 키로 사용하여 이중 예약 문제를 해결하는 방안이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_6.png"
+width="1130"
+height="1066"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_6_hu48c6b4b2100602be71a6178ae06987e2_69862_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_6_hu48c6b4b2100602be71a6178ae06987e2_69862_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="유일성 조건"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="254px"
+>&lt;/p>
+&lt;ol>
+&lt;li>예약 주문서를 만든다.&lt;/li>
+&lt;li>고객이 검토할 수 있도록 예약 주문서를 반환한다.&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>반환 결과에 &lt;code>reservation_id&lt;/code>를 넣는다.(전역적 유일성을 보증하는 ID, 예제에서는의 예약 테이블의 기본키)&lt;/li>
+&lt;/ul>
+&lt;ol start="3">
+&lt;li>검토가 끝난 예약을 전송한다.
+&lt;ul>
+&lt;li>요청에 &lt;code>reservation_id&lt;/code>를 포함한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>예약 완료 버튼을 한 번 더 눌러 보내도 &lt;code>reservation_id&lt;/code>가 예약 테이블의 기본 키 이므로 유일성 조건에 위반되어 처리되지 않는다.&lt;/li>
+&lt;/ol>
+&lt;h4 id="여러-사용자가-하나뿐인-객실을-동시에-예약하는-경우">&lt;strong>여러 사용자가 하나뿐인 객실을 동시에 예약하는 경우&lt;/strong>&lt;/h4>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_7.png"
+width="1438"
+height="1262"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_7_hu8a18da16175039b3cfa48b49d042fdf5_80735_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_7_hu8a18da16175039b3cfa48b49d042fdf5_80735_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="경쟁 조건"
+class="gallery-image"
+data-flex-grow="113"
+data-flex-basis="273px"
+>&lt;/p>
+&lt;p>이 문제를 해결하려면 어떤 형태로든 락을 활용해야 한다.&lt;/p>
+&lt;p>&lt;strong>비관적 락&lt;/strong>&lt;/p>
+&lt;p>비관적 락은 비관적 동시성 제어 방안이라고도 불리며, 사용자가 &lt;strong>레코드를 갱신하려고 하는 순간 즉시 락을 걸어 동시 업데이트를 방지하는 기술&lt;/strong>이다.&lt;/p>
+&lt;p>따라서 해당 레코드를 갱신하려는 다른 사용자는 락 해제를 기다려야 한다.&lt;/p>
+&lt;ul>
+&lt;li>MySQL 같은 경우는 &lt;code>SELECT ... FOR UPDATE&lt;/code> 문을 실행하면 &lt;code>SELECT&lt;/code>가 반환한 레코드에 락이 걸린다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_8.png"
+width="1994"
+height="1320"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_8_hu40fa4d62dd848fb68c0b889e46e94f87_126013_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_8_hu40fa4d62dd848fb68c0b889e46e94f87_126013_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="비관적 락"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="362px"
+>&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>변경 중이거나 변경이 끝난 데이터를 갱신하는 일을 막을 수 있다.&lt;/li>
+&lt;li>구현이 쉽고 모든 갱신 연산을 직렬화하여 충돌을 막는다.&lt;/li>
+&lt;li>데이터에 대한 경합이 심할 때 유용하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>여러 레코드에 락을 걸면 교착 상태가 발생할 수 있다.
+&lt;ul>
+&lt;li>교착 상태가 발생하지 않는 코드 작성은 어렵다&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>확장성이 낮다.&lt;/li>
+&lt;li>트랜잭션이 너무 오랫동안 락을 해제하지 않고 있으면 다른 트랜잭션은 락이 걸린 자원에 접근할 수 없어 트랜잭션 수명이 길거나 많은 엔티티에 관련된 경우 성능에 심각한 영향을 끼친다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이러한 이유로 비관적 락 메커니즘은 군장하지 않는다.&lt;/p>
+&lt;p>&lt;strong>낙관적 락&lt;/strong>&lt;/p>
+&lt;p>낙관적 락은 &lt;strong>낙관적 동시성 제어&lt;/strong>라고도 불리는 방안으로 &lt;strong>여러 사용자가 동시에 같은 자원을 갱신하려 시도하는 것을 허용&lt;/strong>한다.&lt;/p>
+&lt;p>일반적으로 버전 번호(version_number)와 타임스탬프(timestamp) 두 가지 방법으로 구현한다.&lt;/p>
+&lt;ul>
+&lt;li>서버 시계는 시간이 지남에 따라 부정확해질 수 있으므로 일반적으로는 버전 번호를 더 나은 선택지로 본다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_9.png"
+width="1938"
+height="1142"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_9_hu9411dd474af31fd86c2a43d5119b3270_97882_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_9_hu9411dd474af31fd86c2a43d5119b3270_97882_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="낙관적 락"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="407px"
+>&lt;/p>
+&lt;p>낙관적 락은 데이터베이스에 직접 락을 걸지 않으므로 일반적으로 비관적 락 보다 빠르지만 동시성 수준이 아주 높으면 성능이 급격히 나빠진다.&lt;/p>
+&lt;p>예를 들어 설명하면 잔여 객실 수를 읽을 수 있는 클라이언트 수에는 제한이 없으므로, 모든 클라이언트는 같은 잔여 객실 수와 같은 버전 정보를 취득하게 될 수 있기 때문에 모든 클라이언트는 같은 잔여 객실 수와 같은 버전 번호 정보를 취득한다.&lt;/p>
+&lt;p>하지만 실제로 버전 번호 갱신에 성공하는 클라이언트는 하나이므로, 다른 모든 클라이언트는 버전 번호 검사에 실패하게된다.&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>애플리케이션이 유효하지 않은 데이터를 편집하는 일을 막는다.&lt;/li>
+&lt;li>데이터베이스 자원에 락을 걸 필요가 없다.(데이터베이스 관점에서 락은 없다.) 책임은 애플리케이션에 있다.&lt;/li>
+&lt;li>데이터에 대한 경쟁이 치열하지 않은 상황에 적합하다.
+&lt;ul>
+&lt;li>락을 관리하는 비용 없이 트랜잭션을 실행할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>데이터에 대한 경쟁이 치열한 상황에서는 성능이 좋지 못하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>낙관적 락은 예약 QPS가 일반적으로 높지 않은 호텔 예약 시스템에서는 적합한 선택지이다.&lt;/p>
+&lt;p>&lt;strong>데이터베이스 제약 조건&lt;/strong>&lt;/p>
+&lt;p>낙관적 락과 아주 유사하게 동작한다.&lt;/p>
+&lt;p>&lt;code>room_type_inventory&lt;/code> 테이블에 다음 제약 조건을 추가한다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CONSTRAINT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">check_room_count&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">CHECK&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">total_inventory&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_reserved&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;gt;=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">));&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_10.png"
+width="1478"
+height="1368"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_10_hu8a54ba9888669d6b439cae205e8f7b91_81051_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_10_hu8a54ba9888669d6b439cae205e8f7b91_81051_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터 베이스 제약 조건"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="259px"
+>&lt;/p>
+&lt;p>사용자가 객실을 예약하려면 &lt;code>total_reserved&lt;/code>의 값이 101으로 제약 조건을 위반하게되어 롤백된다.&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>구현이 쉽다.&lt;/li>
+&lt;li>데이터에 대한 경쟁이 심하지 않을 때 잘 동작한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>데이터에 대한 경쟁이 심하면 실패하는 연산 수가 매우 늘어날 수 있다.&lt;/li>
+&lt;li>데이터베이스 제약 조건은 애플리케이션 코드와 달라서 버전을 통제하기 어렵다.&lt;/li>
+&lt;li>제약 조건을 허용하지 않는 데이터베이스도 있으므로 마이그레이션 등에 문제가 될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="시스템-규모-확장">시스템 규모 확장&lt;/h3>
+&lt;p>일반적으로 호텔 예약 시스템에 대한 부하는 높지 않지만, 유명한 여행 예약 웹 사이트와 연동이 되어야한다면 QPS는 매우 늘어날 수 있다.&lt;/p>
+&lt;p>시스템 부하가 높을 때는 무엇이 병목이 될 수 있는지 이해해야한다.&lt;/p>
+&lt;ul>
+&lt;li>해당 시스템의 모든 서비스는 무상태 서비스이므로 서버를 추가하는 것으로 성능 문제는 해결할 수 있다.&lt;/li>
+&lt;li>데이터베이스는 단순히 데이터베이스 서버를 늘리는 것만으로는 성능 문제를 해결할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;h4 id="데이터베이스-샤딩">데이터베이스 샤딩&lt;/h4>
+&lt;p>데이터베이스를 여러 대 두고, 각각에 데이터의 일부만 보관하도록 하는 방식이다.&lt;/p>
+&lt;p>데이터베이스를 샤딩할 때는 데이터를 어떻게 분배할 지 먼저 정한다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>hotel_id&lt;/code>를 필터링 조건으로 사용하므로 샤딩 조건으로 쓰면 좋다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_11.png"
+width="1964"
+height="1122"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_11_hu98af43fce089f7bbf6f6bf1fb85b60d6_147947_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_11_hu98af43fce089f7bbf6f6bf1fb85b60d6_147947_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터베이스 샤딩"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;p>위는 16개 샤드로 분산하는 사례로, QPS가 30,000이라면 샤딩 후에는 1875QPS 정도로 한 대의 MySQL 서버로도 감당할 수 있는 부하가 된다.&lt;/p>
+&lt;h4 id="캐시">캐시&lt;/h4>
+&lt;p>호텔 잔여 객실 데이터는 현재와 미래의 데이터만 중요하다는 특성이 있다.&lt;/p>
+&lt;p>따라서 데이터를 보관할 때 낡은 데이터는 자동적으로 소멸되도록 TTL을 설정할 수 있다면 바람직하다.&lt;/p>
+&lt;ul>
+&lt;li>이력 데이터는 다른 데이터베이스를 통해 질의하도록 하면 된다.&lt;/li>
+&lt;/ul>
+&lt;p>이런 상황에 레디스는 매우 적합하다.&lt;/p>
+&lt;hr>
+&lt;p>데이터 로딩 속도와 데이터베이스 확장성이 문제가 되기 시작하면 데이터베이스 앞에 캐시 계층을 두고 잔여 객실 확인 및 객실 예약 로직이 해당 계층에서 실행되도록 할 수 있다.&lt;/p>
+&lt;p>요청의 일부만 잔여 객실 데이터베이스가 처리하고 나머지는 캐시가 담당하도록 한다.&lt;/p>
+&lt;ul>
+&lt;li>레디스 캐시 데이터에는 잔여 객실이 충분해 보여도 실제 데이터베이스를 다시 한번 확인해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_12.png"
+width="1094"
+height="682"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_12_hu5d3b54b38dcf02612143f1622e8a715a_133204_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_12_hu5d3b54b38dcf02612143f1622e8a715a_133204_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="캐시"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="384px"
+>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>예약 서비스&lt;/strong>: 다음과 같은 잔여 객실 관리 API를 제공한다.&lt;/p>
+&lt;ul>
+&lt;li>지정된 호텔과 객실 유형, 주어진 날짜 범위에 이용 가능한 객실의 수를 질의&lt;/li>
+&lt;li>객실을 예약하고 &lt;code>total_reserved&lt;/code>의 값을 1 증가&lt;/li>
+&lt;li>고객이 예약을 취소하면 잔여 객실 수를 갱신&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>잔여 객실 캐시&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>모든 잔여 객실 관리에 필요한 질의는 레디스로 구현되는 잔여 객실 캐시로 옮긴다.&lt;/li>
+&lt;li>따라서 사전에 잔여 객실 정보를 캐시에 미리 저장해두어야 한다.&lt;/li>
+&lt;li>캐시에 저장되는 데이터 형식
+&lt;ul>
+&lt;li>키: &lt;code>hotelID_roomTypeId_{날짜}&lt;/code>&lt;/li>
+&lt;li>값
+&lt;ul>
+&lt;li>주어진 호텔 ID&lt;/li>
+&lt;li>객실 유형 ID&lt;/li>
+&lt;li>날짜에 맞는 잔여 객실 수&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>호텔 예약 시스템은 잔여 객실 확인 작업 때문에 읽기 연산 빈도가 쓰기 연산보다 훨씬 많으므로 대부분의 읽기 연산을 캐시로 처리하면 좋다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>잔여 객실 데이터베이스&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>잔여 객실 수에 대한 가장 믿을 만한 정보가 보관되는 장소&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>캐시가 주는 새로운 과제&lt;/strong>&lt;/p>
+&lt;p>캐시 계층을 추가하면 시스템의 확장성과 처리량은 대폭 증가하지만 데이터베이스와 캐시 사이의 데이터 일관성 유지에 관한 새로운 문제가 생긴다.&lt;/p>
+&lt;p>사용자가 객실을 예약할 때 아무 문제가 없는 경우에는 다음 두 가지 작업이 이루어진다.&lt;/p>
+&lt;ol>
+&lt;li>잔여 객실 수를 질의하여 충분한지 확인(캐시)&lt;/li>
+&lt;li>잔여 객실 데이터를 갱신
+&lt;ul>
+&lt;li>데이터베이스 갱신 이후 캐시 갱신&lt;/li>
+&lt;li>비동기적으로 실행&lt;/li>
+&lt;li>변경 데이터 감지(CDC) 매커니즘을 활용할 수 있다.
+&lt;ul>
+&lt;li>데이터베이스에서 발생한 변화를 감지하여 해당 변경 내역을 다른 시스템에 적용할 수 있도록 하는 매커니즘&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>잔여 객실 데이터에 대한 변화를 데이터베이스에 먼저 반영하므로 캐시에는 최신 데이터가 없을 가능성이 있다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>이러한 불일치 문제는 데이터베이스가 최종적으로 잔여 객실 확인을 하도록 한다면 문제가 되지는 않는다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>장점&lt;/p>
+&lt;ul>
+&lt;li>읽기 질의를 캐시가 처리하므로 데이터베이스의 부하가 크게 줄어든다.&lt;/li>
+&lt;li>읽기 질의를 메모리에서 실행하므로 높은 성능을 보장할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>단점&lt;/p>
+&lt;ul>
+&lt;li>데이터베이스와 캐시 사이의 데이터 일관성을 유지하는 것은 어렵다.
+&lt;ul>
+&lt;li>데이터 불일치가 사용자 경험에 끼치는 영향을 신중하게 살펴야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="서비스-간-데이터-일관성">서비스 간 데이터 일관성&lt;/h3>
+&lt;p>모노리스 아키텍처의 경우 데이터의 일광성을 보장하기 위해 관계형 데이터베이스를 공유하는 것이 보통이지만, 해당 시스템은 예약 테이블과 잔여 객실 테이블만 동일한 관계형 데이터베이스에 저장하는 MSA 하이브리드 접근법을 사용한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_13.png"
+width="1920"
+height="514"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_13_huc5f5e8f7744db63fc867cea3c0d26387_55893_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_13_huc5f5e8f7744db63fc867cea3c0d26387_55893_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="모노리스 vs 마이크로서비스"
+class="gallery-image"
+data-flex-grow="373"
+data-flex-basis="896px"
+>&lt;/p>
+&lt;p>이를 통해 관계형 데이터베이스의 ACID 속성을 활용하여 동시성 문제를 효과적으로 대응할 수 있지만, MSA 순수 주의자라면 마이크로 서비스가 독자적인 데이터베이스를 갖추고 있어야 한다고 주장할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_15.png"
+width="1362"
+height="1150"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_15_hu1651b063c3947755463e1494fe52dabe_39875_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_15_hu1651b063c3947755463e1494fe52dabe_39875_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="모노리스 아키텍처"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="284px"
+>&lt;/p>
+&lt;p>모노리스 아키텍처는 하나의 데이터베이스만 사용하므로 여러 연산을 하나의 트랜잭션으로 묶어 ACID 속성이 만족되도록 보장할 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/7/img_14.png"
+width="1748"
+height="1062"
+srcset="https://codemario318.github.io/post/system-design-interview-2/7/img_14_hu657f4a94828478d72376098f027fabfa_59765_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/7/img_14_hu657f4a94828478d72376098f027fabfa_59765_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="마이크로서비스 아키텍처"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="395px"
+>&lt;/p>
+&lt;p>하지만 서비스가 독자적인 데이터베이스를 갖도록 하면, 논리적으로는 하나의 원자적 연산이 여러 데이터베이스에 걸쳐 실행되는 일을 피할 수 없다.&lt;/p>
+&lt;ul>
+&lt;li>하나의 트랜잭션으로 데이터 일관성을 보증하는 기법을 사용할 수 없다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 데이터 일관성 문제를 해결하기 위해 널리 사용되는 방법은 2가지 정도가 있다.&lt;/p>
+&lt;ul>
+&lt;li>2단계 커밋(2-phase commit, 2PC)
+&lt;ul>
+&lt;li>여러 노드에 걸친 원자적 트랜잭션 실행을 보증하는 데이터베이스 프로토콜&lt;/li>
+&lt;li>모든 노드가 성공하든 아니면 실패하든 둘 중 하나로 트랜잭션이 마무리되도록 보증&lt;/li>
+&lt;li>비중단 실행이 가능한 프로토콜이 아니므로 어느 한 노드에 장애가 발생하면 해당 장애가 복구될 때까지 진행이 중단된다.(성능이 뛰어난 프로토콜은 아니다.)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>사가(Saga)
+&lt;ul>
+&lt;li>각 노드에 국지적으로 발생하는 트랜잭션을 하나로 엮는다.&lt;/li>
+&lt;li>각각의 트랜잭션은 완료되면 다음 트랜잭션을 시작하는 트리거로 쓰일 메시지를 만드러 보낸다.&lt;/li>
+&lt;li>한 트랜잭션이라도 실패하면 그 이전 트랜잭션의 결과를 전부 되될리는 트랜잭션들을 순차적으로 실행한다.&lt;/li>
+&lt;li>2pc는 여러 노드에 걸친 하나의 트랜잭션을 통해 ACID 속성을 만족시키는 개념이지만 사가는 각 단계가 하나의 트랜잭션이라서 결과적 일관성에 의존하는 것으로 본다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>마이크로서비스 간의 데이터 불일치를 해결하기 위해 사용되는 복잡한 매커니즘은 시스템 전체 설계의 복잡성을 크게 증가시킨다.&lt;br>
+증가한 복잡성이 그만한 가치가 있는 지 결정하는 것은 설계자의 몫이다.&lt;/p>
+&lt;ul>
+&lt;li>이번 설계안은 그만한 가치는 없다고 판단하여 예약 및 잔여 객실 정보를 동일한 관계형 데이터베이스에 저장하는 좀 더 실용적인 접근 방법을 선택했다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;ul>
+&lt;li>경쟁 조건이 발생할 수 있는 시나리오
+&lt;ul>
+&lt;li>비관적 락&lt;/li>
+&lt;li>낙관적 락&lt;/li>
+&lt;li>데이터베이스 제약 조건&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>규모 확장
+&lt;ul>
+&lt;li>데이터베이스 샤딩&lt;/li>
+&lt;li>레디스 캐시&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>마이크로아키텍처의 데이터 일관성 문제&lt;/li>
+&lt;/ul></description></item><item><title>챌린지 과정 4주차 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</link><pubDate>Mon, 12 Aug 2024 10:44:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/cover.png" alt="Featured image of post 챌린지 과정 4주차 회고" />&lt;p>부스트캠프 챌린지 과정이 4주차로 마무리되었습니다🥳&lt;/p>
 &lt;p>주말을 이용하여 미뤄왔던 대청소와 약속들 덕분에 월요일이 되어서야 회고를 쓰게 되네요&lt;/p>
 &lt;p>이번주는 미션들을 수행하지는 않겠지만, 그동안 바빠서 마무리하지 못했던 학습 정리로 바쁠 것 같습니다.&lt;/p>
 &lt;p>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/challenge/4/img.png"
