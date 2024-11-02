@@ -3,7 +3,11 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/8/
+
+
+
+
+
 
 
 
@@ -16,6 +20,22 @@ Allow: /post/system-design-interview-2/8/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+Allow: /post/common/architect-orm/
+
+
+
+
+
+Allow: /post/system-design-interview-2/8/
+
+
 
 
 
@@ -784,10 +804,6 @@ Allow: /post/system-design-interview/1/
 
 
 Allow: /post/clean-architecture/34/
-
-
-
-
 
 
 

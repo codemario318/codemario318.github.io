@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Object Relational Mapping on Mario Blog</title><link>https://codemario318.github.io/tags/object-relational-mapping/</link><description>Recent content in Object Relational Mapping on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 02 Nov 2024 10:11:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/object-relational-mapping/index.xml" rel="self" type="application/rss+xml"/><item><title>아키텍처 관점에서 ORM을 사용하는 이유</title><link>https://codemario318.github.io/post/common/architect-orm/</link><pubDate>Sat, 02 Nov 2024 10:11:49 +0900</pubDate><guid>https://codemario318.github.io/post/common/architect-orm/</guid><description>&lt;img src="https://codemario318.github.io/post/common/architect-orm/cover.png" alt="Featured image of post 아키텍처 관점에서 ORM을 사용하는 이유" />&lt;p>안녕하세요😁 오늘은 제가 생각하는 &lt;strong>ORM&lt;/strong>(Object Relational Mapping)을 써야하는 이유에 대한 개인적인 생각을 써보려고 합니다.&lt;/p>
+&lt;p>저는 현재 부스트캠프 웹 풀스택 9기 멤버십 과정에 참여중인데, 피어 세션이라던가 스터디 그룹에서 다른 분들과 ORM에 대한 이야기를 할 일이 많았어요&lt;/p>
+&lt;p>이야기 나눴던 분들이 말하는 ORM은 아래와 같은 내용이 대부분이었습니다.&lt;/p>
+&lt;ul>
+&lt;li>ORM은 쿼리 빌더처럼 직접 SQL을 사용하지 않고도 쿼리를 작성해주는 도구이다.&lt;/li>
+&lt;li>RDB 테이블을 객체 지향적으로 사용할 수 있게 만들어주는 도구이다.&lt;/li>
+&lt;li>일관된 구조를 활용하기 때문에 유지보수가 편리해진다.&lt;/li>
+&lt;/ul>
+&lt;p>위 처럼 제가 이야기나눴던 분들은 대부분 편의성에 초점을 맞추시는 것 같았어요&lt;/p>
+&lt;hr>
+&lt;p>조금 깔끔하게 정리해보면 &lt;strong>ORM은 RDB 테이블에 저장된 데이터 조회하여 주요 관심사 단위인 엔티티 객체로 만들기 위해 사용&lt;/strong>됩니다.&lt;/p>
+&lt;p>다른 분들이 말씀해주셨던 내용 모두 맞는 말 입니다. 그런데 위에서 언급했던 장점들이 ORM을 사용하는 &lt;strong>본질적인 이유&lt;/strong>일까요?&lt;/p>
+&lt;p>이는 사실 ORM을 사용했을 때 &lt;strong>부가적으로 따라오는 장점&lt;/strong>이며 저는 조금 더 근본적인 이유가 바로 &lt;strong>아키텍처&lt;/strong>에 있다고 생각합니다.&lt;/p>
+&lt;h2 id="rdbms와-아키텍처">RDBMS와 아키텍처&lt;/h2>
+&lt;p>먼저 관계형 데이터베이스가 소프트웨어 아키텍처에 어떤 영향을 주는지 살펴보면 좋을 것 같아요&lt;/p>
+&lt;p>아직까지도 관계형 데이터베이스는 웹서비스에서 가장 많이 활용되는 기술입니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/common/architect-orm/img_2.png"
+width="866"
+height="650"
+srcset="https://codemario318.github.io/post/common/architect-orm/img_2_huc333306ede2f54d49d5eff7dc126e0c7_92178_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/common/architect-orm/img_2_huc333306ede2f54d49d5eff7dc126e0c7_92178_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MySQL"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;img src="https://codemario318.github.io/post/common/architect-orm/img_3.png"
+width="213"
+height="237"
+srcset="https://codemario318.github.io/post/common/architect-orm/img_3_hu875005b2d960dbb09b53d1a8c10ff308_9502_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/common/architect-orm/img_3_hu875005b2d960dbb09b53d1a8c10ff308_9502_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="PostgreSQL"
+class="gallery-image"
+data-flex-grow="89"
+data-flex-basis="215px"
+>&lt;/p>
+&lt;p>관계형 데이터베이스는 데이터를 표(table) 형식으로 구성하여 저장하고, 연관된 데이터는 각 테이블의 관계를 통해 관리할 수 있죠&lt;/p>
+&lt;hr>
+&lt;p>책 &lt;strong>클린 아키텍처&lt;/strong>에서는 소프트웨어 아키텍처는 세부사항에 의존하면 유연하지 못한 아키텍처가 된다는 것을 항상 강조하고 있습니다.&lt;/p>
+&lt;p>&lt;strong>데이터베이스는 세부사항이다&lt;/strong> 단락을 보면 아래와 같은 내용들이 언급됩니다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;em>아키텍처 관점에서 볼 때 &lt;strong>데이터베이스는 엔티티&lt;/strong>가 아니다.&lt;/em>&lt;br>
+&lt;em>데이터 모델과는 달리 아키텍처 관점에서는 데이터베이스는 세부사항이라 &lt;strong>아키텍처의 구성 요소 수준으로 끌어올릴 수 없다&lt;/strong>.&lt;/em>&lt;br>
+&lt;em>데이터베이스는 &lt;strong>소프트웨어&lt;/strong>일 뿐이며, &lt;strong>데이터에 접근할 방법을 제공하는 유틸리티&lt;/strong>다.&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;p>그리고 아키텍처 관점의 &lt;strong>컴포넌트&lt;/strong>에 대해 중요하게 언급하는데요, &lt;strong>아키텍처 관점의 컴포넌트&lt;/strong>를 설명한다면 아래와 같습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;em>컴포넌트는 &lt;strong>시스템의 구성 요소로 배포할 수 있는 가장 작은 단위&lt;/strong>다.&lt;/em>&lt;br>
+&lt;em>&amp;lt;중략&amp;hellip;&amp;gt;&lt;/em>&lt;br>
+&lt;em>컴포넌트가 마지막에 어떤 형태로 배포되든, &lt;strong>잘 설계된 컴포넌트라면 반드시 독립적으로 배포 가능한, 따라서 독립적으로 개발 가능한 능력을 갖춰야한다&lt;/strong>.&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>이러한 이유 때문에 &lt;strong>Spring&lt;/strong> 같은 경우는 데이터 저장소에 대한 일관된 처리 추상화한 &lt;code>Spring Data&lt;/code>를 제공합니다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>이제 위에서 언급한 클린 아키텍처에서 언급했던 컴포넌트 그리고 세부사항을 중심으로 관계형 데이터베이스의 활용을 다시 생각해볼게요&lt;/p>
+&lt;p>관계형 데이터베이스에서 외래키로 표현되는 &lt;strong>의존 관계&lt;/strong>는 각 데이터베이스 수준에서 &lt;strong>엔티티간 결합&lt;/strong>이 발생한다는 것을 의미합니다.&lt;/p>
+&lt;p>이 때문에 아키텍처 관점에서 &lt;strong>데이터베이스를 사용한다는 것 자체&lt;/strong>와 &lt;strong>엔티티를 기준으로 분리될 수 있는 컴포넌트의 결합&lt;/strong>이 문제가 될 수 있습니다.&lt;/p>
+&lt;h2 id="고전적인-처리-방식">고전적인 처리 방식&lt;/h2>
+&lt;p>일단 ORM을 활용하지 않는 RDB를 사용하던 방식을 확인해보면 도움이 될 것 같아요&lt;/p>
+&lt;p>이전에는 물리적인 제한으로 인해 발생하는 지연(네트워크 오버헤드 등)과 고전적인 SSR 같은 이유로 &lt;strong>페이지&lt;/strong>나 &lt;strong>API 엔드포인트&lt;/strong> 별로 하나의 큰 쿼리(한방 쿼리 라고도 한다고 하네요)를 사용하는 것이 정석이었습니다.&lt;/p>
+&lt;p>게시글, 댓글을 예시로 확인해볼까요?&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+User {
+int user_id PK
+string user_name
+}
+Post {
+int post_id PK
+int user_id FK
+string post_title
+string post_content
+}
+Reply {
+int reply_id PK
+int user_id FK
+int post_id FK
+string reply_content
+}
+User ||--o{ Post : ""
+User ||--o{ Reply : ""
+Post ||--o{ Reply : ""
+&lt;/pre>
+&lt;p>위 테이블 구조에서 고전적인 SSR을 이용하여 게시글 상세 정보를 보여주는 페이지를 렌더링해야 한다고 가정해보겠습니다.&lt;/p>
+&lt;ul>
+&lt;li>게시글 정보&lt;/li>
+&lt;li>게시글 작성자 정보&lt;/li>
+&lt;li>댓글 정보&lt;/li>
+&lt;li>댓글 작성자 정보&lt;/li>
+&lt;li>게시글에 달린 댓글 수&lt;/li>
+&lt;li>댓글 페이지네이션&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_title&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_content&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">post_author&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply_count&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_content&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply_author&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">post&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">user&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">LEFT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">LEFT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">user&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DESC&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="k">limit&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">OFFSET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="k">offset&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>아마 위와 같은 쿼리로 모든 데이터를 조회한 후 서비스 로직에서의 처리를 통해 HTML을 그려줬을거에요&lt;/p>
+&lt;p>만약 쿼리를 나누고 싶다던가, &lt;code>Ajax&lt;/code>로 댓글 정보만 별도로 불러온다면 &lt;code>reply&lt;/code> 테이블에 대한 조회를 분리할 수 있을겁니다. 아래처럼요!&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_title&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_content&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">author&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">post&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">user&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply_count&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_content&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_name&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply_author&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">reply&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">user&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ru&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">post_id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ORDER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">reply_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DESC&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">LIMIT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="k">limit&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">OFFSET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="k">offset&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 예시는 간단한 편 이지만, 실제 운영되는 서비스는 복잡하고 연관된 데이터가 훨씬 많기 때문에 많은 수의 테이블을 &lt;code>JOIN&lt;/code> 해야할 수 있습니다.&lt;/p>
+&lt;hr>
+&lt;p>이처럼 이전에는 서버와 데이터베이스간 통신 오버헤드, 서버의 응답 처리 방식, 분산 처리의 여러움(하드웨어 비용, 기술 부재) 등으로 인해 쿼리를 작게 나눠 조회하는 것 보다 한번에 조회하는 방식이 성능을 위해 더 좋은 방식으로 여겨졌습니다.&lt;/p>
+&lt;p>한번에 조회해야 할 단위가 클라이언트에게 응답해야 할 데이터 전체이므로, 쿼리 자체도 제공해야할 뷰나 API 응답 결과에 종속적이 된다는 문제도 있었어요&lt;/p>
+&lt;p>위와 같은 고전적인 방식을 활용할 때, 테이블에 저장되는 데이터가 너무 커져서 데이터베이스를 분리하고 싶다던가, NoSQL로 마이그레이션 하고 싶다던가, &lt;code>MSA&lt;/code>로 변경하여 각각을 독립적으로 운영해야한다면 어떤 문제가 있을까요?&lt;/p>
+&lt;p>매우 귀찮고 복잡한 일 이므로, 서비스의 규모가 크다면 작업을 시작하기도 어려울겁니다🥲&lt;/p>
+&lt;h2 id="처리-방식의-변화">처리 방식의 변화&lt;/h2>
+&lt;p>시간이 흐르면서 하드웨어, 소프트웨어의 발전과 비용 감소 등 여러 이유로 &lt;strong>수평 확장&lt;/strong>이 쉬워지게 되었어요&lt;/p>
+&lt;p>필요에 따라 서버를 많이 배포하는 것이 어려운 일이 아니게되었고, 데이터베이스도 많은 수의 &lt;code>Read Replica&lt;/code>를 확보해서 &lt;strong>조회 요청&lt;/strong>에 대한 트래픽에 비교적 쉽게 대응할 수 있게 되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/common/architect-orm/img_4.png"
+width="640"
+height="603"
+srcset="https://codemario318.github.io/post/common/architect-orm/img_4_hu22a297eba345d3df949b53c8e2b3a027_170554_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/common/architect-orm/img_4_hu22a297eba345d3df949b53c8e2b3a027_170554_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Scale Out"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="254px"
+>&lt;/p>
+&lt;p>이러한 이유로 위에서 살짝 보여드린 것 처럼 &lt;strong>커다란 쿼리를 작게 나누는 것&lt;/strong>이 성능 향상에 더 유리하다고 여겨지게 되었어요 &lt;del>쿼리 튜닝도 훨씬 쉬워집니다&lt;/del>&lt;/p>
+&lt;p>이전과 달리 다뤄야하는 데이터의 범위와 크기도 작아졌기 때문에 &lt;strong>객체지향적으로 데이터를 관리&lt;/strong>하는 것이 비교적 용이해졌고, 비즈니스 요구사항들을 처리하기 위해 &lt;strong>엔티티 중심으로 설계&lt;/strong>하는 것이 적극적으로 고려되었습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/common/architect-orm/img.png"
+width="1000"
+height="1432"
+srcset="https://codemario318.github.io/post/common/architect-orm/img_hufca2fe698ad69cd2a61645fa2aa0686a_2740195_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/common/architect-orm/img_hufca2fe698ad69cd2a61645fa2aa0686a_2740195_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="엔티티"
+class="gallery-image"
+data-flex-grow="69"
+data-flex-basis="167px"
+>&lt;/p>
+&lt;p>소프트웨어 아키텍처에서 &lt;strong>엔티티&lt;/strong>(Entity)는 도메인 모델의 핵심 구성 요소로, 시스템이 다루는 중요한 개체 혹은 개념이에요&lt;/p>
+&lt;p>조금 더 설명하면 시스템의 도메인에서 고유한 속성과 행동을 가진 데이터 단위로서, 시스템의 주체가되고 주요 비즈니스 로직의 기본 단위입니다.&lt;/p>
+&lt;p>앞에서 언급했던 &lt;strong>아키텍처 관점의 컴포넌트&lt;/strong>의 단위가 될 수도 있습니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/common/architect-orm/img_1.png"
+width="940"
+height="909"
+srcset="https://codemario318.github.io/post/common/architect-orm/img_1_hu9b47f7a709a7aa24fdf2e6ddd0a86654_52592_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/common/architect-orm/img_1_hu9b47f7a709a7aa24fdf2e6ddd0a86654_52592_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="레이어드 아키텍처"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="248px"
+>&lt;/p>
+&lt;p>위 그림은 레이어드 아키텍처의 데이터 흐름을 표현한 것 인데, &lt;code>Business Layer&lt;/code>에서 특정 &lt;strong>비즈니스 로직을 처리하기 위한 주요 속성을 묶은 단위&lt;/strong>(객체 등)를 &lt;strong>엔티티&lt;/strong>라고 표현할 수 있어요&lt;/p>
+&lt;h2 id="orm과-아키텍처의-관계">ORM과 아키텍처의 관계&lt;/h2>
+&lt;p>여기까지 쓰고나니 조금 돌아온 기분이 드는군요🤣 그래서 ORM과 아키텍처가 무슨 관계냐?!&lt;/p>
+&lt;p>위에서 언급했던 내용을 다시 살펴보면 &lt;strong>ORM은 RDB의 데이터를 조회하여 엔티티 객체로 만들어주는 역할&lt;/strong>을 수행하게 되어요&lt;/p>
+&lt;p>이 때문에 ORM을 사용하기 위해 &lt;strong>엔티티를 분리&lt;/strong>해야하고, 이는 &lt;strong>관심사에 대한 수직 분해&lt;/strong>가 되었다는 의미이기도 합니다.&lt;/p>
+&lt;p>또한 관계형 데이터베이스를 사용한다는 사실은 변하지 않았지만 설정 값으로 특정 데이터베이스를 선택할 수 있는 기능을 제공하므로 어느정도 &lt;strong>수평 분해를 위한 추상화가 되었다&lt;/strong>고 볼 수 있어요&lt;/p>
+&lt;p>여기해 더해 레이어드 아키텍처의 예시에서 &lt;code>Persistence Layer&lt;/code> 역할을 하는 계층을 분리했다면, &lt;strong>인터페이스&lt;/strong> 등을 통해 &lt;strong>의존성 역전&lt;/strong>을 활용하여 완전히 다른 유형의 데이터베이스(또는 API 응답)에 대해 거의 완전하게 관심사 분리가 가능해집니다.&lt;/p>
+&lt;h2 id="연관-관계-분리">연관 관계 분리&lt;/h2>
+&lt;p>연관 관계가 있는 테이블들도 마찬가지로 ORM을 사용하여 관계를 관리해주기 위해 별도 엔티티로 분리해줘야합니다.&lt;/p>
+&lt;p>그렇기 때문에 자연스럽게 비즈니스 로직에서의 결합이 낮아지게 되어요&lt;/p>
+&lt;p>따라서 완전히 다른 데이터 주체로 변경된다고 하더라도 연관 관계에 있는 엔티티에 변경 내역이 비교적 적어질 것을 기대할 수 있습니다.&lt;/p>
+&lt;h2 id="결론">결론&lt;/h2>
+&lt;p>그래서 제가 하고싶었던 말을 정리해보면 아래와 같습니다.&lt;/p>
+&lt;ul>
+&lt;li>ORM을 사용하기 위해서는 비즈니스의 주요 관심사인 엔티티에 대한 분리가 전제되어야한다.&lt;/li>
+&lt;li>데이터를 조회 계층 분리를 통해 추상화를 쉽게 적용할 수 있고, 이를 통해 조회 주체에 대한 의존성이 없어진다.&lt;/li>
+&lt;li>그러한 이유로 독립적으로 배포 가능한 단위인 아키텍처 관점의 컴포넌트로 분리된다.&lt;/li>
+&lt;li>ORM 방식도 여러 문제가 있지만 아키텍처 관점에서 장점이 있기 때문에 계속해서 활용되고 있는 것 같다.&lt;/li>
+&lt;/ul>
+&lt;p>사실 ORM을 사용해서라기보다는 &lt;strong>&amp;ldquo;좋은 아키텍처를 만들기 위해 개별 배포 가능한 컴포넌트로 관심사를 분리가 필요한데, ORM이 이러한 방향을 추구하고 있고, 어느정도 강제하고 있기 때문에 자연스럽게 좋은 아키텍처를 만든다.&amp;rdquo;&lt;/strong> 가 이 글의 결론이겠네요&lt;/p>
+&lt;p>추가로 &lt;strong>&amp;ldquo;ORM 라이브러리는 이러한 아키텍처를 지원하기 위해 사용되는 도구일 뿐이다.&amp;rdquo;&lt;/strong>, &lt;strong>&amp;ldquo;ORM을 사용하지 않더라도(직접 구현하더라도) 관심사를 잘 분리할 수 있는 구조를 만들어야 한다.&amp;rdquo;&lt;/strong> 라는 걸 말씀 드리고 싶었습니다.&lt;/p>
+&lt;p>다 쓰고 보니 정말 많이 돌아왔네요&amp;hellip; 쓴게 아까워서 지우진 않겠습니다🤣&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다.&lt;/p></description></item></channel></rss>
