@@ -3,6 +3,8 @@ User-agent: *
 
 
 
+Allow: /post/system-design-interview-2/9/
+
 
 
 
@@ -27,6 +29,38 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/common/architect-orm/
 
 
@@ -34,10 +68,6 @@ Allow: /post/common/architect-orm/
 
 
 Allow: /post/system-design-interview-2/8/
-
-
-
-
 
 
 
@@ -321,8 +351,6 @@ Allow: /post/system-design-interview-2/4/
 
 
 
-
-
 Allow: /post/boostcamp-9th/review/membership/2/
 
 
@@ -368,8 +396,6 @@ Allow: /post/system-design-interview-2/3/
 
 
 Allow: /post/system-design-interview-2/2/
-
-
 
 
 
