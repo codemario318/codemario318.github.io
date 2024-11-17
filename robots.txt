@@ -3,7 +3,15 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/9/
+Allow: /post/system-design-interview-2/10/
+
+
+
+
+
+
+
+
 
 
 
@@ -22,6 +30,52 @@ Allow: /post/system-design-interview-2/9/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview-2/9/
+
+
+
+
 
 
 
@@ -84,10 +138,6 @@ Allow: /post/system-design-interview-2/8/
 
 
 Allow: /post/system-design-interview-2/7/
-
-
-
-
 
 
 
@@ -248,8 +298,6 @@ Allow: /post/boostcamp-9th/review/membership/3/
 
 
 Allow: /post/system-design-interview-2/4/
-
-
 
 
 
@@ -645,10 +693,6 @@ Allow: /post/system-design-interview/12/
 
 
 
-
-
-
-
 Allow: /post/system-design-interview/11/
 
 
@@ -726,10 +770,6 @@ Allow: /post/system-design-interview/7/
 
 
 Allow: /post/system-design-interview/6/
-
-
-
-
 
 
 
@@ -926,8 +966,6 @@ Allow: /post/clean-architecture/17/
 
 
 Allow: /post/movielens/2/
-
-
 
 
 
@@ -1742,8 +1780,6 @@ Allow: /post/search_engine/
 
 
 Allow: /post/messaging_system/
-
-
 
 
 
