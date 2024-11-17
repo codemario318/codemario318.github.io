@@ -1,0 +1,245 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="최근 Nest.js를 이용해서 다중 사용자가 동시에 참여할 수 있는 웹 기반 퀴즈 게임을 만드는 프로젝트의 백엔드를 구현하고 있습니다.(과거에 유행했었던 큐플레"><title>의존성 주입</title><link rel=canonical href=https://codemario318.github.io/post/nest/di/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="의존성 주입"><meta property="og:description" content="최근 Nest.js를 이용해서 다중 사용자가 동시에 참여할 수 있는 웹 기반 퀴즈 게임을 만드는 프로젝트의 백엔드를 구현하고 있습니다.(과거에 유행했었던 큐플레"><meta property="og:url" content="https://codemario318.github.io/post/nest/di/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Nest"><meta property="article:tag" content="Nest.js"><meta property="article:tag" content="Node"><meta property="article:tag" content="Node.js"><meta property="article:tag" content="Backend"><meta property="article:tag" content="백엔드"><meta property="article:tag" content="의존성 주입"><meta property="article:tag" content="Dependency Injection"><meta property="article:tag" content="DI"><meta property="article:tag" content="모듈"><meta property="article:tag" content="Module"><meta property="article:published_time" content="2024-11-09T10:37:29+09:00"><meta property="article:modified_time" content="2024-11-09T10:37:29+09:00"><meta property="og:image" content="https://codemario318.github.io/post/nest/di/cover.png"><meta name=twitter:title content="의존성 주입"><meta name=twitter:description content="최근 Nest.js를 이용해서 다중 사용자가 동시에 참여할 수 있는 웹 기반 퀴즈 게임을 만드는 프로젝트의 백엔드를 구현하고 있습니다.(과거에 유행했었던 큐플레"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/nest/di/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>9</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>65</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/nest/><span>Nest</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#nestjs의-철학>Nest.js의 철학</a><ol><li><a href=#ddd와-nest-module>DDD와 Nest Module</a></li></ol></li><li><a href=#의존성-주입>의존성 주입</a></li><li><a href=#인터페이스-의존성-주입>인터페이스 의존성 주입</a><ol><li><a href=#인터페이스-정의>인터페이스 정의</a></li><li><a href=#메모리-기반-구현>메모리 기반 구현</a></li><li><a href=#모듈에-프로바이더-설정>모듈에 프로바이더 설정</a></li><li><a href=#리포지토리-사용>리포지토리 사용</a></li><li><a href=#리포지토리-개선>리포지토리 개선</a></li></ol></li><li><a href=#마무리>마무리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/nest/di/><img src=/post/nest/di/cover_hu090a5700ed1a918e2464c0afb86f7bb9_17269_800x0_resize_box_3.png srcset="/post/nest/di/cover_hu090a5700ed1a918e2464c0afb86f7bb9_17269_800x0_resize_box_3.png 800w, /post/nest/di/cover_hu090a5700ed1a918e2464c0afb86f7bb9_17269_1600x0_resize_box_3.png 1600w" width=800 height=538 loading=lazy alt="Featured image of post 의존성 주입"></a></div><div class=article-details><header class=article-category><a href=/categories/nest/>Nest</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/nest/di/>의존성 주입</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2024/11/09</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>6 minute read</time></div></footer></div></header><section class=article-content><p>최근 Nest.js를 이용해서 <strong>다중 사용자가 동시에 참여할 수 있는 웹 기반 퀴즈 게임</strong>을 만드는 프로젝트의 백엔드를 구현하고 있습니다.(과거에 유행했었던 큐플레이와 비슷한 프로젝트라고 보시면 됩니다.)</p><p><img src=/post/nest/di/img.png width=540 height=405 srcset="/post/nest/di/img_hu315076061f99a52f357ceb1428e2871b_491190_480x0_resize_box_3.png 480w, /post/nest/di/img_hu315076061f99a52f357ceb1428e2871b_491190_1024x0_resize_box_3.png 1024w" loading=lazy alt=큐플레이 class=gallery-image data-flex-grow=133 data-flex-basis=320px></p><p>팀 구성원들과 애자일한 개발을 경험하기 위해 <strong>필수적인 요소들을 배포</strong>하고 <strong>점진적으로 확장</strong>하기로 결정했기 때문에 진행 초반인 지금은 1인을 플레이를 기준으로 기능들을 만들어가고 있는데요</p><p>그러한 이유로 현재 구현중인 <strong>퀴즈 플레이 정보</strong>(이하 퀴즈존)는 사용자가 적다는 것을 가정하여 서버의 메모리에서 관리하도록 구현하고 있었습니다.</p><p>그런데 구현하는 과정에서 걱정 거리가 생겼어요</p><ul><li>최종 기획은 다중 사용자로 확정</li><li>이후 채팅 기능을 지원할 수 있음</li></ul><p>프로젝트가 발전할수록 서버의 메모리 공간이 아쉬워 질 수 있고, 서버 한대로 부족할 수 있기때문에 <code>Redis</code> 같은 것들을 이용해서 확장해야하지 않을까? 라는 걱정이었어요</p><p>물론 익스트림 프로그래밍(XP)의 원칙 중 <strong>YAGNI</strong>(You aren&rsquo;t gonna need it)이나 <strong>KISS</strong>(Keep it simple, stupid)처럼 당장 필요하지 않은 것들은 구현하지 않을 것을 강조하긴합니다만&mldr;</p><p>아키텍처 관점에서 <strong>확장성</strong>과 <strong>변경에 대한 안전장치</strong>로 <strong>인터페이스</strong>는 당장 필요한 것이 아닌가?! 라는 판단<del>합리화</del>을 하게 되었습니다.</p><p>그래서 퀴즈존이 저장될 <strong>스토리지 인터페이스</strong>를 만들고, 메모리를 활용하는 스토리지를 인터페이스를 이용해 구현하기로 결정했어요</p><p>인터페이스를 통해 구현된 스토리지를 인터페이스에 의존하도록 만들기 위해서 <strong>인터페이스 의존성 주입</strong>이 꼭 필요했습니다.</p><p>이 과정에서 제가 학습하고 적용한 과정을 적어보려고합니다.</p><h2 id=nestjs의-철학>Nest.js의 철학</h2><p>먼저 Nest의 철학을 살펴보면 앞으로 설명할 내용들이 조금 더 잘 이해될겁니다.</p><p>공식 문서의 나와있는 Nest의 철학을 살펴볼까요?</p><blockquote><p>/* 생략&mldr; */</p><p>However, while plenty of superb libraries, helpers, and tools exist for Node (and server-side JavaScript), none of them effectively solve the main problem of - <strong>Architecture</strong>.</p><p>Nest provides an out-of-the-box application architecture which allows developers and teams to create <strong>highly testable, scalable, loosely coupled, and easily maintainable</strong> applications.</p></blockquote><p>위에서 언급한 내용처럼 Nest는 <strong>아키텍처 문제를 효과적으로 해결</strong>하기 위해 만들어진 백엔드 프레임워크입니다.</p><p>이 철학을 바탕으로, 기능들을 모듈화하고 역할별로 분리하여 확장성과 테스트 가능성을 확보하는 것이 Nest의 큰 장점 중 하나이고 이를 구조적으로 강제하고있어요</p><h3 id=ddd와-nest-module>DDD와 Nest Module</h3><p>Nest는 도메인 주도 설계(DDD)를 쉽게 적용할 수 있도록 설계되었습니다.</p><p>Nest CLI의 <code>nest g resource</code> 명령어를 사용해 특정 도메인에 대한 모듈, 서비스, 컨트롤러 등을 생성하면, 관련 기능들이 한 모듈에 모여있는 DDD 형식으로 구조가 자동으로 만들어지게 되어요</p><p>반대로 이렇게 만들어진 모듈들을 다른 모듈에서 활용하려면 추가적인 설정을 필요로 하기 때문에 확실하게 도메인으로 분리되어야 쉽고 편하게 개발할 수 있는 환경을 강제하고 있습니다.</p><h2 id=의존성-주입>의존성 주입</h2><p>Nest에서는 <strong>의존성 주입</strong>을 통해 객체 간의 의존성을 해결합니다.</p><p>DI는 <code>@Injectable</code> 데코레이터를 사용해 프로바이더를 정의하고, 이를 생성자에서 주입받아 사용할 수 있게 합니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@Injectable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizService</span> <span class=p>{}</span>
+</span></span></code></pre></td></tr></table></div></div><p>위와 같이 구현된 퀴즈 서비스는 아래와 같이 같은 디렉터리에 만들어진 <code>quiz.module.ts</code>에 아래와 같이 활용됩니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@Module</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllers</span><span class=o>:</span> <span class=p>[</span><span class=nx>QuizController</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nx>providers</span><span class=o>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=nx>QuizService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nx>exports</span><span class=o>:</span> <span class=p>[</span><span class=nx>QuizService</span><span class=p>],</span>
+</span></span><span class=line><span class=cl><span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizModule</span> <span class=p>{}</span>
+</span></span></code></pre></td></tr></table></div></div><p>여기서는 <strong>리포지토리 인터페이스</strong>를 통해 퀴즈 정보를 관리하는 클래스를 만들고, 이 인터페이스를 기반으로 한 메모리 기반 처리와, 확장이 필요한 경우 레디스와 같은 외부 스토리지를 활용하도록 설계할 수 있습니다.</p><h2 id=인터페이스-의존성-주입>인터페이스 의존성 주입</h2><p>기본적인 활용법은 확인했고, 기존에 제가 해결하려고 했던 인터페이스를 활용하면서 의존성을 주입하려면 어떻게 해야할까요?</p><p>과정을 하나씩 거치며 확인해보도록 하겠습니다.</p><h3 id=인터페이스-정의>인터페이스 정의</h3><p>먼저 <code>QuizRepository</code>라는 인터페이스를 정의해볼게요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>QuizRepository</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>saveQuiz</span><span class=p>(</span><span class=nx>quiz</span>: <span class=kt>Quiz</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>getQuiz</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>Quiz</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>일단 간단하게 퀴즈를 저장하는 <code>saveQuiz</code>, 저장된 퀴즈를 가져오는 <code>getQuiz</code>만 구현하도록 했습니다.</p><h3 id=메모리-기반-구현>메모리 기반 구현</h3><p>이제 메모리 기반 리포지토리 클래스를 <code>QuizRepository</code> 인터페이스를 구현하여 작성합니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>@Injectable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizMemoryRepository</span> <span class=kr>implements</span> <span class=nx>QuizRepository</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>quizzes</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>QuizData</span><span class=p>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Map</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>saveQuiz</span><span class=p>(</span><span class=nx>quiz</span>: <span class=kt>Quiz</span><span class=p>)</span><span class=o>:</span> <span class=k>void</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>quizzes</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>quiz</span><span class=p>.</span><span class=nx>id</span><span class=p>,</span> <span class=nx>quiz</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>getQuiz</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>QuizData</span> <span class=o>|</span> <span class=kc>undefined</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>quizzes</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>간단하죠?</p><h3 id=모듈에-프로바이더-설정>모듈에 프로바이더 설정</h3><p>Nest의 <code>@Module</code>에 <code>QuizMemoryRepository</code>를 <code>QuizRepository</code> 타입으로 등록해 줍니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>@Module</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>providers</span><span class=o>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=nx>QuizService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span> <span class=nx>provide</span><span class=o>:</span> <span class=s1>&#39;QuizRepository&#39;</span><span class=p>,</span> <span class=nx>useClass</span>: <span class=kt>QuizMemoryRepository</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nx>exports</span><span class=o>:</span> <span class=p>[</span><span class=s1>&#39;QuizStorage&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl><span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizModule</span> <span class=p>{}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=리포지토리-사용>리포지토리 사용</h3><p>다른 클래스에서는 인터페이스 타입으로 스토리지를 주입받아 사용할 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-tsx data-lang=tsx><span class=line><span class=cl><span class=kd>@Injectable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizService</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;QuizRepository&#39;</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>repository</span>: <span class=kt>QuizRepository</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>createQuiz</span><span class=p>(</span><span class=nx>data</span>: <span class=kt>QuizData</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>storage</span><span class=p>.</span><span class=nx>saveQuiz</span><span class=p>(</span><span class=nx>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>이렇게 인터페이스를 사용하여 의존성을 주입하면, 추후 스토리지가 변경되더라도 코드 수정 없이 새로운 스토리지를 적용할 수 있게 되어 <strong>유연성과 확장성</strong>이 높아집니다.</p><h3 id=리포지토리-개선>리포지토리 개선</h3><p>그렇다면 메모리 리포지토리의 의존성인 <code>Map</code>도 <code>@Inject</code>로 주입할 수 있겠죠?</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@Injectable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizMemoryRepository</span> <span class=kr>implements</span> <span class=nx>QuizRepository</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;QuizStorage&#39;</span><span class=p>)</span> <span class=nx>storage</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>Quiz</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>saveQuiz</span><span class=p>(</span><span class=nx>quiz</span>: <span class=kt>Quiz</span><span class=p>)</span><span class=o>:</span> <span class=k>void</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>quizzes</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>quiz</span><span class=p>.</span><span class=nx>id</span><span class=p>,</span> <span class=nx>quiz</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>getQuiz</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>QuizData</span> <span class=o>|</span> <span class=kc>undefined</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>quizzes</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>@Module</code>에 등록해줍니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@Module</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>providers</span><span class=o>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=nx>QuizService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span> <span class=nx>provide</span><span class=o>:</span> <span class=s1>&#39;QuizRepository&#39;</span><span class=p>,</span> <span class=nx>useClass</span>: <span class=kt>QuizMemoryRepository</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span> <span class=nx>provide</span><span class=o>:</span> <span class=s1>&#39;QuizStorage&#39;</span><span class=p>,</span> <span class=nx>useValue</span>: <span class=kt>new</span> <span class=nx>Map</span><span class=p>()</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nx>exports</span><span class=o>:</span> <span class=p>[</span><span class=s1>&#39;QuizStorage&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl><span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>QuizModule</span> <span class=p>{}</span>
+</span></span></code></pre></td></tr></table></div></div><p>큰 의미는 없어 보이지만 테스트코드를 작성해보면 약간의 이점을 얻을 수 있어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;QuizZoneService&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>let</span> <span class=nx>service</span>: <span class=kt>QuizZoneService</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>let</span> <span class=nx>storage</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>QuizZone</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>beforeEach</span><span class=p>(</span><span class=kr>async</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>storage</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Map</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>module</span>: <span class=kt>TestingModule</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>Test</span><span class=p>.</span><span class=nx>createTestingModule</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>      <span class=nx>providers</span><span class=o>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=nx>QuizZoneService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>provide</span><span class=o>:</span> <span class=s1>&#39;QuizRepository&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=nx>useClass</span>: <span class=kt>QuizMemoryRepository</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>provide</span><span class=o>:</span> <span class=s1>&#39;QuizStorage&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=nx>useValue</span>: <span class=kt>storage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>      <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=p>}).</span><span class=nx>compile</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>service</span> <span class=o>=</span> <span class=kr>module</span><span class=nx>.get</span><span class=p>&lt;</span><span class=nt>QuizZoneService</span><span class=p>&gt;(</span><span class=nx>QuizZoneService</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;사용자가 퀴즈존 생성 요청을 보내면 퀴즈존을 생성한다.&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>it</span><span class=p>(</span><span class=s1>&#39;사용자의 세션 ID를 이용하여 퀴즈존을 생성한다.&#39;</span><span class=p>,</span> <span class=kr>async</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=nx>sid</span> <span class=o>=</span> <span class=s1>&#39;1234&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=k>await</span> <span class=nx>service</span><span class=p>.</span><span class=nx>create</span><span class=p>(</span><span class=nx>sid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=p>{</span> <span class=nx>player</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>storage</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>sid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=nx>expect</span><span class=p>(</span><span class=nx>player</span><span class=p>.</span><span class=nx>id</span><span class=p>).</span><span class=nx>toEqual</span><span class=p>(</span><span class=nx>sid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>일반적으로 주입받은 의존성은 <code>private</code>으로 선언되기 때문에 접근할 수 없지만, 외부에서 주입해주기 때문에 실제 <code>storage</code>에 값이 적절히 들어갔는지 확실하게 판단할 수 있게되었습니다.</p><h2 id=마무리>마무리</h2><p>인터페이스를 사용한 의존성 주입은 확장성에 굉장히 큰 도움을 주게됩니다.</p><p>저의 경우에는 <code>Repository</code>를 인터페이스로 만들었기 때문에 추후 레디스와 같은 스토리지로 변경 필요할 때 <code>Repository</code>를 구현하기만 하면 손쉽게 교체가 가능합니다.</p><p>그리고 <code>MemoryRepository</code>가 <code>Map</code>을 외부에서 주입받도록 했기 때문에 <strong>비즈니스 로직</strong>을 <strong>테스트</strong> 할 때도 실제 처리가 잘 이루어지는지 확인하기 용이했었죠!
+<del>물론 모킹을 하고 의도대로 동작되는지만 확인해도 괜찮을 것 같긴해요</del></p><p>작고 보잘것 없는 예시이지만, 끝까지 봐주셔서 감사합니다.😊</p><p>다음번에는 Nest에서 의존성 주입하는 과정을 깊게 파볼게요😎</p></section><footer class=article-footer><section class=article-tags><a href=/tags/nest/>Nest</a>
+<a href=/tags/nest.js/>Nest.js</a>
+<a href=/tags/node/>Node</a>
+<a href=/tags/node.js/>Node.js</a>
+<a href=/tags/backend/>Backend</a>
+<a href=/tags/%EB%B0%B1%EC%97%94%EB%93%9C/>백엔드</a>
+<a href=/tags/%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85/>의존성 주입</a>
+<a href=/tags/dependency-injection/>Dependency Injection</a>
+<a href=/tags/di/>DI</a>
+<a href=/tags/%EB%AA%A8%EB%93%88/>모듈</a>
+<a href=/tags/module/>Module</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://docs.nestjs.com/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>Nest.js</h2><footer class=article-time>Nest.js 공식문서</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/boostcamp-9th/review/membership/4/><div class=article-image><img src=/post/boostcamp-9th/review/membership/4/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 1차 학습스프린트 회고" data-key=boostcamp-9th/review/membership/4 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 1차 학습스프린트 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/3/><div class=article-image><img src=/post/boostcamp-9th/review/membership/3/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 3주차 회고" data-key=boostcamp-9th/review/membership/3 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 3주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/2/><div class=article-image><img src=/post/boostcamp-9th/review/membership/2/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 2주차 회고" data-key=boostcamp-9th/review/membership/2 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 2주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/1/><div class=article-image><img src=/post/boostcamp-9th/review/membership/1/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 1주차 회고" data-key=boostcamp-9th/review/membership/1 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 1주차 회고</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

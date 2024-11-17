@@ -71,6 +71,34 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/nest/di/
+
+
+
 Allow: /post/system-design-interview-2/9/
 
 
@@ -227,15 +255,7 @@ Allow: /post/system-design-interview-2/6/
 
 
 
-
-
-
-
-
-
 Allow: /post/boostcamp-9th/review/membership/4/
-
-
 
 
 

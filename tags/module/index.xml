@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Module on Mario Blog</title><link>https://codemario318.github.io/tags/module/</link><description>Recent content in Module on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 09 Nov 2024 10:37:29 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/module/index.xml" rel="self" type="application/rss+xml"/><item><title>의존성 주입</title><link>https://codemario318.github.io/post/nest/di/</link><pubDate>Sat, 09 Nov 2024 10:37:29 +0900</pubDate><guid>https://codemario318.github.io/post/nest/di/</guid><description>&lt;img src="https://codemario318.github.io/post/nest/di/cover.png" alt="Featured image of post 의존성 주입" />&lt;p>최근 Nest.js를 이용해서 &lt;strong>다중 사용자가 동시에 참여할 수 있는 웹 기반 퀴즈 게임&lt;/strong>을 만드는 프로젝트의 백엔드를 구현하고 있습니다.(과거에 유행했었던 큐플레이와 비슷한 프로젝트라고 보시면 됩니다.)&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/nest/di/img.png"
+width="540"
+height="405"
+srcset="https://codemario318.github.io/post/nest/di/img_hu315076061f99a52f357ceb1428e2871b_491190_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/nest/di/img_hu315076061f99a52f357ceb1428e2871b_491190_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="큐플레이"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>팀 구성원들과 애자일한 개발을 경험하기 위해 &lt;strong>필수적인 요소들을 배포&lt;/strong>하고 &lt;strong>점진적으로 확장&lt;/strong>하기로 결정했기 때문에 진행 초반인 지금은 1인을 플레이를 기준으로 기능들을 만들어가고 있는데요&lt;/p>
+&lt;p>그러한 이유로 현재 구현중인 &lt;strong>퀴즈 플레이 정보&lt;/strong>(이하 퀴즈존)는 사용자가 적다는 것을 가정하여 서버의 메모리에서 관리하도록 구현하고 있었습니다.&lt;/p>
+&lt;p>그런데 구현하는 과정에서 걱정 거리가 생겼어요&lt;/p>
+&lt;ul>
+&lt;li>최종 기획은 다중 사용자로 확정&lt;/li>
+&lt;li>이후 채팅 기능을 지원할 수 있음&lt;/li>
+&lt;/ul>
+&lt;p>프로젝트가 발전할수록 서버의 메모리 공간이 아쉬워 질 수 있고, 서버 한대로 부족할 수 있기때문에 &lt;code>Redis&lt;/code> 같은 것들을 이용해서 확장해야하지 않을까? 라는 걱정이었어요&lt;/p>
+&lt;p>물론 익스트림 프로그래밍(XP)의 원칙 중 &lt;strong>YAGNI&lt;/strong>(You aren&amp;rsquo;t gonna need it)이나 &lt;strong>KISS&lt;/strong>(Keep it simple, stupid)처럼 당장 필요하지 않은 것들은 구현하지 않을 것을 강조하긴합니다만&amp;hellip;&lt;/p>
+&lt;p>아키텍처 관점에서 &lt;strong>확장성&lt;/strong>과 &lt;strong>변경에 대한 안전장치&lt;/strong>로 &lt;strong>인터페이스&lt;/strong>는 당장 필요한 것이 아닌가?! 라는 판단&lt;del>합리화&lt;/del>을 하게 되었습니다.&lt;/p>
+&lt;p>그래서 퀴즈존이 저장될 &lt;strong>스토리지 인터페이스&lt;/strong>를 만들고, 메모리를 활용하는 스토리지를 인터페이스를 이용해 구현하기로 결정했어요&lt;/p>
+&lt;p>인터페이스를 통해 구현된 스토리지를 인터페이스에 의존하도록 만들기 위해서 &lt;strong>인터페이스 의존성 주입&lt;/strong>이 꼭 필요했습니다.&lt;/p>
+&lt;p>이 과정에서 제가 학습하고 적용한 과정을 적어보려고합니다.&lt;/p>
+&lt;h2 id="nestjs의-철학">Nest.js의 철학&lt;/h2>
+&lt;p>먼저 Nest의 철학을 살펴보면 앞으로 설명할 내용들이 조금 더 잘 이해될겁니다.&lt;/p>
+&lt;p>공식 문서의 나와있는 Nest의 철학을 살펴볼까요?&lt;/p>
+&lt;blockquote>
+&lt;p>/* 생략&amp;hellip; */&lt;/p>
+&lt;p>However, while plenty of superb libraries, helpers, and tools exist for Node (and server-side JavaScript), none of them effectively solve the main problem of - &lt;strong>Architecture&lt;/strong>.&lt;/p>
+&lt;p>Nest provides an out-of-the-box application architecture which allows developers and teams to create &lt;strong>highly testable, scalable, loosely coupled, and easily maintainable&lt;/strong> applications.&lt;/p>
+&lt;/blockquote>
+&lt;p>위에서 언급한 내용처럼 Nest는 &lt;strong>아키텍처 문제를 효과적으로 해결&lt;/strong>하기 위해 만들어진 백엔드 프레임워크입니다.&lt;/p>
+&lt;p>이 철학을 바탕으로, 기능들을 모듈화하고 역할별로 분리하여 확장성과 테스트 가능성을 확보하는 것이 Nest의 큰 장점 중 하나이고 이를 구조적으로 강제하고있어요&lt;/p>
+&lt;h3 id="ddd와-nest-module">DDD와 Nest Module&lt;/h3>
+&lt;p>Nest는 도메인 주도 설계(DDD)를 쉽게 적용할 수 있도록 설계되었습니다.&lt;/p>
+&lt;p>Nest CLI의 &lt;code>nest g resource&lt;/code> 명령어를 사용해 특정 도메인에 대한 모듈, 서비스, 컨트롤러 등을 생성하면, 관련 기능들이 한 모듈에 모여있는 DDD 형식으로 구조가 자동으로 만들어지게 되어요&lt;/p>
+&lt;p>반대로 이렇게 만들어진 모듈들을 다른 모듈에서 활용하려면 추가적인 설정을 필요로 하기 때문에 확실하게 도메인으로 분리되어야 쉽고 편하게 개발할 수 있는 환경을 강제하고 있습니다.&lt;/p>
+&lt;h2 id="의존성-주입">의존성 주입&lt;/h2>
+&lt;p>Nest에서는 &lt;strong>의존성 주입&lt;/strong>을 통해 객체 간의 의존성을 해결합니다.&lt;/p>
+&lt;p>DI는 &lt;code>@Injectable&lt;/code> 데코레이터를 사용해 프로바이더를 정의하고, 이를 생성자에서 주입받아 사용할 수 있게 합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizService&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같이 구현된 퀴즈 서비스는 아래와 같이 같은 디렉터리에 만들어진 &lt;code>quiz.module.ts&lt;/code>에 아래와 같이 활용됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Module&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">controllers&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">QuizController&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">providers&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">QuizService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">exports&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">QuizService&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizModule&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>여기서는 &lt;strong>리포지토리 인터페이스&lt;/strong>를 통해 퀴즈 정보를 관리하는 클래스를 만들고, 이 인터페이스를 기반으로 한 메모리 기반 처리와, 확장이 필요한 경우 레디스와 같은 외부 스토리지를 활용하도록 설계할 수 있습니다.&lt;/p>
+&lt;h2 id="인터페이스-의존성-주입">인터페이스 의존성 주입&lt;/h2>
+&lt;p>기본적인 활용법은 확인했고, 기존에 제가 해결하려고 했던 인터페이스를 활용하면서 의존성을 주입하려면 어떻게 해야할까요?&lt;/p>
+&lt;p>과정을 하나씩 거치며 확인해보도록 하겠습니다.&lt;/p>
+&lt;h3 id="인터페이스-정의">인터페이스 정의&lt;/h3>
+&lt;p>먼저 &lt;code>QuizRepository&lt;/code>라는 인터페이스를 정의해볼게요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">QuizRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">saveQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quiz&lt;/span>: &lt;span class="kt">Quiz&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">getQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Quiz&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>일단 간단하게 퀴즈를 저장하는 &lt;code>saveQuiz&lt;/code>, 저장된 퀴즈를 가져오는 &lt;code>getQuiz&lt;/code>만 구현하도록 했습니다.&lt;/p>
+&lt;h3 id="메모리-기반-구현">메모리 기반 구현&lt;/h3>
+&lt;p>이제 메모리 기반 리포지토리 클래스를 &lt;code>QuizRepository&lt;/code> 인터페이스를 구현하여 작성합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizMemoryRepository&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">QuizRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">quizzes&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">QuizData&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Map&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">saveQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quiz&lt;/span>: &lt;span class="kt">Quiz&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">void&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">quizzes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quiz&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quiz&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">getQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">QuizData&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="kc">undefined&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">quizzes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>간단하죠?&lt;/p>
+&lt;h3 id="모듈에-프로바이더-설정">모듈에 프로바이더 설정&lt;/h3>
+&lt;p>Nest의 &lt;code>@Module&lt;/code>에 &lt;code>QuizMemoryRepository&lt;/code>를 &lt;code>QuizRepository&lt;/code> 타입으로 등록해 줍니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Module&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">providers&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">QuizService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="nx">provide&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;QuizRepository&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">useClass&lt;/span>: &lt;span class="kt">QuizMemoryRepository&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">exports&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;QuizStorage&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizModule&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="리포지토리-사용">리포지토리 사용&lt;/h3>
+&lt;p>다른 클래스에서는 인터페이스 타입으로 스토리지를 주입받아 사용할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-tsx" data-lang="tsx">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizService&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;QuizRepository&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">repository&lt;/span>: &lt;span class="kt">QuizRepository&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">createQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>: &lt;span class="kt">QuizData&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">storage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">saveQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이렇게 인터페이스를 사용하여 의존성을 주입하면, 추후 스토리지가 변경되더라도 코드 수정 없이 새로운 스토리지를 적용할 수 있게 되어 &lt;strong>유연성과 확장성&lt;/strong>이 높아집니다.&lt;/p>
+&lt;h3 id="리포지토리-개선">리포지토리 개선&lt;/h3>
+&lt;p>그렇다면 메모리 리포지토리의 의존성인 &lt;code>Map&lt;/code>도 &lt;code>@Inject&lt;/code>로 주입할 수 있겠죠?&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizMemoryRepository&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">QuizRepository&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;QuizStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">storage&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">Quiz&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">saveQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quiz&lt;/span>: &lt;span class="kt">Quiz&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="k">void&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">quizzes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quiz&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quiz&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">getQuiz&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">QuizData&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="kc">undefined&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">quizzes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>@Module&lt;/code>에 등록해줍니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Module&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">providers&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">QuizService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="nx">provide&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;QuizRepository&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">useClass&lt;/span>: &lt;span class="kt">QuizMemoryRepository&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="nx">provide&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;QuizStorage&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">useValue&lt;/span>: &lt;span class="kt">new&lt;/span> &lt;span class="nx">Map&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">exports&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;QuizStorage&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizModule&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>큰 의미는 없어 보이지만 테스트코드를 작성해보면 약간의 이점을 얻을 수 있어요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;QuizZoneService&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">let&lt;/span> &lt;span class="nx">service&lt;/span>: &lt;span class="kt">QuizZoneService&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">let&lt;/span> &lt;span class="nx">storage&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">QuizZone&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">beforeEach&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kr">async&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">storage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Map&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">module&lt;/span>: &lt;span class="kt">TestingModule&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">Test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createTestingModule&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">providers&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">QuizZoneService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">provide&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;QuizRepository&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useClass&lt;/span>: &lt;span class="kt">QuizMemoryRepository&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">provide&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;QuizStorage&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useValue&lt;/span>: &lt;span class="kt">storage&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}).&lt;/span>&lt;span class="nx">compile&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">service&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">module&lt;/span>&lt;span class="nx">.get&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">QuizZoneService&lt;/span>&lt;span class="p">&amp;gt;(&lt;/span>&lt;span class="nx">QuizZoneService&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;사용자가 퀴즈존 생성 요청을 보내면 퀴즈존을 생성한다.&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">it&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;사용자의 세션 ID를 이용하여 퀴즈존을 생성한다.&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">sid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;1234&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="nx">service&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">sid&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">player&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">storage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">sid&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">expect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">player&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">toEqual&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">sid&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>일반적으로 주입받은 의존성은 &lt;code>private&lt;/code>으로 선언되기 때문에 접근할 수 없지만, 외부에서 주입해주기 때문에 실제 &lt;code>storage&lt;/code>에 값이 적절히 들어갔는지 확실하게 판단할 수 있게되었습니다.&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>인터페이스를 사용한 의존성 주입은 확장성에 굉장히 큰 도움을 주게됩니다.&lt;/p>
+&lt;p>저의 경우에는 &lt;code>Repository&lt;/code>를 인터페이스로 만들었기 때문에 추후 레디스와 같은 스토리지로 변경 필요할 때 &lt;code>Repository&lt;/code>를 구현하기만 하면 손쉽게 교체가 가능합니다.&lt;/p>
+&lt;p>그리고 &lt;code>MemoryRepository&lt;/code>가 &lt;code>Map&lt;/code>을 외부에서 주입받도록 했기 때문에 &lt;strong>비즈니스 로직&lt;/strong>을 &lt;strong>테스트&lt;/strong> 할 때도 실제 처리가 잘 이루어지는지 확인하기 용이했었죠!
+&lt;del>물론 모킹을 하고 의도대로 동작되는지만 확인해도 괜찮을 것 같긴해요&lt;/del>&lt;/p>
+&lt;p>작고 보잘것 없는 예시이지만, 끝까지 봐주셔서 감사합니다.😊&lt;/p>
+&lt;p>다음번에는 Nest에서 의존성 주입하는 과정을 깊게 파볼게요😎&lt;/p></description></item></channel></rss>
