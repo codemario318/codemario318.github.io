@@ -1,4 +1,724 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 17 Nov 2024 14:41:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>10. 실시간 게임 순위표</title><link>https://codemario318.github.io/post/system-design-interview-2/10/</link><pubDate>Sun, 17 Nov 2024 14:41:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/10/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/10/cover.png" alt="Featured image of post 10. 실시간 게임 순위표" />&lt;p>이번 장에서는 &lt;strong>온라인 게임 리더보드&lt;/strong>, 즉 순위표를 설계해본다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</title><link>https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/</link><description>Recent content in 가상 면접 사례로 배우는 대규모 시스템 설계 기초 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 24 Nov 2024 18:10:50 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EA%B0%80%EC%83%81-%EB%A9%B4%EC%A0%91-%EC%82%AC%EB%A1%80%EB%A1%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88/index.xml" rel="self" type="application/rss+xml"/><item><title>11. 결제 시스템</title><link>https://codemario318.github.io/post/system-design-interview-2/11/</link><pubDate>Sun, 24 Nov 2024 18:10:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/11/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/cover.png" alt="Featured image of post 11. 결제 시스템" />&lt;p>이번 장에서는 결제 시스템(Payment system)을 설계한다.&lt;/p>
+&lt;p>전자 상거래를 가능하게 하는 것이 바로 결제 시스템이며, 안정적이고 확장 가능하며 유연한 결제 시스템은 필수다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>결제 시스템?&lt;/strong>&lt;br>
+결제 시스템은 금전적 가치의 이전을 통해 금융 거래를 정산하는 데 사용되는 모든 시스템&lt;/p>
+&lt;/blockquote>
+&lt;p>결제 시스템의 구조 자체는 어렵지 않지만, 작은 실수로도 상당한 매출 손실이 발생하고, 사용자의 믿음이 무너질 수 있기 때문에 작업하기 부담스러운 시스템이다.&lt;/p>
+&lt;h2 id="1단계-문제-이해-및-설계-범위-확정">1단계: 문제 이해 및 설계 범위 확정&lt;/h2>
+&lt;p>애플 페이나 구글 페이 같은 &lt;strong>디지털 지갑&lt;/strong>, 페이팔, 스트라이프 같은 &lt;strong>결제 처리 백엔드&lt;/strong>모두 결제 시스템 이므로, 면접을 시작할 때 정확한 요구사항을 파악하여 설계를 시작해야한다.&lt;/p>
+&lt;ul>
+&lt;li>Q. 어떤 결제 시스템?
+&lt;ul>
+&lt;li>A. 전자상거래 애플리케이션을 위한 결제 백엔드 구축, 돈의 흐름에 대한 모든 것을 처리해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 어떤 결제 방법 지원?
+&lt;ul>
+&lt;li>A. 이번 면접에서는 신용 카드 결제만 처리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 신용 카드 결제 처리를 직접 수행?
+&lt;ul>
+&lt;li>A. 전문 결제 서비스 업체 활용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 신용 카드 데이터를 시스템에 저장?
+&lt;ul>
+&lt;li>A. 보안 및 법규 준수에 대한 어려움으로 결제 처리 업체에 의존&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 다양한 통화 및 국제 결제 지원?
+&lt;ul>
+&lt;li>A. No&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 하루에 발생하는 결제 건수는?
+&lt;ul>
+&lt;li>A. 100만건&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 정산 처리 지원?
+&lt;ul>
+&lt;li>A. Yes&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Q. 다른 주의사항은?
+&lt;ul>
+&lt;li>A. 많은 내부 서비스 및 외부 서비스와 연동하므로 조정 작업을 통해 불일치를 발견하고 교정해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="기능-요구사항">기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>대금 수신(pay-in) 흐름
+&lt;ul>
+&lt;li>결제 시스템이 판매자를 대신하여 고객으로부터 대금을 수령&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>대금 정산(pay-out) 흐름
+&lt;ul>
+&lt;li>결제 시스템이 전 세계의 판매자에게 제품 판매 대금을 송금&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="비기능-요구사항">비기능 요구사항&lt;/h3>
+&lt;ul>
+&lt;li>신뢰성 및 내결함성
+&lt;ul>
+&lt;li>결제 실패는 신중하게 처리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>내부 서비스(결제, 회계)와 외부 서비스(결제 서비스 제공 업체) 간 조정 프로세스
+&lt;ul>
+&lt;li>시스템 간의 결제 정보가 일치하는지 비동기적으로 확인&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="개략적-규모-추정">개략적 규모 추정&lt;/h3>
+&lt;p>하루에 100만 건의 트랜잭션을 처리해야하므로 &lt;code>1,000,000 만건 / 10^5초 = 10 TPS&lt;/code>이다.&lt;/p>
+&lt;p>10TPS는 일반적인 데이터베이스로 별 문제 없이 처리 가능한 양이므로, 처리 대역폭 대신 결제 트랜잭션의 정확한 처리에 초점을 맞춰 진행해야한다.&lt;/p>
+&lt;h2 id="2단계-개략적-설계안-제시-및-동의-구하기">2단계: 개략적 설계안 제시 및 동의 구하기&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img.png"
+width="1304"
+height="474"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_hub87ab82242e12f226db74e6d71d5c77c_32359_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_hub87ab82242e12f226db74e6d71d5c77c_32359_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="간소화된 수신 및 정산 흐름"
+class="gallery-image"
+data-flex-grow="275"
+data-flex-basis="660px"
+>&lt;/p>
+&lt;h3 id="대금-수신-흐름">대금 수신 흐름&lt;/h3>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_1.png"
+width="1792"
+height="952"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_1_hu3624bdba9d5208e07ab505f252807012_241034_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_1_hu3624bdba9d5208e07ab505f252807012_241034_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="대금 수신 흐름"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>결제 서비스&lt;/strong>&lt;/p>
+&lt;p>사용자로부터 결제 이벤트를 수락하고 결제 프로세스를 조율하는데, 일반적으로 가장 먼저 위험 점검(risk check)을 수행한다.&lt;/p>
+&lt;ul>
+&lt;li>AML/CFT 같은 규정을 준수 여부 확인&lt;/li>
+&lt;li>자금 세탁이나 테러 자금 조달과 같은 범죄 행위의 증거가 있는지 평가&lt;/li>
+&lt;/ul>
+&lt;p>위험 확인 서비스는 매우 복잡하고 고도로 전문화되어 있기 때문에 제3자 제공 업체를 이용한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>결제 실행자&lt;/strong>&lt;/p>
+&lt;p>결제 서비스 공급자(PSP)를 통해 결제 주문(payment order) 하나를 실행한다.&lt;/p>
+&lt;ul>
+&lt;li>하나의 결제 이벤트에는 여러 결제 주문이 포함될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>결제 서비스 공급자&lt;/strong>&lt;/p>
+&lt;p>PSP(Payment Service Provider)는 A 계정에서 B 계정으로 돈을 옮기는 역할을 담당한다.&lt;/p>
+&lt;ul>
+&lt;li>구매자의 신용 카드 계좌에서 돈을 인출하는 역할 등&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>카드 유형&lt;/strong>&lt;/p>
+&lt;p>카드사는 신용 카드 업무를 처리하는 조직이다.&lt;/p>
+&lt;ul>
+&lt;li>비자, 마스터카드 등&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>원장 ledger&lt;/strong>&lt;/p>
+&lt;p>결제 트랜잭션에 대한 금융 기록이다.&lt;/p>
+&lt;ul>
+&lt;li>사용자가 판매자에게 1달러를 결제하면 사용자로부터 1달러 인출, 판매자에게 1달러 지급하는 기록&lt;/li>
+&lt;/ul>
+&lt;p>원장 시스템은 전자상거래 웹사이트의 총 수익을 계산하거나 향후 수익을 예측하는 등, 결제 후 분석(post-payment analysis)에서 매우 중요한 역할을 한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>지갑&lt;/strong>&lt;/p>
+&lt;p>판매자의 계정 잔액을 기록한다.&lt;/p>
+&lt;ul>
+&lt;li>특정 사용자가 결제한 총 금액을 기록할 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="결제-서비스-api">결제 서비스 API&lt;/h3>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>POST /v1/payments&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>결제 이벤트를 실행한다.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>하나의 결제 이벤트에는 여러 결제 주문이 포함될 수 있다.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>buyer_info&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>구매자 정보&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>checkout_id&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>해당 결제 이벤트를 식별하는 전역적으로 고유한 ID&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>credit_card_info&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>암호화된 신용 카드 정보 또는 결제 토큰.&lt;/li>
+&lt;li>PSP마다 다름&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>payment_orders&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>결제 주문 목록&lt;/li>
+&lt;li>&lt;code>payment_order&lt;/code>
+&lt;ul>
+&lt;li>&lt;code>seller_account&lt;/code>&lt;/li>
+&lt;li>&lt;code>amount&lt;/code>
+&lt;ul>
+&lt;li>&lt;code>double&lt;/code>같은 자료형은 반올림 오차, 화폐 단위의 차이 등으로 인해 &lt;code>string&lt;/code>으로 사용하는 것이 좋다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;code>currency&lt;/code>&lt;/li>
+&lt;li>&lt;code>payment_order_id&lt;/code>
+&lt;ul>
+&lt;li>전역적으로 고유한 ID&lt;/li>
+&lt;li>결제 실행자가 중복 제거를 위한 멱등키로 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>GET /v1/payments/{:id}&lt;/code>&lt;/strong>&lt;/p>
+&lt;p>&lt;code>payment_order_id&lt;/code>가 가르키는 단일 결제 주문의 실행 상태를 반환한다.&lt;/p>
+&lt;hr>
+&lt;h3 id="결제-서비스-데이터-모델">결제 서비스 데이터 모델&lt;/h3>
+&lt;p>결제 이벤트와 결제 주문 두 개의 테이블이 필요하다.&lt;/p>
+&lt;p>결제 시스템용 저장소 솔루션을 고를 때 일반적으로 성능은 가장 중요한 고려사항은 아니며, 다음 사항에 중점을 둬야한다.&lt;/p>
+&lt;ul>
+&lt;li>안정성
+&lt;ul>
+&lt;li>다른 대형 금융 회사에서 긴 기간동안 긍정적인 피드백을 받으며 사용된 적이 있는가?&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모니터링 및 데이터 탐사
+&lt;ul>
+&lt;li>관련 기능을 위한 도구가 풍부하게 지원되는가?&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>인재풀
+&lt;ul>
+&lt;li>데이터베이스 관리자 채용 시장의 성숙도&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로는 NoSQL/NewSQL 보다는 ACID 트랜잭션을 지우너하는 전통적인 관계형 데이터베이스를 선호한다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+PaymentEvent {
+checkout_id string PK
+buyer_info string
+seller_info string
+credit_card_info string
+is_payment_done boolean
+}
+&lt;/pre>
+&lt;ul>
+&lt;li>한번의 결제 행위는 하나의 결제 이벤트를 만들고, 하나의 결제 이벤트에는 여러 개의 결제 주문이 포함될 수 있다.&lt;/li>
+&lt;li>사용자의 결제를 처리하는 중에는 판매자의 응행 계좌가 아닌 구매자의 카드 정보만 필요하다.&lt;/li>
+&lt;/ul>
+&lt;pre class="mermaid" style="text-align: center;">erDiagram
+PaymentOrder {
+payment_order_id string pk
+buyer_account string
+amount string
+currency string
+checkout_id string FK
+payment_order_status string
+ledger_updated boolean
+wallet_updated boolean
+}
+&lt;/pre>
+&lt;p>&lt;code>payment_order_status&lt;/code>는 결제 주문의 실행 상태를 유지하는 열거 자료형이다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>NOT_STARTED&lt;/code>, &lt;code>EXECUTING&lt;/code>, &lt;code>SUCCESS&lt;/code>, &lt;code>FAILED&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>업데이트 로직의 흐름은 다음과 같다.&lt;/p>
+&lt;ol>
+&lt;li>초기값은 &lt;code>NOT_STARTED&lt;/code>&lt;/li>
+&lt;li>결제 서비스는 결제 실행자에 주문을 전송하면 &lt;code>payment_order_status&lt;/code>의 값을 &lt;code>EXECUTING&lt;/code>으로 바꾼다.&lt;/li>
+&lt;li>결제 서비스는 결제 처리자의 응답에 따라 &lt;code>payment_order_status&lt;/code>의 값을 &lt;code>SUCCESS&lt;/code> 또는 &lt;code>FAIL&lt;/code>로 바꾼다.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;code>payment_order_status&lt;/code> 값이 &lt;code>SUCCESS&lt;/code>로 결정되면 결제 서비스는 지갑 서비스를 호출하여 판매자 잔액을 업데이트하고, &lt;code>wallet_updated&lt;/code> 필드의 값은 &lt;code>true&lt;/code>로 업데이트한다.&lt;/p>
+&lt;p>이 절차가 끝나면 결제 서비스는 원장 서비스를 호출하여 &lt;code>ledger_updated&lt;/code> 필드를 &lt;code>true&lt;/code>로 갱신한다.&lt;/p>
+&lt;p>동일한 &lt;code>check_id&lt;/code> 아래의 모든 결제 주문이 성공적으로 처리되면 결제 서비스는 결제 이벤트 테이블의 &lt;code>is_payment_done&lt;/code>을 &lt;code>true&lt;/code>로 업데이트한다.&lt;/p>
+&lt;p>일반적으로 종결되지 않은 결제 주문을 모니터링 하기 위해 주기적으로 실행되는 작업을 마련해둔다.&lt;/p>
+&lt;ul>
+&lt;li>임계값 형태로 설정된 기간이 지나도록 완료되지 않은 결제 주문이 있을 경우 살펴보도록 엔지니어에게 경보를 보낸다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="복식부기-원장-시스템">복식부기 원장 시스템&lt;/h3>
+&lt;p>원장 시스템에는 복식부기(double-entry)라는 중요한 설계 원칙이 있다.&lt;/p>
+&lt;ul>
+&lt;li>복식부기 회계(accounting)/부기(bookeeping)라고도 한다.&lt;/li>
+&lt;/ul>
+&lt;p>복식부기는 모든 결제 시스템에 필수 요소이며 정확한 기록을 남기는 데 핵심적 역할을 한다.&lt;/p>
+&lt;p>모든 결제 거래를 두 개의 별도 원장 계좌에 같은 금액으로 기록하며, 한 계좌에서는 차감, 다른 계좌에서는 입금이 이루어진다.&lt;/p>
+&lt;p>복식부기 시스템에서 모든 거래 항목의 합계는 0이어야 한다.&lt;/p>
+&lt;p>이 시스템을 활용하면 자금의 흐름을 시작부터 끝까지 추적할 수 있으며, 결제 주기 전반에 걸쳐 일관성을 보장할 수 있다.&lt;/p>
+&lt;h3 id="외부-결제-페이지">외부 결제 페이지&lt;/h3>
+&lt;p>대부분 기업은 신용 카드 정보를 내부에 저장하면 복잡한 규정을 준수해야 하므로 저장하지 않는다.&lt;/p>
+&lt;p>따라서 PSP에서 제공하는 **외부 신용 카드 페이지(hosted credit card page)**를 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>위젯, iframe, SDK등&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_2.png"
+width="1394"
+height="1470"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_2_hud667a892ca5bb7d7af3ab9644c7b029d_300845_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_2_hud667a892ca5bb7d7af3ab9644c7b029d_300845_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="페이팔 외부 결제 페이지"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="227px"
+>&lt;/p>
+&lt;p>이를 통해 우리 결제 서비스가 아닌 PSP가 제공하는 외부 결제 페이가 직접 고객 카드 정보를 수집한다.&lt;/p>
+&lt;h3 id="대금-정산-흐름">대금 정산 흐름&lt;/h3>
+&lt;p>대금 수신 흐름과 아주 유사하다.&lt;/p>
+&lt;p>한 가지 차이는 PSP를 사용하여 구매자의 신용 카드에서 전자 상거래 웹사이트 은행 계좌로 돈을 이체하는 대신, 타사 정산 서비스를 사용하여 전자 상거래 웹사이트 은행 계좌에서 판매자 은행 계좌로 돈을 이체한다.&lt;/p>
+&lt;p>일반적으로 외상 매입금(accounts payable) 지급 서비스 제공 업체를 이용한다.&lt;/p>
+&lt;ul>
+&lt;li>마찬가지로 다양한 규제 요구사항들이 있기 때문&lt;/li>
+&lt;/ul>
+&lt;h2 id="3단계-상세-설계">3단계: 상세 설계&lt;/h2>
+&lt;p>이번 절에서는 시스템을 더 빠르고 강력하며 안전하게 만드는 데 초점을 맞춘다.&lt;/p>
+&lt;ul>
+&lt;li>분산 시스템에서 오류와 장애는 피할 수 없을 뿐만 아니라 흔하다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="psp-연동">PSP 연동&lt;/h3>
+&lt;p>결제 시스템이 카드 시스템에 직접 연결할 수 있다면 PSP 없이도 결제할 수 있지만, 매우 큰 회사만 가능하여 특수한 경우로 간주한다.&lt;/p>
+&lt;p>대부분 회사는 두 가지 방법 중 하나로 결제 시스템을 PSP와 연동한다.&lt;/p>
+&lt;ul>
+&lt;li>민감 정보를 안전하게 저장할 수 있다면 API를 통해 PSP와 연동한다.
+&lt;ul>
+&lt;li>회사는 결제 웹페이지 개발, 민감 정보 수집&lt;/li>
+&lt;li>PSP는 은행 연결, 다양한 카드 지원&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>민감 정보를 저장하지 않는다면 PSP를 전부 활용
+&lt;ul>
+&lt;li>대부분 기업들이 택하는 접근법&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_3.png"
+width="1936"
+height="1088"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_3_hu8ada61af5d55bc7a710f124ce0a3c467_292077_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_3_hu8ada61af5d55bc7a710f124ce0a3c467_292077_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="외부 결제 페이지 이용 흐름"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="427px"
+>&lt;/p>
+&lt;h3 id="조정">조정&lt;/h3>
+&lt;p>시스템 구성 요소가 비동기적으로 통신하는 경우 메시지가 전달되거나 응답이 반환된다는 보장이 없다.&lt;/p>
+&lt;ul>
+&lt;li>시스템 성능을 높이기 위해 비동기 통신을 자주 사용하는 결제 관련 사업에 일반적인 문제&lt;/li>
+&lt;/ul>
+&lt;p>PSP나 은행 같은 외부 시스템도 비동기 통신을 선호하므로 조정을 통해 정확성을 보장할 수 있어야한다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>조정 Reconciliation&lt;/strong>&lt;br>
+관련 서비스 간의 상태를 주기적으로 비교하여 일치하는지 확인하며, 일반적으로 결제 시스템의 마지막 방어선으로 받아들여진다.&lt;/p>
+&lt;/blockquote>
+&lt;p>매일 밤 PSP나 은행은 고객에게 정산 파일을 보낸다.&lt;/p>
+&lt;ul>
+&lt;li>은행 계좌의 잔액, 하루 동안 계좌에서 발생한 모든 거래 내역이 기재&lt;/li>
+&lt;/ul>
+&lt;p>조정 시스템은 정산 파일의 세부 정보를 읽어 원장 시스템과 비교한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_4.png"
+width="1758"
+height="938"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_4_hue9673b3cc4643caa7ab63a0b1cac71c6_254873_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_4_hue9673b3cc4643caa7ab63a0b1cac71c6_254873_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="조정"
+class="gallery-image"
+data-flex-grow="187"
+data-flex-basis="449px"
+>&lt;/p>
+&lt;p>조정은 결제 시스템의 내부 일관성을 확인할 때도 사용된다.&lt;/p>
+&lt;ul>
+&lt;li>원장과 지갑의 상태가 같은지 확인&lt;/li>
+&lt;/ul>
+&lt;p>조정 중 발견된 차이는 일반적으로 재무팀에 의뢰하여 수동으로 고치게되느데 발생 가능한 불일치 문제 및 해결 방안은 세 가지 범주로 나눌 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>어떤 유형의 문제인지 알고 있으며 문제 해결 절차를 자동화할 수 있는 경우
+&lt;ul>
+&lt;li>자동화 프로그램을 작성하는 것이 효율적이다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>어떤 유형의 문제인지는 알니만 자동화할 수 없는 경우
+&lt;ul>
+&lt;li>작업 대기열에 넣고 재무팀에서 수동으로 수정하도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>분류할 수 없는 유형 문제인 경우
+&lt;ul>
+&lt;li>특별 작업 대기열에 넣고 재무팀에서 조사하도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="결제-지연-처리">결제 지연 처리&lt;/h3>
+&lt;p>결제 요청은 많은 컴포넌트를 거치며, 내부 및 외부의 다양한 처리 주체와 연동한다.&lt;/p>
+&lt;p>대부분의 경우 결제 요청은 몇 초만에 처리되지만, 완료되거나 거부되기까지 몇 시간 또는 며칠이 걸리는 경우도 있다.&lt;/p>
+&lt;ul>
+&lt;li>PSP가 해당 결제 요청의 위험성이 높다고 보고 담당자 검토를 요구하는 경우&lt;/li>
+&lt;li>신용 카드사가 구매 확인 용도로 카드 소유자의 추가 정보를 요청하는 3D 보안 인증 같은 추가 보호 장치를 요구하는 경우&lt;/li>
+&lt;/ul>
+&lt;p>결제 서비스는 처리하는 데 시간이 오래 걸리는 위와 같은 요청에도 대응할 수 있어야 하며, 구매 페이지가 외부 PSP에 호스팅 되는 경우 PSP는 대부분 다음과 같이 처리한다.&lt;/p>
+&lt;ul>
+&lt;li>결제가 대기 상태임을 알리는 상태 정보를 클라이언트에 반호나하고, 클라이언트는 이를 사용자에게 표시한다.&lt;/li>
+&lt;li>우리 회사를 대신하여 대기 중인 결제의 진행 상황을 추적하고, 상태가 바뀌면 PSP에 등록된 웹훅을 통해 결제 서비스에 알린다.&lt;/li>
+&lt;/ul>
+&lt;p>결제 요청이 최종적으로 완료되면 PSP는 웹훅을 호출한다.&lt;/p>
+&lt;p>결제 서비스는 내부 시스템에 기록된 정보를 업데이트하고 고객에게 배송을 완료한다.&lt;/p>
+&lt;ul>
+&lt;li>어떤 PSP는 웹훅을 통해 결제 서비스에 결제 상태 변경을 알리는 대신, 결제 서비스로 하여금 대기 중인 결제 요청의 상태를 주기적으로 확인하도록 하기도 한다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="내부-서비스-간-커뮤니케이션">내부 서비스 간 커뮤니케이션&lt;/h3>
+&lt;p>두 가지 패턴이 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>동기식 통신&lt;/strong>&lt;/p>
+&lt;p>HTTP 같은 동기식 통신은 소규모 시스템에서는 잘 작동하지만 규모가 커지면 단점이 분명해지며, 한 요청에 응답을 만드는 처리 주기는 관련된 서비스가 많을수록 길어진다.&lt;/p>
+&lt;ul>
+&lt;li>성능 저하
+&lt;ul>
+&lt;li>처리에 관계된 서비스 가운데 하나에 발생한 성능 문제가 전체 시스템의 성능에 영향을 끼친다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>장애 격리 곤란
+&lt;ul>
+&lt;li>PSP 등의 서비스에 장애가 발생하면 클라이언트는 더 이상 응답을 받지 못한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>높은 결합도
+&lt;ul>
+&lt;li>요청 발신자는 수신자를 알아야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>낮은 확정성
+&lt;ul>
+&lt;li>큐를 버퍼로 사용하지 않고서는 갑작스러운 트래픽 증가에 대응할 수 있도록 시스템을 확장하기 어렵다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>비동기 통신&lt;/strong>&lt;/p>
+&lt;p>크게 두가지 점주로 나눌 수 있다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_5.png"
+width="1126"
+height="1262"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_5_hu67fcaf6c880616f05483504aed1bccfa_55708_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_5_hu67fcaf6c880616f05483504aed1bccfa_55708_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="단일 수신자"
+class="gallery-image"
+data-flex-grow="89"
+data-flex-basis="214px"
+>&lt;/p>
+&lt;ul>
+&lt;li>단일 수신자
+&lt;ul>
+&lt;li>요청은 하나의 수신자 또는 서비스가 처리한다.&lt;/li>
+&lt;li>공유 메시지 큐를 사용해 구현한다.
+&lt;ul>
+&lt;li>복수 구독자가 있을 수 있으나 처리된 메시지는 큐에서 바로 제거&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_6.png"
+width="1356"
+height="548"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_6_hua8e092a43e387e527c03916905711cfa_34975_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_6_hua8e092a43e387e527c03916905711cfa_34975_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="다중 수신자"
+class="gallery-image"
+data-flex-grow="247"
+data-flex-basis="593px"
+>&lt;/p>
+&lt;ul>
+&lt;li>다중 수신자
+&lt;ul>
+&lt;li>메시지는 여러 수신자 또는 서버가 처리한다.&lt;/li>
+&lt;li>카프카가 적합하다.&lt;/li>
+&lt;li>소비자가 수신한 메시지는 카프카에서 바로 사라지지 않기 때문에 동일한 메시지를 여러 서비스가 받아 처리할 수 있다.&lt;/li>
+&lt;li>결제시스템에서는 하나의 요청이 푸시 알림, 재무 보고 업데이트, 분석 결과 업데이트 등 다양한 용도로 쓰일 수 있기 때문에 적합하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>일반적으로 동기식 통신은 설계하기 쉽지만 서비스의 자율성을 높이기에는 적합하지 않다.&lt;/p>
+&lt;ul>
+&lt;li>의존성 그래프가 커지면 전반적 성능은 낮아진다.&lt;/li>
+&lt;/ul>
+&lt;p>비동기 통신은 설계의 단순성과 데이터 일관성을 시스템 확장성 및 장애 감내 능력과 맞바꾼 결과다.&lt;/p>
+&lt;ul>
+&lt;li>비즈니스 로직이 복잡하고 타사 서비스 의존성이 높은 대규모 결제 시스템에는 비동기 통신이 더 나은 선택이다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="결제-실패-처리">결제 실패 처리&lt;/h3>
+&lt;p>모든 결제 시스템은 안정성 및 결함 내성이 핵심적 요구사항으로 실패한 결제를 적절히 처리할 수 있어야한다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>결제 상태 추적&lt;/strong>&lt;/p>
+&lt;p>결제 주기의 모든 단계에서 결제 상태를 정확하게 유지하는 것은 매우 중요하다.&lt;/p>
+&lt;p>실패가 일어날 때마다 결제 거래의 현재 상태를 파악하고 재시도 또는 환불이 필요한지 여부를 결정한다.&lt;/p>
+&lt;ul>
+&lt;li>결제 상태는 데이터 추가만 가능한 데이터베이스 테이블에 보관한다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>재시도 큐 및 실패 메시지 큐&lt;/strong>&lt;/p>
+&lt;p>실패를 우아하게 처리하기 위해서는 재시도 큐와 실패 메시지 큐를 두는 것이 바람직하다.&lt;/p>
+&lt;ul>
+&lt;li>재시도 큐
+&lt;ul>
+&lt;li>일시적 오류 같은 재시도 가능 오류는 재시도 큐에 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>실패 메시지 큐
+&lt;ul>
+&lt;li>반복적으로 처리에 실패한 메시지는 실패 메시지 큐로 보낸다.&lt;/li>
+&lt;li>문제가 있는 메시지를 디버깅하고 결기하여 성공적으로 처리되지 않은 이유를 파악하기 위한 검사에 유용하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_7.png"
+width="1956"
+height="846"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_7_huef8f628fcca5c9eaf068ff3664dff431_63343_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_7_huef8f628fcca5c9eaf068ff3664dff431_63343_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="실패한 결제의 처리"
+class="gallery-image"
+data-flex-grow="231"
+data-flex-basis="554px"
+>&lt;/p>
+&lt;h3 id="정확히-한-번-전달">정확히 한 번 전달&lt;/h3>
+&lt;p>결제 시스템에 발생 가능한 가장 심각한 문제 중 하나는 고객에게 이중으로 청구하는 것이다.&lt;/p>
+&lt;p>결제 주문이 정확히 한 번만 실행되도록 결제 시스템을 설계하는 것이 중요하다.&lt;/p>
+&lt;p>어려운 문제로 보이지남 문제를 두 부분으로 나누면 훨씬 쉽게 해결할 수 있으며 수학적으로 다음 요건이 충족되면 주어진 연산은 정확히 한 번 실행된다.&lt;/p>
+&lt;ul>
+&lt;li>최소 한 번은 실행된다.&lt;/li>
+&lt;li>최대 한 번 실행된다.&lt;/li>
+&lt;/ul>
+&lt;p>재시도를 통해 최소 한 번 실행을 보증하는 방법과 멱등성 검사를 통해 최대 한 번 실행을 보증하는 방법을 알아본다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>재시도&lt;/strong>&lt;/p>
+&lt;p>네트워크 오류나 시간 초과로 인해 결제 거래를 다시 시도해야 하는 경우 재시도 메커니즘을 활용하면 어떤 결제가 최소 한 번은 실행되도록 보장 가능하다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_8.png"
+width="1116"
+height="876"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_8_hua7b7f39cd2c6ca0abd91ed0e2a970add_45746_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_8_hua7b7f39cd2c6ca0abd91ed0e2a970add_45746_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="재시도"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="305px"
+>&lt;/p>
+&lt;p>재시도 매커니즘을 도입할 때는 얼마나 간격을 두고 재시도할지 정하는 것이 중요하다.&lt;/p>
+&lt;ul>
+&lt;li>즉시 재시도(immediate retry)
+&lt;ul>
+&lt;li>클라이언트는 즉시 요청을 다시 보낸다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>고정 간격(fixed interval)
+&lt;ul>
+&lt;li>재시도 전에 일정 시간을 기다린다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>증분 간격(incremental interval)
+&lt;ul>
+&lt;li>재시도 전에 기다리는 시간을 특정한 양 만큼 점진적으로 늘려나간다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지수적 백오프(exponential backoff)
+&lt;ul>
+&lt;li>재시도 전에 기다리는 시간을 직전 재시도 대비 두 배씩 늘려 나가는 방안&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>취소(cancel)
+&lt;ul>
+&lt;li>요청을 철회한다.&lt;/li>
+&lt;li>실패가 영구적이거나 재시도를 하더라도 성공 가능성이 낮은 경우 흔히 사용된다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>모든 상황에 맞는 해결책은 없지만, 일반적으로 네트워크 문제가 단시간 해결될 것 같지 않다면 지수적 백오프를 사용한다.&lt;/p>
+&lt;p>지나치게 공격적인 재시도 전략은 컴퓨팅 자원을 낭비하고 서비스 과부하를 유발한다.&lt;/p>
+&lt;ul>
+&lt;li>에러 코드를 반환할 때는 &lt;code>Retry-After&lt;/code> 헤더를 같이 붙여 봰는 것이 바람직하다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>멱등성&lt;/strong>&lt;/p>
+&lt;p>멱등성은 최대 한 번 실행을 보장하기 위한 핵심 개념이다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>멱등성 Idempotency&lt;/strong>&lt;br>
+수학 또는 컴퓨터 과학적 연산이 가질 수 있는 한 가지 속성으로, 연산을 여러 번 실행하여도 최초 실행 결과가 그대로 보존되는 특성 일걷는다.&lt;/p>
+&lt;/blockquote>
+&lt;p>API 관점에서 보자면 클라이언트가 API 여러번 호출해도 항상 동일한 결과가 나온다는 뜻이다.&lt;/p>
+&lt;p>클라이언트와 서버 간의 통신을 위해서 일반적으로 클라이언트가 생성하고 일정 시간이 지나면 만료되는 고유한 값을 멱등 키로 사용한다.&lt;/p>
+&lt;ul>
+&lt;li>UUID를 멱등 키로 군장하며 실제 널리 쓰인다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>시나리오 1: 고객이 결제 버튼을 빠르게 두 번 클릭하는 경우&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/11/img_9.png"
+width="1348"
+height="930"
+srcset="https://codemario318.github.io/post/system-design-interview-2/11/img_9_huf77824a6592560d8cafdb96ed122454b_79505_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/system-design-interview-2/11/img_9_huf77824a6592560d8cafdb96ed122454b_79505_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="멱등성"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="347px"
+>&lt;/p>
+&lt;p>요청에 포함된 멱등 키를 이전에 받은 적이 있다면 재시도로 처리하며, 이전 결제 요청의 가장 최근 상태를 활용한다.&lt;/p>
+&lt;p>동일한 멱등 키로 동시에 많은 요청을 받으면 결제 서비스는 그 가운데 하나만 처리하고 나머지에 대해서 &lt;code>429 Too Many Requests&lt;/code> 상태 코드를 반환한다.&lt;/p>
+&lt;ul>
+&lt;li>멱등성을 지원하는 한 가지 방법으로 데이터베이스의 고유 키 제약 조건을 활용하여 테이블의 기본 키를 멱등키로 사용할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>시나리오 2: PSP가 결제를 성공적으로 처리했지만 네트워크 오류로 응답이 결제 시스템에 전달되지 않아 사용자가 결제 버튼을 다시 클릭하는 경우&lt;/strong>&lt;/p>
+&lt;p>결제 서비스는 PSP에 비중복 난수를 전송하고 PSP는 해당 난수에 대응되는 토큰을 반환한다.&lt;/p>
+&lt;p>이 난수는 결제 주문을 유일하게 식별하며, 해당 토큰은 그 난수에 일대일로 대응되어 토큰 또한 결제 주문을 유일하게 식별할 수 있다.&lt;/p>
+&lt;p>사용자가 결제 버튼을 다시 누른다고 해도 결제 주문이 같으니 PSP로 전동되는 토큰도 같기 때문에, PSP가 이중 결제로 판단하고 종전 실행 결과를 반환하게 된다.&lt;/p>
+&lt;h3 id="일관성">일관성&lt;/h3>
+&lt;p>결제 실행 과정에서 상태 정보를 유지 관리하는 여러 서비스가 호출된다.&lt;/p>
+&lt;ul>
+&lt;li>결제 서비스
+&lt;ul>
+&lt;li>비중복 난수, 토큰, 결제 주문, 실행 상태 등 결제 관련 데이터&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>원장
+&lt;ul>
+&lt;li>모든 회계 데이터&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지갑
+&lt;ul>
+&lt;li>판매자의 계정 잔액&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>PSP
+&lt;ul>
+&lt;li>결제 실행 상태&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>+ 여러 데이터베이스의 사본에 복제될 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>분산 환경에서는 서비스 간 통신 실패로 데이터의 불일치가 발생할 수 있으므로 내부 서비스 간 데이터 일관성을 유지하려면 요청이 &lt;strong>정확히 한 번 처리&lt;/strong>되도록 보장하는 것이 아주 중요하다.&lt;/p>
+&lt;ul>
+&lt;li>내부 서비스와 외부 서비스(PSP) 간의 데이터 일관성 유지를 위해 일반적으로 멱등성과 조정 프로세스를 활용한다.&lt;/li>
+&lt;/ul>
+&lt;p>하지만 외부 서비스가 멱등 API를 지원하더라도 &lt;strong>항상 옳다고 가정할 수는 없다&lt;/strong>.&lt;/p>
+&lt;p>데이터를 다중화하는 경우 복제 지연으로 인해 기본 데이터베이스와 사본 데이터베이스가 불일치하는 일이 발생할 수 있으며 두 가지 해결 방법이 있다.&lt;/p>
+&lt;ul>
+&lt;li>주 데이터베이스에서만 읽기와 쓰기를 수행
+&lt;ul>
+&lt;li>설정은 쉽지만 규모 확장성이 떨어진다.&lt;/li>
+&lt;li>사본은 데이터 안정성 보장에만 활용하고 트래픽은 처리하지 않는다.
+&lt;ul>
+&lt;li>자원 낭비&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>모든 사본을 항상 동기화
+&lt;ul>
+&lt;li>팩서스, 래프트 같은 합의 알고리즘을 사용&lt;/li>
+&lt;li>YugabyteDb, CockroachDB와 같은 합의 기반 분산 데이터베이스를 사용한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="결제-보안">결제 보안&lt;/h3>
+&lt;p>결제 보안은 매우 중요하다. 사이버 공격과 카드 도난에 대응하기 위한 몇 가지 그술을 간략하게 살펴본다.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>문제&lt;/th>
+&lt;th>해결책&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>요청/응답 도청&lt;/td>
+&lt;td>HTTPS&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 변조&lt;/td>
+&lt;td>암호화 및 무결성 강화 모니터링&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>중간자 공격&lt;/td>
+&lt;td>인증서 고정과 함께 SSL 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 손실&lt;/td>
+&lt;td>여러 지역에 걸쳐 데이터베이스 복제 및 스냅숏 생성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>분산 서비스 거부 공격&lt;/td>
+&lt;td>처리율 제한 및 방화벽&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>카드 도난&lt;/td>
+&lt;td>토큰화. 실제 카드 번호를 사용하는 대신 토큰을 저장하고 결제에 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PCI 구정 준수&lt;/td>
+&lt;td>PCI DSS는 브랜드 신용 카드를 처리하는 조직을 위한 정보 보안 표준&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>사기&lt;/td>
+&lt;td>주소 확인, 카드 확인 번호(CVV), 사용자 행동 분석 등&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="4단계-마무리">4단계: 마무리&lt;/h2>
+&lt;p>대금 수신과 정산 흐름을 살펴보고 재시도, 멱등성, 일관성에 대해서도 자세히 살펴보았다.&lt;/p>
+&lt;p>결제 시스템은 아주 복잡하며 다루지 않았지만 중요한 주제들도 많이 남아있다.&lt;/p>
+&lt;ul>
+&lt;li>모니터링
+&lt;ul>
+&lt;li>주요 지표를 모니터링 하는 것은 모든 현대적 애플리케이션에 아주 중요하다.&lt;/li>
+&lt;li>광범위한 모니터링을 통해 많은 정보들을 알 수 있다.&lt;/li>
+&lt;li>대시보드를 만들 수도 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>경보
+&lt;ul>
+&lt;li>비정상적인 사요항이 발생하면 온콜 중인 개발자에게 알려 신속하게 대앙흘 수 있도록 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>디버깅 도구
+&lt;ul>
+&lt;li>엔지니어와 고객 지원팀이 더 쉽게 디버깅 할 수 있도록 결제 거래의 상태, 처리 서버 기록, PSP 기록 등을 검토할 수 있는 도구를 개발하는 것이 중요하다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>환율
+&lt;ul>
+&lt;li>국제적인 결제 시스템 설계에 중요한 고려 사항&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>지역
+&lt;ul>
+&lt;li>지역마다 가용한 결제 수단이 완전히 달라질 수 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>현금 결제&lt;/li>
+&lt;li>구글/애플 페이 연동 등&lt;/li>
+&lt;/ul></description></item><item><title>10. 실시간 게임 순위표</title><link>https://codemario318.github.io/post/system-design-interview-2/10/</link><pubDate>Sun, 17 Nov 2024 14:41:50 +0900</pubDate><guid>https://codemario318.github.io/post/system-design-interview-2/10/</guid><description>&lt;img src="https://codemario318.github.io/post/system-design-interview-2/10/cover.png" alt="Featured image of post 10. 실시간 게임 순위표" />&lt;p>이번 장에서는 &lt;strong>온라인 게임 리더보드&lt;/strong>, 즉 순위표를 설계해본다.&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;strong>순위표?&lt;/strong>&lt;br>
 누가 선두를 달리고 있는지 보여주기 위해 게임 등에서 흔히 사용하는 장치로, 가장 많은 포인트를 획득한 사람이 순위표의 맨 위에 자리한다.&lt;/p>
