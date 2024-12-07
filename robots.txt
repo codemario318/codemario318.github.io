@@ -3,7 +3,29 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/11/
+Allow: /post/system-design-interview-2/12/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25,15 +47,43 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview-2/11/
+
+
+
+
+
+
+
 Allow: /post/system-design-interview-2/10/
-
-
-
-
-
-
-
-
 
 
 
@@ -169,15 +219,7 @@ Allow: /post/system-design-interview-2/8/
 
 
 
-
-
-
-
 Allow: /post/system-design-interview-2/7/
-
-
-
-
 
 
 
@@ -326,14 +368,6 @@ Allow: /post/boostcamp-9th/review/membership/3/
 
 
 Allow: /post/system-design-interview-2/4/
-
-
-
-
-
-
-
-
 
 
 
@@ -1864,6 +1898,12 @@ Allow: /post/real-mysql/4/2/1/
 
 
 Allow: /post/real-mysql/4/1/
+
+
+
+
+
+
 
 
 
