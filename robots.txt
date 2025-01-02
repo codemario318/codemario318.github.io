@@ -3,7 +3,11 @@ User-agent: *
 
 
 
-Allow: /post/system-design-interview-2/13/
+Allow: /post/designing-data-intensive-application/1/
+
+
+
+
 
 
 
@@ -14,6 +18,30 @@ Allow: /post/system-design-interview-2/13/
 Allow: /post/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/system-design-interview-2/13/
 
 
 
@@ -250,10 +278,6 @@ Allow: /post/nest/di/
 
 
 Allow: /post/system-design-interview-2/9/
-
-
-
-
 
 
 
@@ -968,10 +992,6 @@ Allow: /post/system-design-interview/1/
 
 
 Allow: /post/clean-architecture/34/
-
-
-
-
 
 
 

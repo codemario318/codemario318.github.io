@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>시스템 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84/</link><description>Recent content in 시스템 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Thu, 02 Jan 2025 13:54:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>1. 신뢰할 수 있고 확장 가능하며 유지보수하기 쉬운 어플리케이션</title><link>https://codemario318.github.io/post/designing-data-intensive-application/1/</link><pubDate>Thu, 02 Jan 2025 13:54:49 +0900</pubDate><guid>https://codemario318.github.io/post/designing-data-intensive-application/1/</guid><description>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/cover.png" alt="Featured image of post 1. 신뢰할 수 있고 확장 가능하며 유지보수하기 쉬운 어플리케이션" />&lt;p>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img.png"
+width="2100"
+height="2756"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_hu7c7d9bbab499c5082d7f275bac15d9e4_1376618_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_hu7c7d9bbab499c5082d7f275bac15d9e4_1376618_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="데이터 중심 어플리케이션 설계"
+class="gallery-image"
+data-flex-grow="76"
+data-flex-basis="182px"
+>&lt;/p>
+&lt;p>오늘날 많은 애플리케이션은 &lt;strong>계산 중심&lt;/strong>(compute-intensive)과는 다르게 &lt;strong>데이터 중심&lt;/strong>(data-intensive)적이다.&lt;/p>
+&lt;p>이러한 애플리케이션의 경우 CPU 성능보다 &lt;strong>데이터의 양&lt;/strong>, &lt;strong>데이터의 복잡도&lt;/strong>, &lt;strong>데이터의 변화 속도&lt;/strong>가 애플리케이션을 제한하는 요소이다.&lt;/p>
+&lt;p>일반적으로 데이터 중심 애플리케이션은 공통으로 필요로 하는 기능을 제공하는 표준 구성 요소(standard building block)로 만든다.&lt;/p>
+&lt;ul>
+&lt;li>애플리케이션에서 나중에 다시 데이터를 찾을 수 있게 데이터를 저장(&lt;strong>데이터베이스&lt;/strong>)&lt;/li>
+&lt;li>읽기 속도 향상을 위해 값비싼 수행 결과를 기억(&lt;strong>캐시&lt;/strong>)&lt;/li>
+&lt;li>사용자가 키워드로 데이터를 검색하거나 다양한 방법으로 필터링할 수 있게 제공(&lt;strong>검색 색인, search index&lt;/strong>)&lt;/li>
+&lt;li>비동기 처리를 위해 다른 프로세스로 메시지 보내기(&lt;strong>스트림 처리, stream processing&lt;/strong>)&lt;/li>
+&lt;li>주기적으로 대량의 누적된 데이터를 분석(&lt;strong>일괄 처리, batch processing&lt;/strong>)&lt;/li>
+&lt;/ul>
+&lt;p>애플리케이션마다 요구사항이 다르기 때문에 데이터베이스 시스템 도한 저마다 다양한 특성을 가지고 있다.&lt;/p>
+&lt;ul>
+&lt;li>캐싱을 위한 다양한 접근 방식, 검색 색인을 구축하는 여러 가지 방법 등&lt;/li>
+&lt;/ul>
+&lt;p>애플리케이션을 만들 때 어떤 도구와 어떤 접근 방식이 수행 중인 작업에 가장 적합한지 생각해야 한다.&lt;/p>
+&lt;ul>
+&lt;li>단 하나의 도구만으로 할 수 없는 것을 해야하는 경우 도구들을 결합하기 어려울 수 있다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>이 책은 데이터 시스템의 원칙(principle)과 실용성(practicality), 이를 활용한 데이터 중심 애플리케이션을 개발하는 방법을 모두 담고있다.&lt;/p>
+&lt;blockquote>
+&lt;p>소개된 다양한 도구가 공통적으로 지닌 것은 무엇이고 서로 구별되는 것은 무엇인지, 어떠헥 그러한 특성을 구현해냈는지 알아본다.&lt;/p>
+&lt;/blockquote>
+&lt;p>그 전에 신뢰할 수 있고 확장 가능하며 유지보수하기 쉬운 데이터 시스템을 구축하기 위한 가장 기초적인 노력을 살펴봐야한다.&lt;/p>
+&lt;h2 id="데이터-시스템에-대한-생각">데이터 시스템에 대한 생각&lt;/h2>
+&lt;p>일반적으로 데이터베이스, 큐, 캐시 등을 매우 다른 범주에 속하는 도구로 생각한다.&lt;/p>
+&lt;p>데이터베이스와 메시지 큐는 표면적으로 비슷하더라도(얼마 동안 데이터를 저장함) 매우 다른 접근 패턴을 갖고 있어 서로 다른 성능 특성이 있기 때문에 구현 방식이 다르다.&lt;/p>
+&lt;blockquote>
+&lt;p>모든 것을 왜 &lt;strong>데이터 시스템&lt;/strong>이라는 포괄적 용어로 묶어야 하는가?&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>분류 간 경계가 흐려짐&lt;/strong>&lt;/p>
+&lt;p>데이터 저장과 처리를 위한 여러 새로운 도구는 최근에 만들어졌고, 새로운 도구들은 다양한 사용 사례(use case)에 최적화되어 전통적인 분류에 딱 들어맞지 않는다.&lt;/p>
+&lt;p>메시지 큐를 예시로 살펴보면&lt;/p>
+&lt;ul>
+&lt;li>레디스: 지속성을 보장하지 않음&lt;/li>
+&lt;li>카프카: 데이터베이스처럼 지속성을 보장&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>광범위한 요구사항&lt;/strong>&lt;/p>
+&lt;p>점점 더 많은 애플리케이션이 단일 도구로는 더 이상 데이터 처리와 저장 모두를 만족시킬 수 없는 과도하고 광범위한 요구사항을 갖고있다.&lt;/p>
+&lt;p>대신 작업(work)은 단일 도구에서 효율적으로 수행할 수 있는 태스크(task)로 나누고 다양한 도구들은 애플리케이션 코드를 이용해 서로 연결한다.&lt;/p>
+&lt;ul>
+&lt;li>메인 데이터베이스와 분리된 애플리케이션 관리 캐시 계층(멤캐시디, Memcached)이나 전문(full-text) 검색 서버(엘라스틱서치, 솔라)의 경우 메인 데이터베이스와 동기화된 캐시나 색인을 유지하는 것은 보통 애플리케이션 코드의 책임이다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img_1.png"
+width="2880"
+height="2049"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_1_huf3ea3a46984851ffc8f25b1984abfd55_116627_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_1_huf3ea3a46984851ffc8f25b1984abfd55_116627_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="다양한 구성 요소를 결합한 데이터 시스템 아키텍처의 예"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;p>서비스 제공을 위해 각 도구를 결합할 때 서비스 인터페이스나 애플리케이션 프로그래밍 인터페이스(API)는 보통 클라이언트가 모르게 구현 세부사항을 숨긴다.&lt;/p>
+&lt;ul>
+&lt;li>기본적으로 좀 더 작은 범용 구성 요소들로 새롬고 특수한 목적의 데이터 시스템을 만든다.&lt;/li>
+&lt;li>복합 데이터 시스템(composite data system)은 외부 클라이언트가 일관된 결과를 볼 수 있게끔 쓰기에서 캐시를 올바르게 무효화하거나 엡데이트 하는 등의 특정 보장 기능을 제공할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>여러 데이터 시스템을 설계, 통합하고 관리해야하는 요즘 개발자는 애플리케이션 개발자일 뿐 아니라 &lt;strong>데이터 시스템 설계자&lt;/strong>이기도 하다.&lt;/p>
+&lt;hr>
+&lt;p>데이터 시스템이나 서비스를 설계할 때 까다로운 문제가 많이 생긴다.&lt;/p>
+&lt;ul>
+&lt;li>내부적으로 문제가 있어도 데이터를 정확하고 완전하게 유지해야함&lt;/li>
+&lt;li>시스템의 일부 성능이 저하되더라도 클라이언트에 일관되게 좋은 성능을 제공해야함&lt;/li>
+&lt;li>부하 증가를 다루기 위해 규모를 확장할 수 있어야함&lt;/li>
+&lt;li>서비스를 위해 좋은 API를 설계해야함&lt;/li>
+&lt;/ul>
+&lt;p>뿐만 아니라 관련자의 기술 숙련도, 기존 시스템의 의존성, 전달 시간 척도, 다양한 종류의 위험에 대한 조직의 내성, 규제 제약 등은 시스템 설계에 영향을 줄 수 있는 많은 요소이다.&lt;/p>
+&lt;p>이런 요소는 상황에 크게 좌우되는 요소이므로 이 책에서는 &lt;strong>대부분의 소프트웨어 시스템에서 중요하게 여기는 세 가지 관심사에 중점&lt;/strong>을 둔다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>신뢰성&lt;/strong>(Reliability)
+&lt;ul>
+&lt;li>하드웨어나 소프트웨어 결함, 인적 오류 같은 &lt;strong>역경&lt;/strong>에 직면하더라도 시스템은 지속적으로 올바르게 동작(원하는 성능 수준에서 정확한 기능을 수행)해야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>확장성&lt;/strong>(Scalability)
+&lt;ul>
+&lt;li>시스템의 데이터 양, 트래픽 양, 복잡도가 증가하면서 이를 처리할 수 있는 적절한 방법이 있어야 한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>유지보수성&lt;/strong>(Maintainability)
+&lt;ul>
+&lt;li>여러 다양한 사람들이 시스템 상에서 작업할 것이기 때문에 모든 사용자가 시스템 상에서 생산적으로 작업할 수 있어야한다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="신뢰성">신뢰성&lt;/h2>
+&lt;p>소프트웨어의 경우 신뢰성에 대한 일반적인 기대치는 아래와 같다.&lt;/p>
+&lt;ul>
+&lt;li>애플리케이션은 사용자가 기대한 기능을 수행한다.&lt;/li>
+&lt;li>시스템은 사용자가 범한 실수나 예상치 못한 소프트웨어 사용법을 허용할 수 있다.&lt;/li>
+&lt;li>시스템 성능은 예상된 부하와 데이터 양에서 필수적인 사용 사례를 충분히 만족한다.&lt;/li>
+&lt;li>시스템은 허가되지 않은 접근과 오남용을 방지한다.&lt;/li>
+&lt;/ul>
+&lt;p>이러한 내용들이 올바르게 동작함을 의미하는 경우, 대략 &amp;ldquo;&lt;strong>무언가 잘못 되더라도 지속적으로 올바르게 동작함&lt;/strong>&amp;ldquo;을 신뢰성의 의미로 이해할 수 있다.&lt;/p>
+&lt;h3 id="결함">결함&lt;/h3>
+&lt;p>잘못될 수 있는 일을 &lt;strong>결함&lt;/strong>(fault)이라 부른다.&lt;/p>
+&lt;p>그리고 결함을 예측하고 대처할 수 있는 시스템을 &lt;strong>내결함성&lt;/strong>(fault-tolerant) 또는 &lt;strong>탄력성&lt;/strong>(resilient)을 지녔다고 말한다.&lt;/p>
+&lt;p>모든 종류의 결함을 견딜 수 있는 시스템은 실제로 실현 가능하지 않으므로 &lt;strong>특정 유형&lt;/strong>의 결함 내성에 대해서만 이야기하는 것이 타당하다.&lt;/p>
+&lt;p>결함과 장애(failure)는 다르다.&lt;/p>
+&lt;ul>
+&lt;li>결함
+&lt;ul>
+&lt;li>사양에서 벗어난 시스템의 한 구성 요소&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>장애
+&lt;ul>
+&lt;li>사용자에게 필요한 서비스를 제공하지 못하고 시스템 전체가 멈춘 경우&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>결함 확률을 0으로 줄이는 것은 불가능하므로 결함으로 인해 장애가 발생하지 않게끔 내결함성 구조를 설계하는 것이 좋다.&lt;/p>
+&lt;ul>
+&lt;li>이 책에서는 신뢰할 수 없는 여러 부품들로 신뢰할 수 있는 시스템을 구축하는 다양한 기법을 배운다.&lt;/li>
+&lt;/ul>
+&lt;p>실제 많은 중대한 버그는 미흡한 오류 처리에서 기인한다.&lt;/p>
+&lt;ul>
+&lt;li>내결함성 시스템에서 고의적으로 결함을 유도함으로써 내결함성 시스템을 지속적으로 훈련하고 테스트해서 결함이 자연적으로 발생했을 때 올바르게 처리할 수 있다는 자신감을 높인다.&lt;/li>
+&lt;li>ex) 넷플릭스의 &lt;strong>카오스 몽키&lt;/strong>(Chaos Monkey)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>일반적으로 결함 예방을 넘어 내결함성을 갖는 것을 선호하지만, 해결책이 없는 경우는 예방책이 필수적이다.&lt;/p>
+&lt;ul>
+&lt;li>보안 문제: 공격자가 시스템을 손상시키고 민감한 데이터에 대한 접근 권한을 얻는다면 되돌릴 수 없다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="하드웨어-결함">하드웨어 결함&lt;/h3>
+&lt;p>시스템 장애의 대표적인 예시로, 규모가 큰 데이터센터에서 일하는 사람은 많은 장비를 다룰 경우 이 같은 일은 늘상 일어난다고 말한다.&lt;/p>
+&lt;ul>
+&lt;li>10,000개의 디스크로 구성된 저장 클러스터는 평균적으로 하루에 한 개의 디스크가 죽는다고 예상해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>시스템 장애율을 줄이기 위한 대표적인 방법은 각 하드웨어 구성 요소에 중복(redundancy)을 추가하는 방법이다.&lt;/p>
+&lt;ul>
+&lt;li>구성 요소가 죽으면 고장 난 구성 요소가 교체되는 동안 중복된 구성 요소를 대신 사용한다.&lt;/li>
+&lt;/ul>
+&lt;p>이런 접근 방식은 하드웨어 문제로 장애가 발생하는 것은 완전히 막으룻는 없지만 이해하기 쉽고 보통 수년 간 장비가 중단되지 않고 계속 동작할 수 있게 한다.&lt;/p>
+&lt;p>최근까지 단일 장비의 전체 장애는 매우 드물기 때문에 대부분의 애플리케이션은 하드웨어 구성 요소의 중복으로 충분하여, 다중 장비 중복은 고가용성(high availability)이 절대적으로 필수적은 소수의 애플리케이션에서만 필요했다.&lt;/p>
+&lt;ul>
+&lt;li>새 장비에 백업을 매우 빠르게 복원할 수 있는 경우 중단시간(downtime)은 대부분의 애플리케이션에 치명적이지 않다.&lt;/li>
+&lt;/ul>
+&lt;p>하지만 데이터 양과 애플리케이션의 계산 요구가 늘어나면서 더 많은 애플리케이션이 많은 수의 장비를 사용하게 됐고 이와 비례해 하드웨어 결함율도 증가했다.&lt;/p>
+&lt;p>따라서 소프트웨어 내결함성 기술을 사용하거나 하드웨어 중복성을 추가해 전체 장비의 손실을 견딜 수 있는 시스템으로 점점 옮겨가고 있으며, 이러한 시스템에는 운영상의 장점도 있다.&lt;/p>
+&lt;ul>
+&lt;li>장비를 재부팅 해야하는 경우 등&lt;/li>
+&lt;/ul>
+&lt;h3 id="소프트웨어-오류">소프트웨어 오류&lt;/h3>
+&lt;p>보통 하드웨어 결함을 무작위적으고 서로 독립적이라고 생각한다.&lt;/p>
+&lt;ul>
+&lt;li>다수의 하드웨어 구성 요소에 동시 장애가 발생하는 경우는 드물다.&lt;/li>
+&lt;/ul>
+&lt;p>또 다른 부류의 결함으로 시스템 내 체계적 오류(systematic error)는 예상하기 더 어렵고 노드 간 상관관계 때문에 상관관계가 없는 하드웨어 결함보다 오히려 시스템 오류를 더욱 많이 유발하는 경향이 있다.&lt;/p>
+&lt;ul>
+&lt;li>잘못된 특정 입력이 있을 때 모든 애플리케이션 서버 인스턴스가 죽는 소프트웨어 버그
+&lt;ul>
+&lt;li>ex) 리눅스 커널의 버그로 인해 많은 애플리케이션이 일제히 멈춰버린 원인니 된 2012년 6월 30일 윤초&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>CPU 시간, 메모리, 디스크 공간, 네트워크 대역폭처럼 공유 자원을 과도하게 사용하는 일부 프로세스&lt;/li>
+&lt;li>시스템의 속도가 느려져 반응이 없거나 잘못된 응답을 반환하는 서비스&lt;/li>
+&lt;li>한 구성 요소의 작은 결함이 다른 구성 요소의 결함을 야기하고 차례차례 더 많은 결함이 발생하는 연쇄 장애(cascading failure)&lt;/li>
+&lt;/ul>
+&lt;p>이 같은 소프트웨어 결함을 유발하는 버그는 &lt;strong>특정 상황에 의해 발생하기 전까지 오랫동안 나타나지 않는다&lt;/strong>.&lt;/p>
+&lt;ul>
+&lt;li>소프트웨어에는 확여에 대한 일종의 가정이 있다는 시실을 알 수 있다.(일부 제외)&lt;/li>
+&lt;/ul>
+&lt;p>스프트웨어의 체계적 오류 문제는 신속한 해결책이 없다.&lt;/p>
+&lt;ul>
+&lt;li>시스템의 가정과 상호작용에 대해 주의 깊게 생각하기&lt;/li>
+&lt;li>빈틈없는 테스트&lt;/li>
+&lt;li>프로세스 격리(process isolation)&lt;/li>
+&lt;li>죽은 프로세스의 재시작 허용&lt;/li>
+&lt;li>프로덕션 환경에서 스스템 동작의 측정&lt;/li>
+&lt;li>모니터링&lt;/li>
+&lt;li>분석하기&lt;/li>
+&lt;/ul>
+&lt;p>위와 같은 여러 작은 일들이 문제 해결에 도움을 줄 수 있다.&lt;/p>
+&lt;p>시스템이 무너가를 보장하길 기대한다면 수행 중에 이를 지속적으로 확인해 차이가 생기는 경우 경고를 발생시킬 수 있다.&lt;/p>
+&lt;h3 id="인적-오류">인적 오류&lt;/h3>
+&lt;p>사람은 소프트웨어 시스템을 설계하고 구축하며, 운영자로서 시스템을 계속 운영한다.&lt;/p>
+&lt;ul>
+&lt;li>대규모 인터넷 서비스에 대한 연구에 따르면 운영자의 설정 오류가 중단의 주요 원인이며, 하드웨어 결함은 중단 원인의 10~20%에 그친다.&lt;/li>
+&lt;/ul>
+&lt;p>다양한 접근 방식을 결합하여 신뢰성 있는 시스템을 만들어야 한다.&lt;/p>
+&lt;ul>
+&lt;li>오류의 가능성을 최소하 하는 방향으로 시스템을 설계
+&lt;ul>
+&lt;li>잘 설계된 추상화, API, 관리 인터페이스 사용으로 옳은 일은 쉽게 하고, 잘못된 일은 막는다.&lt;/li>
+&lt;li>인터페이스가 지나치게 제한적이면 제한된 인터페이스를 사람들은 피해 작업하는 경향이 있어, 올바르게 작동하게끔 균형을 맞추기 어렵다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>사람이 가장 많이 실수하는 장소(부분)에서 사람의 실수로 장애가 발생할 수 있는 부분을 분리
+&lt;ul>
+&lt;li>비 프로덕션 샌드박스(sandbox) 환경 제공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단위 테스트부터 전체 시스템 통합 테스트와 수동 테스트까지 모든 수준에서 철저하게 테스트
+&lt;ul>
+&lt;li>코너 케이스를 다루는 데 유용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>장애 발생의 영향을 최소화하기 위해 인적 오류를 빠르고 쉽게 복구할 수 있는 환경
+&lt;ul>
+&lt;li>설정 변경 내역을 빠르게 롤백&lt;/li>
+&lt;li>새로운 코드를 서서히 롤하웃하게 구성(예상치 못한 버그가 일부 사용자에게만 영향이 미치도록)&lt;/li>
+&lt;li>이전 계산이 잘못된 경우를 대비해 데이터 재계산 도구 제공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>성능 지표와 오류율 같은 상세하고 명확한 모니터링 대책 마련
+&lt;ul>
+&lt;li>원격 측정(telemetry)&lt;/li>
+&lt;li>모니터링은 조기에 경고 신호를 보내줄 수 있고 특정 가정이나 제한을 벗어나는지 확인할 수 있게 함&lt;/li>
+&lt;li>문제가 발생했을 때 지표는 문제를 분석하는 데 매우 중요&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>조작 교육과 실습을 진행&lt;/li>
+&lt;/ul>
+&lt;h3 id="신뢰성은-얼마나-중요할까">신뢰성은 얼마나 중요할까?&lt;/h3>
+&lt;p>신뢰성은 원자력 발전소나 항공 교통 관제 소프트웨어만을 위한 것이 아니며, 일상적인 애플리케이션도 안정적으로 작동해야한다.&lt;/p>
+&lt;p>비즈니스 애플리케이션에서 버그는 생산성 저하의 원인이고 전자 상거래 사이트의 중단은 매출에 손실이 발생하고 명성에 타격을 준다는 면에서 많은 비용이 든다.&lt;/p>
+&lt;p>중요하지 않은 애플리케이션도 사용자에 대한 책임이 있다.&lt;/p>
+&lt;ul>
+&lt;li>사소한 데이터라도 누군가에게는 매우 소중할 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>비용을 줄이려 신뢰성을 희생해야 하는 경우, 비용을 줄여하는 시점을 매우 잘 알고 있어야 한다.&lt;/p>
+&lt;h2 id="확장성">확장성&lt;/h2>
+&lt;p>시스템이 현재 안정적으로 동작한다고 해서 미래에도 아정적으로 동작한다는 보장은 없다.&lt;/p>
+&lt;p>성능 저하를 유발하는 흔한 이뉴 중 하나는 부하 증가로, 확장성은 증가한 부하에 대처하는 시스템 능력을 설명한다.&lt;/p>
+&lt;p>확장성을 논한다는 것은 &amp;ldquo;&lt;strong>시스템이 특정 방식으로 커지면 이에 대처하기 위한 선택은 무엇인가?&lt;/strong>&amp;ldquo;와 &amp;ldquo;&lt;strong>추가 부하를 다루기 위해 계산 자원을 어떻게 투입할까?&lt;/strong>&amp;rdquo; 같은 질문을 고여한다는 의미이다.&lt;/p>
+&lt;h3 id="부하-기술하기">부하 기술하기&lt;/h3>
+&lt;p>무엇보다 시스템의 현재 부하를 간결하게 기술해야 부하 성장 질문을 논의할 수 있다.&lt;/p>
+&lt;p>부하는 &lt;strong>부하 매개변수&lt;/strong>(load parameter)라 부르는 몇 개의 숫자로 내타낼 수 있으며, 가장 적합한 부하 매개변수 선택은 시스템 설계에 따라 달라진다.&lt;/p>
+&lt;ul>
+&lt;li>웹 서버의 초당 요청 수&lt;/li>
+&lt;li>데이터베이스의 읽기 대 쓰기 비율&lt;/li>
+&lt;li>대화방의 동시 활성 사용자(active user)&lt;/li>
+&lt;li>캐시 적중률 등&lt;/li>
+&lt;/ul>
+&lt;p>평균적인 경우가 중요할 수도 있고 소수의 극단적인 경우가 병목 현상의 우너인일 수도 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>트위터 예시&lt;/strong>&lt;/p>
+&lt;p>트위터의 주요 두 가지 동작은 다음과 같다.&lt;/p>
+&lt;ul>
+&lt;li>트윗 작성
+&lt;ul>
+&lt;li>사용자는 팔로워에게 새로운 메시지를 게시할 수 있다.&lt;/li>
+&lt;li>평균 초당 4.6k 요청, 피크일 때 12k 요청 이상&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>홈 타임라인
+&lt;ul>
+&lt;li>사용자는 팔로우한 사람이 작성한 트윗을 볼 수 있다.&lt;/li>
+&lt;li>초당 300k 요청&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>단순히 초당 12,000쓰기 처리는 상당히 쉽지만, 트위터의 확장성 문제는 주로 트윗 양이 아닌 팬 아웃(fan-out) 때문이다.&lt;/p>
+&lt;p>개별 사용자는 많은 사용자를 팔로우하고 많은 사람이 개별 사용자를 팔로우한다.&lt;/p>
+&lt;ol>
+&lt;li>트윗 작성은 간단히 새로운 트윗 전역 컬렉션에 삽입.
+&lt;ul>
+&lt;li>사용자가 자신의 홈 타임라인을 요청하면 팔로우하는 모든 사람을 찾고, 이 사람들의 모든 트윗을 찾아 시간순으로 정렬해서 합친다.&lt;/li>
+&lt;li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tweets&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tweets&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">tweets&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sender_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">JOIN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">follows&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">follows&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">followee_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">follows&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">follower_id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">current_user&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>각 수신 사용자용 트윗 유편함처럼 개별 사용자의 홈 타임라인 캐시를 유지.
+&lt;ul>
+&lt;li>사용자가 트윗을 작성하면 해당 사용자를 팔오우하는 사람을 모두 찾고 팔로워 각자의 홈 타임라인 캐시에 새로운 트윗을 삽입&lt;/li>
+&lt;li>홈 타임라인의 읽기 요청은 요청 결과를 미리 계산했으므로 비용이 저렴&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img_2.png"
+width="2880"
+height="1037"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_2_huef454c28ed509f14d0506aa4413f3fba_72867_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_2_huef454c28ed509f14d0506aa4413f3fba_72867_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="트위터 홈 타임라인 구현을 위한 간략한 관계형 스키마"
+class="gallery-image"
+data-flex-grow="277"
+data-flex-basis="666px"
+>&lt;br>
+&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img_3.png"
+width="2880"
+height="1037"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_3_huf1eee131e293bb95b1294c4be771ef1f_79137_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_3_huf1eee131e293bb95b1294c4be771ef1f_79137_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="매개변수와 함께 팔로워에게 트윗을 전송하기 위한 트위터의 데이터 파이프라인"
+class="gallery-image"
+data-flex-grow="277"
+data-flex-basis="666px"
+>&lt;/p>
+&lt;p>트위터의 첫 번째 버전은 1을 사용했는데, 시스템이 홈 타임라인 질의 부하를 버텨내기 위해 고군분투 해야했고, 그 결과 2로 전환했다.&lt;/p>
+&lt;ul>
+&lt;li>평균적으로 트윗 게시 요청량이 홈 타임라인 읽기 요청량에 비해 수백 배 적기 때문에 2가 훨씬 잘 동작함
+이 경우는 쓰기 시점에 더 많은 일을 하고, 일기 시점에 적은 일을 하는 것이 바람직하다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>2의 불리한 점은 트윗 작성이 많은 부가 작업을 필요로 한다는 점이다.&lt;/p>
+&lt;ul>
+&lt;li>평균 트윗이 약 75명의 팔로워에게 전달되므로 초당 4.6k 트윗은 홈 타임라인 캐시에 초당 345k건의 쓰기 요청 발생&lt;/li>
+&lt;li>일부 사용자는 팔로워가 3천만명이 넘으므로 단일 트윗이 홈 타임라인에 3천만 건 이상의 쓰기 요청 발생 가능&lt;/li>
+&lt;/ul>
+&lt;p>트위터 사례에서 사용자당 팔로워의 분포는 팬 아웃 부하를 결정하기 때문에 확장성을 논의할 때 핵심 부하 매개변수가 된다.&lt;/p>
+&lt;p>결과적으로 트위터는 접근 방식 2를 기반으로 하이브리드 형식으로 바꾸고 있다.&lt;/p>
+&lt;ul>
+&lt;li>대부분 사용자의 트윗은 계속해서 사람들이 작성할 때 홈 타임라인에 펼쳐지지만 유명인은 팬 아웃에서 제외된다.&lt;/li>
+&lt;li>유명인의 트윗은 별도로 가져와 1처럼 읽는 시점에 사용자의 홈 타임라인에 합친다.&lt;/li>
+&lt;/ul>
+&lt;h3 id="성능-기술하기">성능 기술하기&lt;/h3>
+&lt;p>일단 시스템 부하를 기술하면 부하가 증가할 때 어떤 일이 일어나는지 조사할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>부하 매개변수를 증가시키고 시스템 자원은 병경하지 않고 유지하면 시스템 성능은 어떻게 영향을 받을까?&lt;/li>
+&lt;li>부하 매개변수를 증가시켰을 때 성능이 변하지 않고 유지되길 원한다면 자원을 얼마나 많이 늘려야 할까?&lt;/li>
+&lt;/ul>
+&lt;p>두 질문 모두 성능 수치가 필요하므로 시스템 성능에 대해 간단히 살펴본다.&lt;/p>
+&lt;ul>
+&lt;li>일괄 처리 시스템(ex. hadoop)
+&lt;ul>
+&lt;li>&lt;strong>처리량&lt;/strong>(throughput, 초당 처리할 수 있는 레코드 수나 일정 크기의 데이터 집합으로 작업을 수행할 때 걸리는 전체 시간)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>온라인 시스템
+&lt;ul>
+&lt;li>서비스 &lt;strong>응답 시간&lt;/strong>(response time)&lt;/li>
+&lt;li>클라이언트가 요청을 보내고 응답을 받는 사이의 시간&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>지연 시간(latency)과 응답 시간(response time)&lt;/strong>&lt;br>
+응답 시간은 클라이언트 관점에서 본 시간으로, 요청을 처리하는 실제 시간 외에도 네트워크 지연과 큐 지연도 포함한다.&lt;br>
+지연 시간은 요청이 처리되길 기다리는 시간으로, 서비스를 기다리며 휴지(latent) 상태인 시간을 말한다.&lt;/p>
+&lt;/blockquote>
+&lt;p>응답 시간은 매번 요청에 따라 달라지기 때문에, 단일 숫자가 아닌 측정 가능한 값의 분포로 생각해야한다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img_4.png"
+width="2880"
+height="805"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_4_hu34112d46532c22af0f415ce8b7d25f2a_86463_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_4_hu34112d46532c22af0f415ce8b7d25f2a_86463_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="평균과 백분위 예시"
+class="gallery-image"
+data-flex-grow="357"
+data-flex-basis="858px"
+>&lt;/p>
+&lt;p>대부분의 요청은 꽤 빠르지만 가끔 오래 걸리는 &lt;strong>특이 값(outlier)&lt;/strong> 이 있는데 다음과 같이 이유로 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>백그라운드 프로세스의 컨텍스트 스위치&lt;/li>
+&lt;li>네트워크 패킷 손실과 TCP 재전송&lt;/li>
+&lt;li>가비지 컬렉션 휴지&lt;/li>
+&lt;li>디스크에서 읽기를 강제하는 페이지 폴트&lt;/li>
+&lt;li>서버 랙의 기계적인 진동 등&lt;/li>
+&lt;/ul>
+&lt;p>보고된 서비스 평균 응답 시간을 살피는 일이 일반적이지만, 전형적인 응답 시간을 알고 싶다면 평균은 좋은 지표는 아니다.&lt;/p>
+&lt;ul>
+&lt;li>얼마나 많은 사용자가 실제로 지연을 경험했는지 알 수 없음&lt;/li>
+&lt;/ul>
+&lt;p>일반적으로 평균보다는 &lt;strong>백분위&lt;/strong>(percentile)을 사용하는 편이 더 좋다.&lt;/p>
+&lt;ul>
+&lt;li>중앙값(median, p50)
+&lt;ul>
+&lt;li>사용자가 보통 얼마나 오랫동안 기다려야 하는지 알고 싶다면 좋은 지표&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>상위 백분위
+&lt;ul>
+&lt;li>p95, p99, p999 같은 상위 백분위를 통해특이 값이 얼마나 좋지 않은지 확인에 좋은 지표&lt;/li>
+&lt;li>&lt;strong>꼬리 지연 시간(tail latency)&lt;/strong> 으로 알려진 상위 백분위 응답 시간은 서비스의 사용자 경험에 직접 영향을 주기 때문에 중요&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>p9999 같이 최상위 백분위는 통제할 수 없는 임의 이벤트에 쉽게 영향을 받으므로 응답 시간을 줄이기가 매우 어려어 이점이 줄어든다.&lt;/p>
+&lt;p>백분위는 서비스 수준 목표(service level objective, SLO)와 서비스 수준 협약서(service level agreement, SLA)에 자주 사용하고 기대 성능과 서비스 가용성르 정의하는 계약서에도 자주 등장한다.&lt;/p>
+&lt;ul>
+&lt;li>응답 시간 중앙값이 200밀리초 미만이고 99분위가 1초 미만인 경우 정상 서비스 상태로 간주하며 서비스 제공 시간은 99.9% 이상이어야 한다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>선두 차단(head-of-line blocking)&lt;/strong>&lt;/p>
+&lt;p>큐 대기 지연은 높은 백분위에서 응답 시간의 상당 부분을 차지한다.&lt;/p>
+&lt;ul>
+&lt;li>서버는 병렬로 소수의 작업만 처리할 수 있기 때문에 소수의 느린 요청 처리만으로 후속 요청 처리가 지체된다.&lt;/li>
+&lt;li>서버에서 후속 요청이 빠르게 처리되더라도 이전 요청이 완료되길 기다리는 시간 때문에 클라이언트는 전체적으로 응답 시간이 느리다고 생각하게된다.&lt;/li>
+&lt;/ul>
+&lt;p>이런 문제로 인해 클라이언트 쪽 응답 시간 측정이 중요하다.&lt;/p>
+&lt;hr>
+&lt;p>시스템의 확장성을 테스트하려고 인위적으로 부하를 생성하는 경우 부하 생성 클라이언트는 응답 시간과 독립적으로 요청을 지속적으로 보내야한다.&lt;/p>
+&lt;ul>
+&lt;li>다음 요청을 보내기 전에 이전 요청이 완료되길 기다리면 테스트에서 인위적으로 대기 시간을 실제보다 더 짧게 만들어 평가를 왜곡한다.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/1/img_5.png"
+width="2880"
+height="1304"
+srcset="https://codemario318.github.io/post/designing-data-intensive-application/1/img_5_hu4bbd8047ec59659dcb92a302da18488b_76022_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/designing-data-intensive-application/1/img_5_hu4bbd8047ec59659dcb92a302da18488b_76022_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="요청을 처리하기 위해 여러 번 백엔드 호출이 필요한 상황에서 단 하나의 느린 백엔드 요청이 전체 최종 사용자 요청을 느리게 만든다."
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="530px"
+>&lt;/p>
+&lt;h3 id="부하-대응-접근-방식">부하 대응 접근 방식&lt;/h3>
+&lt;p>부하 수준 1단계에 적합한 아키텍처로는 10배의 부하를 대응할 수 없기 때문에 급성장하는 서비스를 맡고 있다면 부하 규모의 자릿수가 바뀔 때마다 혹은 그보다 자주 아키텍처를 재검토해야 할지 모른다.&lt;/p>
+&lt;p>확장성과 관련해 &lt;strong>용량 확장(scaling up, 수직 확장)&lt;/strong> 과 &lt;strong>규모 확장(scaling out, 수평 확장)&lt;/strong> 구분할 수 있다.&lt;/p>
+&lt;p>다수의 장비에 부하를 분산하는 아키텍처를 &lt;strong>비공유(shared-noting)&lt;/strong> 아키텍처라 부르며, 단일 장비에서 수행될 수 있는 시스템은 보통 간단하지만 고사양 장비는 매우 비싸기 때문에 상당히 집약된 작업 부하는 대개 규모 확장을 피하지 못한다.&lt;/p>
+&lt;p>현실적으로 좋은 아키텍처는 실용적인 접근 방식의 조합이 필요하다.&lt;/p>
+&lt;ul>
+&lt;li>적절한 사양의 장비 몇 대가 다량의 낮은 사양 가상 장비보다 여전히 훨씬 간단하고 저렴하다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>일부 시스템은 &lt;strong>탄력적(elastic)&lt;/strong> 이다.&lt;/p>
+&lt;ul>
+&lt;li>부하 증가를 감지하면 컴퓨팅 자원을 자동으로 추가할 수 있다. 그렇지 않은 시스템은 수동으로 확장해야한다.&lt;/li>
+&lt;/ul>
+&lt;p>탄력적인 시스템은 부하를 예측할 수 없을 만큼 높은 경우 유용하지만, 수동으로 확장하는 시스템이 더 간단하고 운영상 예상치 못한 일이 더 적다.&lt;/p>
+&lt;hr>
+&lt;p>다수의 장비에 상태 비저앙(stateless) 서비스를 배포하는 일은 상당히 간단하지만, 단일 노드에 상태 유지(stateful) 데이터 시스템을 분산 설치하는 일은 아주 많은 복잡도가 추가적으로 발생한다.&lt;/p>
+&lt;ul>
+&lt;li>이런 이유로 확장 비용이나 데이터베이스를 분산으로 만들어야 하는 고가용성 요구가 있을 때 까지 단일 노드에 데이터베이스를 유지하는 것이 최근까지의 통념이다.&lt;/li>
+&lt;/ul>
+&lt;p>분산 시스템을 위한 도구와 추상화가 좋아지면서 이 통념이 적어도 일부 애플리케이션에서는 바뀌었다.&lt;/p>
+&lt;ul>
+&lt;li>대용량 데이터와 트래픽을 다루지 않는 사용 사례에도 분산 데이터 시스템이 향후 기본 아키텍처로 자리 잡을 가능성이 있다.&lt;/li>
+&lt;/ul>
+&lt;p>대개 대규모로 동작하는 시스템의 아키텍처는 해당 시스템을 사용하는 애플리케이션에 특화돼 있다.&lt;/p>
+&lt;ul>
+&lt;li>범용적으로 모든 상황에 맞는 확장 아키텍처는 없다.&lt;/li>
+&lt;/ul>
+&lt;p>아키텍처를 결정하는 요소는 읽기의 양, 쓰기의 양, 저장할 데이터의 양, 데이터의 복잡도, 응답 시간 요구사항, 접근 패턴 등이 있다.&lt;/p>
+&lt;p>특정 애플리케이션에 적합한 확장성을 갖춘 아키텍처는 주요 동작이 무엇이고 잘 하지 않는 동작이 무엇인지에 대한 가정을 바탕으로 구축한다.&lt;/p>
+&lt;ul>
+&lt;li>이 가정은 곧 부하 매개변수가 되며, 이 가정이 잘못되면 확장에 대한 엔지니어링 노력은 헛수고가 되고 최악의 경우 역효과를 낳을 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>스타트업 초기 단계나 검증되지 않은 제품의 경우 미래를 가정한 부하에 대비해 확장하기보다는 빠르게 반복해서 제품 기능을 개선하는 작업이 좀 더 중요하다.&lt;/p>
+&lt;ul>
+&lt;li>확장성을 갖춘 아키텍처가 특정 애플리케이션에 특화됐을 지라도 일너 아키텍처는 보통 익숙한 패턴으로 나열된 범용적인 구성 요소로 구축한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="유지보수성">유지보수성&lt;/h2>
+&lt;p>소프트웨어 비용의 대부분은 지속해서 이어지는 유지보수에 들어간다.&lt;/p>
+&lt;ul>
+&lt;li>버그 수정, 시스템 운영 유지, 장애 조사, 시로운 플랫폼 적용, 새 사용 사례를 위한 변경, 기술 채무 상환, 새로운 기능 추가 등&lt;/li>
+&lt;/ul>
+&lt;p>모든 레거시 시스템은 각자 나름에 풀편함이 있어 이를 다루기 위해 일반적으로 추천할 만한 방법을 제시하는 일은 매우 어렵다.&lt;/p>
+&lt;p>하지만 희망적인 점은 유지보수 중 고통을 최소화하고 레거시 소프트웨어를 직접 만들지 않게끔 소프투웨어를 설계할 수 있다는 점이다.&lt;/p>
+&lt;p>그러기 위해 주의를 기울여야 할 소프트웨어 시스템 설계 원칙은 다음 세 가지이다.&lt;/p>
+&lt;ul>
+&lt;li>운용성(operability)
+&lt;ul>
+&lt;li>운영팀이 시스템을 원활하게 운영할 수 있게 쉽게 만들어라&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단순성(simplicity)
+&lt;ul>
+&lt;li>시스템에서 복잡도를 최대한 제거해 새로운 엔지니어가 시스템을 이해하기 쉽게 만들어라&lt;/li>
+&lt;li>사용자 인터페이스의 단순성과는 다르다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>발전성(evolvability)
+&lt;ul>
+&lt;li>엔지니어가 이후에 시스템을 쉽게 변경할 수 있게 하라.&lt;/li>
+&lt;li>요구사항 변경 같은 예기치 않은 사용 사례를 적용하기 쉽다.&lt;/li>
+&lt;li>유연성, 수정 가능성, 적응성으로 알려져 있다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>신뢰성, 확장성을 달성하기 위한 쉬운 해결책은 없으므로, 운용성, 단순성, 발전성을 염두에 두고 시스템을 생각하려 노력해야한다.&lt;/p>
+&lt;h3 id="운용성-운영의-편리함-만들기">운용성: 운영의 편리함 만들기&lt;/h3>
+&lt;p>좋은 운영은 종종 나쁜 소프트웨어의 제약을 피하는 대안이 될 수 있다.&lt;/p>
+&lt;p>하지만 좋은 소프트웨어라도 나쁘게 운영할 경우 작동을 신뢰할 수 없다는 말이 있다.&lt;/p>
+&lt;ul>
+&lt;li>운영 중 일부 측면은 자동화할 수 있고 또 자동화 해야한다.&lt;/li>
+&lt;li>자동화를 처음 설정하고 제대로 동작하는지 확인하는 일은 여전히 사람의 몫이다.&lt;/li>
+&lt;/ul>
+&lt;p>시스템이 지속해서 원할하게 작동하려면 운영팀이 필수이며, 좋은 운영팀은 일반적으로 다음과 같은 작업 등을 책임진다.&lt;/p>
+&lt;ul>
+&lt;li>시스템 상태를 모니터링 하고 상태가 좋지 않다면 빠르게 서비스를 복원&lt;/li>
+&lt;li>시스템 장애, 성능 저하 등의 문제의 원인을 추적&lt;/li>
+&lt;li>보안 패치를 포함해 소프트웨어와 플랫폼을 최신 상태로 유지&lt;/li>
+&lt;li>다른 시스템이 서로 어떻게 영향을 주는지 확인해 문제가 생길 수 있는 변경 사하응ㄹ 손상을 입히기 전에 차단&lt;/li>
+&lt;li>미래에 발생 가능한 문제를 예측해 문제가 발생하기 전에 해결(ex. 용량 계획 등)&lt;/li>
+&lt;li>배포, 설정 관리 등을 위한 모범 사례와 도구를 마련&lt;/li>
+&lt;li>애플리케이션을 특정 플랫폼에서 다른 플랫폼으로 이동하는 등 복잡한 유지보스 태스크를 수행&lt;/li>
+&lt;li>설정 변경으로 생기는 시스템 보안 유지보수&lt;/li>
+&lt;li>예측 가능한 운영과 안정적인 서비스 환경을 유지하기 위한 절차 정의&lt;/li>
+&lt;li>개인 인사 이동에도 시스템에 대한 조직의 지식을 보존&lt;/li>
+&lt;/ul>
+&lt;p>좋은 운영성이란 동일하게 반복되는 태스크를 쉽게 수행하게끔 만들어 운영팀이 고부가가치 활도에 노력을 집중한다는 의미이다.&lt;/p>
+&lt;ul>
+&lt;li>좋은 모니터링으로 런타임 동작과 시스템의 내부에 대한 가시성 제공&lt;/li>
+&lt;li>표준 도구를 이용해 자동화와 통합을 위한 우수한 자원을 제공&lt;/li>
+&lt;li>개별 장비 의존성을 회피. 유지보수를 위해 장비를 내리더라도 시스템 전체에 영향을 주지 않고 계속해서 운영 가능해야함&lt;/li>
+&lt;li>좋은 문서와 이해하기 쉬운 운영 모델(ex. X를 하면 Y가 발생한다.) 제공&lt;/li>
+&lt;li>만족할 만한 기본 동작을 제공하고, 필요할 때 기본값을 다시 정의할 수 있는 자유를 관리자에게 부여&lt;/li>
+&lt;li>적절하게 자기 회복이 가능할 뿐 아니라 필요에 따라 관리자가 시스템 상태를 수동으로 제어할 수 있게 함&lt;/li>
+&lt;li>에측 가능하게 동작하고 예기치 않은 상황을 최소화함&lt;/li>
+&lt;/ul>
+&lt;h3 id="단순성-복잡도-관리">단순성: 복잡도 관리&lt;/h3>
+&lt;p>프로젝트가 커짐에 따라 시스템은 매우 복잡하고 이해하기 어려워진다.&lt;/p>
+&lt;p>복잡도는 같은 시스템에서 작업해야 하는 모든 사람의 진행을 느리게 하고 나아가 유지 보수 비용이 증가한다.&lt;/p>
+&lt;ul>
+&lt;li>커다란 진흙 덩어리(big ball of mud)로 묘사한다.&lt;/li>
+&lt;/ul>
+&lt;p>복잡도는 다양한 증상으로 나타난다.&lt;/p>
+&lt;ul>
+&lt;li>상태 공간의 급증&lt;/li>
+&lt;li>모듈 간 강한 커플링(tight coupling)&lt;/li>
+&lt;li>복잡한 의존성&lt;/li>
+&lt;li>일관성 없는 명명과 용어&lt;/li>
+&lt;li>성능 문제 해결을 목표로 한 해킹&lt;/li>
+&lt;li>임시방편으로 문제를 해결한 특수 사례 등&lt;/li>
+&lt;/ul>
+&lt;p>복잡도가 높아 시스템 유지보수가 어려울 때 아래와 같은 문제들이 발생할 수 있다.&lt;/p>
+&lt;ul>
+&lt;li>예산과 일정이 초과&lt;/li>
+&lt;li>변경이 있을 때 버그가 생길 위험이 더 큼&lt;/li>
+&lt;li>개발자가 시스템을 이해하고 추론하기 어려워지면서 시스템에 숨겨진 가정과 의도치않은 결과 및 예기치 않은 상호작용을 간과하기 쉬움&lt;/li>
+&lt;/ul>
+&lt;p>반대로 복잡도를 줄이면 소프트웨어 유지보수성이 크게 향상되므로, 단순성이 구축하려는 시스템의 핵심 목표여야 한다.&lt;/p>
+&lt;p>시스템을 단순하게 만드는 일은 단순히 기능을 줄인다는 의미는 아니며, &lt;strong>우발적 복잡도(accidental complexity)&lt;/strong> 를 줄인다는 뜻에 더 가깝다.&lt;/p>
+&lt;ul>
+&lt;li>우발적 복잡도: 소프트웨어가 풀어야 할 (사용자에게 보이는) 문제에 내재하고 있지 않고 구현에서만 발생하는 것&lt;/li>
+&lt;/ul>
+&lt;p>우발적 복잡도를 제거하기 위한 최상의 도구는 추상화이다.&lt;/p>
+&lt;ul>
+&lt;li>깔끔하고 직관적인 외관 아래로 많은 세부 구현을 숨길 수 있다.&lt;/li>
+&lt;/ul>
+&lt;p>좋은 추상화는 다른 다양한 애플리케이션에서도 사용 가능하다.&lt;/p>
+&lt;p>이러한 재사용은 비슷한 기능을 여러 번 재구현 하는 것보다 더 효율적일 뿐만 아니라 추상화된 구성 요소의 품질 향상이 이를 사용하는 모든 애플리케이션에 도움을 주므로 고품질 소프트웨어로 이어진다.&lt;/p>
+&lt;p>하지만 좋은 추상화를 찾기는 매우 어렵다.&lt;/p>
+&lt;p>분산 시스템 분야에서는 여러 좋은 알고리즘이 있지만 관리 가능한 수준에서 시스템 복잡도를 유지하는 데 도움이 되는 추상화로 이런 알고리즘을 묶는 방법은 명확하지 않다.&lt;/p>
+&lt;h3 id="발전성-변화를-쉽게-만들기">발전성: 변화를 쉽게 만들기&lt;/h3>
+&lt;p>시스템의 요구사항이 끊임없이 변할 가능성이 크다.&lt;/p>
+&lt;ul>
+&lt;li>새로운 사실을 배움&lt;/li>
+&lt;li>미처 예기치 않은 사용 사례 발견&lt;/li>
+&lt;li>비즈니스 우선순위 변경&lt;/li>
+&lt;li>사용자의 새로운 니즈&lt;/li>
+&lt;li>새로운 플랫폼 등장&lt;/li>
+&lt;li>법적 또는 규제 요구사항 변경&lt;/li>
+&lt;li>시스템의 성장으로 인한 아키텍처 변화&lt;/li>
+&lt;/ul>
+&lt;p>조직 프로세스 측면에서 &lt;strong>애자일&lt;/strong> 작업 패턴은 변화에 적응하기 위한 프레임워크를 제공한다. 또한 애자일 커뮤니티는 TDD, 리팩토링 같이 자주 변화하는 환경에서 소프트웨어를 개발할 때 도움이 되는 기술 도구와 패턴을 개발하고 있다.&lt;/p>
+&lt;p>애자일 기법에 대한 설명은 대부분 매우 작고, 로컬 규모(동일 애플리케이션 내 소스코드 파일이 몇 개반 있음)에 초점을 맞추고 있는데, 이 책에서는 다양한 애플리케이션이나 다른 특성을 가진 서비스로 구성된 대규모 데이터 시스템 수준에서 민첩성을 높이는 방법을 찾는다.&lt;/p>
+&lt;p>데이터 시스템 변경을 쉽게 하고 변화된 요구사항에 시스템을 맞추는 방법은 시스템의 간단함과 추상화와 밀접한 관련이 있다.&lt;/p>
+&lt;ul>
+&lt;li>간단하고 이해하기 쉬운 시스템은 대개 복잡한 시스템보다 수정하기 쉽다.&lt;/li>
+&lt;li>데이터 시스템 수준에서 민첩성을 언급할 때는 &lt;strong>발전성&lt;/strong> 사용한다.&lt;/li>
+&lt;/ul>
+&lt;h2 id="정리">정리&lt;/h2>
+&lt;p>이번 장에서는 데이터 중심 애플리케이션을 생각하는 기본적인 방법 몇 가지를 살펴봤다.&lt;/p>
+&lt;p>애플리케이션이 유용하려면 다양한 요구사항을 충족시켜야 한다.&lt;/p>
+&lt;ul>
+&lt;li>기능적 요구사항
+&lt;ul>
+&lt;li>여러 방법으로 데이터를 저장하고 조회하고 검색하고 처리하게끔 허용하는 작업과 같이 해야하는 일&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>비기능적 요구사항
+&lt;ul>
+&lt;li>보안, 신뢰성, 법규 준수, 확장성, 호환성, 유지보수성과 같은 일반 속성&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>이번 장에서는 신뢰성, 확장성, 유지보수성을 자세히 살폈다.&lt;/p>
+&lt;ul>
+&lt;li>신뢰성
+&lt;ul>
+&lt;li>결함이 발생해도 시스템이 올바르게 동작하게 만든다는 의미&lt;/li>
+&lt;li>결함은 하드웨어와 소프트웨어 버그와 사람에게 있을 수 있음&lt;/li>
+&lt;li>내결함성 기술은 최종 사용자에게 특정 유형의 결함을 숨길 수 있게 해준다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>확장성
+&lt;ul>
+&lt;li>부하가 증가해도 좋은 성능을 유지하기 위한 전략&lt;/li>
+&lt;li>확장성을 설명하기 위해 양적으로 부하와 성능을 설명하는 방법이 필요함&lt;/li>
+&lt;li>확장 가능한 시스템에서는 부하가 높은 상태에서 신뢰성을 유지하기 위해 처리 용량을 추가할 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>유지보수성
+&lt;ul>
+&lt;li>본질은 시스템에서 작업하는 엔지니어와 운영 팀의 삶을 개선하는 데 있음&lt;/li>
+&lt;li>좋은 추상화는 복잡도를 줄이고 쉽게 시스템을 변경할 수 있게하며 새로운 사용 사례에 적용하는 데 도움이됨&lt;/li>
+&lt;li>좋은 운용성이란 시스템의 건강 상태를 잘 관찰할 수 있고 시스템을 효율적으로 관리하는 방법을 보유한다는 의미&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>애플리케이션을 신뢰할 수 있고 확장 가능하며 유지보수하기 쉽게 만들어주는 간단한 해결책은 없다.&lt;/p>
+&lt;p>하지만 여러 애플리케이션에서 계속 재현되는 특정 패턴과 기술이 있으며, 데이터 시스템 몇 가지를 예제로 살펴보고 이런 목표를 향해 데이터 시스템이 어떻게 작동하는지 분석한다.&lt;/p></description></item></channel></rss>
