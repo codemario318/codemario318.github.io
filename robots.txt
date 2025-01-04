@@ -3,7 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/designing-data-intensive-application/1/
+
 
 
 
@@ -18,6 +18,34 @@ Allow: /post/designing-data-intensive-application/1/
 Allow: /post/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/websocket-scale-out/
+
+
+
+Allow: /post/designing-data-intensive-application/1/
 
 
 
@@ -313,10 +341,6 @@ Allow: /post/system-design-interview-2/9/
 
 
 
-
-
-
-
 Allow: /post/common/architect-orm/
 
 
@@ -566,10 +590,6 @@ Allow: /post/system-design-interview-2/3/
 
 
 Allow: /post/system-design-interview-2/2/
-
-
-
-
 
 
 
@@ -923,8 +943,6 @@ Allow: /post/system-design-interview/5/
 
 
 
-
-
 Allow: /post/system-design-interview/4/
 
 
@@ -966,8 +984,6 @@ Allow: /post/system-design-interview/2/
 
 
 Allow: /post/system-design-interview/1/
-
-
 
 
 
