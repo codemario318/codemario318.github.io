@@ -3,7 +3,7 @@ User-agent: *
 
 
 
-
+Allow: /post/designing-data-intensive-application/2/1/
 
 
 
@@ -41,31 +41,35 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/websocket-scale-out/
 
 
 
 Allow: /post/designing-data-intensive-application/1/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1933,7 +1937,7 @@ Allow: /post/js_closure/
 
 
 
-Allow: /post/js_this/
+Allow: /post/js/this/
 
 
 
