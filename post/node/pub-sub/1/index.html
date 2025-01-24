@@ -1,0 +1,505 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="발행-구독 패턴 개선 일지"><title>1. 발행-구독 패턴을 통해 결합을 개선해보자</title><link rel=canonical href=https://codemario318.github.io/post/node/pub-sub/1/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="1. 발행-구독 패턴을 통해 결합을 개선해보자"><meta property="og:description" content="발행-구독 패턴 개선 일지"><meta property="og:url" content="https://codemario318.github.io/post/node/pub-sub/1/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="타입스크립트"><meta property="article:tag" content="Typescript"><meta property="article:tag" content="디자인 패턴"><meta property="article:tag" content="Design Pattern"><meta property="article:tag" content="발행-구독 패턴"><meta property="article:tag" content="Publisher-Subscriber Pattern"><meta property="article:tag" content="Pub-Sub"><meta property="article:tag" content="Pub/Sub"><meta property="article:published_time" content="2025-01-24T11:49:35+09:00"><meta property="article:modified_time" content="2025-01-24T11:49:35+09:00"><meta property="og:image" content="https://codemario318.github.io/post/node/pub-sub/1/cover.png"><meta name=twitter:title content="1. 발행-구독 패턴을 통해 결합을 개선해보자"><meta name=twitter:description content="발행-구독 패턴 개선 일지"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/node/pub-sub/1/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>71</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/nest/><span>Nest</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>2</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#문제의-시작>문제의 시작</a></li><li><a href=#발견한-문제>발견한 문제</a></li><li><a href=#근본적인-원인은>근본적인 원인은?</a></li><li><a href=#사용자의-정보를-어떻게-격리할까>사용자의 정보를 어떻게 격리할까?</a></li><li><a href=#발행-구독-패턴>발행-구독 패턴</a></li><li><a href=#인터페이스와-타입-설계>인터페이스와 타입 설계</a></li><li><a href=#구현>구현</a><ol><li><a href=#subscription-인터페이스>Subscription 인터페이스</a></li><li><a href=#subscribe-메서드>subscribe 메서드</a></li><li><a href=#publish-메서드>publish 메서드</a></li></ol></li><li><a href=#프로젝트-적용-예시>프로젝트 적용 예시</a></li><li><a href=#마무리>마무리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/node/pub-sub/1/><img src=/post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png srcset="/post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png 800w, /post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_1600x0_resize_box_3.png 1600w" width=800 height=427 loading=lazy alt="Featured image of post 1. 발행-구독 패턴을 통해 결합을 개선해보자"></a></div><div class=article-details><header class=article-category><a href=/categories/node/>Node</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/node/pub-sub/1/>1. 발행-구독 패턴을 통해 결합을 개선해보자</a></h2><h3 class=article-subtitle>발행-구독 패턴 개선 일지</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2025/01/24</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>11 minute read</time></div></footer></div></header><section class=article-content><p>안녕하세요😀 최근 부스트캠프 멤버십 과정을 마치고, 이전해 수행했던 프로젝트를 리팩토링 하는 시간을 가지고 있는데요, 리팩토링을 수행하면서 발행-구독 패턴을 통해 프로젝트를 개선한 경험을 공유하려고 합니다.</p><p>프로젝트에서 어떠한 문제가 있었는지 알아보고, 구현한 결과물을 확인해보겠습니다.</p><h2 id=문제의-시작>문제의 시작</h2><p>저희 팀은 <strong>여러 인원들이 동시에 참여하는 실시간 퀴즈 플랫폼</strong> BooQuiz를 Nest를 이용해 구현했는데요.</p><p>서버에서 퀴즈의 진행을 전적으로 담당하는 설계로 사용자의 정답 제출, 채팅 등의 지속적인 상호작용이 필요했기 때문에 웹소켓을 활용했습니다.</p><p>Nest에는 웹소켓을 <code>ws</code>을 활용하는 <code>WsAdapter</code>, <code>socket.io</code>를 활용하는 <code>IoAdapter</code> 두 가지 방식으로 제공하는데, 저희는 <strong>많은 사용자가 동시에 여러 퀴즈에 참여</strong>하는 상황에서 <strong>서버측의 지연은 모든 퀴즈 진행에 영향을 주는 구조</strong>여서 빠른 성능을 제공하는 <code>ws</code>를 활용했습니다.</p><p><code>ws</code>는 최소한의 헤더만을 사용하고, 별도의 추상화 레이어가 없기 때문에 빠른 성능을 보여주지만, 클라이언트에게 메시지를 보내는 것 외의 기능은 제공하지 않아 모든 기능들을 직접 구현해야했어요🥲</p><p>특히 서버는 퀴즈 진행을 위해 <strong>퀴즈존</strong>이라는 각각의 상태 변화에 따라 해당 퀴즈존에 참여하고 있는 사용자에 메시지를 보내주는 <strong>Broadcast</strong> 기능이 필요합니다. <code>socket.io</code> 같은 경우 <code>room</code> 이라는 개념을 이용해서 제공하지만, <code>ws</code>는 제공하지 않았기 때문에 역시 직접 구현해야했어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=kr>implements</span> <span class=nx>OnGatewayInit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;ClientInfoStorage&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>clients</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>String</span><span class=err>,</span> <span class=na>WebSocketWithSession</span><span class=p>&gt;,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=nx>broadcast</span><span class=p>(</span><span class=nx>clientIds</span>: <span class=kt>string</span><span class=p>[],</span> <span class=nx>event</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>data?</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>clientIds</span><span class=p>.</span><span class=nx>forEach</span><span class=p>((</span><span class=nx>clientId</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>sendToClient</span><span class=p>(</span><span class=nx>clientId</span><span class=p>,</span> <span class=nx>event</span><span class=p>,</span> <span class=nx>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=nx>sendToClient</span><span class=p>(</span><span class=nx>clientId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>event</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>data?</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span> <span class=nx>socket</span> <span class=p>}</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>getClientInfo</span><span class=p>(</span><span class=nx>clientId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>socket</span><span class=p>.</span><span class=nx>send</span><span class=p>(</span><span class=nx>JSON</span><span class=p>.</span><span class=nx>stringify</span><span class=p>({</span> <span class=nx>event</span><span class=p>,</span> <span class=nx>data</span> <span class=p>}));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p><code>WebSocketWithSession</code>은 단순히 websocket 인스턴스에 사용자 세션을 바인딩한 것 입니다.</p></blockquote><p><code>Map</code>을 이용하여 클라이언트의 고유한 ID를 key로 Websocket 인스턴스를 참조할 수 있게 저장하고, 클라이언트의 ID들을 받아 순회하며 메시지를 보내는 구조입니다.</p><p>이러한 구현을 기반으로 <code>socket.io</code>의 <code>room</code> 개념을 대체할 두 가지 방식을 고려했습니다.</p><hr><p><strong>참여중인 사용자들을 별도로 관리</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=kr>implements</span> <span class=nx>OnGatewayInit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;ClientInfoStorage&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>clients</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>String</span><span class=err>,</span> <span class=na>ClientInfo</span><span class=p>&gt;,</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;PlayInfoStorage&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>players</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>string</span><span class=err>[]</span><span class=p>&gt;,</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 혹은 
+</span></span></span><span class=line><span class=cl><span class=cm>    private readonly players: Map&lt;string, {id: string, socket: WebSocketWithSession}[]&gt;,
+</span></span></span><span class=line><span class=cl><span class=cm>    private readonly players: Map&lt;string, Map&lt;string, WebSocketWithSession&gt;&gt;,
+</span></span></span><span class=line><span class=cl><span class=cm>    */</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=kd>@SubscribeMessage</span><span class=p>(</span><span class=s1>&#39;join&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=kr>async</span> <span class=nx>join</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@ConnectedSocket</span><span class=p>()</span> <span class=nx>client</span>: <span class=kt>WebSocketWithSession</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@MessageBody</span><span class=p>()</span> <span class=nx>quizJoinDto</span>: <span class=kt>QuizJoinDto</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span> <span class=nx>id</span><span class=p>,</span> <span class=nx>quizZoneId</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>player</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>playService</span><span class=p>.</span><span class=nx>joinQuizZone</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>clients</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>id</span><span class=p>,</span> <span class=p>{</span> <span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>socket</span>: <span class=kt>client</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>broadcast</span><span class=p>(</span><span class=nx>players</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>),</span> <span class=s1>&#39;someone_join&#39;</span><span class=p>,</span> <span class=nx>player</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>첫 번째로 참여중인 사용자들을 <code>Gateway</code>에서 추가적으로 관리하는 방법입니다.</p><p>각 퀴즈존에 참여중인 사용자들의 id를 통해 각 연결을 참조하거나, 직접 참조해서 broadcast 처리를 수행하도록 하는 방법으로 아래와 같은 특징이 있습니다.</p><ul><li>장점<ul><li>Gateway에서 외부 도움 없이 응답을 보낼 수 있음</li><li>이로인해 웹소켓 응답에만 집중할 수 있음</li></ul></li><li>단점<ul><li>퀴즈존에 이미 존재하는 상태를 중복해서 관리해야함</li><li>이로인해 참여, 퇴장 등이 발생했을 때 동기화가 필요함</li><li>용량이 추가적으로 필요함</li></ul></li></ul><p>요약하면 웹소켓 처리에만 집중할수 있지만, 참여자 정보는 다른 서비스에서 API 응답에 활용하고 있기 때문에 별도 관리가 필요하고, 동일한 상태를 별도로 관리하기 때문에 동기화 등의 처리에 신경써야합니다.</p><hr><p><strong>응답이 필요할 때마다 사용자들의 정보를 조회</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=kr>implements</span> <span class=nx>OnGatewayInit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;ClientInfoStorage&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>clients</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>String</span><span class=err>,</span> <span class=na>ClientInfo</span><span class=p>&gt;,</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>playService</span>: <span class=kt>PlayService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=kd>@SubscribeMessage</span><span class=p>(</span><span class=s1>&#39;join&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=kr>async</span> <span class=nx>join</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@ConnectedSocket</span><span class=p>()</span> <span class=nx>client</span>: <span class=kt>WebSocketWithSession</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@MessageBody</span><span class=p>()</span> <span class=nx>quizJoinDto</span>: <span class=kt>QuizJoinDto</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>SendEventMessage</span><span class=err>&lt;</span><span class=na>ResponsePlayerDto</span><span class=err>[]</span><span class=p>&gt;</span><span class=o>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span> <span class=nx>id</span><span class=p>,</span> <span class=nx>quizZoneId</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span> <span class=nx>currentPlayer</span><span class=p>,</span> <span class=nx>playerIds</span> <span class=p>}</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>playService</span><span class=p>.</span><span class=nx>joinQuizZone</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 혹은
+</span></span></span><span class=line><span class=cl><span class=cm>    const currentPlayer = await this.playService.joinQuizZone(quizZoneId, sessionId);
+</span></span></span><span class=line><span class=cl><span class=cm>    const playerIds = await this.playService.getQuizZonePlayerIds(quizZoneId);
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>clients</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>id</span><span class=p>,</span> <span class=p>{</span> <span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>socket</span>: <span class=kt>client</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>broadcast</span><span class=p>(</span><span class=nx>playerIds</span><span class=p>,</span> <span class=s1>&#39;someone_join&#39;</span><span class=p>,</span> <span class=nx>currentPlayer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>두 번째로 필요할때마다 참여중인 사용자의 정보를 조회하여 넘겨주는 방법입니다.</p><p>예시에서 주입받은 <code>PlayService</code>는 별도로 분리되어있는 <code>QuizZoneService</code>를 통해 퀴즈존에 대한 처리를 수행하는데요</p><p>이를 통해서 필요한 처리마다 참여중인 사용자를 조회할 수 있습니다.</p><ul><li>장점<ul><li>별도의 참여자 정보들을 관리하지 않기 때문에 동기화가 필요없음</li></ul></li><li>단점<ul><li><code>PlayGateway</code>와 <code>PlayService</code>의 종단 관심사 결합</li><li><code>PlayService</code>와 <code>QuizZoneService</code>의 횡단 관심사 결합 강화</li><li><code>QuizZoneService</code>의 부하가 많아짐</li><li>그래도 웹소켓 연결에 대한 정보들은 관리해야함</li></ul></li></ul><p>요약하자면, broadcast가 필요할 때마다 퀴즈존에서 관리하는 참여자 정보를 조회하기 때문에 관심사의 결합이 발생할 수 있지만, 상태가 이원화되지 않아 관리 지점이 줄어듭니다.</p><hr><p>두 선택지 모두 단점이 많아 고민이 많았는데요. 결과적으로 저희는 두 번째 방식을 통해 처리하기로 했습니다.</p><p>퀴즈 진행에 따라 사용자의 요청 처리 때문에 <code>PlayService</code>와 <code>QuizZoneService</code>의 의존은 필연적으로 발생하는 구조였고, <code>QuizZoneService</code>의 부하는 캐싱 등의 처리로 개선할 수 있다고 판단했습니다.</p><p>그리고 서비스를 분리를 고려했을 때 현재 아키텍처에서 이원화된 상태 동기화 문제가 더 해결하기 어려운 문제라고 생각했어요</p><h2 id=발견한-문제>발견한 문제</h2><p>처음에는 괜찮았지만 시간이 지남에 따라 여러 문제들이 부각되기 시작했어요😂</p><p>제 판단하기에는 크게 세 가지 정도 문제가 있었습니다.</p><hr><p><strong>Gateway에서 모든 웹소켓 연결에 대해 알아야함</strong></p><p>이전에 확인했던 것 처럼 Gateway에서 메시지를 보낼 때 클라이언트의 연결을 직접 활용하고 있기 때문에, broadcast를 위해 클라이언트의 연결 정보를 유지해야합니다.</p><p>이는 추가적인 저장 공간을 필요로 할 뿐만 아니라, 서비스에서 활용되는 사용자의 식별자와 웹소켓 인스턴스를 연결해야 하기 때문에, 서비스 상태와 결합이 생겼다고 볼 수 있다고 생각했어요</p><hr><p><strong>Service 레이어의 많은 책임</strong></p><p>Service 에서 참여중인 사용자의 정보를 받아오는 구조이기 때문에 서비스에서 관련 처리들이 추가되어야하고, 이는 많은 책임과 더불어 코드가 비대해지는 문제가 있었습니다.</p><hr><p><strong>Gateway와 Service 레이어의 모호한 경계</strong></p><p>위와 같은 이유로 응답을 위한 데이터 가공하는 처리가 Gateway로 조금씩 넘어오는 상황이 발생했습니다.</p><p>이로 인해 일부 비즈니스 로직들도 Gateway로 넘어오게 되면서, 사용자에게 응답을 담당해야하는 Gateway의 책임이 오염되고 있었어요</p><h2 id=근본적인-원인은>근본적인 원인은?</h2><p>저는 이러한 문제가 발생한 근본적인 원인이 <strong>웹소켓 연결을 통한 응답 처리에서 퀴즈존에 참여중인 사용자의 정보를 알아야하는 것</strong> 자체 라고 판단했습니다.</p><p>이러한 이유로 Gateway에서 웹소켓 연결을 통해 처리 결과를 응답할 때 참여자의 정보를 아예 격리시켜야할 필요성을 느끼게 되었어요</p><h2 id=사용자의-정보를-어떻게-격리할까>사용자의 정보를 어떻게 격리할까?</h2><p>서비스는 기본적으로 N개의 퀴즈존 각각에 M명의 사용자가 참여하는 구조입니다. 그리고 서버가 사용자들의 메시지를 받아 퀴즈존의 상태를 변경하고, 진행 상태에 따라 참여중인 사용자들에게 응답 메시지를 보내게됩니다.</p><p>정리하면, 다수의 퀴즈존에 대한 진행을 위해 <strong>사용자는 서버에게만 요청</strong>을 보내고 <strong>서버는 참여중인 사용자에게 broadcast</strong> 하는 구조이죠</p><p>이러한 상황에서 서버에서 관리하는 여러 퀴즈존과 참여중인 사용자가 서로 누구인지 몰라도 되게 만드는 대표적인 방법으로 <strong>발행-구독 패턴</strong>을 고려할 수 있었습니다.</p><h2 id=발행-구독-패턴>발행-구독 패턴</h2><p><img src=/post/node/pub-sub/1/cover.png width=1400 height=747 srcset="/post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_480x0_resize_box_3.png 480w, /post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_1024x0_resize_box_3.png 1024w" loading=lazy alt="발행-구독 패턴" class=gallery-image data-flex-grow=187 data-flex-basis=449px></p><p>발행-구독(Publish-Subscribe) 패턴(이하 pub/sub)은 발행자(Publisher)가 메시지를 직접 특정 구독자(Subscriber)에게 보내지 않고, 중간의 메시지 브로커(이벤트 버스)를 통해 특정 주제(Topic)나 채널에 메시지를 발행하면, 해당 주제를 구독하는 모든 구독자들이 자동으로 메시지를 받는 디자인 패턴입니다.</p><p>구독자는 주제만 알아도 보내는 모든 메시지를 받을 수 있기 때문에 컴포넌트 간 느슨한 결합(Loose Coupling)을 가능하게 하여 시스템의 확장성과 유연성이 향상되고, 이는 서비스의 안정적인 확장과 유지보수가 용이해지는 결과로 이어집니다.</p><p>결과적으로 근본적인 원인인 <strong>웹소켓 연결을 통한 응답 처리에서 퀴즈존에 참여중인 사용자의 정보를 알아야하는 문제</strong>를 개선할 수 있다고 판단하여 적용하게 되었습니다.</p><h2 id=인터페이스와-타입-설계>인터페이스와 타입 설계</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>type</span> <span class=nx>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=o>=</span> <span class=p>(</span><span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>void</span> <span class=o>|</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>type</span> <span class=nx>Unsubscribe</span> <span class=o>=</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>subscribe</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>Unsubscribe</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>addPublisher</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>removePublisher</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>publish</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>처음 제가 생각했을때 필요하다고 생각되는 기능을 바탕으로 인터페이스와 타입을 설계 했습니다.</p><p>그리고 공통적으로 제네릭을 활용해 메시지 타입을 활용할 수 있도록 해봤습니다.</p><ul><li><code>MessageHandler</code> 타입: 구독자가 발생자가 보낼 메시지를 처리하는 함수를 정의</li><li><code>Unsubscibe</code> 타입: 구독 취소를 처리하는 함수 정의</li><li><code>Broker</code> 인터페이스: 메시지 브로커의 필수적인 기능을 정의<ul><li><code>addPublisher</code>: 새 퍼블리셔 추가</li><li><code>removePublisher</code>: 퍼블리셔 제거</li><li><code>publish</code>: 메시지 발행</li><li><code>subscribe</code>: 구독자 등록 및 구독 해제 함수 반환</li></ul></li></ul><hr><p>기본적으로 아래와 같은 흐름으로 처리가 진행됩니다.</p><ol><li>발행자가 있다고 가정할 때 <code>subscribe</code>를 통해 구독할 때 제네릭으로 선언한 형식의 메시지를 처리할 수 있는 핸들러 함수를 입력으로 받음</li><li><code>publish</code> 메서드를 통해 메시지를 발행. 내부적으로 저장된 핸들러를 통해 클라이언트가 원했던 처리를 수행</li></ol><p>최초 설계에서 조금 차이가 있는 부분은 <code>subscribe</code> 메소드가 <code>Unsubsribe</code> 함수를 반환한다는 점 인데요</p><p>사용하는 영역에서 <code>Broker</code>를 직접 활용하여 구독 해제를 처리하는 것 보다, Clean-Up 함수를 별도로 제공하여 처리하는 것이 이후 자유도가 더 높은 방식이라 판단되어 선택하게 되었습니다.</p><h2 id=구현>구현</h2><p>위 인터페이스를 기반으로 간단한 <code>MessageBroker</code>를 구현하였습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Broker</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./interfaces/broker.interface&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>MessageHandler</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./types&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>v4</span> <span class=kr>as</span> <span class=nx>uuidv4</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;uuid&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>Subscription</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>publishers</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>Subscription</span><span class=err>&lt;</span><span class=na>TMessage</span><span class=p>&gt;[]</span><span class=o>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Map</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>addPublisher</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>id</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>id</span><span class=si>}</span><span class=sb> already exists`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>id</span><span class=p>,</span> <span class=p>[]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>removePublisher</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>id</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>id</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=k>delete</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>publish</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>id</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>await</span> <span class=nx>Promise</span><span class=p>.</span><span class=nx>all</span><span class=p>(</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscription</span><span class=p>.</span><span class=nx>handler</span><span class=p>(</span><span class=nx>message</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>publisherId</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscribtionId</span> <span class=o>=</span> <span class=nx>uuidv4</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=p>[...</span><span class=nx>subscriptions</span><span class=p>,</span> <span class=p>{</span><span class=nx>id</span>: <span class=kt>subscriptionId</span><span class=p>,</span> <span class=nx>handler</span><span class=p>}]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=nx>subscriptionId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>async</span> <span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>subscriptionId</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>publisherId</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=nx>subscriptions</span><span class=p>.</span><span class=nx>filter</span><span class=p>((</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscription</span><span class=p>.</span><span class=nx>id</span> <span class=o>!==</span> <span class=nx>subscriptionId</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>주요 요소들을 자세히 살펴보겠습니다.</p><h3 id=subscription-인터페이스>Subscription 인터페이스</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>Subscription</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Subscription</code>는 구독을 의미하는 인터페이스입니다.</p><ul><li><code>id</code>: 구독의 식별자</li><li><code>handler</code>: 발행한 메시지를 처리하는 함수</li></ul><p>구독 해제 등을 처리해야하기 때문에 구독자가 등록한 핸들러에 대해 식별할 수 있도록 <code>id</code>를 포함하도록 했습니다.</p><h3 id=subscribe-메서드>subscribe 메서드</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>publisherId</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscribtionId</span> <span class=o>=</span> <span class=nx>uuidv4</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=p>[...</span><span class=nx>subscriptions</span><span class=p>,</span> <span class=p>{</span><span class=nx>id</span>: <span class=kt>subscriptionId</span><span class=p>,</span> <span class=nx>handler</span><span class=p>}]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=nx>subscriptionId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>구독자가 발행 받은 메시지에 대해서 처리해야할 핸들러를 등록하는 과정입니다.</p><p>이 과정에서 <code>Subscription</code>을 만들게 되는데, 구독 자체는 내부적으로 관리되어야 한다고 판단하여, 식별자는 <code>UUID</code>를 생성하여 설정하도록 했습니다.</p><p>메서드가 반환하는 익명 함수는 구독의 ID를 통해 구독 해제를 수행하는 함수입니다.</p><h3 id=publish-메서드>publish 메서드</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>publish</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>id</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=nx>Promise</span><span class=p>.</span><span class=nx>all</span><span class=p>(</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscription</span><span class=p>.</span><span class=nx>handler</span><span class=p>(</span><span class=nx>message</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>발행자가 특정 메시지를 발행합니다.</p><p>해당 발행자의 구독들을 통해 등록된 핸들러를 실행하게됩니다.</p><h2 id=프로젝트-적용-예시>프로젝트 적용 예시</h2><p>글 맨 앞에 문제의 원인에서 <code>PlayGateway</code> 예시를 간략히 보여드렸었는데요. 해당 예시가 <code>Broker</code>를 적용하면서 어떻게 바뀌었는지 살펴보겠습니다.</p><p>현재 pub/sub 모듈을 구현하는게 목표여서 간략하고 빠르게 적용해봤어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=kr>implements</span> <span class=nx>OnGatewayInit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>playService</span>: <span class=kt>PlayService</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@Inject</span><span class=p>(</span><span class=s1>&#39;Broker&#39;</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>broker</span>: <span class=kt>Broker</span><span class=p>&lt;</span><span class=nt>SendEventMessage</span><span class=err>&lt;</span><span class=na>BroadcastPlayEvent</span><span class=err>,</span> <span class=na>any</span><span class=p>&gt;</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>@SubscribeMessage</span><span class=p>(</span><span class=s1>&#39;join&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=kr>async</span> <span class=nx>join</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@ConnectedSocket</span><span class=p>()</span> <span class=nx>client</span>: <span class=kt>WebSocketWithSession</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kd>@MessageBody</span><span class=p>()</span> <span class=nx>quizJoinDto</span>: <span class=kt>QuizJoinDto</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>SendEventMessage</span><span class=err>&lt;</span><span class=na>PlayEvent</span><span class=err>,</span> <span class=na>ResponsePlayerDto</span><span class=err>[]</span><span class=p>&gt;</span><span class=o>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span><span class=nx>id</span><span class=p>,</span> <span class=nx>quizZondId</span><span class=p>}</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>.</span><span class=nx>id</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=p>{</span><span class=nx>nickname</span><span class=p>}</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>playService</span><span class=p>.</span><span class=nx>getPlayer</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>broker</span><span class=p>.</span><span class=nx>publish</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>,</span> <span class=p>{</span><span class=nx>event</span><span class=o>:</span> <span class=s1>&#39;someone_join&#39;</span><span class=p>,</span> <span class=nx>sender</span>: <span class=kt>id</span><span class=p>,</span> <span class=nx>data</span><span class=o>:</span> <span class=p>{</span><span class=nx>id</span><span class=p>,</span> <span class=nx>nickname</span><span class=p>}});</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>subscribePlay</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>,</span> <span class=nx>client</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>퀴즈존에 참여하고 있는 사용자의 정보를 조회하고, 해당 정보를 바탕으로 기존 참여자들에게 새로운 참여자의 정보를 broadcast 해줍니다.</p><p>그리고 새로운 참여자가 해당 퀴즈존을 구독하게 됩니다. 많이 간단해진 모습이네요😊</p><p><code>PlayGateway</code>의 생성자를 살펴보면 발행하는 이벤트를 <code>SendEventMessage&lt;BroadcastPlayEvent, any></code>로 정의했습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>type</span> <span class=nx>PlayEvent</span> <span class=o>=</span> <span class=nx>UnicastPlayEvent</span> <span class=o>|</span> <span class=nx>BroadcastPlayEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>type</span> <span class=nx>UnicastPlayEvent</span> <span class=o>=</span> <span class=s1>&#39;join&#39;</span> <span class=o>|</span> <span class=s1>&#39;changeNickname&#39;</span> <span class=o>|</span> <span class=s1>&#39;submit&#39;</span> <span class=o>|</span> <span class=s1>&#39;leave&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>type</span> <span class=nx>BroadcastPlayEvent</span> <span class=o>=</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;someone_join&#39;</span> <span class=o>|</span> <span class=s1>&#39;someone_leave&#39;</span> <span class=o>|</span> <span class=s1>&#39;changeNickname&#39;</span> <span class=o>|</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;start&#39;</span> <span class=o>|</span> <span class=s1>&#39;nextQuiz&#39;</span> <span class=o>|</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;someone_submit&#39;</span> <span class=o>|</span> <span class=s1>&#39;quizTimeOut&#39;</span> <span class=o>|</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;finish&#39;</span> <span class=o>|</span> <span class=s1>&#39;summary&#39;</span> <span class=o>|</span> <span class=s1>&#39;close&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>SendEventMessage</span><span class=p>&lt;</span><span class=nt>TEvent</span><span class=err>,</span> <span class=na>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>event</span>: <span class=kt>TEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>sender</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>data</span>: <span class=kt>TMessage</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>구독 처리시에 인자로 넘겨주는 메시지 핸들러는 위와 같은 형식의 데이터를 처리하는 함수면 됩니다.</p><p>이를 구현한 <code>subscribePlay</code> 메서드는 아래와 같이 구현되어있어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>private</span> <span class=kr>async</span> <span class=nx>subscribePlay</span><span class=p>(</span><span class=nx>quizZoneId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>client</span>: <span class=kt>WebSocketWithSession</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>const</span> <span class=nx>clientId</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>.</span><span class=nx>id</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>broker</span><span class=p>.</span><span class=nx>addPublisher</span><span class=p>(</span><span class=nx>quizZoneId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>error</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>const</span> <span class=nx>unsubscribe</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>broker</span><span class=p>.</span><span class=nx>subscribe</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>quizZoneId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kr>async</span> <span class=p>(</span><span class=nx>message</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=kr>const</span> <span class=p>{</span> <span class=nx>event</span><span class=p>,</span> <span class=nx>sender</span><span class=p>,</span> <span class=nx>data</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>message</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=k>switch</span> <span class=p>(</span><span class=nx>event</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=s2>&#34;someone_join&#34;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>          <span class=k>if</span> <span class=p>(</span><span class=nx>sender</span> <span class=o>===</span> <span class=nx>clientId</span><span class=p>)</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=nx>client</span><span class=p>.</span><span class=nx>send</span><span class=p>(</span><span class=nx>JSON</span><span class=p>.</span><span class=nx>stringify</span><span class=p>(</span><span class=nx>message</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>          <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=s2>&#34;leave&#34;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>          <span class=nx>unsubscribe</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>          <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>실제로는 많은 이벤트들을 처리해야하기 때문에 훨씬 비대한 상태에요🥲 핸들러가 어떤 방식으로 구성되는지만 봐주시면 되겠습니다.</p></blockquote><p>메시지에 선언된 이벤트에 맞게 웹소켓을 이용하여 응답을 보내게 됩니다.</p><p>현재 핸들러가 간단하고 지저분하게 구현되어 있긴 하지만, 관심사의 분리가 진행된 만큼 독립적으로 개선될 수 있을것이라 기대하고있습니다😁</p><h2 id=마무리>마무리</h2><p>pub/sub을 활용해서 서비스에서 발생할 결합을 느슨하게 만들어 봤는데요, 만든 모듈을 간단하게 적용해보니 Gateway에서 퀴즈존이나 사용자 정보를 전혀 모르는 상태로 응답을 보낼 수 있었습니다.</p><p>덕분에 이를 처리할 핸들러 로직이 독립적으로 분리되었고, 메시지 처리하는 핸들러에만 집중해서 개선할 수 있게 되었네요</p><p>이러한 관심사의 분리를 통해 의존되는 상태 때문에 시도하지 못했던 방법들을 적극적으로 고려할 수 있게 되었다고 생각합니다. 앞으로 시도해볼 것들이 많겠네요</p><p>pub/sub 모듈 자체도 아직 부족한 부분이 많아 이후 글들은 제가 구현한 모듈을 고도화하는 과정들을 담아보려고 합니다.</p><p>끝까지 읽어주셔서 감사합니다.😊</p></section><footer class=article-footer><section class=article-tags><a href=/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/>타입스크립트</a>
+<a href=/tags/typescript/>Typescript</a>
+<a href=/tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/>디자인 패턴</a>
+<a href=/tags/design-pattern/>Design Pattern</a>
+<a href=/tags/%EB%B0%9C%ED%96%89-%EA%B5%AC%EB%8F%85-%ED%8C%A8%ED%84%B4/>발행-구독 패턴</a>
+<a href=/tags/publisher-subscriber-pattern/>Publisher-Subscriber Pattern</a>
+<a href=/tags/pub-sub/>Pub-Sub</a>
+<a href=/tags/pub/sub/>Pub/Sub</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/jest-unit-test/><div class=article-image><img src=/post/jest-unit-test/cover.21767fc5165e3141b2bb1e885b3670c7_hu7fc001c9d5df8010367652495ae61bd0_46763_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Jest를 활용한 유닛 테스트" data-key=jest-unit-test data-hash="md5-IXZ/xRZeMUGyux6IWzZwxw=="></div><div class=article-details><h2 class=article-title>Jest를 활용한 유닛 테스트</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/3/><div class=article-image><img src=/post/boostcamp-9th/review/membership/3/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 3주차 회고" data-key=boostcamp-9th/review/membership/3 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 3주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/2/><div class=article-image><img src=/post/boostcamp-9th/review/membership/2/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 2주차 회고" data-key=boostcamp-9th/review/membership/2 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 2주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/1/><div class=article-image><img src=/post/boostcamp-9th/review/membership/1/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 1주차 회고" data-key=boostcamp-9th/review/membership/1 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 1주차 회고</h2></div></a></article><article class=has-image><a href=/post/gof/15/visitor/><div class=article-image><img src=/post/gof/15/visitor/cover.5a69346fc08fc01c93d4735bb058551a_hu5fe9e632d31d6204170abf166c9a2927_244577_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 14. 다양한 패턴 빠르게 알아보기 - 비지터 패턴" data-key=gof/15/visitor data-hash="md5-Wmk0b8CPwByT1HNbsFhVGg=="></div><div class=article-details><h2 class=article-title>14. 다양한 패턴 빠르게 알아보기 - 비지터 패턴</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

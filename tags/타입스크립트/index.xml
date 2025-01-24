@@ -1,4 +1,693 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>타입스크립트 on Mario Blog</title><link>https://codemario318.github.io/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/</link><description>Recent content in 타입스크립트 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 11 Dec 2024 10:39:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/index.xml" rel="self" type="application/rss+xml"/><item><title>최종 팀 프로젝트 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/6/</link><pubDate>Wed, 11 Dec 2024 10:39:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/6/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/6/cover.png" alt="Featured image of post 최종 팀 프로젝트 회고" />&lt;p>6주에 걸친 팀 프로젝트가 마무리 되었습니다.🥳&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>타입스크립트 on Mario Blog</title><link>https://codemario318.github.io/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/</link><description>Recent content in 타입스크립트 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 24 Jan 2025 11:49:35 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/index.xml" rel="self" type="application/rss+xml"/><item><title>1. 발행-구독 패턴을 통해 결합을 개선해보자</title><link>https://codemario318.github.io/post/node/pub-sub/1/</link><pubDate>Fri, 24 Jan 2025 11:49:35 +0900</pubDate><guid>https://codemario318.github.io/post/node/pub-sub/1/</guid><description>&lt;img src="https://codemario318.github.io/post/node/pub-sub/1/cover.png" alt="Featured image of post 1. 발행-구독 패턴을 통해 결합을 개선해보자" />&lt;p>안녕하세요😀 최근 부스트캠프 멤버십 과정을 마치고, 이전해 수행했던 프로젝트를 리팩토링 하는 시간을 가지고 있는데요, 리팩토링을 수행하면서 발행-구독 패턴을 통해 프로젝트를 개선한 경험을 공유하려고 합니다.&lt;/p>
+&lt;p>프로젝트에서 어떠한 문제가 있었는지 알아보고, 구현한 결과물을 확인해보겠습니다.&lt;/p>
+&lt;h2 id="문제의-시작">문제의 시작&lt;/h2>
+&lt;p>저희 팀은 &lt;strong>여러 인원들이 동시에 참여하는 실시간 퀴즈 플랫폼&lt;/strong> BooQuiz를 Nest를 이용해 구현했는데요.&lt;/p>
+&lt;p>서버에서 퀴즈의 진행을 전적으로 담당하는 설계로 사용자의 정답 제출, 채팅 등의 지속적인 상호작용이 필요했기 때문에 웹소켓을 활용했습니다.&lt;/p>
+&lt;p>Nest에는 웹소켓을 &lt;code>ws&lt;/code>을 활용하는 &lt;code>WsAdapter&lt;/code>, &lt;code>socket.io&lt;/code>를 활용하는 &lt;code>IoAdapter&lt;/code> 두 가지 방식으로 제공하는데, 저희는 &lt;strong>많은 사용자가 동시에 여러 퀴즈에 참여&lt;/strong>하는 상황에서 &lt;strong>서버측의 지연은 모든 퀴즈 진행에 영향을 주는 구조&lt;/strong>여서 빠른 성능을 제공하는 &lt;code>ws&lt;/code>를 활용했습니다.&lt;/p>
+&lt;p>&lt;code>ws&lt;/code>는 최소한의 헤더만을 사용하고, 별도의 추상화 레이어가 없기 때문에 빠른 성능을 보여주지만, 클라이언트에게 메시지를 보내는 것 외의 기능은 제공하지 않아 모든 기능들을 직접 구현해야했어요🥲&lt;/p>
+&lt;p>특히 서버는 퀴즈 진행을 위해 &lt;strong>퀴즈존&lt;/strong>이라는 각각의 상태 변화에 따라 해당 퀴즈존에 참여하고 있는 사용자에 메시지를 보내주는 &lt;strong>Broadcast&lt;/strong> 기능이 필요합니다. &lt;code>socket.io&lt;/code> 같은 경우 &lt;code>room&lt;/code> 이라는 개념을 이용해서 제공하지만, &lt;code>ws&lt;/code>는 제공하지 않았기 때문에 역시 직접 구현해야했어요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">OnGatewayInit&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;ClientInfoStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">clients&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">String&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">WebSocketWithSession&lt;/span>&lt;span class="p">&amp;gt;,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="nx">broadcast&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientIds&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">[],&lt;/span> &lt;span class="nx">event&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data?&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">clientIds&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">forEach&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">clientId&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sendToClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">event&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="nx">sendToClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">event&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data?&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">socket&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getClientInfo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">send&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">JSON&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">stringify&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">event&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span> &lt;span class="p">}));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;code>WebSocketWithSession&lt;/code>은 단순히 websocket 인스턴스에 사용자 세션을 바인딩한 것 입니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>Map&lt;/code>을 이용하여 클라이언트의 고유한 ID를 key로 Websocket 인스턴스를 참조할 수 있게 저장하고, 클라이언트의 ID들을 받아 순회하며 메시지를 보내는 구조입니다.&lt;/p>
+&lt;p>이러한 구현을 기반으로 &lt;code>socket.io&lt;/code>의 &lt;code>room&lt;/code> 개념을 대체할 두 가지 방식을 고려했습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>참여중인 사용자들을 별도로 관리&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">OnGatewayInit&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;ClientInfoStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">clients&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">String&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">ClientInfo&lt;/span>&lt;span class="p">&amp;gt;,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;PlayInfoStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">players&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">string&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 혹은
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> private readonly players: Map&amp;lt;string, {id: string, socket: WebSocketWithSession}[]&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> private readonly players: Map&amp;lt;string, Map&amp;lt;string, WebSocketWithSession&amp;gt;&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@SubscribeMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;join&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">join&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@ConnectedSocket&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">client&lt;/span>: &lt;span class="kt">WebSocketWithSession&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@MessageBody&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">quizJoinDto&lt;/span>: &lt;span class="kt">QuizJoinDto&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quizZoneId&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">player&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">playService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">joinQuizZone&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clients&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>: &lt;span class="kt">client&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">broadcast&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">players&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="s1">&amp;#39;someone_join&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">player&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>첫 번째로 참여중인 사용자들을 &lt;code>Gateway&lt;/code>에서 추가적으로 관리하는 방법입니다.&lt;/p>
+&lt;p>각 퀴즈존에 참여중인 사용자들의 id를 통해 각 연결을 참조하거나, 직접 참조해서 broadcast 처리를 수행하도록 하는 방법으로 아래와 같은 특징이 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>Gateway에서 외부 도움 없이 응답을 보낼 수 있음&lt;/li>
+&lt;li>이로인해 웹소켓 응답에만 집중할 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>퀴즈존에 이미 존재하는 상태를 중복해서 관리해야함&lt;/li>
+&lt;li>이로인해 참여, 퇴장 등이 발생했을 때 동기화가 필요함&lt;/li>
+&lt;li>용량이 추가적으로 필요함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>요약하면 웹소켓 처리에만 집중할수 있지만, 참여자 정보는 다른 서비스에서 API 응답에 활용하고 있기 때문에 별도 관리가 필요하고, 동일한 상태를 별도로 관리하기 때문에 동기화 등의 처리에 신경써야합니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>응답이 필요할 때마다 사용자들의 정보를 조회&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">OnGatewayInit&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;ClientInfoStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">clients&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">String&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">ClientInfo&lt;/span>&lt;span class="p">&amp;gt;,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">playService&lt;/span>: &lt;span class="kt">PlayService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@SubscribeMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;join&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">join&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@ConnectedSocket&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">client&lt;/span>: &lt;span class="kt">WebSocketWithSession&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@MessageBody&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">quizJoinDto&lt;/span>: &lt;span class="kt">QuizJoinDto&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">SendEventMessage&lt;/span>&lt;span class="err">&amp;lt;&lt;/span>&lt;span class="na">ResponsePlayerDto&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quizZoneId&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">currentPlayer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">playerIds&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">playService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">joinQuizZone&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 혹은
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> const currentPlayer = await this.playService.joinQuizZone(quizZoneId, sessionId);
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> const playerIds = await this.playService.getQuizZonePlayerIds(quizZoneId);
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clients&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>: &lt;span class="kt">client&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">broadcast&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">playerIds&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;someone_join&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">currentPlayer&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>두 번째로 필요할때마다 참여중인 사용자의 정보를 조회하여 넘겨주는 방법입니다.&lt;/p>
+&lt;p>예시에서 주입받은 &lt;code>PlayService&lt;/code>는 별도로 분리되어있는 &lt;code>QuizZoneService&lt;/code>를 통해 퀴즈존에 대한 처리를 수행하는데요&lt;/p>
+&lt;p>이를 통해서 필요한 처리마다 참여중인 사용자를 조회할 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>장점
+&lt;ul>
+&lt;li>별도의 참여자 정보들을 관리하지 않기 때문에 동기화가 필요없음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>단점
+&lt;ul>
+&lt;li>&lt;code>PlayGateway&lt;/code>와 &lt;code>PlayService&lt;/code>의 종단 관심사 결합&lt;/li>
+&lt;li>&lt;code>PlayService&lt;/code>와 &lt;code>QuizZoneService&lt;/code>의 횡단 관심사 결합 강화&lt;/li>
+&lt;li>&lt;code>QuizZoneService&lt;/code>의 부하가 많아짐&lt;/li>
+&lt;li>그래도 웹소켓 연결에 대한 정보들은 관리해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>요약하자면, broadcast가 필요할 때마다 퀴즈존에서 관리하는 참여자 정보를 조회하기 때문에 관심사의 결합이 발생할 수 있지만, 상태가 이원화되지 않아 관리 지점이 줄어듭니다.&lt;/p>
+&lt;hr>
+&lt;p>두 선택지 모두 단점이 많아 고민이 많았는데요. 결과적으로 저희는 두 번째 방식을 통해 처리하기로 했습니다.&lt;/p>
+&lt;p>퀴즈 진행에 따라 사용자의 요청 처리 때문에 &lt;code>PlayService&lt;/code>와 &lt;code>QuizZoneService&lt;/code>의 의존은 필연적으로 발생하는 구조였고, &lt;code>QuizZoneService&lt;/code>의 부하는 캐싱 등의 처리로 개선할 수 있다고 판단했습니다.&lt;/p>
+&lt;p>그리고 서비스를 분리를 고려했을 때 현재 아키텍처에서 이원화된 상태 동기화 문제가 더 해결하기 어려운 문제라고 생각했어요&lt;/p>
+&lt;h2 id="발견한-문제">발견한 문제&lt;/h2>
+&lt;p>처음에는 괜찮았지만 시간이 지남에 따라 여러 문제들이 부각되기 시작했어요😂&lt;/p>
+&lt;p>제 판단하기에는 크게 세 가지 정도 문제가 있었습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Gateway에서 모든 웹소켓 연결에 대해 알아야함&lt;/strong>&lt;/p>
+&lt;p>이전에 확인했던 것 처럼 Gateway에서 메시지를 보낼 때 클라이언트의 연결을 직접 활용하고 있기 때문에, broadcast를 위해 클라이언트의 연결 정보를 유지해야합니다.&lt;/p>
+&lt;p>이는 추가적인 저장 공간을 필요로 할 뿐만 아니라, 서비스에서 활용되는 사용자의 식별자와 웹소켓 인스턴스를 연결해야 하기 때문에, 서비스 상태와 결합이 생겼다고 볼 수 있다고 생각했어요&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Service 레이어의 많은 책임&lt;/strong>&lt;/p>
+&lt;p>Service 에서 참여중인 사용자의 정보를 받아오는 구조이기 때문에 서비스에서 관련 처리들이 추가되어야하고, 이는 많은 책임과 더불어 코드가 비대해지는 문제가 있었습니다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Gateway와 Service 레이어의 모호한 경계&lt;/strong>&lt;/p>
+&lt;p>위와 같은 이유로 응답을 위한 데이터 가공하는 처리가 Gateway로 조금씩 넘어오는 상황이 발생했습니다.&lt;/p>
+&lt;p>이로 인해 일부 비즈니스 로직들도 Gateway로 넘어오게 되면서, 사용자에게 응답을 담당해야하는 Gateway의 책임이 오염되고 있었어요&lt;/p>
+&lt;h2 id="근본적인-원인은">근본적인 원인은?&lt;/h2>
+&lt;p>저는 이러한 문제가 발생한 근본적인 원인이 &lt;strong>웹소켓 연결을 통한 응답 처리에서 퀴즈존에 참여중인 사용자의 정보를 알아야하는 것&lt;/strong> 자체 라고 판단했습니다.&lt;/p>
+&lt;p>이러한 이유로 Gateway에서 웹소켓 연결을 통해 처리 결과를 응답할 때 참여자의 정보를 아예 격리시켜야할 필요성을 느끼게 되었어요&lt;/p>
+&lt;h2 id="사용자의-정보를-어떻게-격리할까">사용자의 정보를 어떻게 격리할까?&lt;/h2>
+&lt;p>서비스는 기본적으로 N개의 퀴즈존 각각에 M명의 사용자가 참여하는 구조입니다. 그리고 서버가 사용자들의 메시지를 받아 퀴즈존의 상태를 변경하고, 진행 상태에 따라 참여중인 사용자들에게 응답 메시지를 보내게됩니다.&lt;/p>
+&lt;p>정리하면, 다수의 퀴즈존에 대한 진행을 위해 &lt;strong>사용자는 서버에게만 요청&lt;/strong>을 보내고 &lt;strong>서버는 참여중인 사용자에게 broadcast&lt;/strong> 하는 구조이죠&lt;/p>
+&lt;p>이러한 상황에서 서버에서 관리하는 여러 퀴즈존과 참여중인 사용자가 서로 누구인지 몰라도 되게 만드는 대표적인 방법으로 &lt;strong>발행-구독 패턴&lt;/strong>을 고려할 수 있었습니다.&lt;/p>
+&lt;h2 id="발행-구독-패턴">발행-구독 패턴&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/node/pub-sub/1/cover.png"
+width="1400"
+height="747"
+srcset="https://codemario318.github.io/post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/node/pub-sub/1/cover_hu468162ba17ce27969b9476abe99e20c1_99229_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="발행-구독 패턴"
+class="gallery-image"
+data-flex-grow="187"
+data-flex-basis="449px"
+>&lt;/p>
+&lt;p>발행-구독(Publish-Subscribe) 패턴(이하 pub/sub)은 발행자(Publisher)가 메시지를 직접 특정 구독자(Subscriber)에게 보내지 않고, 중간의 메시지 브로커(이벤트 버스)를 통해 특정 주제(Topic)나 채널에 메시지를 발행하면, 해당 주제를 구독하는 모든 구독자들이 자동으로 메시지를 받는 디자인 패턴입니다.&lt;/p>
+&lt;p>구독자는 주제만 알아도 보내는 모든 메시지를 받을 수 있기 때문에 컴포넌트 간 느슨한 결합(Loose Coupling)을 가능하게 하여 시스템의 확장성과 유연성이 향상되고, 이는 서비스의 안정적인 확장과 유지보수가 용이해지는 결과로 이어집니다.&lt;/p>
+&lt;p>결과적으로 근본적인 원인인 &lt;strong>웹소켓 연결을 통한 응답 처리에서 퀴즈존에 참여중인 사용자의 정보를 알아야하는 문제&lt;/strong>를 개선할 수 있다고 판단하여 적용하게 되었습니다.&lt;/p>
+&lt;h2 id="인터페이스와-타입-설계">인터페이스와 타입 설계&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">message&lt;/span>: &lt;span class="kt">TMessage&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="k">void&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">Unsubscribe&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">Broker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">subscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span>: &lt;span class="kt">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">Unsubscribe&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">addPublisher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">removePublisher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>: &lt;span class="kt">TMessage&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>처음 제가 생각했을때 필요하다고 생각되는 기능을 바탕으로 인터페이스와 타입을 설계 했습니다.&lt;/p>
+&lt;p>그리고 공통적으로 제네릭을 활용해 메시지 타입을 활용할 수 있도록 해봤습니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>MessageHandler&lt;/code> 타입: 구독자가 발생자가 보낼 메시지를 처리하는 함수를 정의&lt;/li>
+&lt;li>&lt;code>Unsubscibe&lt;/code> 타입: 구독 취소를 처리하는 함수 정의&lt;/li>
+&lt;li>&lt;code>Broker&lt;/code> 인터페이스: 메시지 브로커의 필수적인 기능을 정의
+&lt;ul>
+&lt;li>&lt;code>addPublisher&lt;/code>: 새 퍼블리셔 추가&lt;/li>
+&lt;li>&lt;code>removePublisher&lt;/code>: 퍼블리셔 제거&lt;/li>
+&lt;li>&lt;code>publish&lt;/code>: 메시지 발행&lt;/li>
+&lt;li>&lt;code>subscribe&lt;/code>: 구독자 등록 및 구독 해제 함수 반환&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>기본적으로 아래와 같은 흐름으로 처리가 진행됩니다.&lt;/p>
+&lt;ol>
+&lt;li>발행자가 있다고 가정할 때 &lt;code>subscribe&lt;/code>를 통해 구독할 때 제네릭으로 선언한 형식의 메시지를 처리할 수 있는 핸들러 함수를 입력으로 받음&lt;/li>
+&lt;li>&lt;code>publish&lt;/code> 메서드를 통해 메시지를 발행. 내부적으로 저장된 핸들러를 통해 클라이언트가 원했던 처리를 수행&lt;/li>
+&lt;/ol>
+&lt;p>최초 설계에서 조금 차이가 있는 부분은 &lt;code>subscribe&lt;/code> 메소드가 &lt;code>Unsubsribe&lt;/code> 함수를 반환한다는 점 인데요&lt;/p>
+&lt;p>사용하는 영역에서 &lt;code>Broker&lt;/code>를 직접 활용하여 구독 해제를 처리하는 것 보다, Clean-Up 함수를 별도로 제공하여 처리하는 것이 이후 자유도가 더 높은 방식이라 판단되어 선택하게 되었습니다.&lt;/p>
+&lt;h2 id="구현">구현&lt;/h2>
+&lt;p>위 인터페이스를 기반으로 간단한 &lt;code>MessageBroker&lt;/code>를 구현하였습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Broker&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./interfaces/broker.interface&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">MessageHandler&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./types&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">v4&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="nx">uuidv4&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;uuid&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">Subscription&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">handler&lt;/span>: &lt;span class="kt">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">MessageBroker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">Broker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">publishers&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">Subscription&lt;/span>&lt;span class="err">&amp;lt;&lt;/span>&lt;span class="na">TMessage&lt;/span>&lt;span class="p">&amp;gt;[]&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Map&lt;/span>&lt;span class="p">(),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">addPublisher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> already exists`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">[]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">removePublisher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>: &lt;span class="kt">TMessage&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">undefined&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">all&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">map&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">subscription&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">subscription&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handler&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">message&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">subscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span>: &lt;span class="kt">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">undefined&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscribtionId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">uuidv4&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">[...&lt;/span>&lt;span class="nx">subscriptions&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">subscriptionId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span>&lt;span class="p">}]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">unsubscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">subscriptionId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">unsubscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">subscriptionId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">undefined&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">subscriptions&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">filter&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">subscription&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">subscription&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span> &lt;span class="o">!==&lt;/span> &lt;span class="nx">subscriptionId&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>주요 요소들을 자세히 살펴보겠습니다.&lt;/p>
+&lt;h3 id="subscription-인터페이스">Subscription 인터페이스&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">Subscription&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">handler&lt;/span>: &lt;span class="kt">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Subscription&lt;/code>는 구독을 의미하는 인터페이스입니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>id&lt;/code>: 구독의 식별자&lt;/li>
+&lt;li>&lt;code>handler&lt;/code>: 발행한 메시지를 처리하는 함수&lt;/li>
+&lt;/ul>
+&lt;p>구독 해제 등을 처리해야하기 때문에 구독자가 등록한 핸들러에 대해 식별할 수 있도록 &lt;code>id&lt;/code>를 포함하도록 했습니다.&lt;/p>
+&lt;h3 id="subscribe-메서드">subscribe 메서드&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">MessageBroker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">Broker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">subscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span>: &lt;span class="kt">MessageHandler&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">undefined&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscribtionId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">uuidv4&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">[...&lt;/span>&lt;span class="nx">subscriptions&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">subscriptionId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">handler&lt;/span>&lt;span class="p">}]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">unsubscribe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">publisherId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">subscriptionId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>구독자가 발행 받은 메시지에 대해서 처리해야할 핸들러를 등록하는 과정입니다.&lt;/p>
+&lt;p>이 과정에서 &lt;code>Subscription&lt;/code>을 만들게 되는데, 구독 자체는 내부적으로 관리되어야 한다고 판단하여, 식별자는 &lt;code>UUID&lt;/code>를 생성하여 설정하도록 했습니다.&lt;/p>
+&lt;p>메서드가 반환하는 익명 함수는 구독의 ID를 통해 구독 해제를 수행하는 함수입니다.&lt;/p>
+&lt;h3 id="publish-메서드">publish 메서드&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">MessageBroker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">Broker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">public&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">message&lt;/span>: &lt;span class="kt">TMessage&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publishers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="kc">undefined&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">throw&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nb">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`Publisher with ID &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> does not exist`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">all&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">subscriptions&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">map&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">subscription&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nx">subscription&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handler&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">message&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>발행자가 특정 메시지를 발행합니다.&lt;/p>
+&lt;p>해당 발행자의 구독들을 통해 등록된 핸들러를 실행하게됩니다.&lt;/p>
+&lt;h2 id="프로젝트-적용-예시">프로젝트 적용 예시&lt;/h2>
+&lt;p>글 맨 앞에 문제의 원인에서 &lt;code>PlayGateway&lt;/code> 예시를 간략히 보여드렸었는데요. 해당 예시가 &lt;code>Broker&lt;/code>를 적용하면서 어떻게 바뀌었는지 살펴보겠습니다.&lt;/p>
+&lt;p>현재 pub/sub 모듈을 구현하는게 목표여서 간략하고 빠르게 적용해봤어요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">OnGatewayInit&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">playService&lt;/span>: &lt;span class="kt">PlayService&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Broker&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">broker&lt;/span>: &lt;span class="kt">Broker&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">SendEventMessage&lt;/span>&lt;span class="err">&amp;lt;&lt;/span>&lt;span class="na">BroadcastPlayEvent&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">any&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@SubscribeMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;join&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">join&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@ConnectedSocket&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">client&lt;/span>: &lt;span class="kt">WebSocketWithSession&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@MessageBody&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">quizJoinDto&lt;/span>: &lt;span class="kt">QuizJoinDto&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">SendEventMessage&lt;/span>&lt;span class="err">&amp;lt;&lt;/span>&lt;span class="na">PlayEvent&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">ResponsePlayerDto&lt;/span>&lt;span class="err">[]&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quizZondId&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">nickname&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">playService&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getPlayer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">broker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">publish&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">event&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;someone_join&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sender&lt;/span>: &lt;span class="kt">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">nickname&lt;/span>&lt;span class="p">}});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">subscribePlay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>퀴즈존에 참여하고 있는 사용자의 정보를 조회하고, 해당 정보를 바탕으로 기존 참여자들에게 새로운 참여자의 정보를 broadcast 해줍니다.&lt;/p>
+&lt;p>그리고 새로운 참여자가 해당 퀴즈존을 구독하게 됩니다. 많이 간단해진 모습이네요😊&lt;/p>
+&lt;p>&lt;code>PlayGateway&lt;/code>의 생성자를 살펴보면 발행하는 이벤트를 &lt;code>SendEventMessage&amp;lt;BroadcastPlayEvent, any&amp;gt;&lt;/code>로 정의했습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">PlayEvent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">UnicastPlayEvent&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="nx">BroadcastPlayEvent&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">UnicastPlayEvent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;join&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;changeNickname&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;submit&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;leave&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">BroadcastPlayEvent&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;someone_join&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;someone_leave&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;changeNickname&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;start&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;nextQuiz&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;someone_submit&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;quizTimeOut&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;finish&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;summary&amp;#39;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="s1">&amp;#39;close&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">SendEventMessage&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">TEvent&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">TMessage&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">event&lt;/span>: &lt;span class="kt">TEvent&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sender&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">data&lt;/span>: &lt;span class="kt">TMessage&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>구독 처리시에 인자로 넘겨주는 메시지 핸들러는 위와 같은 형식의 데이터를 처리하는 함수면 됩니다.&lt;/p>
+&lt;p>이를 구현한 &lt;code>subscribePlay&lt;/code> 메서드는 아래와 같이 구현되어있어요&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">private&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="nx">subscribePlay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">client&lt;/span>: &lt;span class="kt">WebSocketWithSession&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">clientId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">broker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">addPublisher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">unsubscribe&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">broker&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">subscribe&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">quizZoneId&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">message&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">event&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sender&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">message&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="s2">&amp;#34;someone_join&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">sender&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">clientId&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">send&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">JSON&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">stringify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">message&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="s2">&amp;#34;leave&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">unsubscribe&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>실제로는 많은 이벤트들을 처리해야하기 때문에 훨씬 비대한 상태에요🥲 핸들러가 어떤 방식으로 구성되는지만 봐주시면 되겠습니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>메시지에 선언된 이벤트에 맞게 웹소켓을 이용하여 응답을 보내게 됩니다.&lt;/p>
+&lt;p>현재 핸들러가 간단하고 지저분하게 구현되어 있긴 하지만, 관심사의 분리가 진행된 만큼 독립적으로 개선될 수 있을것이라 기대하고있습니다😁&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>pub/sub을 활용해서 서비스에서 발생할 결합을 느슨하게 만들어 봤는데요, 만든 모듈을 간단하게 적용해보니 Gateway에서 퀴즈존이나 사용자 정보를 전혀 모르는 상태로 응답을 보낼 수 있었습니다.&lt;/p>
+&lt;p>덕분에 이를 처리할 핸들러 로직이 독립적으로 분리되었고, 메시지 처리하는 핸들러에만 집중해서 개선할 수 있게 되었네요&lt;/p>
+&lt;p>이러한 관심사의 분리를 통해 의존되는 상태 때문에 시도하지 못했던 방법들을 적극적으로 고려할 수 있게 되었다고 생각합니다. 앞으로 시도해볼 것들이 많겠네요&lt;/p>
+&lt;p>pub/sub 모듈 자체도 아직 부족한 부분이 많아 이후 글들은 제가 구현한 모듈을 고도화하는 과정들을 담아보려고 합니다.&lt;/p>
+&lt;p>끝까지 읽어주셔서 감사합니다.😊&lt;/p></description></item><item><title>최종 팀 프로젝트 회고</title><link>https://codemario318.github.io/post/boostcamp-9th/review/membership/6/</link><pubDate>Wed, 11 Dec 2024 10:39:49 +0900</pubDate><guid>https://codemario318.github.io/post/boostcamp-9th/review/membership/6/</guid><description>&lt;img src="https://codemario318.github.io/post/boostcamp-9th/review/membership/6/cover.png" alt="Featured image of post 최종 팀 프로젝트 회고" />&lt;p>6주에 걸친 팀 프로젝트가 마무리 되었습니다.🥳&lt;/p>
 &lt;p>긴 시간이 아니어서 그랬는지 시간이 정말 빠르게 흘러 발표까지 마무리 되었네요&lt;/p>
 &lt;p>이번 회고에서는 프로젝트의 기술적인 성과 보다는 제가 어떤 &lt;strong>마음 가짐&lt;/strong>으로 프로젝트에 참여하였고, 이를 위해 취했던 &lt;strong>행동&lt;/strong>과 그 &lt;strong>결과&lt;/strong>에 대해 써보려고 합니다.&lt;/p>
 &lt;p>기술적인 내용이 궁금하시다면 아래 남겨놓은 링크를 참고해주세요😊&lt;/p>

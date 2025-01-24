@@ -3,9 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/designing-data-intensive-application/2/1/
-
-
+Allow: /post/node/pub-sub/1/
 
 
 
@@ -16,6 +14,28 @@ Allow: /post/designing-data-intensive-application/2/1/
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/designing-data-intensive-application/2/1/
+
+
+
+
 
 
 
@@ -165,11 +185,7 @@ Allow: /post/system-design-interview-2/13/
 
 
 
-
-
 Allow: /post/boostcamp-9th/review/membership/6/
-
-
 
 
 
@@ -730,8 +746,6 @@ Allow: /post/boostcamp-9th/review/challenge/2/
 
 
 Allow: /post/jest-unit-test/
-
-
 
 
 
@@ -1308,10 +1322,6 @@ Allow: /post/gof/15/visitor/
 
 
 Allow: /post/gof/15/prototype/
-
-
-
-
 
 
 
@@ -1972,6 +1982,8 @@ Allow: /post/real-mysql/4/2/1/
 
 
 Allow: /post/real-mysql/4/1/
+
+
 
 
 
