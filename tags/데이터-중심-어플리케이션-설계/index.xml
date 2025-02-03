@@ -1,4 +1,281 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>데이터 중심 어플리케이션 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EC%8B%AC-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%84%A4%EA%B3%84/</link><description>Recent content in 데이터 중심 어플리케이션 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 18 Jan 2025 15:24:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EC%8B%AC-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>2. 데이터 모델과 질의 언어 - 관계형 모델과 문서 모델</title><link>https://codemario318.github.io/post/designing-data-intensive-application/2/1/</link><pubDate>Sat, 18 Jan 2025 15:24:49 +0900</pubDate><guid>https://codemario318.github.io/post/designing-data-intensive-application/2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/2/1/cover.png" alt="Featured image of post 2. 데이터 모델과 질의 언어 - 관계형 모델과 문서 모델" />&lt;p>&lt;strong>데이터 모델&lt;/strong>은 소프트웨어가 어떠헥 작성됐는지 뿐만 아니라 해결하려는 &lt;strong>문제를 어떻게 생각해야 하는지&lt;/strong>에 대해 지대한 영향을 미친다.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>데이터 중심 어플리케이션 설계 on Mario Blog</title><link>https://codemario318.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EC%8B%AC-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%84%A4%EA%B3%84/</link><description>Recent content in 데이터 중심 어플리케이션 설계 on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Mon, 03 Feb 2025 21:06:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%91%EC%8B%AC-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%84%A4%EA%B3%84/index.xml" rel="self" type="application/rss+xml"/><item><title>2. 데이터 모델과 질의 언어 - 데이터를 위한 질의 언어</title><link>https://codemario318.github.io/post/designing-data-intensive-application/2/2/</link><pubDate>Mon, 03 Feb 2025 21:06:49 +0900</pubDate><guid>https://codemario318.github.io/post/designing-data-intensive-application/2/2/</guid><description>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/2/2/cover.png" alt="Featured image of post 2. 데이터 모델과 질의 언어 - 데이터를 위한 질의 언어" />&lt;p>관계형 모델이 등장했을 때 데이터를 질의하는 새로운 방법도 함께 나타났다. SQL은 &lt;strong>선언형&lt;/strong> 질의 언어인 반면 IMS와 코다실은 &lt;strong>명령형&lt;/strong> 코드를 사용해 데이터베이스에 질의한다.&lt;/p>
+&lt;p>일반적으로 많이 사용하는 프로그래밍 언어는 명령형 언어다. 예를 들어 동물의 종 목록이 있을 때 목록에서 상어만 반환하는 코드는 아래와 같다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">function&lt;/span> &lt;span class="nx">getSharks&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">sharks&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nx">animals&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">length&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">animals&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">family&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="s2">&amp;#34;Sharks&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sharks&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">push&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">animals&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">sharks&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>SQL로 표현하면 아래와 같다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">animals&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">family&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Sharks&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>명령형 언어는 특정 순서로 특정 연산을 수행하게끔 컴퓨터에게 지시한다.&lt;/p>
+&lt;ul>
+&lt;li>코드르 한줄씩 단계별로 실행&lt;/li>
+&lt;li>조건을 평가&lt;/li>
+&lt;li>변수를 갱신&lt;/li>
+&lt;li>루프를 실행할지 여부를 결정&lt;/li>
+&lt;/ul>
+&lt;p>SQL이나 관계 대수 같은 선언형 질의 언어에서는 &lt;strong>목표를 달성하기 위한 방법&lt;/strong>이 아니라 알고자 하는 데이터의 패턴, 즉 &lt;strong>결과&lt;/strong>가 충족해야 하는 조건과 데이터를 어떻게 변환(ex. 정렬, 그룹화, 집계)할 지 지정하기만 하면 된다.&lt;/p>
+&lt;p>어떤 색인과 어떤 조인 함수를 사용할지, 질의의 다양한 부분을 어떤 순서로 실행할지를 결정하는 일은 데이터베이스 시스템의 질의 최적화기가 할 일이다.&lt;/p>
+&lt;p>선언형 질의 언어는 일반적으로 명령형 API보다 더 간결하고 쉽게 작업할 수 있기 때문에 매력적이다. 하지만 더 중요한 점은 &lt;strong>데이터베이스 엔진의 상세 구현이 숨겨져 있어 질의를 변경하지 않고도 데이터베이스 시스템의 성능을 향상시킬 수 있다는 점&lt;/strong>이다.&lt;/p>
+&lt;ul>
+&lt;li>선언형 질의는 특정 순서를 보장하지 않으므로 순서가 바뀌어도 상관없으나, 질의가 명령형으로 작성되었다면 데이터베이스는 코드가 순서에 의존하는지 여부를 확신할 수 없다.&lt;/li>
+&lt;li>SQL이 기능적으로 더 제한적이라는 사실은 데이터베이스에게 자동으로 최적화할 수 있는 여지를 더 많이 준다는 의미이다.&lt;/li>
+&lt;/ul>
+&lt;p>선언형 언어는 종종 병렬 실행에 적합하다. 명령형 코드는 명령어를 특정 순서로 수행하게끔 지정하기 때문에 다중 코어나 다중 장비에서 병렬 처리가 매우 어렵다. 선언형 언어는 결과를 결정하기 위한 알고리즘을 지정하는 게 아니라 결과의 패턴만 지정하므로 병렬 실행으로 더 빨라질 가능성이 크다.&lt;/p>
+&lt;h2 id="웹에서의-선언형-질의">웹에서의 선언형 질의&lt;/h2>
+&lt;p>선언형 질의 언어의 장점은 데이터베이스에만 국한되지 않는다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span> &lt;span class="na">class&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;selected&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Sharks&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Great White Shark&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Tiger Shark&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Hammerhead Shark&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Whales&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Blue Whale&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Humpback Whale&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Fin Whale&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">li&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">ul&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 HTML 문서에서 선택된 리스트의 요소인 &lt;code>&amp;lt;p&amp;gt;Sharks&amp;lt;p&amp;gt;&lt;/code>의 배경을 파란색으로 변경하고 싶다면 아래와 같이 CSS를 작성할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-css" data-lang="css">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">li&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nc">selected&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="nt">p&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">background-color&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">blue&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>CSS는 대표적인 선언형 언어로 만약 명령형 접근 방식을 활용해야한다면, 아래와 같은 JS 코드가 필요하다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">var&lt;/span> &lt;span class="nx">liElements&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getElementsByTagName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;li&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nx">liElements&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">length&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">liElements&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">className&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="s2">&amp;#34;selected&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">children&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">liElements&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">childNodes&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kd">var&lt;/span> &lt;span class="nx">j&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">j&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nx">children&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">length&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">j&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">child&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">children&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">j&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">child&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">nodeType&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">Node&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ELEMENT_NODE&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nx">child&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">tagName&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="s2">&amp;#34;P&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">child&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">setAttribute&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;style&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;background-color: blue&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위 자바스크립트 코드는 CSS보다 이해하기 어려울 뿐더러 심각한 문제를 가지고 있다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>selected&lt;/code> 클래스가 삭제된 경우 코드가 재실행되더라도 파란색은 삭제되지 않음
+&lt;ul>
+&lt;li>CSS의 경우는 규칙이 적용되지 않을 때 바로 다시 그려짐&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>새로운 API의 장점을 취하고 싶다면 코드를 재작성해야함
+&lt;ul>
+&lt;li>브라우저 밴더는 호환성을 깨트리지 않고 CSS의 성능을 향상시킬 수 있음&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>웹 브라우저에서 선언형 CSS 스타일을 사용하는 편이 자바스크립트에서 명령형으로 스타일을 다루기보다 훨씬 편리하다.&lt;/p>
+&lt;p>마찬가지로 데이터베이스에서는 SQL 같은 선언형 질의 언어가 명령형 질의 API 보다 훨씬 좋다고 나타났다.&lt;/p>
+&lt;h2 id="맵리듀스-질의">맵리듀스 질의&lt;/h2>
+&lt;p>&lt;strong>맵리듀스&lt;/strong>(MapReduce)는 많은 컴퓨터에서 대랴으이 데이터를 처리하기 위한 프로그래밍 모델로, 구글에 의해 널리 알려졌다. 이 메커니즘은 많은 문서를 대상으로 읽기 전용(read-only) 질의를 수행할 때 사용한다.&lt;/p>
+&lt;p>맵리듀스는 선언형 질의 언어도 완전한 명령형 질의 API도 아닌 그 중간 정도에 있다. 질의 로직은 처리 프레임워크가 반복적으로 호출하는 &lt;strong>조각 코드로 표현&lt;/strong>한다.&lt;/p>
+&lt;ul>
+&lt;li>함수형 프로그래밍 언어에 있는 map(collect)과 reduce(fold, inject) 함수를 기반으로 함&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>한 달에 얼마나 자주 상어를 발견하는지 보고서를 작성하는 상황&lt;/strong>을 가정하고 예시를 살펴본다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Postgresql&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">date_trunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;month&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">observation_timestamp&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">observation_month&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">num_animals&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">total_animals&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">observations&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">family&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;Sharks&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">GROUP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">BY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">observation_month&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>상어과에 속하는 종만 보이도록 관측치를 필터링한 다음, 관측ㄱ치가 발생한 달력의 우러로 그룹화하고 마지막으로 해당 달의 모든 관측치에 보여진 동물 수를 합함&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>MongoDB&lt;/strong>&lt;/p>
+&lt;p>맵리듀스 기능을 활용하여 다음과 같이 표현할 수 있다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">observations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">mapReduce&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">function&lt;/span> &lt;span class="nx">map&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kd">var&lt;/span> &lt;span class="nx">year&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">observationTimestamp&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getFullYear&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">month&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">observationTimestamp&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getMonth&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">emit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">year&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s2">&amp;#34;-&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">month&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">numAnimals&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 3
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">function&lt;/span> &lt;span class="nx">reduce&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">values&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 4
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">Array&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">values&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 5
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">query&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">family&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Sharks&amp;#34;&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="c1">// 1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">out&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;monthlySharkReport&amp;#34;&lt;/span> &lt;span class="c1">// 6
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol>
+&lt;li>상어 종만 거르기 위한 필터를 선언적으로 지정&lt;/li>
+&lt;li>질의와 일치하는 모든 문서에 대해 한 번씩 호출&lt;/li>
+&lt;li>키와 값을 방출&lt;/li>
+&lt;li>방출한 키-값 쌍은 키로 그룹화됨
+&lt;ul>
+&lt;li>같은 키를 갖는 모든 키-값 쌍은 &lt;code>reduce&lt;/code> 함수를 한 번 호출함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>특정 월의 모든 관측치에서 동물 수를 합침&lt;/li>
+&lt;li>최종 출력을 &lt;code>monthlySharkReport&lt;/code> 컬렉션에 기록&lt;/li>
+&lt;/ol>
+&lt;p>MongoDB의 &lt;code>map&lt;/code>과 &lt;code>reduce&lt;/code> 함수는 수행할 때 두 함수는 순수 함수여야 한다는 제약이 있다.&lt;/p>
+&lt;ul>
+&lt;li>입력으로 전달된 데이터만 사용하고, 추가적인 데이터베이스 질의를 수행할 수 없어야함&lt;/li>
+&lt;li>부수 효과(side effect)가 없어야함&lt;/li>
+&lt;/ul>
+&lt;p>이러한 제약 사항 때문에 데이터베이스가 임의 순서로 어디서나 이 함수를 실행할 수 있고 장애가 발생해도 함수를 재실행 할 수 있다. 이런 제약 사항이 있어도 여전히 강력하며, 문자열을 파싱하고 라이브러리 함수를 호출하고 계산을 실행하는 등의 작업을 &lt;code>map&lt;/code>과 &lt;code>reduce&lt;/code> 함수에서 실행할 수 있다.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>집계 파이프라인 언어&lt;/strong>&lt;/p>
+&lt;p>맵리듀스의 사용성 문제는 연계된 자바스크립트 함수 두 개를 신중하게 작성해야 한다는 점인데 이는 종종 하나의 질의를 작성하는 것보다 어렵다. 반면 선언형 질의 언어는 질의 최적화기가 질의 성능을 높일 수 있는 기회를 제공한다.&lt;/p>
+&lt;p>이러한 이유로 MongoDB는 &lt;strong>집게 파이프라인&lt;/strong>(aggregation pipeline)이라 부르는 선언형 질의 언어 지원을 추가했다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">observations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">aggregate&lt;/span>&lt;span class="p">([&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="nx">$match&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">family&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Sharks&amp;#34;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span> &lt;span class="nx">$group&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">year&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$year&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$observationTimestamp&amp;#34;&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">month&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$month&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$observationTimestamp&amp;#34;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">totalAnimals&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">$sum&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;$numAnimals&amp;#34;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>집계 파이프라인 언어는 표현 측면에서 SQL의 부분 집합과 유사하지만 SQL의 영어 문장 스타일 구문보다는 JSON 기반 구문을 사용한다.&lt;/p>
+&lt;blockquote>
+&lt;p>여기서 배울 점은 NoSQL 시스템이 뜻하지 않게 SQL을 재발견하고 있다는 점이다.&lt;/p>
+&lt;/blockquote></description></item><item><title>2. 데이터 모델과 질의 언어 - 관계형 모델과 문서 모델</title><link>https://codemario318.github.io/post/designing-data-intensive-application/2/1/</link><pubDate>Sat, 18 Jan 2025 15:24:49 +0900</pubDate><guid>https://codemario318.github.io/post/designing-data-intensive-application/2/1/</guid><description>&lt;img src="https://codemario318.github.io/post/designing-data-intensive-application/2/1/cover.png" alt="Featured image of post 2. 데이터 모델과 질의 언어 - 관계형 모델과 문서 모델" />&lt;p>&lt;strong>데이터 모델&lt;/strong>은 소프트웨어가 어떠헥 작성됐는지 뿐만 아니라 해결하려는 &lt;strong>문제를 어떻게 생각해야 하는지&lt;/strong>에 대해 지대한 영향을 미친다.&lt;/p>
 &lt;p>대부분 애플리케이션은 하나의 데이터 모델을 다른 데이터 모델 위에 계층을 둬서 만든다.&lt;/p>
 &lt;p>각 계층의 핵심적인 문제는 다음 하위 계층 관점에서 데이터 모델을 &lt;strong>표현&lt;/strong>하는 방법이다.&lt;/p>
 &lt;ul>

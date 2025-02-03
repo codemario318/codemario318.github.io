@@ -3,7 +3,9 @@ User-agent: *
 
 
 
-Allow: /post/node/pub-sub/2/
+Allow: /post/designing-data-intensive-application/2/2/
+
+
 
 
 
@@ -31,37 +33,39 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+Allow: /post/node/pub-sub/2/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/node/pub-sub/1/
 
 
 
 Allow: /post/designing-data-intensive-application/2/1/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
