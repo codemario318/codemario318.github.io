@@ -3,7 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/node/pub-sub/1/
+Allow: /post/node/pub-sub/2/
 
 
 
@@ -28,6 +28,10 @@ Allow: /post/
 
 
 
+
+
+
+Allow: /post/node/pub-sub/1/
 
 
 

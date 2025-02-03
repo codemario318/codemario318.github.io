@@ -1,0 +1,289 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="발행-구독 패턴 개선 일지"><title>2. 발행-구독 패턴에서 발행자는 어떤 의미일까?</title><link rel=canonical href=https://codemario318.github.io/post/node/pub-sub/2/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="2. 발행-구독 패턴에서 발행자는 어떤 의미일까?"><meta property="og:description" content="발행-구독 패턴 개선 일지"><meta property="og:url" content="https://codemario318.github.io/post/node/pub-sub/2/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="타입스크립트"><meta property="article:tag" content="Typescript"><meta property="article:tag" content="디자인 패턴"><meta property="article:tag" content="Design Pattern"><meta property="article:tag" content="발행-구독 패턴"><meta property="article:tag" content="Publish-Subscribe Pattern"><meta property="article:tag" content="Pub-Sub"><meta property="article:tag" content="Pub/Sub"><meta property="article:published_time" content="2025-01-30T09:17:35+09:00"><meta property="article:modified_time" content="2025-01-30T09:17:35+09:00"><meta property="og:image" content="https://codemario318.github.io/post/node/pub-sub/2/cover.png"><meta name=twitter:title content="2. 발행-구독 패턴에서 발행자는 어떤 의미일까?"><meta name=twitter:description content="발행-구독 패턴 개선 일지"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/node/pub-sub/2/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>71</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/nest/><span>Nest</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#현재-구조>현재 구조</a></li><li><a href=#이질감을-느꼈던-부분>이질감을 느꼈던 부분</a></li><li><a href=#옵저버-패턴>옵저버 패턴</a></li><li><a href=#topic-channel>Topic, Channel</a></li><li><a href=#개선>개선</a></li><li><a href=#더-고민해봐야할-내용>더 고민해봐야할 내용</a></li><li><a href=#마무리>마무리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/node/pub-sub/2/><img src=/post/node/pub-sub/2/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png srcset="/post/node/pub-sub/2/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png 800w, /post/node/pub-sub/2/cover_hu468162ba17ce27969b9476abe99e20c1_99229_1600x0_resize_box_3.png 1600w" width=800 height=427 loading=lazy alt="Featured image of post 2. 발행-구독 패턴에서 발행자는 어떤 의미일까?"></a></div><div class=article-details><header class=article-category><a href=/categories/node/>Node</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/node/pub-sub/2/>2. 발행-구독 패턴에서 발행자는 어떤 의미일까?</a></h2><h3 class=article-subtitle>발행-구독 패턴 개선 일지</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2025/01/30</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>6 minute read</time></div></footer></div></header><section class=article-content><p><a class=link href=/post/node/pub-sub/1/>저번 글</a>에 간단한 pub/sub 모듈을 구현했던 내용들을 공유했습니다.</p><p>만든 모듈을 개선하려고 여러 자료들을 참고해보니 제가 구현한 pub/sub 모듈에서 뭔가 이질감이 느껴졌어요</p><p>오늘은 그 이질감을 느꼈던 부분에 대해 말씀드리고 개선해본 내용들을 공유드리려고 합니다.</p><h2 id=현재-구조>현재 구조</h2><p>이전에 구현했던 <code>Broker</code> 인터페이스의 구조를 먼저 살펴보겠습니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    class Broker {
+        << interface >>
+        subscribe(publisherId: string, handler: MessageHandler)
+        publish(publisherId: string, message: TMessage)
+        addPublisher(publisherId)
+        removePublisher(publisherId: string)
+    }
+</pre><ul><li><code>TMessage</code>: 사용자가 정의하는 처리할 메시지</li><li><code>MessageHandler</code>: <code>TMessage</code>로 정의된 메시지를 처리하는 핸들러</li></ul><p>처음 의도했던 코드는 <code>Broker</code>의 구현체의 <code>addPublisher</code>를 통해 발행자를 등록하고, 이후 구독자들이 해당 발행자를 구독하는 형태였습니다.</p><h2 id=이질감을-느꼈던-부분>이질감을 느꼈던 부분</h2><p><a class=link href=/post/node/pub-sub/1/>이전 글</a>에서 언급했던 내용처럼 제가 pub/sub 패턴을 적용한 이유는 <strong>특정 그룹에 대한 웹소켓 요청/응답 브로드캐스팅 처리할 때, 해당 웹소켓 연결에 대한 참조를 알고있어야 한다는 문제</strong>로 인해 발생한 <strong>결합을 느슨하게</strong> 만들기 위함이었는데요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>publisherId</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>subscriptions</span> <span class=o>===</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Publisher with ID </span><span class=si>${</span><span class=nx>publisherId</span><span class=si>}</span><span class=sb> does not exist`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>subscriptionId</span> <span class=o>=</span> <span class=nx>randomUUID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>publishers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=p>[...</span><span class=nx>subscriptions</span><span class=p>,</span> <span class=p>{</span><span class=nx>id</span>: <span class=kt>subscriptionId</span><span class=p>,</span> <span class=nx>handler</span><span class=p>}]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>publisherId</span><span class=p>,</span> <span class=nx>subscriptionId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>현재 구현된 <code>subscribe</code> 메서드를 살펴보면, 구독하려고 하는 발행자가 없는 경우 예외를 던지도록 되어있습니다.</p><p>이를 해석해보면 <strong>구독자가 발행자의 존재 유무에 영향을 받음</strong>을 의미하게 된다고 생각하게 되었어요</p><p>사실 이러한 구현은 <strong>발행-구독 패턴</strong>이라고는 말할 수는 있지만, 메시지 브로커(이벤트 버스)가 <strong>옵저버 패턴</strong>의 주제(Subject)를 모아 관리만 해주는 형태가 되었기 때문에 완벽하게 결합을 느슨하게 만들었다고는 볼 수 없다고 판단하였습니다.</p><h2 id=옵저버-패턴>옵저버 패턴</h2><p>간략하게 옵저버 패턴의 구조를 살펴보면 아래와 같습니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    direction LR
+    class Subject {
+        << interface >>
+        attach(observer: Observer)
+        detach(observer: Observer)
+        notify()
+    }
+    
+    class Observer {
+        << interface >>
+        +update()
+    }
+    
+    class ConcreteSubject {
+        -observers: Observer[]
+        +attach(observer: Observer)
+        +detach(observer: Observer)
+        +notify()
+    }
+    
+    class ConcreteObserver {
+        +update()
+    }
+    
+    Subject <|-- ConcreteSubject
+    Observer <|-- ConcreteObserver
+    Subject "1" --o "*" Observer : observers
+    ConcreteObserver --> ConcreteSubject
+</pre><p>옵저버 패턴은 주제(<code>Subject</code>)와 관찰자(<code>Observer</code>)로 구성되어, 특정 <code>Subject</code>를 <code>Observer</code> 관찰하는 것 처럼 만드는데요</p><p><code>Subject</code> 인터페이스를 구현한 <code>ConcreteSubject</code> 클래스에서 <code>Observer</code>의 구현체들을 가지고 있고, 특정 상태 변경시 <code>notify</code> 메서드를 통해 <code>Observer</code>의 <code>update</code> 메서드를 호출하여, 원하는 기능들을 처리하는 형태로 구현됩니다.</p><p>기본적인 구조를 간단히 구현한 예시를 살펴보면</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Subject</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span><span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>observers</span>: <span class=kt>TMessage</span><span class=p>[]</span> <span class=o>=</span> <span class=p>[])</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>attach</span><span class=p>(</span><span class=nx>observer</span>: <span class=kt>Observer</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>observers</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>observer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>notify</span><span class=p>(</span><span class=nx>data</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>observers</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>observer</span> <span class=o>=&gt;</span> <span class=nx>observer</span><span class=p>.</span><span class=nx>update</span><span class=p>(</span><span class=nx>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Observer</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span><span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>update</span><span class=p>(</span><span class=nx>data</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`ID: </span><span class=si>${</span><span class=k>this</span><span class=p>.</span><span class=nx>id</span><span class=si>}</span><span class=sb> : </span><span class=si>${</span><span class=nx>data</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>subject</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Subject</span><span class=p>&lt;</span><span class=nt>string</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>observerA</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Observer</span><span class=p>(</span><span class=s1>&#39;A&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>observerB</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Observer</span><span class=p>(</span><span class=s1>&#39;B&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>attach</span><span class=p>(</span><span class=nx>observerA</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>attach</span><span class=p>(</span><span class=nx>observerB</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>notify</span><span class=p>(</span><span class=s1>&#39;hi&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ID: A : hi
+</span></span></span><span class=line><span class=cl><span class=c1>// ID: B : hi
+</span></span></span></code></pre></td></tr></table></div></div><p>위와 같은 형태로 구현될 수 있고, 함수를 반환할 수 있는 JS/TS의 특성을 활용하면 아래와 같이 표현될 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>type</span> <span class=nx>Observer</span> <span class=o>=</span> <span class=p>(</span><span class=nx>data</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>void</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>Subject</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span><span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>observers</span>: <span class=kt>Observer</span><span class=p>[]</span> <span class=o>=</span> <span class=p>[])</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=nx>attach</span><span class=p>(</span><span class=nx>observer</span>: <span class=kt>Observer</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>observers</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>observer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>notify</span><span class=p>(</span><span class=nx>data</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>observers</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>observer</span> <span class=o>=&gt;</span> <span class=nx>observer</span><span class=p>.</span><span class=nx>update</span><span class=p>(</span><span class=nx>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>update</span><span class=p>(</span><span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>data</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`ID: </span><span class=si>${</span><span class=k>this</span><span class=p>.</span><span class=nx>id</span><span class=si>}</span><span class=sb> : </span><span class=si>${</span><span class=nx>data</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>subject</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Subject</span><span class=p>&lt;</span><span class=nt>string</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>attach</span><span class=p>(</span><span class=nx>data</span> <span class=o>=&gt;</span> <span class=nx>update</span><span class=p>(</span><span class=s1>&#39;A&#39;</span><span class=p>,</span> <span class=nx>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>attach</span><span class=p>(</span><span class=nx>data</span> <span class=o>=&gt;</span> <span class=nx>update</span><span class=p>(</span><span class=s1>&#39;B&#39;</span><span class=p>,</span> <span class=nx>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>subject</span><span class=p>.</span><span class=nx>notify</span><span class=p>(</span><span class=s1>&#39;hi&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ID: A : hi
+</span></span></span><span class=line><span class=cl><span class=c1>// ID: B : hi
+</span></span></span></code></pre></td></tr></table></div></div><p>옵저버 패턴을 적용하면 아래와 같은 장점을 취할 수 있습니다.</p><ul><li>관찰자를 언제든 추가할 수 있음<ul><li><code>Observer</code> 인터페이스를 구현하는 객체 목록에만 의존하므로, 언제든 새로운 옵저버를 추가할 수 있음</li><li>실행 중에 하나의 옵저버를 다른 옵저버로 바꿔도 다른 옵저버에게 데이터를 보내는데 영향이 없음</li></ul></li><li>새로운 형식의 옵저버를 추가해도 주제를 변경할 필요가 없음<ul><li><code>Observer</code> 인터페이스만 구현하면 됨</li></ul></li><li>주제와 관찰자 모두 독립적으로 재사용할 수 있음</li><li>주제나 옵저버의 내부 구현이 달라져도 서로에게 영향을 미치지 않음<ul><li><code>Observer</code> 인터페이스를 구현한다는 조건만 만족한다면!</li></ul></li></ul><p>옵저버 패턴도 <strong>주제가 관찰자라는 특정 인터페이스(또는, 특정 입력을 받아 처리하는 함수)를 구현한다는 사실만 알고 있을 뿐</strong>이므로, 충분히 <strong>느슨한 결합</strong>을 만든다고 볼 수 있지만, 여전히 특정 주제의 구현체를 알아야 한다는 사실(<code>Subject</code> 구현체가 존재해야함, 어떻게든 넘겨줘야함)은 남아있게 됩니다.</p><h2 id=topic-channel>Topic, Channel</h2><p>이렇게 뭔가 찝찝한(?) 결과를 구현하게 된 이유는 <strong>구독-발행 패턴에서 발행자</strong>가 <strong>옵저버 패턴에서의 특정 주제</strong>(<code>Subject</code>)가 와 같다고 생각했기 때문이었습니다.</p><p>특히 제가 오해한 부분은 바로 <strong>Topic</strong> 혹은 <strong>Channel</strong>이라는 개념이었어요</p><p><img src=/post/node/pub-sub/2/img_1.png width=1840 height=1118 srcset="/post/node/pub-sub/2/img_1_hub46379c79e0207865306d5fb3196c10a_148103_480x0_resize_box_3.png 480w, /post/node/pub-sub/2/img_1_hub46379c79e0207865306d5fb3196c10a_148103_1024x0_resize_box_3.png 1024w" loading=lazy alt="발행/구독 패턴" class=gallery-image data-flex-grow=164 data-flex-basis=394px></p><p>위 그림처럼 <strong>메시지 브로커</strong>는 <strong>각 채널에 발행된 메시지를 구독자에게 전달하는 역할</strong>을 수행하게됩니다.</p><p>저는 이러한 구조를 <strong>메시지 브로커</strong>가 <strong>발행자</strong>들과 각각의 <strong>구독자들</strong>을 관리하는 형태로 오해했던 것 이었어요</p><p>물론 아주 틀렸다고 할 수는 없지만&mldr; 조금 더 정확히 표현하면 <strong>메시지 브로커</strong>는 <strong>옵저버 패턴의 <code>Subject</code> 구현체가 아닌 특정 관심사 자체를 관리</strong>하는 것이고, <strong>특정 관심사에 대해 발행된 메시지를 메시지 브로커가 구독자에게 넘겨주는 그룹화된 흐름을 자체</strong>를 <strong>Channel</strong> 혹은 <strong>Topic</strong>이라 부른다고 볼 수 있습니다.</p><p>비유를 해보자면 TV를 볼 때 특정 번호를 통해 특정 방송국에서 방송이 송출되는 주파수 대역에 맞추고 해당 방송국에서 보내는 영상을 시청하는 것을 <strong>채널을 맞춘다</strong>라고 표현하는 것 처럼요</p><p>공중파 방송으로 제한했을 때, 방송국은 특정 대상에 대해서만 방송을 송출하는 것이 아닌 모든 대상에 대해서 신호를 송출하고, 연결만 되어있다면 채널을 맞춰 시청할 수 있는 것과 같은 맥락이라고 볼 수 있습니다.</p><ul><li>관심사에 조금 더 집중해서 표현한 단어가 Topic, 메시지가 전달되는 과정에 집중해서 표현한 단어가 Channel이 아닐까 생각해봅니다.</li></ul><h2 id=개선>개선</h2><p>이러한 내용들을 반영하여 아래와 같은 인터페이스 구조로 변경하게되었습니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    class Broker {
+        << interface >>
+        subscribe(channel: string, handler: MessageHandler)
+        publish(channel: string, message: TMessage)
+    }
+</pre><p>변경된 부분은 아래와 같습니다.</p><ul><li>각 함수의 인자 <code>publisherId</code>를 <code>channel</code>로 변경</li><li><code>addSubscriber</code>, <code>removeSubscriber</code> 메서드 제거</li></ul><p>결과적으로 아래와 같은 결과물이 나왔습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Broker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>channels</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>Subscription</span><span class=err>&lt;</span><span class=na>TMessage</span><span class=p>&gt;[]</span><span class=o>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Map</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>getSubscriptions</span><span class=p>(</span><span class=nx>channel</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptionId</span> <span class=o>=</span> <span class=nx>randomUUID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>channels</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>channel</span><span class=p>,</span> <span class=p>[...</span><span class=nx>subscriptions</span><span class=p>,</span> <span class=p>{</span><span class=nx>id</span>: <span class=kt>subscriptionId</span><span class=p>,</span> <span class=nx>handler</span><span class=p>}]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>channel</span><span class=p>,</span> <span class=nx>subscriptionId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>publish</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>getSubscriptions</span><span class=p>(</span><span class=nx>channel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=nx>Promise</span><span class=p>.</span><span class=nx>all</span><span class=p>(</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>subscriber</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscriber</span><span class=p>.</span><span class=nx>handler</span><span class=p>(</span><span class=nx>message</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=nx>getSubscriptions</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=p>.</span><span class=nx>channels</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>channel</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>channels</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>channel</span><span class=p>,</span> <span class=p>[]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>channels</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>channel</span><span class=p>)</span><span class=o>!</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>async</span> <span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>subscriptionId</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>getSubscriptions</span><span class=p>(</span><span class=nx>channel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>channels</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>channel</span><span class=p>,</span> <span class=nx>subscriptions</span><span class=p>.</span><span class=nx>filter</span><span class=p>((</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscription</span><span class=p>.</span><span class=nx>id</span> <span class=o>!==</span> <span class=nx>subscriptionId</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>addPublisher</code>, <code>removePublisher</code>가 제거되며 <code>getSubscriptions</code> 메서드가 추가되었습니다.</p><p>보시는 것과 같이 채널 컬렉션에 해당 채널이 없을 경우 빈 채널을 초기화 후 반환하도록 했습니다.</p><h2 id=더-고민해봐야할-내용>더 고민해봐야할 내용</h2><p>구독자가 특정 발행자를 발행자가 아닌 관심사를 구독하게 되었는데요, 이로 인해 주의해야하거나 생각해봐야 할 내용들이 더 생기게 되었습니다.</p><ol><li>발행자가 없더라도 구독 상태가 유지될 수 있음</li><li>channel을 잘못 입력한 경우 다른 관심사를 구독하게 됨(오류로 처리되지 않음)</li><li>channel에 구독자가 없더라도 빈 배열이 유지됨</li></ol><p>크게 세 가지 정도가 생각나는군요</p><p>1, 2번의 경우는 모듈을 사용할 때 주의해야할 점으로 보이고, 3번 같은 경우는 별도의 메모리 관리가 필요해 보입니다.</p><h2 id=마무리>마무리</h2><p>이전 글에 이어서 발행-구독 패턴에 대한 잘못된 오해를 바로 잡아, 제가 직접 구현한 pub/sub 패키지를 개선해보는 시간을 가졌습니다.</p><p>다음 주제는 구독자가 없는 채널에 대한 관리를 어떻게 해야할 지 고민해보는 과정이 될 것 같네요</p><p>끝까지 읽어주셔서 감사합니다😁</p></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/>타입스크립트</a>
+<a href=/tags/typescript/>Typescript</a>
+<a href=/tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/>디자인 패턴</a>
+<a href=/tags/design-pattern/>Design Pattern</a>
+<a href=/tags/%EB%B0%9C%ED%96%89-%EA%B5%AC%EB%8F%85-%ED%8C%A8%ED%84%B4/>발행-구독 패턴</a>
+<a href=/tags/publish-subscribe-pattern/>Publish-Subscribe Pattern</a>
+<a href=/tags/pub-sub/>Pub-Sub</a>
+<a href=/tags/pub/sub/>Pub/Sub</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://github.com/codemario318/m-pub-sub target=_blank rel=noopener><div class=article-details><h2 class=article-title>Github</h2><footer class=article-time>https://github.com/codemario318/m-pub-sub</footer></div></a></article><article><a href=https://github.com/codemario318/m-pub-sub/pull/1 target=_blank rel=noopener><div class=article-details><h2 class=article-title>PR</h2><footer class=article-time>https://github.com/codemario318/m-pub-sub/pull/1</footer></div></a></article><article><a href=/post/node/pub-sub/1/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>1. 발행-구독 패턴을 통해 결합을 개선해보자</h2><footer class=article-time>발행-구독 패턴 개선 일지</footer></div></a></article><article><a href=https://flylib.com/books/en/4.10.1.105/1/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>Understanding the PublishSubscribe Structure</h2><footer class=article-time>Flylib</footer></div></a></article><article><a href=https://ably.com/topic/pub-sub target=_blank rel=noopener><div class=article-details><h2 class=article-title>What is Pub/Sub? The Publish/Subscribe model explained</h2><footer class=article-time>ably</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/node/pub-sub/1/><div class=article-image><img src=/post/node/pub-sub/1/cover.3c061cec1a9218c0c4cd7f4e24a0c4d0_hu468162ba17ce27969b9476abe99e20c1_99229_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 1. 발행-구독 패턴을 통해 결합을 개선해보자" data-key=/node/pub-sub/1 data-hash="md5-PAYc7BqSGMDEzX9OJKDE0A=="></div><div class=article-details><h2 class=article-title>1. 발행-구독 패턴을 통해 결합을 개선해보자</h2></div></a></article><article class=has-image><a href=/post/jest-unit-test/><div class=article-image><img src=/post/jest-unit-test/cover.21767fc5165e3141b2bb1e885b3670c7_hu7fc001c9d5df8010367652495ae61bd0_46763_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Jest를 활용한 유닛 테스트" data-key=jest-unit-test data-hash="md5-IXZ/xRZeMUGyux6IWzZwxw=="></div><div class=article-details><h2 class=article-title>Jest를 활용한 유닛 테스트</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/3/><div class=article-image><img src=/post/boostcamp-9th/review/membership/3/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 3주차 회고" data-key=boostcamp-9th/review/membership/3 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 3주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/2/><div class=article-image><img src=/post/boostcamp-9th/review/membership/2/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 2주차 회고" data-key=boostcamp-9th/review/membership/2 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 2주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/1/><div class=article-image><img src=/post/boostcamp-9th/review/membership/1/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 1주차 회고" data-key=boostcamp-9th/review/membership/1 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 1주차 회고</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
