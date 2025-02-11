@@ -1,0 +1,724 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="발행-구독 패턴 개선 일지"><title>3. 구독자가 없는 채널 관리하기</title><link rel=canonical href=https://codemario318.github.io/post/node/pub-sub/3/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="3. 구독자가 없는 채널 관리하기"><meta property="og:description" content="발행-구독 패턴 개선 일지"><meta property="og:url" content="https://codemario318.github.io/post/node/pub-sub/3/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="타입스크립트"><meta property="article:tag" content="Typescript"><meta property="article:tag" content="디자인 패턴"><meta property="article:tag" content="Design Pattern"><meta property="article:tag" content="발행-구독 패턴"><meta property="article:tag" content="Publish-Subscribe Pattern"><meta property="article:tag" content="Pub-Sub"><meta property="article:tag" content="Pub/Sub"><meta property="article:published_time" content="2025-02-04T10:02:35+09:00"><meta property="article:modified_time" content="2025-02-04T10:02:35+09:00"><meta property="og:image" content="https://codemario318.github.io/post/node/pub-sub/3/cover.png"><meta name=twitter:title content="3. 구독자가 없는 채널 관리하기"><meta name=twitter:description content="발행-구독 패턴 개선 일지"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/node/pub-sub/3/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>72</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/nest/><span>Nest</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#어떤-방법들이-있을까>어떤 방법들이 있을까?</a></li><li><a href=#더-고민해야할-부분은>더 고민해야할 부분은?</a></li><li><a href=#전체-아키텍처>전체 아키텍처</a></li><li><a href=#channel과-repository>Channel과 Repository</a></li><li><a href=#scheduler와-scheduletask>Scheduler와 ScheduleTask</a></li><li><a href=#channelcleaner와-cleanable>ChannelCleaner와 Cleanable</a></li><li><a href=#마무리>마무리</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/node/pub-sub/3/><img src=/post/node/pub-sub/3/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png srcset="/post/node/pub-sub/3/cover_hu468162ba17ce27969b9476abe99e20c1_99229_800x0_resize_box_3.png 800w, /post/node/pub-sub/3/cover_hu468162ba17ce27969b9476abe99e20c1_99229_1600x0_resize_box_3.png 1600w" width=800 height=427 loading=lazy alt="Featured image of post 3. 구독자가 없는 채널 관리하기"></a></div><div class=article-details><header class=article-category><a href=/categories/node/>Node</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/node/pub-sub/3/>3. 구독자가 없는 채널 관리하기</a></h2><h3 class=article-subtitle>발행-구독 패턴 개선 일지</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2025/02/04</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>11 minute read</time></div></footer></div></header><section class=article-content><p><a class=link href=/post/node/pub-sub/2/>이전 글</a>에서 발행-구독 패턴의 채널에 대한 오해를 바로 잡고 이를 개선해봤습니다.</p><p>이 과정을 통해 특정 관심사인 채널을 구독하게되어 이전 보다 더 느슨한 결합을 달성할 수 있었는데요</p><p>이와 반대로 <code>Broker</code>에서 발행자를 관리하지 않게 되어 아래와 같은 문제들이 예상되었습니다.</p><ul><li>발행자가 더 이상 메시지를 발행하지 않아도 채널이 유지됨</li><li>구독자가 없어도 채널이 항상 유지됨</li></ul><p>발행자가 더 이상 메시지를 발행하지 않는 상태에 대한 처리는 활용하는 구현에서 관리해야하는 문제이지만, 구독자가 없는 상태에서 채널이 유지되는 것은 메모리를 낭비 할 여지가 있어보이죠?</p><p>그래서 이번 글에서는 더 이상 구독자가 없는 채널에 대한 정리를 추가해보려고 합니다.</p><h2 id=어떤-방법들이-있을까>어떤 방법들이 있을까?</h2><p>이러한 문제를 개선하기위해 2가지 방법 정도가 떠올랐습니다.</p><ul><li>구독 해제할 때, 더 이상 구독자가 없다면 정리</li><li>일정 시간 간격으로 구독자가 없는 채널을 정리</li></ul><p>장단점을 살펴볼까요?</p><hr><p><strong>구독 해제할 때, 더 이상 구독자가 없다면 정리</strong></p><p>간단한 방법으로 구독자가 해당 채널을 구독 해제할 때, 현재 남아있는 구독자가 자신 뿐이라면 채널을 정리하는 방식을 고려할 수 있습니다.</p><p>활용하고 있는 Node.js는 싱글 스레드로 동작하는 특성으로 인해, 구독자 목록을 저장하는 <code>Map</code> 인스턴스에 여러 처리가 접근할 수 없는 구조입니다. 때문에 인스턴스 자체에 접근하는 동시성 문제를 고려하지 않아도 괜찮아 구현이 쉽습니다.</p><p>다만, 각각의 구독자의 구독 해제 처리에서 구독했던 채널의 구독자 목록을 계속해서 확인해야하기 때문에 코드가 조금 많아지고, 메서드가 많은 역할을 담당하게 되겠네요</p><p>그리고, 구독자 목록을 정리한 직후에 구독 요청이 들어온다면 구독자 목록을 다시 할당해줘야합니다. (어쩔수 없어 보이긴 하네요 😂)</p><hr><p><strong>일정 시간 간격으로 구독자가 없는 채널을 정리</strong></p><p>조금 더 복잡하게 처리하려면, <code>Timmer</code> API를 이용하여 일정 시간 간격으로 정리해주는 방법도 고려할 수 있습니다.</p><p>구독자 목록을 저장하는 <code>Map</code> 인스턴스를 별도로 관리하기 때문에 구독 해제 처리에서 채널을 관리하는 역할을 하지 않게되어 구독 해제 한가지 일만 하게됩니다.</p><p>하지만, 채널 정리 주기가 너무 짧다면 오버헤드로 이어질 수 있고, 너무 길다면 정리하는 이득을 보기 어렵기 때문에 사용자가 직접 주기를 조절할 수 있도록 해야합니다.</p><hr><p>다른 좋은 방법들도 있겠지만, 당장은 떠오르지 않네요 🤣</p><p>저는 첫 번째와 두 번째 모두를 고려해보겠습니다. 구독자 목록 관리를 별도로 분리하여 독립적으로 개선 가능한 형태로 구성해보려고 합니다.</p><h2 id=더-고민해야할-부분은>더 고민해야할 부분은?</h2><p>단순히 일정 시간을 주기로 채널을 정리한다고 해도, 위에서 살짝 언급했던 내용 처럼 금방 정리된 채널에 다시 구독이 발생할 수 있습니다. 저는 이런 문제를 <strong>시간 지역성</strong>(Temporal Locality)을 고려하여 처리해보려고 합니다.</p><blockquote><p><strong>시간 지역성(Temporal Locality)?</strong><br>&ldquo;최근에 접근한 데이터나 코드는 가까운 미래에 다시 접근될 가능성이 높다.&ldquo;는 프로그램의 특성</p></blockquote><p>시간 지역성은 캐시, RDBMS의 버퍼풀, OS의 페이지 교체 알고리즘 등에 활용되고 있는데, 이를 조금 다르게 해석하면 메시지가 발행된 시간이 오래되었다면 앞으로도 활용하지 않는 채널이라는 가설을 세울 수 있지 않을까요?</p><p>그래서 저는 구독자가 없는 채널의 마지막으로 메시지가 발행된 시간을 기준으로 정리될 수 있도록 해보겠습니다.</p><ul><li>제가 구현한 pub/sub은 일반적인 활용을 가정하고 만든 모듈이라 사용하는 환경의 특성마다 다르기 때문에 큰 이득이 없을 수도 있고, 오히려 오버헤드가 될 수 있을 여지도 있겠지만요 🤣</li></ul><h2 id=전체-아키텍처>전체 아키텍처</h2><p>앞서 말씀드렸던 것 처럼 일정 주기로 정해진 기간동안 사용하지 않은 채널을 정리하는 기능을 도입했습니다.</p><p>잘 구현하려고 하다보니 생각보다 많은 변경이 있었네요</p><p>일단 변경된 전체 아키텍처를 먼저 살펴보겠습니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    class MessageBroker~TMessage~ {
+        -repository: ChannelRepository
+        -scheduler: Scheduler
+        -tasks: ScheduledTask[]
+        +subscribe(topic: string, handler: MessageHandler)
+        +publish(topic: string, message: TMessage)
+    }
+
+    class ChannelRepository~TMessage~ {
+        << interface >>
+        +findChannelByTopic(topic: string)
+        +findAllChannels()
+        +deleteChannelByTopic(topic: string)
+    }
+
+    class Cleanable {
+        << interface >>
+        +topic: string
+        +lastUpdatedAt: Date
+        +subscriberLength: number
+    }
+
+    class Subjection~TMessage~ {
+        << interface >>
+        +publish(message: TMessage)
+        +subscribe(handler: MessageHandler)
+    }
+
+    class ScheduledTask {
+        << interface >>
+        +name: string
+        +interval: number
+        +execute()
+    }
+
+    class CleanableChannelRepository {
+        << interface >>
+        +findAllChannels()
+        +deleteChannelByTopic(topic: string)
+    }
+
+    class Channel~TMessage~ {
+        -subscriptions: Subscription[]
+        +topic: string
+        +lastUpdatedAt: Date
+        +subscriberLength: number
+        +publish(message: TMessage)
+        +subscribe(handler: MessageHandler)
+        -unsubscribe(subscriptionId: string)
+    }
+
+    class MemoryChannelRepository~TMessage~ {
+        -channels: Map
+        +findChannelByTopic(topic: string)
+        +findAllChannels()
+        +deleteChannelByTopic(topic: string)
+    }
+
+    class ChannelCleaner {
+        +name: string
+        +interval: number
+        -staleThreshold: number
+        +execute()
+        -cleanupChannel(channel: Cleanable)
+        -isExpiredChannel(channel: Cleanable)
+    }
+
+    class Scheduler {
+        -timers: Map
+        -runningTasks: Set
+        -tasks: ScheduledTask[]
+        +registerTask(task: ScheduledTask)
+        +unregisterTask(taskName: string)
+        +start(taskName: string)
+        +startAll()
+        +stop(taskName: string)
+        +stopAll()
+        -executeTask(task: ScheduledTask)
+    }
+
+    MessageBroker --> ChannelRepository : uses
+    MessageBroker --> Scheduler : uses
+    MessageBroker --> ChannelCleaner : uses
+    MemoryChannelRepository ..|> ChannelRepository : implements
+    Channel ..|> Cleanable : implements
+    Channel ..|> Subjection : implements
+    ChannelCleaner ..|> ScheduledTask : implements
+    MemoryChannelRepository --> Channel : manages
+    ChannelCleaner --> CleanableChannelRepository : uses
+</pre><p>추가된 요소들이 많다보니 클래스 다이어그램이 너무 작게 보이네요 😂 큰 변경 사항들을 통해 어떠한 변화들이 있는지 자세히 살펴보겠습니다.</p><h2 id=channel과-repository>Channel과 Repository</h2><p>중요한 변경사항으로 <code>Channel</code>을 도메인으로 분리하였습니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    class MessageBroker~TMessage~ {
+        -repository: ChannelRepository
+        -scheduler: Scheduler
+        -tasks: ScheduledTask[]
+        +subscribe(topic: string, handler: MessageHandler)
+        +publish(topic: string, message: TMessage)
+    }
+    
+    class ChannelRepository~TMessage~ {
+        << interface >>
+        +findChannelByTopic(topic: string)
+        +findAllChannels()
+        +deleteChannelByTopic(topic: string)
+    }
+
+    class Subjection~TMessage~ {
+        << interface >>
+        +publish(message: TMessage)
+        +subscribe(handler: MessageHandler)
+    }
+
+    class Channel~TMessage~ {
+        -subscriptions: Subscription[]
+        +topic: string
+        +lastUpdatedAt: Date
+        +subscriberLength: number
+        +publish(message: TMessage)
+        +subscribe(handler: MessageHandler)
+        -unsubscribe(subscriptionId: string)
+    }
+
+    class MemoryChannelRepository~TMessage~ {
+        -channels: Map
+        +findChannelByTopic(topic: string)
+        +findAllChannels()
+        +deleteChannelByTopic(topic: string)
+    }
+
+    MessageBroker --> ChannelRepository : uses
+    MemoryChannelRepository ..|> ChannelRepository : implements
+    Channel ..|> Subjection : implements
+    MemoryChannelRepository --> Channel : manages
+</pre><p>이전의 <code>MessageBroker</code>는 <code>subscribe</code>와 <code>publish</code> 인터페이스를 구현하도록 설정한 <code>Broker</code> 인터페이스를 구현한 클래스였는데요</p><p><code>MessageBroker</code> 역시 구독과 발행을 처리하지만, 실제 구독/발행의 주체 <code>Channel</code> 이라고 판단되었습니다.</p><p>그래서 구독/발행에 대한 역할을 <code>Subjection</code> 인터페이스로 분리하고 <code>Channel</code> 클래스가 해당 인터페이스를 구현하도록 변경하였어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>Channel</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=kr>implements</span> <span class=nx>Subjection</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;,</span> <span class=nx>Cleanable</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>topic</span>: <span class=kt>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=nx>subscriptions</span>: <span class=kt>Subscription</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;[]</span> <span class=o>=</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=nx>_lastUpdatedAt</span>: <span class=kt>Date</span> <span class=o>=</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>publish</span><span class=p>(</span><span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>void</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>_lastUpdatedAt</span> <span class=o>=</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=nx>Promise</span><span class=p>.</span><span class=nx>all</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>subscription</span><span class=p>.</span><span class=nx>handler</span><span class=p>(</span><span class=nx>message</span><span class=p>).</span><span class=k>catch</span><span class=p>((</span><span class=nx>reason</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>console</span><span class=p>.</span><span class=nx>error</span><span class=p>(</span><span class=nx>reason</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}),</span>
+</span></span><span class=line><span class=cl>      <span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>id</span> <span class=o>=</span> <span class=nx>randomUUID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscription</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>id</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>handler</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>unsubscribe</span><span class=o>:</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>id</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>subscription</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>_lastUpdatedAt</span> <span class=o>=</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>subscription</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>async</span> <span class=nx>unsubscribe</span><span class=p>(</span><span class=nx>subscriptionId</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>_lastUpdatedAt</span> <span class=o>=</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>subscriptions</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>filter</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>      <span class=p>(</span><span class=nx>subscription</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>subscription</span><span class=p>.</span><span class=nx>id</span> <span class=o>!==</span> <span class=nx>subscriptionId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>get</span> <span class=nx>lastUpdatedAt() {</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>_lastUpdatedAt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>get</span> <span class=nx>subscriberLength() {</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>subscriptions</span><span class=p>.</span><span class=nx>length</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Channel</code>의 CRUD에 대해 역할 분리와, 이후 쉽게 변경 가능하고 테스트 가능한 구조를 만들기 위해 <code>ChannelRepository</code> 인터페이스 추가하였습니다.</p><p>그리고 <code>MessageBroker</code>가 해당 인터페이스에 의존하도록 하여 인터페이스의 구현체를 주입받도록 했습니다.</p><ul><li>기존 구현은 <code>ChannelRepository</code>의 구현체인 <code>MemoryChannelRepository</code>로 옮겼습니다.</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>MessageBroker</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>repository</span>: <span class=kt>ChannelRepository</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MemoryChannelRepository</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>      
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>subscribe</span><span class=p>(</span><span class=nx>topic</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span>: <span class=kt>MessageHandler</span><span class=p>&lt;</span><span class=nt>TMessage</span><span class=p>&gt;)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>channel</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>repository</span><span class=p>.</span><span class=nx>findChannelByTopic</span><span class=p>(</span><span class=nx>topic</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>subscribe</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>channel</span><span class=p>.</span><span class=nx>subscribe</span><span class=p>(</span><span class=nx>handler</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>subscribe</span><span class=p>.</span><span class=nx>unsubscribe</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=kr>async</span> <span class=nx>publish</span><span class=p>(</span><span class=nx>topic</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>message</span>: <span class=kt>TMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>channel</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>repository</span><span class=p>.</span><span class=nx>findChannelByTopic</span><span class=p>(</span><span class=nx>topic</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>channel</span><span class=p>.</span><span class=nx>publish</span><span class=p>(</span><span class=nx>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>세부 구현들을 주입 받는 방식으로 변경되었기 때문에 <code>MessageBroker</code>의 구현은 크게 바뀔것이 없을 것으로 예상되어 <code>Broker</code> 인터페이스는 제거하였습니다.</p><h2 id=scheduler와-scheduletask>Scheduler와 ScheduleTask</h2><p>다음은 특정 작업을 일정 시간 간격으로 실행하는 역할을 담당하는 클래스인 <code>Scheduler</code>입니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    direction LR
+    class MessageBroker~TMessage~ {
+        -repository: ChannelRepository
+        -scheduler: Scheduler
+        -tasks: ScheduledTask[]
+        +subscribe(topic: string, handler: MessageHandler)
+        +publish(topic: string, message: TMessage)
+    }
+    
+    class ScheduledTask {
+        << interface >>
+        +name: string
+        +interval: number
+        +execute()
+    }
+
+    class Scheduler {
+        -timers: Map
+        -runningTasks: Set
+        -tasks: ScheduledTask[]
+        +registerTask(task: ScheduledTask)
+        +unregisterTask(taskName: string)
+        +start(taskName: string)
+        +startAll()
+        +stop(taskName: string)
+        +stopAll()
+        -executeTask(task: ScheduledTask)
+    }
+
+    MessageBroker --> Scheduler : uses
+    Scheduler --> ScheduledTask : manages
+</pre><p><code>Scheduler</code>는 <code>ScheduledTask</code> 인터페이스의 구현체의 목록을 이용하여 설정된 주기로 실행하는 역할을 담당하고 있는데요</p><p><code>ScheduledTask</code>는 해당 작업에 대한 식별을 위한 <code>name</code>과 실행할 주기인 <code>interval</code>을 포함하도록 하고, 실제 실행될 동작인 <code>excute()</code>를 구현하도록 하고 있습니다.</p><p><code>MessageBroker</code>의 초기화 과정에서 주입받은 <code>ScheduledTask</code>들을 <code>Scheduler</code>에 등록하고 실행시키게됩니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>Scheduler</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>timers</span>: <span class=kt>Map</span><span class=p>&lt;</span><span class=nt>string</span><span class=err>,</span> <span class=na>NodeJS.Timeout</span><span class=p>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Map</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>runningTasks</span>: <span class=kt>Set</span><span class=p>&lt;</span><span class=nt>string</span><span class=p>&gt;</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Set</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span><span class=kr>private</span> <span class=nx>tasks</span>: <span class=kt>ScheduledTask</span><span class=p>[]</span> <span class=o>=</span> <span class=p>[])</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>registerTask</span><span class=p>(</span><span class=nx>task</span>: <span class=kt>ScheduledTask</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>find</span><span class=p>((</span><span class=nx>t</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>t</span><span class=p>.</span><span class=nx>name</span> <span class=o>===</span> <span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Task with name </span><span class=si>${</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=si>}</span><span class=sb> already exists`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>task</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>unregisterTask</span><span class=p>(</span><span class=nx>taskName</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>stop</span><span class=p>(</span><span class=nx>taskName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>filter</span><span class=p>((</span><span class=nx>task</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>task</span><span class=p>.</span><span class=nx>name</span> <span class=o>!==</span> <span class=nx>taskName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>start</span><span class=p>(</span><span class=nx>taskName</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>task</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>find</span><span class=p>((</span><span class=nx>task</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=nx>task</span><span class=p>.</span><span class=nx>name</span> <span class=o>===</span> <span class=nx>taskName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>task</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=k>new</span> <span class=nb>Error</span><span class=p>(</span><span class=sb>`Task </span><span class=si>${</span><span class=nx>taskName</span><span class=si>}</span><span class=sb> not found`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>timers</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>taskName</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>timer</span> <span class=o>=</span> <span class=nx>setInterval</span><span class=p>(()</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>executeTask</span><span class=p>(</span><span class=nx>task</span><span class=p>),</span> <span class=nx>task</span><span class=p>.</span><span class=nx>interval</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>timers</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>taskName</span><span class=p>,</span> <span class=nx>timer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>startAll() {</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>forEach</span><span class=p>((</span><span class=nx>task</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>start</span><span class=p>(</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>stop</span><span class=p>(</span><span class=nx>taskName</span>: <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>timer</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>timers</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>taskName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>timer</span> <span class=o>!==</span> <span class=kc>undefined</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>clearInterval</span><span class=p>(</span><span class=nx>timer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>timers</span><span class=p>.</span><span class=k>delete</span><span class=p>(</span><span class=nx>taskName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>public</span> <span class=nx>stopAll() {</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>tasks</span><span class=p>.</span><span class=nx>forEach</span><span class=p>((</span><span class=nx>task</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>stop</span><span class=p>(</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>private</span> <span class=kr>async</span> <span class=nx>executeTask</span><span class=p>(</span><span class=nx>task</span>: <span class=kt>ScheduledTask</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>runningTasks</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>runningTasks</span><span class=p>.</span><span class=nx>add</span><span class=p>(</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>await</span> <span class=nx>task</span><span class=p>.</span><span class=nx>execute</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>finally</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>runningTasks</span><span class=p>.</span><span class=k>delete</span><span class=p>(</span><span class=nx>task</span><span class=p>.</span><span class=nx>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Scheduler</code>가 <code>ScheduledTask</code>들을 주입받도록 구현했습니다만 <code>MessageBroker</code>에서도 <code>ScheduledTask</code>들을 주입받아 초기화하도록 구현했습니다.</p><p>테스트 코드를 작성하기 편하게 변경하다보니 해당 구조를 만들게 되었는데, 초기화 방법이 여러개로 분산되어서 오히려 복잡하게 느껴질 수 있다는 생각이 드네요</p><p>더 좋은 방법이 있는지 다시 고민해봐야겠습니다 😁</p><h2 id=channelcleaner와-cleanable>ChannelCleaner와 Cleanable</h2><p>다음은 채널 정리를 담당하고 있는 <code>ChannelCleaner</code>입니다.</p><pre class=mermaid style=text-align:center>classDiagram
+    class Cleanable {
+        << interface >>
+        +topic: string
+        +lastUpdatedAt: Date
+        +subscriberLength: number
+    }
+
+    class ScheduledTask {
+        << interface >>
+        +name: string
+        +interval: number
+        +execute()
+    }
+
+    class CleanableChannelRepository {
+        << interface >>
+        +findAllChannels() Promise~Cleanable[]~
+        +deleteChannelByTopic(topic: string)
+    }
+
+    class Channel~TMessage~ {
+        -subscriptions: Subscription[]
+        +topic: string
+        +lastUpdatedAt: Date
+        +subscriberLength: number
+        +publish(message: TMessage)
+        +subscribe(handler: MessageHandler)
+        -unsubscribe(subscriptionId: string)
+    }
+
+    class ChannelCleaner {
+        -repository: CleanableChannelRepository
+        +name: string
+        +interval: number
+        -staleThreshold: number
+        +execute()
+        -cleanupChannel(channel: Cleanable)
+        -isExpiredChannel(channel: Cleanable)
+    }
+
+    ChannelCleaner ..|> ScheduledTask : implements
+    Channel ..|> Cleanable : implements
+    CleanableChannelRepository --> Cleanable : manages
+    ChannelCleaner --> CleanableChannelRepository : uses
+</pre><p><code>ChannelCleaner</code>는 앞서 언급했던 <code>ScheduledTask</code>의 구현체로 <code>Scheduler</code> 가 해당 클래스를 통해 설정된 간격으로 채널 정리 작업을 실행할 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>interface</span> <span class=nx>ChannelCleanerOption</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>interval?</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>staleThreshold?</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>ChannelCleaner</span> <span class=kr>implements</span> <span class=nx>ScheduledTask</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>name</span>: <span class=kt>string</span> <span class=o>=</span> <span class=s1>&#39;Cleaner&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>readonly</span> <span class=nx>interval</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>staleThreshold</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>repository</span>: <span class=kt>CleanableChannelRepository</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>options?</span>: <span class=kt>ChannelCleanerOption</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>interval</span> <span class=o>=</span> <span class=nx>options</span><span class=o>?</span><span class=p>.</span><span class=nx>interval</span> <span class=o>??</span> <span class=nx>CLEANUP_INTERVAL_DEFAULT</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>staleThreshold</span> <span class=o>=</span> <span class=nx>options</span><span class=o>?</span><span class=p>.</span><span class=nx>staleThreshold</span> <span class=o>??</span> <span class=nx>STALE_THRESHOLD</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>public</span> <span class=kr>async</span> <span class=nx>execute() {</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>channels</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>repository</span><span class=p>.</span><span class=nx>findAllChannels</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>await</span> <span class=nx>Promise</span><span class=p>.</span><span class=nx>allSettled</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nx>channels</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>channel</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>cleanupChannel</span><span class=p>(</span><span class=nx>channel</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>async</span> <span class=nx>cleanupChannel</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>Cleanable</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>isExpiredChannel</span><span class=p>(</span><span class=nx>channel</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>repository</span><span class=p>.</span><span class=nx>deleteChannelByTopic</span><span class=p>(</span><span class=nx>channel</span><span class=p>.</span><span class=nx>topic</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=nx>isExpiredChannel</span><span class=p>(</span><span class=nx>channel</span>: <span class=kt>Cleanable</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>threshold</span> <span class=o>=</span> <span class=nb>Date</span><span class=p>.</span><span class=nx>now</span><span class=p>()</span> <span class=o>-</span> <span class=k>this</span><span class=p>.</span><span class=nx>staleThreshold</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nx>channel</span><span class=p>.</span><span class=nx>subscriberLength</span> <span class=o>===</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>            <span class=nx>channel</span><span class=p>.</span><span class=nx>lastUpdatedAt</span><span class=p>.</span><span class=nx>getTime</span><span class=p>()</span> <span class=o>&lt;</span> <span class=nx>threshold</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>ChannelCleanerOption</code>을 통해 실행 간격과 채널의 수명을 지정할 수 있도록 했습니다.</p><p><code>isExpiredChannel</code> 메서드를 통해 삭제 되어야 할 조건들을 확인하도록 구현했는데, 조건이 변경될 경우 해당 메서드의 변경이 불가피해 보이네요 😅</p><p>미들웨어 같은 <strong>책임 연쇄 패턴</strong>을 적용해보면 좋지 않을까 생각이 들긴 하지만, 아직 이른 감이 있어 보여서 다음 기회에 적용해보면 좋겠습니다.</p><hr><p>이 코드에서 조금 특이한 점은 <code>ChannelRepository</code>가 아닌 <code>CleanableChannelRepository</code> 의존성을 주입받도록 구성했다는 점 인데요</p><p><code>CleanableChannelRepository</code>는 <code>Channel</code>이 아닌 <code>Cleanable</code>을 처리하도록 하는 인터페이스 입니다.</p><p>앞서 <code>Subjection</code> 인터페이스를 구현하도록 한 <code>Channel</code>클래스는 <code>Cleanable</code>도 구현하도록 하고 있는데, 이는 <code>ChannelCleaner</code>가 해당 인스턴스를 삭제하기 위한 기준들을 포함하도록 하기 위함입니다.</p><p><code>ChannelCleaner</code>에서 관리하게 될 <code>Channal</code>에 대해 현재 삭제 기준인 마지막 업데이트 시점을 의미하는 <code>lastUpdatedAt</code>과 현재 구독자들의 수를 의미하는 <code>subcriberLength</code>, 그리고 해당 채널을 고유하게 식별할 수 있는 <code>topic</code>을 통해 정리될 수 있도록 구현하였습니다.</p><p>그리고 <code>ChannelCleaner</code>가 <code>Channel</code>을 직접 활용하는 것이 아니어서 테스트 코드가 조금 더 간결해지는 효과도 얻을 수 있었어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;ChannelCleaner&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>let</span> <span class=nx>repository</span>: <span class=kt>jest.Mocked</span><span class=p>&lt;</span><span class=nt>ChannelRepository</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>let</span> <span class=nx>cleaner</span>: <span class=kt>ChannelCleaner</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>NOW</span> <span class=o>=</span> <span class=nb>Date</span><span class=p>.</span><span class=nx>now</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>createMockChannel</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nx>props</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>topic?</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nx>lastUpdatedAt?</span>: <span class=kt>Date</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nx>subscriberLength?</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=o>=</span> <span class=p>{},</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span><span class=o>:</span> <span class=nx>Channel</span><span class=p>&lt;</span><span class=nt>any</span><span class=p>&gt;</span> <span class=o>=&gt;</span> <span class=p>({</span>
+</span></span><span class=line><span class=cl>        <span class=nx>topic</span>: <span class=kt>props.topic</span> <span class=o>??</span> <span class=s1>&#39;test-topic&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>lastUpdatedAt</span>: <span class=kt>props.lastUpdatedAt</span> <span class=o>??</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>(</span><span class=nx>NOW</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=nx>subscriberLength</span>: <span class=kt>props.subscriberLength</span> <span class=o>??</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>})</span> <span class=kr>as</span> <span class=nx>Channel</span><span class=p>&lt;</span><span class=nt>any</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>beforeEach</span><span class=p>(()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>jest</span><span class=p>.</span><span class=nx>spyOn</span><span class=p>(</span><span class=nb>Date</span><span class=p>,</span> <span class=s1>&#39;now&#39;</span><span class=p>).</span><span class=nx>mockReturnValue</span><span class=p>(</span><span class=nx>NOW</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=nx>repository</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>findChannelByTopic</span>: <span class=kt>jest.fn</span><span class=p>().</span><span class=nx>mockResolvedValue</span><span class=p>(</span><span class=kc>undefined</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=nx>findAllChannels</span>: <span class=kt>jest.fn</span><span class=p>().</span><span class=nx>mockResolvedValue</span><span class=p>([]),</span>
+</span></span><span class=line><span class=cl>        <span class=nx>deleteChannelByTopic</span>: <span class=kt>jest.fn</span><span class=p>().</span><span class=nx>mockResolvedValue</span><span class=p>(</span><span class=kc>undefined</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>      <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=nx>cleaner</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ChannelCleaner</span><span class=p>(</span><span class=nx>repository</span><span class=p>,</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>interval</span>: <span class=kt>1000</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>staleThreshold</span>: <span class=kt>500</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=p>});</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>위 코드는 <code>Channel</code>을 활용할 때 테스트 코드입니다.</p><p>이 테스트 코드에서 제가 생각한 문제는 활용하지 않는 메서드와 요소까지 모킹해야한다는 점 이었어요</p><p>보시는 것 처럼 <code>ChannelRepository</code>를 모킹하기 위해 사용하지 않는 <code>findChannelByTopic</code> 메서드를 모킹해야했고,</p><p><code>Channel</code>을 생성하는 핼퍼 함수 <code>createMockChannel</code> 또한 불필요한 요소들을 모두 구현하지 않기 위해 타입 단언을 활용해야 했습니다.</p><p>이러한 부분이 불필요한 부분에 의존되는 테스트를 만든다고 생각했어요</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;ChannelCleaner&#39;</span><span class=p>,</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>let</span> <span class=nx>repository</span>: <span class=kt>jest.Mocked</span><span class=p>&lt;</span><span class=nt>CleanableChannelRepository</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>let</span> <span class=nx>cleaner</span>: <span class=kt>ChannelCleaner</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kr>const</span> <span class=nx>NOW</span> <span class=o>=</span> <span class=nb>Date</span><span class=p>.</span><span class=nx>now</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kr>const</span> <span class=nx>createMockCleanable</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>props</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>topic?</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nx>lastUpdatedAt?</span>: <span class=kt>Date</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nx>subscriberLength?</span>: <span class=kt>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=o>=</span> <span class=p>{},</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span><span class=o>:</span> <span class=nx>Cleanable</span> <span class=o>=&gt;</span> <span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>topic</span>: <span class=kt>props.topic</span> <span class=o>??</span> <span class=s1>&#39;test-topic&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>lastUpdatedAt</span>: <span class=kt>props.lastUpdatedAt</span> <span class=o>??</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>(</span><span class=nx>NOW</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>subscriberLength</span>: <span class=kt>props.subscriberLength</span> <span class=o>??</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>beforeEach</span><span class=p>(()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>jest</span><span class=p>.</span><span class=nx>spyOn</span><span class=p>(</span><span class=nb>Date</span><span class=p>,</span> <span class=s1>&#39;now&#39;</span><span class=p>).</span><span class=nx>mockReturnValue</span><span class=p>(</span><span class=nx>NOW</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>repository</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>findAllChannels</span>: <span class=kt>jest.fn</span><span class=p>().</span><span class=nx>mockResolvedValue</span><span class=p>([]),</span>
+</span></span><span class=line><span class=cl>      <span class=nx>deleteChannelByTopic</span>: <span class=kt>jest.fn</span><span class=p>().</span><span class=nx>mockResolvedValue</span><span class=p>(</span><span class=kc>undefined</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>cleaner</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ChannelCleaner</span><span class=p>(</span><span class=nx>repository</span><span class=p>,</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nx>interval</span>: <span class=kt>1000</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nx>staleThreshold</span>: <span class=kt>500</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>  <span class=p>});</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>이러한 이유로 <code>Channel</code> 클래스가 <code>Cleanable</code> 인터페이스를 구현하도록 하는 동시에 <code>CleanableChannelRepository</code>를 통해 필요한 메서드만 호출되도록 하여 타입 단언이나 불필요한 의존을 제거할 수 있도록 했습니다.</p><p>이러한 구조로 인해 관리해야할 인터페이스가 늘어나긴 하지만 <code>Channel</code>에 덜 의존적인 코드가 더 중요하다고 생각하여 적용했습니다.</p><h2 id=마무리>마무리</h2><p>이번에는 기존 pub/sub 기능에 <strong>구독자가 없는 상태에서 오랜 시간 유지된 채널</strong>은 앞으로도 구독자가 없을 것 이라는 가정을 기반으로 메모리 관리 기능을 도입해봤습니다.</p><p>이를 위해 일정 주기로 작업을 실행하는 역할을 담당하는 <code>Schduler</code>과 검증 조건을 통해 채널을 삭제하는 역할을 <code>ChannelCleaner</code>로 구현하여 책임을 최대한 분리해보려 시도하였습니다.</p><p>이 과정에서 주요 관심사인 <code>Channel</code>을 분리하여 처리 흐름이 더욱 명확히 보이도록 했고, <code>Subjection</code>과 <code>Cleanable</code> 인터페이스를 구현하도록 하여 동작을 예측 가능하게 만들려 해봤네요</p><p><code>Scheduler</code>에서 관리될 작업들을 <code>SchduledTask</code> 인터페이스로 정의하여 일정 주기로 원하는 기능을 수행할 수 있도록 했고, <code>ChannelCleaner</code>가 <code>SchduledTask</code>를 구현하도록 하여 설정한 시간 간격으로 수행될 수 있도록 했습니다.</p><p>다 만들고 정리하다보니 기능에 비해 너무 비대한 코드가 된 것이 아닌가 싶기도 하고, 아쉬운 점도 조금씩 보이네요😅</p><p>아직 완성된 것은 아니니 계속해서 조금씩 개선해 나가도록 하겠습니다! 끝까지 읽어주셔서 읽어주셔서 감사합니다.😊 (다음 순서는 실패 메시지 재발송 관련 개선을 해보려고 해요)</p></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8/>타입스크립트</a>
+<a href=/tags/typescript/>Typescript</a>
+<a href=/tags/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/>디자인 패턴</a>
+<a href=/tags/design-pattern/>Design Pattern</a>
+<a href=/tags/%EB%B0%9C%ED%96%89-%EA%B5%AC%EB%8F%85-%ED%8C%A8%ED%84%B4/>발행-구독 패턴</a>
+<a href=/tags/publish-subscribe-pattern/>Publish-Subscribe Pattern</a>
+<a href=/tags/pub-sub/>Pub-Sub</a>
+<a href=/tags/pub/sub/>Pub/Sub</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://github.com/codemario318/m-pub-sub target=_blank rel=noopener><div class=article-details><h2 class=article-title>Github</h2><footer class=article-time>https://github.com/codemario318/m-pub-sub</footer></div></a></article><article><a href=https://github.com/codemario318/m-pub-sub/pull/2 target=_blank rel=noopener><div class=article-details><h2 class=article-title>PR</h2><footer class=article-time>https://github.com/codemario318/m-pub-sub/pull/2</footer></div></a></article><article><a href=/post/node/pub-sub/2/ target=_blank rel=noopener><div class=article-details><h2 class=article-title>2. 발행-구독 패턴에서 발행자는 어떤 의미일까?</h2><footer class=article-time>발행-구독 패턴 개선 일지</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/node/pub-sub/2/><div class=article-image><img src=/post/node/pub-sub/2/cover.3c061cec1a9218c0c4cd7f4e24a0c4d0_hu468162ba17ce27969b9476abe99e20c1_99229_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 2. 발행-구독 패턴에서 발행자는 어떤 의미일까?" data-key=/node/pub-sub/2 data-hash="md5-PAYc7BqSGMDEzX9OJKDE0A=="></div><div class=article-details><h2 class=article-title>2. 발행-구독 패턴에서 발행자는 어떤 의미일까?</h2></div></a></article><article class=has-image><a href=/post/node/pub-sub/1/><div class=article-image><img src=/post/node/pub-sub/1/cover.3c061cec1a9218c0c4cd7f4e24a0c4d0_hu468162ba17ce27969b9476abe99e20c1_99229_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 1. 발행-구독 패턴을 통해 결합을 개선해보자" data-key=/node/pub-sub/1 data-hash="md5-PAYc7BqSGMDEzX9OJKDE0A=="></div><div class=article-details><h2 class=article-title>1. 발행-구독 패턴을 통해 결합을 개선해보자</h2></div></a></article><article class=has-image><a href=/post/jest-unit-test/><div class=article-image><img src=/post/jest-unit-test/cover.21767fc5165e3141b2bb1e885b3670c7_hu7fc001c9d5df8010367652495ae61bd0_46763_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Jest를 활용한 유닛 테스트" data-key=jest-unit-test data-hash="md5-IXZ/xRZeMUGyux6IWzZwxw=="></div><div class=article-details><h2 class=article-title>Jest를 활용한 유닛 테스트</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/3/><div class=article-image><img src=/post/boostcamp-9th/review/membership/3/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 3주차 회고" data-key=boostcamp-9th/review/membership/3 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 3주차 회고</h2></div></a></article><article class=has-image><a href=/post/boostcamp-9th/review/membership/2/><div class=article-image><img src=/post/boostcamp-9th/review/membership/2/cover.7a92374e66344cbba3f509283e12216c_hud9fb725339af3a8bae61969a7c0c823b_45611_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 멤버십 과정 2주차 회고" data-key=boostcamp-9th/review/membership/2 data-hash="md5-epI3TmY0TLuj9QkoPhIhbA=="></div><div class=article-details><h2 class=article-title>멤버십 과정 2주차 회고</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
