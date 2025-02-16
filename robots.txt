@@ -3,6 +3,42 @@ User-agent: *
 
 
 
+Allow: /post/designing-data-intensive-application/2/3/
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16,12 +52,6 @@ Allow: /post/node/timer-mocks/
 
 
 
-
-
-
-
-
-Allow: /post/
 
 
 
@@ -62,32 +92,6 @@ Allow: /post/node/pub-sub/3/
 
 
 Allow: /post/designing-data-intensive-application/2/2/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
