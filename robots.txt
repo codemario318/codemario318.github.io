@@ -3,7 +3,7 @@ User-agent: *
 
 
 
-Allow: /post/designing-data-intensive-application/2/3/
+
 
 
 
@@ -43,6 +43,40 @@ Allow: /post/
 
 
 
+
+
+
+
+Allow: /post/learning-domain-driven-design/1/
+
+
+
+Allow: /post/node/pub-sub/4/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/designing-data-intensive-application/2/3/
+
+
+
+
+
 Allow: /post/node/timer-mocks/
 
 
@@ -71,23 +105,7 @@ Allow: /post/node/timer-mocks/
 
 
 
-
-
-
-
-
-
 Allow: /post/node/pub-sub/3/
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -242,12 +260,6 @@ Allow: /post/boostcamp-9th/review/membership/6/
 
 
 Allow: /post/system-design-interview-2/12/
-
-
-
-
-
-
 
 
 
