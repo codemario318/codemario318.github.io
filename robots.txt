@@ -3,6 +3,10 @@ User-agent: *
 
 
 
+Allow: /post/designing-data-intensive-application/3/1/
+
+
+
 
 
 
@@ -16,6 +20,22 @@ User-agent: *
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1046,8 +1066,6 @@ Allow: /post/system-design-interview/2/
 
 
 Allow: /post/system-design-interview/1/
-
-
 
 
 
