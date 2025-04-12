@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Others on Mario Blog</title><link>https://codemario318.github.io/categories/others/</link><description>Recent content in Others on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 20:19:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/others/index.xml" rel="self" type="application/rss+xml"/><item><title>태니지먼트 검사 후기(1) - 욕구와 재능</title><link>https://codemario318.github.io/post/tanagement/1/</link><pubDate>Sun, 06 Apr 2025 20:19:49 +0900</pubDate><guid>https://codemario318.github.io/post/tanagement/1/</guid><description>&lt;img src="https://codemario318.github.io/post/tanagement/1/cover.png" alt="Featured image of post 태니지먼트 검사 후기(1) - 욕구와 재능" />&lt;p>안녕하세요. 최근 청년 도전 지원사업(이하 청도지)에 참여하고 있는데요&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Others on Mario Blog</title><link>https://codemario318.github.io/categories/others/</link><description>Recent content in Others on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sat, 12 Apr 2025 15:19:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/categories/others/index.xml" rel="self" type="application/rss+xml"/><item><title>효과적인 방법, 최선의 결과</title><link>https://codemario318.github.io/post/notes/effective-development/</link><pubDate>Sat, 12 Apr 2025 15:19:49 +0900</pubDate><guid>https://codemario318.github.io/post/notes/effective-development/</guid><description>&lt;img src="https://codemario318.github.io/post/notes/effective-development/cover.png" alt="Featured image of post 효과적인 방법, 최선의 결과" />&lt;p>저에게 개발자로서 추구하는 방향을 물어본다면 항상 &lt;strong>효과적인 방법으로 최선의 결과물을 만든다&lt;/strong>라고 말씀 드리는데요&lt;/p>
+&lt;p>최근 개발자가 아닌 사람들과 이야기 하던 중 비슷한 주제에 대해 말하게 되었습니다.&lt;/p>
+&lt;p>조금 더 자세히 설명드리려고 &lt;strong>&amp;ldquo;주어진 상황에 맞는 기술들을 선택하고 욕심 부리지 않는 것&amp;rdquo;&lt;/strong> 이 중요하다고 말씀 드렸는데 나중에 생각해보니 그렇게 공감을 이끌어낼 수 있었던 설명은 아닌 것 같았어요&lt;/p>
+&lt;p>그래서 어떻게 설명하면 좋을까 혼자 고민하다가 좋은 예시가 될 수 있을만한 재미있는 아이디어가 떠올라서 한번 적어보려고 합니다.&lt;/p>
+&lt;h2 id="손가락으로-숫자-세기">손가락으로 숫자 세기&lt;/h2>
+&lt;p>한국에서는 일반적으로 펼쳐진 손가락의 개수로 숫자를 표현합니다. (몰랐는데 나라마다 방법이 다르긴 하네요😂)&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/notes/effective-development/img.png"
+width="795"
+height="436"
+srcset="https://codemario318.github.io/post/notes/effective-development/img_hu1e2689cc88bc8487968006d8cb5adffe_669497_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/notes/effective-development/img_hu1e2689cc88bc8487968006d8cb5adffe_669497_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="손가락으로 숫자 세기"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;p>손가락으로 숫자를 셀 때 조금 더 효율적으로 셀 수는 없을까요?&lt;/p>
+&lt;p>고민해보니 2진법를 사용하면 더 효율적으로 숫자를 셀 수도 있겠다는 생각이 들었어요&lt;/p>
+&lt;p>오른손 엄지부터 시작해서 손가락이 접혔다면 0, 펴졌다면 1로 사용하는 방식으로 말이죠!&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/notes/effective-development/img_1.png"
+width="300"
+height="168"
+srcset="https://codemario318.github.io/post/notes/effective-development/img_1_hu4e190a21953dbf4961d6281851fb1f3c_61955_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/notes/effective-development/img_1_hu4e190a21953dbf4961d6281851fb1f3c_61955_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="이진법을 통한 숫자 표현"
+class="gallery-image"
+data-flex-grow="178"
+data-flex-basis="428px"
+>&lt;/p>
+&lt;p>그렇다면 손가락은 10개이니 &lt;code>2^10&lt;/code>이니 0 ~ 1023까지 총 1024개 숫자를 표현할 수 있게됩니다.&lt;/p>
+&lt;p>최대 10 까지 표현할 수 있는 방법을 1024개로 표현할 수 있으니 즉, &lt;strong>한정된 자원으로 더 많은 상태&lt;/strong>를 표현할 수 있으니 &lt;strong>효율적&lt;/strong>이라고 말 할 수 있겠습니다.&lt;/p>
+&lt;h2 id="효율적-효과적">효율적! 효과적?&lt;/h2>
+&lt;p>이 효율적인 방식을 일상에서 활용한다면 어떨까요? &lt;strong>펼쳐진 손가락의 개수로 숫자를 표현하는 방법&lt;/strong>보다 효과적일까요?&lt;/p>
+&lt;p>저는 &lt;strong>No&lt;/strong>라고 답변할 것 같습니다. 어떤 이유에서일까 생각해보면&lt;/p>
+&lt;ul>
+&lt;li>사회적인 합의가 없는 방식&lt;/li>
+&lt;li>상대방이 2진수를 알아야함 등&lt;/li>
+&lt;/ul>
+&lt;p>많은 이유가 있지만 결과적으로 복잡하기 때문에 효과적이지 않은 방식이라는 생각이 듭니다.&lt;/p>
+&lt;p>그리고 숫자 4를 표현한다면&amp;hellip; 조금 곤란할 수도 있을 것 같아요😅&lt;/p>
+&lt;h2 id="오버엔지니어링">오버엔지니어링&lt;/h2>
+&lt;p>손가락 하나를 비트로 사용하는 방식은 효율적입니다. 하지만 실제 손으로 숫자를 표현해야하는 상황을 고려하면 효과적이라고 말할 수 없습니다.&lt;/p>
+&lt;p>이러한 문제가 소프트웨어를 만드는 개발자 측면에서는 &lt;strong>오버엔지니어링&lt;/strong>을 잘 설명할 수 있는 표현이라는 생각이 들었어요&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/notes/effective-development/img_2.png"
+width="485"
+height="369"
+srcset="https://codemario318.github.io/post/notes/effective-development/img_2_hubca290acd2412ad408607837fab5487d_174516_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/notes/effective-development/img_2_hubca290acd2412ad408607837fab5487d_174516_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="오버엔지니어링"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+>&lt;/p>
+&lt;p>작은 문제들을 불필요하게 복잡한 방법으로 풀어내는 것을 오버엔지니어링 이라고 합니다.&lt;/p>
+&lt;p>앞서 말씀드렸던 &lt;strong>효과적인 방법으로 최선(최적)의 결과물을 만든다&lt;/strong>와는 상반된다고 말씀 드릴 수 있겠네요&lt;/p>
+&lt;h2 id="하지만">하지만&amp;hellip;&lt;/h2>
+&lt;p>오버엔지니어링은 인지하는 것 자체가 매우 어렵습니다.&lt;/p>
+&lt;p>대부분의 경우 내가 생각하는 것 보다 한, 두번 더 덜어야 하더라구요. 앞서 말씀드렸던 손가락으로 숫자 세기를 다시 예로 들자면&amp;hellip;&lt;/p>
+&lt;p>대부분 개발자들(저 포함)이 &lt;strong>&amp;ldquo;손가락을 3진수로 쓰는건 너무 복잡하니 2진수로 타협합시다!&amp;rdquo;&lt;/strong> 라는 양상을 보이는 것 같습니다. (다시 말하지만 저 포함)&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>효과적인 방법으로 최선의 결과물을 만드는건 정말 어려운 것 같습니다.&lt;/p>
+&lt;p>정답은 당연히 없겠지만, 좋은 예시들을 많이 보면서 의식적으로 덜어내려는 노력을 하는 수 밖에 없겠네요&lt;/p>
+&lt;p>쓰고 보니 뭘 말하려고 했던 건지 모르겠네요😂 뻘글 끝까지 읽어주셔서 감사합니다!&lt;/p></description></item><item><title>태니지먼트 검사 후기(1) - 욕구와 재능</title><link>https://codemario318.github.io/post/tanagement/1/</link><pubDate>Sun, 06 Apr 2025 20:19:49 +0900</pubDate><guid>https://codemario318.github.io/post/tanagement/1/</guid><description>&lt;img src="https://codemario318.github.io/post/tanagement/1/cover.png" alt="Featured image of post 태니지먼트 검사 후기(1) - 욕구와 재능" />&lt;p>안녕하세요. 최근 청년 도전 지원사업(이하 청도지)에 참여하고 있는데요&lt;/p>
 &lt;p>청도지의 프로그램 중 하나로 자신이 어떤 사람인지 이해해볼 수 있는 &lt;strong>태니지먼트&lt;/strong> 검사를 지원해주셔서 제가 최근에 받았던 태니지먼트 검사 경험과 결과에 대해 이야기 해보려 합니다.&lt;/p>
 &lt;p>먼저 태니지먼트가 뭔지 한번 살펴볼까요?&lt;/p>
 &lt;h2 id="태니지먼트-검사-도대체-무엇일까">태니지먼트 검사, 도대체 무엇일까?&lt;/h2>

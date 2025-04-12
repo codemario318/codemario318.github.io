@@ -7,9 +7,15 @@ User-agent: *
 
 
 
-
-
 Allow: /post/
+
+
+
+
+
+
+
+Allow: /post/notes/effective-development/
 
 
 
