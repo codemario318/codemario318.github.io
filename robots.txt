@@ -15,15 +15,21 @@ Allow: /post/
 
 
 
+
+
+
+
+
+
+
+
+Allow: /post/tanagement/2/
+
+
+
+
+
 Allow: /post/notes/effective-development/
-
-
-
-
-
-
-
-
 
 
 
