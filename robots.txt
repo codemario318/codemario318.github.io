@@ -5,9 +5,35 @@ User-agent: *
 
 
 
+Allow: /post/db/rdbms-nosql/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -305,8 +331,6 @@ Allow: /post/system-design-interview-2/13/
 
 
 
-
-
 Allow: /post/boostcamp-9th/review/membership/6/
 
 
@@ -431,12 +455,6 @@ Allow: /post/system-design-interview-2/10/
 
 
 
-
-
-
-
-
-
 Allow: /post/nest/di/
 
 
@@ -488,8 +506,6 @@ Allow: /post/boostcamp-9th/review/membership/5/
 
 
 Allow: /post/system-design-interview-2/8/
-
-
 
 
 
@@ -679,8 +695,6 @@ Allow: /post/system-design-interview-2/4/
 
 
 
-
-
 Allow: /post/boostcamp-9th/review/membership/2/
 
 
@@ -730,8 +744,6 @@ Allow: /post/system-design-interview-2/2/
 
 
 Allow: /post/boostcamp-9th/reason/
-
-
 
 
 
@@ -1702,8 +1714,6 @@ Allow: /post/real-mysql/11/4/3/
 
 
 Allow: /post/real-mysql/11/4/2/
-
-
 
 
 
