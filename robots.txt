@@ -5,25 +5,31 @@ User-agent: *
 
 
 
-Allow: /post/db/rdbms-nosql/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow: /post/tanagement/3/
+
+
+
+
+
+
+
+Allow: /post/db/rdbms-nosql/
 
 
 
