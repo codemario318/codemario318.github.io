@@ -7,7 +7,45 @@ User-agent: *
 
 
 
+Allow: /post/common/cap/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -82,8 +120,6 @@ Allow: /post/notes/effective-development/
 
 
 Allow: /post/tanagement/1/
-
-
 
 
 
@@ -220,10 +256,6 @@ Allow: /post/node/pub-sub/1/
 
 
 Allow: /post/designing-data-intensive-application/2/1/
-
-
-
-
 
 
 
@@ -532,8 +564,6 @@ Allow: /post/system-design-interview-2/8/
 
 
 Allow: /post/system-design-interview-2/7/
-
-
 
 
 
