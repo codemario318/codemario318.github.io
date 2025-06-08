@@ -39,6 +39,55 @@
 &lt;h2 id="어떤-시스템에서-사용되나">어떤 시스템에서 사용되나?&lt;/h2>
 &lt;p>&lt;strong>DynamoDB&lt;/strong>, &lt;strong>Cassandra&lt;/strong> 같은 NoSQL 시스템은 정족수 기반의 유연한 일관성 모델을 제공합니다. 예를 들어 Cassandra에서는 클라이언트가 &lt;code>QUORUM&lt;/code>, &lt;code>ONE&lt;/code>, &lt;code>ALL&lt;/code> 같은 일관성 수준을 선택할 수 있습니다.&lt;/p>
 &lt;p>이러한 시스템은 &lt;strong>쓰기와 읽기 성능&lt;/strong>, &lt;strong>지연 시간&lt;/strong>, &lt;strong>가용성&lt;/strong>을 조절할 수 있어 대규모 서비스에서 유용하게 사용됩니다.&lt;/p>
+&lt;h2 id="dynamodb에서의-정족수-합의-과정">DynamoDB에서의 정족수 합의 과정&lt;/h2>
+&lt;p>Amazon DynamoDB는 완벽한 일관성을 보장하기보다는 가용성과 확장성을 우선으로 하는 설계 철학을 따릅니다. 이 과정에서 정족수 합의(quorum-based consensus)는 핵심적인 역할을 합니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Client as 클라이언트
+participant A as 노드 A
+participant B as 노드 B
+participant C as 노드 C (지연)
+Client->>A: 쓰기 요청 (데이터 X)
+Client->>B: 쓰기 요청 (데이터 X)
+Client->>C: 쓰기 요청 (데이터 X)
+A-->>Client: 쓰기 성공
+B-->>Client: 쓰기 성공
+Note right of Client: W = 2 → 쓰기 완료
+Client->>A: 읽기 요청
+Client->>B: 읽기 요청
+A-->>Client: 데이터 X
+B-->>Client: 데이터 X
+Note right of Client: R = 2 → 읽기 완료, 최신 값 확정
+&lt;/pre>
+&lt;h3 id="배경-데이터-복제">배경: 데이터 복제&lt;/h3>
+&lt;p>Dynamo는 데이터를 여러 노드(또는 파티션)에 복제하여 저장합니다. 일반적으로 N개의 복제본을 유지하며, 이들 중 일부는 읽기/쓰기 요청을 처리하는 데 참여합니다.&lt;/p>
+&lt;h3 id="쓰기-요청-처리-w">쓰기 요청 처리 (W)&lt;/h3>
+&lt;ul>
+&lt;li>클라이언트는 데이터를 쓰기 위해 요청을 보냅니다.&lt;/li>
+&lt;li>쓰기 정족수 W는 데이터를 성공적으로 저장해야 하는 노드 수입니다.&lt;/li>
+&lt;li>Dynamo는 W개의 노드에 데이터가 저장되면 클라이언트에게 성공을 응답합니다.&lt;/li>
+&lt;li>이때 W &amp;lt; N이면, 일부 노드에는 최신 데이터가 없을 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>예: N = 3, W = 2인 경우 → 3개의 복제본 중 2개에만 쓰기가 성공하면 OK로 간주&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="읽기-요청-처리-r">읽기 요청 처리 (R)&lt;/h3>
+&lt;ul>
+&lt;li>클라이언트가 데이터를 읽기 위해 요청을 보내면, 시스템은 최대 R개의 노드에서 데이터를 조회합니다.&lt;/li>
+&lt;li>응답값들 중 최신 값을 선택하거나 conflict resolution을 수행합니다.&lt;/li>
+&lt;li>읽기 정족수 R이 W와 합쳐서 N보다 크다면, 최소 1개 노드는 최신 값을 반드시 갖고 있으므로 일관성을 확보할 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>W + R &amp;gt; N: 정족수 기반 일관성 보장의 조건&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="conflict-해결">Conflict 해결&lt;/h3>
+&lt;p>Dynamo는 강한 정합성 대신 &amp;ldquo;eventual consistency&amp;quot;를 선택하기 때문에, 충돌이 발생할 수 있습니다. 이 경우 다음과 같은 방식으로 처리됩니다.&lt;/p>
+&lt;ul>
+&lt;li>각 버전의 데이터를 함께 반환&lt;/li>
+&lt;li>클라이언트가 이를 병합&lt;/li>
+&lt;li>서버 측에서 vector clock을 사용해 자동 병합&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>DynamoDB 자체는 내부적으로 이런 과정을 완전히 노출하진 않지만, 유사한 원리를 기반으로 하여 요청 처리와 복제, 동기화를 관리하고 있습니다. 개발자는 필요에 따라 &amp;ldquo;강력한 일관성(ReadConsistency = STRONG)&amp;ldquo;을 선택해 안전한 읽기도 요청할 수 있습니다.&lt;/p>
 &lt;h2 id="paxos-raft와의-차이점">Paxos, Raft와의 차이점&lt;/h2>
 &lt;p>Paxos나 Raft는 분산 시스템에서 강력한 일관성을 보장하기 위한 합의 알고리즘입니다. 반면 정족수 합의는 어느 정도의 일관성을 포기하고 가용성과 응답 속도를 높이는 데 집중합니다.&lt;/p>
 &lt;blockquote>
