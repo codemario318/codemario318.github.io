@@ -1,4 +1,56 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Computer Science on Mario Blog</title><link>https://codemario318.github.io/tags/computer-science/</link><description>Recent content in Computer Science on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 21 May 2025 16:10:00 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/computer-science/index.xml" rel="self" type="application/rss+xml"/><item><title>논문으로 다시 이해한 CAP 정리</title><link>https://codemario318.github.io/post/common/cap/</link><pubDate>Wed, 21 May 2025 16:10:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/cap/</guid><description>&lt;img src="https://codemario318.github.io/post/common/cap/cover.png" alt="Featured image of post 논문으로 다시 이해한 CAP 정리" />&lt;h2 id="들어가며">들어가며&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Computer Science on Mario Blog</title><link>https://codemario318.github.io/tags/computer-science/</link><description>Recent content in Computer Science on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 08 Jun 2025 15:42:00 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/computer-science/index.xml" rel="self" type="application/rss+xml"/><item><title>정족수 합의</title><link>https://codemario318.github.io/post/common/quorum-based-consensus/</link><pubDate>Sun, 08 Jun 2025 15:42:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/quorum-based-consensus/</guid><description>&lt;img src="https://codemario318.github.io/post/common/quorum-based-consensus/cover.png" alt="Featured image of post 정족수 합의" />&lt;h2 id="분산-시스템에서-합의의-필요성">분산 시스템에서 합의의 필요성&lt;/h2>
+&lt;p>분산 시스템에서는 하나의 중앙 서버가 모든 결정을 내리지 않습니다. 대신 여러 노드가 함께 데이터를 저장하고 처리합니다.&lt;/p>
+&lt;p>이때 문제가 되는 것은 &amp;ldquo;어느 노드의 응답을 믿을 것인가?&amp;ldquo;입니다.&lt;/p>
+&lt;p>일부 노드가 장애를 일으키거나 서로 다른 데이터를 갖고 있을 때, 시스템은 어떤 기준으로 정답을 결정해야 할까요?&lt;/p>
+&lt;p>이러한 상황에서 필요한 것이 바로 &amp;ldquo;&lt;strong>합의 알고리즘&lt;/strong>&amp;ldquo;이며, 그중 하나가 정족수 합의(quorum-based consensus)입니다.&lt;/p>
+&lt;h2 id="정족수란">정족수란?&lt;/h2>
+&lt;p>정족수(quorum)란, 시스템이 올바르게 동작하기 위해 필요한 최소한의 응답 수를 의미합니다. 예를 들어, 세 명이 의사결정을 내리는 회의에서 두 명 이상이 동의해야 결정을 내릴 수 있다면, 그 두 명이 바로 정족수입니다.&lt;/p>
+&lt;p>분산 시스템에서도 비슷합니다. 노드가 3개 있을 때 2개 이상의 응답이 있어야 데이터가 유효하다고 판단한다면, 그 2개가 정족수가 되는 것입니다.&lt;/p>
+&lt;blockquote>
+&lt;p>예시: 노드 A, B, C가 있는 시스템에서 노드 C가 장애를 일으켜도, A와 B가 같은 응답을 보냈다면 이를 정답으로 간주할 수 있습니다. 이처럼 정족수를 만족하는 응답이 있으면 시스템은 계속 동작할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="정족수-합의의-특징">정족수 합의의 특징&lt;/h2>
+&lt;p>&lt;strong>장점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>구조가 단순하여 구현이 쉬움&lt;/li>
+&lt;li>일부 노드 장애를 허용하므로 높은 가용성 확보&lt;/li>
+&lt;li>읽기/쓰기 정족수를 조절해 성능을 유연하게 조정 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>&lt;strong>단점&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>네트워크 분할 발생 시 일관성 유지 어려움&lt;/li>
+&lt;li>중복 쓰기나 충돌 상황에서는 복잡한 처리 필요&lt;/li>
+&lt;/ul>
+&lt;h2 id="어떻게-구현되는가">어떻게 구현되는가?&lt;/h2>
+&lt;p>정족수 합의에서 중요한 수식은 다음과 같습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>W + R &amp;gt; N&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>N: 전체 노드 수&lt;/li>
+&lt;li>W: 쓰기 정족수 (쓰기 시 필요한 응답 수)&lt;/li>
+&lt;li>R: 읽기 정족수 (읽기 시 필요한 응답 수)&lt;/li>
+&lt;/ul>
+&lt;p>이 조건이 만족되면 읽기와 쓰기 연산이 최소 한 노드에서 겹치므로 일관성을 확보할 수 있습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>예시: N = 3일 때, W = 2, R = 2 라면 항상 최소 한 노드에서 읽기와 쓰기가 교차하므로 최신 데이터를 읽을 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="어떤-시스템에서-사용되나">어떤 시스템에서 사용되나?&lt;/h2>
+&lt;p>&lt;strong>DynamoDB&lt;/strong>, &lt;strong>Cassandra&lt;/strong> 같은 NoSQL 시스템은 정족수 기반의 유연한 일관성 모델을 제공합니다. 예를 들어 Cassandra에서는 클라이언트가 &lt;code>QUORUM&lt;/code>, &lt;code>ONE&lt;/code>, &lt;code>ALL&lt;/code> 같은 일관성 수준을 선택할 수 있습니다.&lt;/p>
+&lt;p>이러한 시스템은 &lt;strong>쓰기와 읽기 성능&lt;/strong>, &lt;strong>지연 시간&lt;/strong>, &lt;strong>가용성&lt;/strong>을 조절할 수 있어 대규모 서비스에서 유용하게 사용됩니다.&lt;/p>
+&lt;h2 id="paxos-raft와의-차이점">Paxos, Raft와의 차이점&lt;/h2>
+&lt;p>Paxos나 Raft는 분산 시스템에서 강력한 일관성을 보장하기 위한 합의 알고리즘입니다. 반면 정족수 합의는 어느 정도의 일관성을 포기하고 가용성과 응답 속도를 높이는 데 집중합니다.&lt;/p>
+&lt;blockquote>
+&lt;p>글로벌 캐시 시스템에서는 일관성보다는 응답 속도가 중요하므로 정족수 기반 시스템이 적합한 반면, 금융 거래 시스템에서는 Paxos나 Raft가 더 적합합니다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>정족수 합의는 모든 시스템에 적합하진 않지만, 다음과 같은 경우에 효과적일 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>약간의 일관성 손해를 감수하더라도 빠른 응답과 높은 가용성이 필요한 경우&lt;/li>
+&lt;li>네트워크가 불안정하거나 노드 장애가 자주 발생하는 환경&lt;/li>
+&lt;/ul>
+&lt;p>정족수 기반 합의는 완벽한 정답을 요구하지 않고, 일부 노드의 응답만으로도 시스템을 안정적으로 운영할 수 있게 해주는 현실적인 접근 방법입니다.&lt;/p></description></item><item><title>논문으로 다시 이해한 CAP 정리</title><link>https://codemario318.github.io/post/common/cap/</link><pubDate>Wed, 21 May 2025 16:10:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/cap/</guid><description>&lt;img src="https://codemario318.github.io/post/common/cap/cover.png" alt="Featured image of post 논문으로 다시 이해한 CAP 정리" />&lt;h2 id="들어가며">들어가며&lt;/h2>
 &lt;p>분산 시스템 설계에 대해 학습하다보면, CAP 정리가 항상 언급되는 것 같습니다.&lt;/p>
 &lt;p>CAP 정리는 일관성(Consistency), 가용성(Availability), 분할 내성(Partition Tolerance) 세 가지를 동시에 만족할 수 없다는 원칙으로 요약되는데요&lt;/p>
 &lt;p>이 정리는 2000년 Eric Brewer가 학회 발표에서 처음 제안한 이후, 분산 시스템 설계의 기본 전제로 널리 인용되어 왔습니다.&lt;/p>

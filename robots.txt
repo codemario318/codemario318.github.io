@@ -15,22 +15,6 @@ User-agent: *
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Allow: /post/
 
 
@@ -43,9 +27,33 @@ Allow: /post/
 
 
 
+Allow: /post/common/quorum-based-consensus/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/common/cap/
-
-
 
 
 
