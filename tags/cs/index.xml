@@ -1,4 +1,248 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CS on Mario Blog</title><link>https://codemario318.github.io/tags/cs/</link><description>Recent content in CS on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 08 Jun 2025 15:42:00 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cs/index.xml" rel="self" type="application/rss+xml"/><item><title>정족수 합의</title><link>https://codemario318.github.io/post/common/quorum-based-consensus/</link><pubDate>Sun, 08 Jun 2025 15:42:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/quorum-based-consensus/</guid><description>&lt;img src="https://codemario318.github.io/post/common/quorum-based-consensus/cover.png" alt="Featured image of post 정족수 합의" />&lt;h2 id="분산-시스템에서-합의의-필요성">분산 시스템에서 합의의 필요성&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CS on Mario Blog</title><link>https://codemario318.github.io/tags/cs/</link><description>Recent content in CS on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Sun, 27 Jul 2025 16:38:00 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/cs/index.xml" rel="self" type="application/rss+xml"/><item><title>Raft 합의 알고리즘</title><link>https://codemario318.github.io/post/common/raft/</link><pubDate>Sun, 27 Jul 2025 16:38:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/raft/</guid><description>&lt;img src="https://codemario318.github.io/post/common/raft/cover.png" alt="Featured image of post Raft 합의 알고리즘" />&lt;p>오늘은 저번에 작성한 &lt;a class="link" href="https://codemario318.github.io/common/quorum-based-consensus" >정족수 합의&lt;/a>에 이어서 &lt;strong>Raft 합의 알고리즘&lt;/strong>을 살펴보려고 합니다.&lt;/p>
+&lt;p>저번 글에도 설명했지만, 분산 시스템에서 가장 어려운 문제 중 하나는 &lt;strong>모든 노드가 하나의 동일한 결정을 내리는 것, 즉 &lt;em>합의(Consensus)&lt;/em>&lt;/strong> 입니다.&lt;/p>
+&lt;p>이런 상황에서도 시스템이 정상적으로 동작하려면 신뢰할 수 있는 합의 메커니즘이 필요하며, 그 중 하나가 Raft입니다.&lt;/p>
+&lt;h2 id="raft란">Raft란?&lt;/h2>
+&lt;blockquote>
+&lt;p>Raft는 Paxos와 동일한 목표를 가지면서도 &lt;strong>이해하기 쉽도록 설계된 합의 알고리즘&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;p>2014년 Diego Ongaro와 John Ousterhout가 발표한 논문 “In Search of an Understandable Consensus Algorithm” 에서는 Paxos의 복잡성을 극복할 수 있는 대안으로 Raft를 제시했습니다.&lt;/p>
+&lt;p>Raft는 다음의 세 가지 주요 목표를 가지고 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>이해하기 쉬울 것&lt;/li>
+&lt;li>정상적인 상태 유지뿐 아니라 복구 절차도 직관적일 것&lt;/li>
+&lt;li>실제 구현에 적합할 것&lt;/li>
+&lt;/ul>
+&lt;p>&lt;del>Paxos는 다음 글에 작성해보겠습니다.&lt;/del>&lt;/p>
+&lt;h2 id="raft의-구조-리더-중심">Raft의 구조: 리더 중심&lt;/h2>
+&lt;p>Raft는 노드 간의 역할을 명학히 나눕니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Leader(1개)&lt;/strong>: 모든 클라이언트 요청을 받고, 로그를 다른 노드에 전파&lt;/li>
+&lt;li>&lt;strong>Follower(N개)&lt;/strong>: 리더의 명령을 따름&lt;/li>
+&lt;li>&lt;strong>Candidate&lt;/strong>: 리더 선출을 위해 임시로 전환되는 상태&lt;/li>
+&lt;/ul>
+&lt;p>모든 노드는 기본적으로 팔로워로 싲가하며, 주기적으로 리더로부터 heartbeat를 받지 못하면 후보 상태가 되어 선거를 시작합니다.&lt;/p>
+&lt;h3 id="리더-선출">리더 선출&lt;/h3>
+&lt;p>리더는 항상 하나만 존재해야합니다. 이를 위해 임기(term) 개념이 도입하고 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>일정 시간 동안 리더의 heartbeat를 받지 못하면, follower는 선거를 시작&lt;/li>
+&lt;li>본인을 리더로 추천하고 다른 노드의 투표를 요청&lt;/li>
+&lt;li>&lt;strong>과반수의 투표&lt;/strong>를 얻은 후보는 리더로 선출&lt;/li>
+&lt;/ul>
+&lt;p>이 과정을 토해 네트워크 지연이나 장애 상황에서도 안정적으로 새로운 리더를 선출할 수 있게 해줍니다.&lt;/p>
+&lt;h3 id="로그-복제-log-replication">로그 복제 Log Replication&lt;/h3>
+&lt;p>리더가 되면 클라이언트 요청을 받아 로그 항목으로 저장하고, 팔로워들에게 &lt;strong>AppendEntries RPC&lt;/strong>를 보냅니다.&lt;/p>
+&lt;p>복제는 다음과 같은 방식으로 수행됩니다.&lt;/p>
+&lt;ol>
+&lt;li>리더는 새로운 로그 항목을 자신의 로그에 추가&lt;/li>
+&lt;li>팔로워들에게 &lt;strong>AppendEntries&lt;/strong> 메시지 전송&lt;/li>
+&lt;li>팔로워가 수신 성공 시 응답&lt;/li>
+&lt;li>&lt;strong>과반수 이상&lt;/strong>의 팔로워가 응답하면 커밋(Commit) 처리&lt;/li>
+&lt;li>리더가 커밋을 팔로워들에게 전파&lt;/li>
+&lt;/ol>
+&lt;p>로그 복제가 실패할 경우에는 이전 로그 상태로 되돌아가며 재동기화하여 결과적 일관성(eventually consistent)를 보장합니다.&lt;/p>
+&lt;h3 id="안정성-보장">안정성 보장&lt;/h3>
+&lt;p>Raft는 다음과 같은 메커니즘으로 안전성을 보장합니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Log Matching Property&lt;/strong>
+&lt;ul>
+&lt;li>동일한 인덱스와 term의 로그 항목은 동일해야함&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Leader Completeness Property&lt;/strong>
+&lt;ul>
+&lt;li>커밋된 로그는 다음 term의 리더 로그에 반드시 포함됨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>팔로워는 오직 리더의 로그에 맞춰 자신을 수정함&lt;/li>
+&lt;/ul>
+&lt;p>이러한 동작으로 시스템은 리더가 바뀌어도 로그가 일관되게 유지될 수 있습니다.&lt;/p>
+&lt;h3 id="시나리오-예시-클라이언트-요청-처리">시나리오 예시: 클라이언트 요청 처리&lt;/h3>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Client
+participant Leader
+participant Follower1
+participant Follower2
+Client->>Leader: Append(command)
+Leader->>Follower1: AppendEntries
+Leader->>Follower2: AppendEntries
+Follower1-->>Leader: Success
+Follower2-->>Leader: Success
+Leader->>All: Commit
+Leader-->>Client: Success
+&lt;/pre>
+&lt;p>좋습니다! 아래는 **“Raft 사용 시 주의할 점”**을 블로그 글의 &lt;strong>하위 섹션 형태&lt;/strong>로 정리하고, 각 주제를 쉽게 이해할 수 있도록 &lt;strong>Mermaid 다이어그램&lt;/strong>도 함께 구성해드렸습니다.&lt;/p>
+&lt;hr>
+&lt;h2 id="raft-사용-시-주의할-점">Raft 사용 시 주의할 점&lt;/h2>
+&lt;p>Raft는 이해하기 쉬운 구조 덕분에 많이 사용되지만, &lt;strong>실제 서비스에 적용할 때는 주의해야 할 점&lt;/strong>이 분명 존재합니다. 특히 고가용성과 성능, 데이터 일관성 측면에서 다양한 고려가 필요합니다.&lt;/p>
+&lt;h3 id="과반수-장애-시-시스템-정지">과반수 장애 시 시스템 정지&lt;/h3>
+&lt;p>Raft는 &lt;strong>과반수 노드의 응답&lt;/strong>이 있어야 리더를 선출하거나 로그를 커밋할 수 있습니다. 따라서 과반수 이상이 장애나 네트워크 격리로 인해 응답하지 못하면, &lt;strong>쓰기 작업이 모두 중단&lt;/strong>됩니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">graph TD
+A[5개 노드 구성] --> B{3개 이상 응답 가능?}
+B -- Yes --> C[정상적으로 리더 선출 및 커밋 가능]
+B -- No --> D[쓰기 불가, 시스템 정지]
+&lt;/pre>
+&lt;blockquote>
+&lt;p>최소 3개, 가능하면 5개 등 &lt;strong>홀수 구성&lt;/strong>을 유지하고, 과반수가 살아있도록 클러스터를 배치해야 합니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="네트워크-분할partition-상황-대응">네트워크 분할(Partition) 상황 대응&lt;/h3>
+&lt;p>리더가 일부 팔로워들과만 연결된 상태에서 나머지 노드와 &lt;strong>분리(network partition)&lt;/strong> 될 경우,
+기존 리더는 자신이 리더인 줄 알고 요청을 받을 수 있지만, 로그 커밋은 실패합니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Leader (격리됨)
+participant Client
+participant Follower1
+participant Follower2 (다수)
+Client->>Leader (격리됨): 요청
+Leader (격리됨)->>Follower1: AppendEntries
+Note over Follower1: quorum 부족
+Leader (격리됨)-->>Client: 실패 또는 타임아웃
+&lt;/pre>
+&lt;blockquote>
+&lt;p>클라이언트 타임아웃을 짧게 잡고, 요청을 다른 노드로 재시도하게 하는 전략이 필요합니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="로그-무한-증가와-스냅샷">로그 무한 증가와 스냅샷&lt;/h3>
+&lt;p>Raft는 로그를 계속 누적하며 동작합니다. 아무 처리 없이 장시간 운영하면 &lt;strong>디스크 용량이 부족&lt;/strong>해질 수 있습니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">flowchart TD
+A[로그 누적]
+A --> B[용량 증가]
+B --> C[디스크 부족]
+C --> D[성능 저하 또는 장애]
+A --> E[주기적 스냅샷 생성]
+E --> F[이전 로그 압축/삭제]
+F --> G[안정적인 운영]
+&lt;/pre>
+&lt;blockquote>
+&lt;p>주기적으로 스냅샷을 생성하고, 오래된 로그를 안전하게 삭제하는 정책이 필요할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="리더-선거-충돌">리더 선거 충돌&lt;/h3>
+&lt;p>여러 노드가 &lt;strong>동시에 candidate가 되면&lt;/strong>, 과반수 득표에 실패하고 리더가 선출되지 않을 수 있습니다 (split vote).&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>election timeout&lt;/code>을 노드마다 &lt;strong>랜덤하게 설정&lt;/strong>하여 충돌 가능성을 줄일 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="느린-팔로워로-인한-성능-저하">느린 팔로워로 인한 성능 저하&lt;/h3>
+&lt;p>느린 follower 노드가 로그 복제 타이밍을 따라가지 못하면, 리더의 커밋 속도도 느려질 수 있습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>비동기 전파로 느린 노드를 따로 관리하거나, 너무 뒤처진 follower는 로그 스냅샷으로 초기화가 도움이 될 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="클라이언트-요청-중복-처리">클라이언트 요청 중복 처리&lt;/h3>
+&lt;p>리더 전환 중, 동일한 클라이언트 요청이 중복될 수 있습니다. 이 때 &lt;strong>같은 명령이 여러 번 실행&lt;/strong>될 수 있습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>클라이언트 요청마다 고유 ID를 부여하고(멱등성), &lt;strong>중복 요청은 캐싱&lt;/strong> 또는 &lt;strong>deduplication 로직&lt;/strong>으로 방지해야 합니다.&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="읽기-일관성-주의">읽기 일관성 주의&lt;/h3>
+&lt;p>Raft 팔로워는 오래된 데이터를 가지고 있을 수 있기 때문에, &lt;strong>정확한 읽기(read-your-write)&lt;/strong> 를 보장하려면 리더에게 요청해야 합니다.&lt;/p>
+&lt;blockquote>
+&lt;p>Raft에서는 &lt;code>ReadIndex&lt;/code>, &lt;code>LeaseRead&lt;/code> 같은 기법을 사용해 &lt;strong>선거 없는 일관된 읽기&lt;/strong>를 구현할 수 있습니다.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="raft-vs-정족수-합의-어떤-합의-방식이-더-적합할까">Raft vs 정족수 합의: 어떤 합의 방식이 더 적합할까?&lt;/h2>
+&lt;p>분산 시스템에서 합의는 필수적인 요소입니다. 이전에 학습했던 정족수 합의와는 어떤 차이점이 있을까요?&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>정족수 기반 합의 (Quorum-based Consensus)&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Raft 합의 알고리즘 (Log Replication with Leader Election)&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>두 방식은 목적과 구현 방식이 다릅니다. 아래에서 차이점을 비교해보겠습니다.&lt;/p>
+&lt;h3 id="기본-개념의-차이">기본 개념의 차이&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>정족수 합의&lt;/th>
+&lt;th>Raft&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>합의 방식&lt;/td>
+&lt;td>클라이언트가 직접 다수 노드로 읽기/쓰기 요청 후, 정족수 응답을 수집하여 결정&lt;/td>
+&lt;td>리더가 모든 요청을 처리하고, 로그 복제를 통해 과반수에 커밋&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>구조&lt;/td>
+&lt;td>리더 없음 (모든 노드가 대등)&lt;/td>
+&lt;td>리더 중심 구조&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>일관성 보장&lt;/td>
+&lt;td>&lt;code>W + R &amp;gt; N&lt;/code>일 때 eventual consistency 보장&lt;/td>
+&lt;td>리더 커밋 이후 응답 → strong consistency 보장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>장애 허용성&lt;/td>
+&lt;td>R 또는 W만 만족하면 일관성 일부 손해를 감수하고 처리 가능&lt;/td>
+&lt;td>과반수 미만 장애 시 리더 선출 불가 → 쓰기 중단&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>성능 유연성&lt;/td>
+&lt;td>클라이언트가 &lt;code>R&lt;/code>, &lt;code>W&lt;/code> 조정 가능&lt;/td>
+&lt;td>구조적 한계로 조정 불가, but 일관성 명확&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="처리-흐름-비교">처리 흐름 비교&lt;/h3>
+&lt;p>&lt;strong>정족수 합의 (예: DynamoDB)&lt;/strong>&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Client
+participant A
+participant B
+participant C
+Client->>A: Write(X)
+Client->>B: Write(X)
+Client->>C: Write(X)
+A-->>Client: OK
+B-->>Client: OK
+Note right of Client: W = 2 → Write Success
+Client->>A: Read()
+Client->>B: Read()
+A-->>Client: X
+B-->>Client: X
+Note right of Client: R = 2 → Read Success
+&lt;/pre>
+&lt;hr>
+&lt;p>&lt;strong>Raft 합의&lt;/strong>&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Client
+participant Leader
+participant Follower1
+participant Follower2
+Client->>Leader: Write(X)
+Leader->>Follower1: AppendEntries(X)
+Leader->>Follower2: AppendEntries(X)
+Follower1-->>Leader: OK
+Follower2-->>Leader: OK
+Leader->>All: Commit(X)
+Leader-->>Client: Success
+&lt;/pre>
+&lt;h3 id="선택-기준-요약">선택 기준 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>적합한 방식&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>일관성이 가장 중요 (예: 금융, 설정 저장소)&lt;/td>
+&lt;td>&lt;strong>Raft&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>빠른 응답과 가용성 중시 (예: 추천 캐시, 로그 수집기)&lt;/td>
+&lt;td>&lt;strong>정족수 합의&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>클라이언트가 유연한 조정 가능해야 하는 경우&lt;/td>
+&lt;td>&lt;strong>정족수 합의&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>복잡한 충돌 해결 없이 안정된 흐름이 필요한 경우&lt;/td>
+&lt;td>&lt;strong>Raft&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="마무리">마무리&lt;/h3>
+&lt;p>기존 Paxos의 복잡함을 단순함으로 대체한 합의 알고리즘이 바로 Raft는 분산 시스템 입니다.&lt;/p>
+&lt;p>정족수 합의와 Raft는 서로 다른 철학과 목적을 가진 합의 방식입니다.&lt;/p>
+&lt;p>어떤 방법이 더 좋다고 단정하기보다는, 서비스의 특성과 우선순위에 따라 적합한 방식을 선택하는 것이 중요합니다. 일관성이 핵심이라면 Raft, 가용성과 유연성이 필요하다면 정족수 합의가 더 적합할 수 있습니다.&lt;/p></description></item><item><title>정족수 합의</title><link>https://codemario318.github.io/post/common/quorum-based-consensus/</link><pubDate>Sun, 08 Jun 2025 15:42:00 +0900</pubDate><guid>https://codemario318.github.io/post/common/quorum-based-consensus/</guid><description>&lt;img src="https://codemario318.github.io/post/common/quorum-based-consensus/cover.png" alt="Featured image of post 정족수 합의" />&lt;h2 id="분산-시스템에서-합의의-필요성">분산 시스템에서 합의의 필요성&lt;/h2>
 &lt;p>분산 시스템에서는 하나의 중앙 서버가 모든 결정을 내리지 않습니다. 대신 여러 노드가 함께 데이터를 저장하고 처리합니다.&lt;/p>
 &lt;p>이때 문제가 되는 것은 &amp;ldquo;어느 노드의 응답을 믿을 것인가?&amp;ldquo;입니다.&lt;/p>
 &lt;p>일부 노드가 장애를 일으키거나 서로 다른 데이터를 갖고 있을 때, 시스템은 어떤 기준으로 정답을 결정해야 할까요?&lt;/p>

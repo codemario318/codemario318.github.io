@@ -15,7 +15,17 @@ User-agent: *
 
 
 
+
+
 Allow: /post/
+
+
+
+
+
+Allow: /post/common/raft/
+
+
 
 
 
