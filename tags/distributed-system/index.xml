@@ -70,8 +70,6 @@ Follower2-->>Leader: Success
 Leader->>All: Commit
 Leader-->>Client: Success
 &lt;/pre>
-&lt;p>좋습니다! 아래는 **“Raft 사용 시 주의할 점”**을 블로그 글의 &lt;strong>하위 섹션 형태&lt;/strong>로 정리하고, 각 주제를 쉽게 이해할 수 있도록 &lt;strong>Mermaid 다이어그램&lt;/strong>도 함께 구성해드렸습니다.&lt;/p>
-&lt;hr>
 &lt;h2 id="raft-사용-시-주의할-점">Raft 사용 시 주의할 점&lt;/h2>
 &lt;p>Raft는 이해하기 쉬운 구조 덕분에 많이 사용되지만, &lt;strong>실제 서비스에 적용할 때는 주의해야 할 점&lt;/strong>이 분명 존재합니다. 특히 고가용성과 성능, 데이터 일관성 측면에서 다양한 고려가 필요합니다.&lt;/p>
 &lt;h3 id="과반수-장애-시-시스템-정지">과반수 장애 시 시스템 정지&lt;/h3>

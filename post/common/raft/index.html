@@ -30,7 +30,7 @@
     Follower2-->>Leader: Success
     Leader->>All: Commit
     Leader-->>Client: Success
-</pre><p>좋습니다! 아래는 **“Raft 사용 시 주의할 점”**을 블로그 글의 <strong>하위 섹션 형태</strong>로 정리하고, 각 주제를 쉽게 이해할 수 있도록 <strong>Mermaid 다이어그램</strong>도 함께 구성해드렸습니다.</p><hr><h2 id=raft-사용-시-주의할-점>Raft 사용 시 주의할 점</h2><p>Raft는 이해하기 쉬운 구조 덕분에 많이 사용되지만, <strong>실제 서비스에 적용할 때는 주의해야 할 점</strong>이 분명 존재합니다. 특히 고가용성과 성능, 데이터 일관성 측면에서 다양한 고려가 필요합니다.</p><h3 id=과반수-장애-시-시스템-정지>과반수 장애 시 시스템 정지</h3><p>Raft는 <strong>과반수 노드의 응답</strong>이 있어야 리더를 선출하거나 로그를 커밋할 수 있습니다. 따라서 과반수 이상이 장애나 네트워크 격리로 인해 응답하지 못하면, <strong>쓰기 작업이 모두 중단</strong>됩니다.</p><pre class=mermaid style=text-align:center>graph TD
+</pre><h2 id=raft-사용-시-주의할-점>Raft 사용 시 주의할 점</h2><p>Raft는 이해하기 쉬운 구조 덕분에 많이 사용되지만, <strong>실제 서비스에 적용할 때는 주의해야 할 점</strong>이 분명 존재합니다. 특히 고가용성과 성능, 데이터 일관성 측면에서 다양한 고려가 필요합니다.</p><h3 id=과반수-장애-시-시스템-정지>과반수 장애 시 시스템 정지</h3><p>Raft는 <strong>과반수 노드의 응답</strong>이 있어야 리더를 선출하거나 로그를 커밋할 수 있습니다. 따라서 과반수 이상이 장애나 네트워크 격리로 인해 응답하지 못하면, <strong>쓰기 작업이 모두 중단</strong>됩니다.</p><pre class=mermaid style=text-align:center>graph TD
     A[5개 노드 구성] --> B{3개 이상 응답 가능?}
     B -- Yes --> C[정상적으로 리더 선출 및 커밋 가능]
     B -- No --> D[쓰기 불가, 시스템 정지]
