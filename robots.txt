@@ -13,19 +13,33 @@ User-agent: *
 
 
 
-
-
-
-
 Allow: /post/
 
 
 
 
 
+
+
+Allow: /post/redis-decision/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Allow: /post/common/raft/
-
-
 
 
 
@@ -150,8 +164,6 @@ Allow: /post/notes/effective-development/
 
 
 Allow: /post/tanagement/1/
-
-
 
 
 
@@ -420,8 +432,6 @@ Allow: /post/boostcamp-9th/review/membership/6/
 
 
 Allow: /post/system-design-interview-2/12/
-
-
 
 
 

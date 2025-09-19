@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NestJS on Mario Blog</title><link>https://codemario318.github.io/tags/nestjs/</link><description>Recent content in NestJS on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Fri, 19 Sep 2025 11:18:49 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/nestjs/index.xml" rel="self" type="application/rss+xml"/><item><title>Redis 사용 여부 결정하기: 지금은 단순하게, 나중엔 안전하게</title><link>https://codemario318.github.io/post/redis-decision/</link><pubDate>Fri, 19 Sep 2025 11:18:49 +0900</pubDate><guid>https://codemario318.github.io/post/redis-decision/</guid><description>&lt;img src="https://codemario318.github.io/post/redis-decision/cover.png" alt="Featured image of post Redis 사용 여부 결정하기: 지금은 단순하게, 나중엔 안전하게" />&lt;blockquote>
+&lt;p>Redis는 훌륭한 도구지만, 우리 서비스에 &lt;strong>지금&lt;/strong> 필요한지부터 질문했습니다.&lt;br>
+단일 서버에서는 과잉 설계를 피하고, 필요해지면 &lt;strong>안전하게 전환&lt;/strong>할 수 있도록 길을 열어두었습니다.&lt;/p>
+&lt;/blockquote>
+&lt;p>부스트캠프 팀 프로젝트를 진행하던 중, “다른 팀들은 Redis를 쓰던데, 우리도 써야 하지 않을까요?”라는 의견이 나왔습니다.&lt;/p>
+&lt;p>Redis가 워낙 널리 쓰이다 보니 자연스러운 질문이었지만, 조금 더 들여다보니 &lt;strong>‘필요해서’라기보다 ‘회사에서 많이 쓰니까’&lt;/strong> 도입한 경우도 적지 않았습니다.&lt;/p>
+&lt;p>저는 기술 역량을 보여주는 프로젝트라 하더라도 필요한 만큼만 활용하는 것이 바람직하다고 생각했습니다. 그런 이유로 Redis를 꼭 써야 한다는 의견을 조율하며 동료들을 설득했는데, 이번 글에서는 그 과정을 공유드리려 합니다.&lt;/p>
+&lt;h2 id="redis가-보통-쓰이는-곳">Redis가 보통 쓰이는 곳&lt;/h2>
+&lt;p>Redis는 메모리 기반이라 매우 빠르며, 기본 저장은 RAM에 이루어집니다. 영속성은 기본 동작에 포함되지 않지만, 필요에 따라 RDB 스냅샷이나 AOF로 설정할 수 있습니다 (캐시 용도로는 보통 최소화하거나 비활성화합니다).&lt;/p>
+&lt;p>애플리케이션 프로세스 외부에서 메모리를 관리하기 때문에, 여러 서버가 상태를 공유해야 할 때 세션·캐시·레이트리밋·분산 락 등에 유용합니다. 또한 서버 간 Pub/Sub 같은 이벤트 브로커로도 활용됩니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/redis-decision/img_1.png"
+width="385"
+height="131"
+srcset="https://codemario318.github.io/post/redis-decision/img_1_hub1d81362073527ddf71ea0c3bd077b97_8690_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/redis-decision/img_1_hub1d81362073527ddf71ea0c3bd077b97_8690_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Redis"
+class="gallery-image"
+data-flex-grow="293"
+data-flex-basis="705px"
+>&lt;/p>
+&lt;ul>
+&lt;li>여러 서버 간 &lt;strong>공유 메모리 저장소&lt;/strong>(세션/상태 공유)&lt;/li>
+&lt;li>&lt;strong>캐시 계층&lt;/strong>(DB 부하 완화)&lt;/li>
+&lt;li>&lt;strong>Pub/Sub&lt;/strong>(분산 이벤트 브로커)&lt;/li>
+&lt;/ul>
+&lt;p>이 요구가 &lt;strong>명확하다면&lt;/strong> Redis는 아주 좋은 선택입니다.&lt;/p>
+&lt;h2 id="redis-도입의-트레이드오프">Redis 도입의 트레이드오프&lt;/h2>
+&lt;p>&lt;a class="link" href="https://redis.io/docs/latest/develop/data-types/json/performance/" target="_blank" rel="noopener"
+>레디스 공식 문서&lt;/a>에 따르면 단순 명령(PING)은 약 14만 ops/sec 수준으로 처리할 수 있고, JSON 형식의 데이터라도 작은 객체(&lt;code>380B&lt;/code>) ~ 큰 객체(&lt;code>3.5KB&lt;/code>)까지 &lt;code>SET/GET&lt;/code> 시나리오 테스트 결과 크기가 커질수록 성능은 저하되지만, 여전히 수만 ~ 수십만 ops/sec 수준을 유지할 만큼 뛰어난 성능을 보여줍니다.&lt;/p>
+&lt;p>이러한 수치만 볼 때는 Redis 도입이 당연히 좋아 보입니다. 하지만 실제로는 어떨까요?&lt;/p>
+&lt;p>Redis 도입의 트레이드오프는 Redis 자체 성능이 아니라, &lt;strong>별도의 프로세스로 실행된다는 사실&lt;/strong>에서 발생합니다.&lt;/p>
+&lt;h3 id="네트워크-비용">네트워크 비용&lt;/h3>
+&lt;p>별도의 프로세스로 실행되기 때문에 매 요청마다 네트워크 왕복 비용이 발생합니다.&lt;/p>
+&lt;p>&lt;img src="https://codemario318.github.io/post/redis-decision/img_2.png"
+width="1024"
+height="1004"
+srcset="https://codemario318.github.io/post/redis-decision/img_2_hue71c0d90dd58fe1dda7ccd293ce69a3d_232739_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/redis-decision/img_2_hue71c0d90dd58fe1dda7ccd293ce69a3d_232739_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Latency numbers chart"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="244px"
+>&lt;/p>
+&lt;p>위 자료는 Jeff Dean의 &lt;em>Latency Numbers Every Programmer Should Know&lt;/em> 자료로, 컴퓨터 시스템에서 연산·메모리·스토리지·네트워크 등 다양한 계층의 지연 시간을 시각화하기 위한 자료입니다.&lt;/p>
+&lt;p>위 자료에 따르면 메인 메모리 접근은 약 100ns 수준에 불과하지만, 같은 데이터센터 내 네트워크 왕복은 약 500,000ns(≈ 500μs)로, 단순 메모리 접근 대비 수천 배 이상의 지연이 발생합니다.&lt;/p>
+&lt;p>결국 Redis처럼 외부 프로세스를 경유하는 경우, 단일 서버에서의 단순 메모리 접근과는 큰 성능 차이가 불가피합니다.&lt;/p>
+&lt;h3 id="관리-복잡성">관리 복잡성&lt;/h3>
+&lt;p>Redis를 별도로 운영해야 하기 때문에 관리 복잡성이 늘어납니다.&lt;/p>
+&lt;p>추가 서버나 컨테이너를 띄워야 하고, 장애 대응·보안 설정·모니터링·백업 같은 관리 포인트가 생깁니다.&lt;/p>
+&lt;p>규모가 작은 서비스에서는 이런 관리 비용이 성능상의 이점보다 더 크게 다가올 수 있습니다.&lt;/p>
+&lt;hr>
+&lt;p>즉, Redis는 분명 빠르지만, &lt;strong>단일 서버 + 단순 상태 공유&lt;/strong> 구조에서는 오히려 &lt;strong>성능 저하&lt;/strong>와 &lt;strong>불필요한 복잡성&lt;/strong>을 초래할 수 있습니다.&lt;/p>
+&lt;h2 id="당시-서비스-상황">당시 서비스 상황&lt;/h2>
+&lt;p>&lt;img src="https://codemario318.github.io/post/redis-decision/img.png"
+width="1159"
+height="1009"
+srcset="https://codemario318.github.io/post/redis-decision/img_hucba1fe36dc05ad6ffed8239b87d7a9ab_96618_480x0_resize_box_3.png 480w, https://codemario318.github.io/post/redis-decision/img_hucba1fe36dc05ad6ffed8239b87d7a9ab_96618_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="서비스 아키텍처"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Nginx 리버스 프록시&lt;/strong>로 정적 파일, Nest API, WebSocket을 분기&lt;/li>
+&lt;li>&lt;strong>단일 서버 환경&lt;/strong> (인스턴스 간 세션/상태 공유 요건 없음)&lt;/li>
+&lt;li>DB 부하도 Redis 캐시 없이 충분히 감당&lt;/li>
+&lt;/ul>
+&lt;p>즉, 이 단계에서는 &lt;strong>서버 내부 메모리(Map 등)&lt;/strong> 만으로도 서비스가 안정적으로 동작했습니다.&lt;/p>
+&lt;h2 id="지금은-in-memory-나중엔-redis">지금은 In-Memory, 나중엔 Redis&lt;/h2>
+&lt;p>당장은 Redis를 도입하지 않고, &lt;strong>언제든 쉽게 붙일 수 있도록 추상화&lt;/strong>만 해두었습니다.&lt;br>
+핵심은 &lt;strong>도메인 로직이 저장소 구현을 모르게&lt;/strong> 하는 것입니다.&lt;/p>
+&lt;h3 id="store-인터페이스">Store 인터페이스&lt;/h3>
+&lt;p>도메인 로직이 의존할 &lt;strong>공통 인터페이스&lt;/strong>입니다.&lt;br>
+구현체는 In-Memory 버전이든 Redis 버전이든 동일한 인터페이스를 만족하기만 하면 됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">interface&lt;/span> &lt;span class="nx">QuizZoneStore&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">QuizZone&lt;/span> &lt;span class="err">|&lt;/span> &lt;span class="na">null&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">value&lt;/span>: &lt;span class="kt">QuizZone&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">void&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">boolean&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="in-memory-구현-현재">In-Memory 구현 (현재)&lt;/h3>
+&lt;p>현재 서비스 상황에서는 &lt;strong>Map 기반 메모리 저장소&lt;/strong>만으로 충분했습니다.
+Nest의 의존성 주입을 통해 &lt;code>Map&lt;/code>을 주입받아 사용합니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Injectable&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Inject&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@nestjs/common&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizZoneMemoryStore&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">QuizZoneStore&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;QuizZoneStorage&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">data&lt;/span>: &lt;span class="kt">Map&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">string&lt;/span>&lt;span class="err">,&lt;/span> &lt;span class="na">QuizZone&lt;/span>&lt;span class="p">&amp;gt;,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span>: &lt;span class="kt">QuizZone&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="k">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="redis-구현-향후-확장용">Redis 구현 (향후 확장용)&lt;/h3>
+&lt;p>규모가 커져 여러 서버에서 상태를 공유해야 할 때는
+동일한 인터페이스를 구현하는 &lt;strong>Redis 저장소&lt;/strong>로 교체할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Injectable&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Inject&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@nestjs/common&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="nx">Redis&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;ioredis&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Injectable&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">QuizZoneRedisStore&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">QuizZoneStore&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@Inject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;RedisClient&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">redis&lt;/span>: &lt;span class="kt">Redis&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">json&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">redis&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">json&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">JSON&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">parse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">json&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="nx">QuizZone&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">v&lt;/span>: &lt;span class="kt">QuizZone&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">redis&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">JSON&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">stringify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">v&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">redis&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="k">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">redis&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">del&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>이러한 설계로 인해 서비스 로직은 &lt;code>QuizZoneStore&lt;/code> 인터페이스만 바라봅니다.
+따라서 구현체가 메모리이든 Redis이든, &lt;strong>비즈니스 로직은 그대로 유지됩니다.&lt;/strong>&lt;/p>
+&lt;h2 id="nest도-같은-방향입니다">Nest도 같은 방향입니다&lt;/h2>
+&lt;p>NestJS의 &lt;code>CacheModule&lt;/code>은 &lt;strong>메모리 캐시 / Redis 캐시를 같은 인터페이스로 다룰 수 있게&lt;/strong> 합니다.
+아래는 &lt;a class="link" href="https://docs.nestjs.com/techniques/caching/" target="_blank" rel="noopener"
+>공식 문서&lt;/a>의 예시 코드입니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Module&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@nestjs/common&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">CacheModule&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@nestjs/cache-manager&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="nx">KeyvRedis&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@keyv/redis&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Keyv&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;keyv&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">CacheableMemory&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;cacheable&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@Module&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">imports&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">CacheModule&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">registerAsync&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">useFactory&lt;/span>: &lt;span class="kt">async&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">stores&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">Keyv&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">store&lt;/span>: &lt;span class="kt">new&lt;/span> &lt;span class="nx">CacheableMemory&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">ttl&lt;/span>: &lt;span class="kt">60000&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">lruSize&lt;/span>: &lt;span class="kt">5000&lt;/span> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">KeyvRedis&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;redis://localhost:6379&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">AppModule&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>메시지는 명확합니다. &lt;strong>“인터페이스는 고정하고, 구현체만 바꿔라.”&lt;/strong>&lt;/p>
+&lt;h2 id="그래서-우리는-redis가-필요-없었습니다">그래서 우리는 Redis가 필요 없었습니다&lt;/h2>
+&lt;p>요약하면, Redis의 본질은 &lt;strong>외부에 존재하는 공유 메모리&lt;/strong>입니다.
+하지만 저희는 단일 서버였기 때문에,&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>공유 메모리 자체가 필요 없었고&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>캐시는 서버 메모리(Map)&lt;/strong> 로 충분했고&lt;/li>
+&lt;li>&lt;strong>Pub/Sub 역시 여러 서버 간 메시지 브로커가 필요하지 않았습니다&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>따라서 Redis는 그 시점의 우리에게 &lt;strong>과잉 설계&lt;/strong>였습니다.&lt;/p>
+&lt;h2 id="redis가-필요해질-신호">Redis가 필요해질 신호&lt;/h2>
+&lt;ul>
+&lt;li>다중 인스턴스/오토스케일링으로 &lt;strong>세션/상태 공유&lt;/strong>가 필요한 경우&lt;/li>
+&lt;li>DB 핫스팟/지연 증가로 &lt;strong>캐시 계층&lt;/strong>이 필요한 경우&lt;/li>
+&lt;li>마이크로서비스 전환으로 &lt;strong>이벤트 브로커(Pub/Sub)&lt;/strong> 가 필요한 경우&lt;/li>
+&lt;li>&lt;strong>대규모 동시성&lt;/strong>(랭킹, 레이트리밋 등)을 다뤄야 하는 경우&lt;/li>
+&lt;/ul>
+&lt;p>이런 신호가 보이면, 이미 준비해 둔 인터페이스 뒤에 Redis 구현체를 &lt;strong>안전하게&lt;/strong> 붙이면 됩니다.&lt;/p>
+&lt;h2 id="마무리">마무리&lt;/h2>
+&lt;p>기술은 &lt;strong>문제 해결&lt;/strong>을 위해 존재합니다.
+“남들도 쓰니까”가 아니라, “&lt;strong>우리에게 지금 필요한가&lt;/strong>”를 먼저 묻는 것이 중요합니다.&lt;/p>
+&lt;p>저희는 당시 Redis를 도입하지 않았고, 그 선택 덕분에 &lt;strong>불필요한 복잡성&lt;/strong>을 피하면서도
+&lt;strong>추상화&lt;/strong>를 통해 &lt;strong>향후 전환 가능성&lt;/strong>은 충분히 확보할 수 있었습니다.&lt;/p></description></item></channel></rss>
