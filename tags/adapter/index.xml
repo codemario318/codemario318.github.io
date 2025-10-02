@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Adapter on Mario Blog</title><link>https://codemario318.github.io/tags/adapter/</link><description>Recent content in Adapter on Mario Blog</description><generator>Hugo -- gohugo.io</generator><language>ko</language><lastBuildDate>Wed, 24 Sep 2025 12:00:00 +0900</lastBuildDate><atom:link href="https://codemario318.github.io/tags/adapter/index.xml" rel="self" type="application/rss+xml"/><item><title>NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기</title><link>https://codemario318.github.io/post/nestjs-wsadapter-session/</link><pubDate>Wed, 24 Sep 2025 12:00:00 +0900</pubDate><guid>https://codemario318.github.io/post/nestjs-wsadapter-session/</guid><description>&lt;img src="https://codemario318.github.io/post/nestjs-wsadapter-session/cover.png" alt="Featured image of post NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기" />&lt;p>부스트캠프 9기 실시간 퀴즈 게임 프로젝트에서는 로그인 절차 없이 바로 참여할 수 있도록 &lt;strong>세션 기반 사용자 식별&lt;/strong>을 적용했습니다.&lt;/p>
+&lt;p>사용자가 서비스에 접근하면 초기 API를 반드시 호출하도록 설계했고, 이때 &lt;strong>쿠키에 세션 ID를 담아&lt;/strong> 식별에 활용했습니다.&lt;/p>
+&lt;p>문제는 REST API에서는 세션이 정상 동작하지만, WebSocket Gateway에서는 동일한 쿠키가 전달되어도 &lt;strong>세션이 보이지 않는&lt;/strong> 상황이었습니다.&lt;/p>
+&lt;p>이 글은 &lt;strong>왜 그런지&lt;/strong>를 구조적으로 짚고, 제가 실제로 적용한 &lt;strong>해결법&lt;/strong>과 &lt;strong>대안들&lt;/strong>을 정리한 기록입니다.&lt;/p>
+&lt;h2 id="문제-발견">문제 발견&lt;/h2>
+&lt;ul>
+&lt;li>REST API: &lt;code>req.session&lt;/code> 정상&lt;/li>
+&lt;li>WebSocket Gateway: 동일 쿠키가 있어도 &lt;code>req.session&lt;/code> 접근 불가&lt;/li>
+&lt;li>브라우저/서버 로그로 세션 생성 자체는 확인&lt;/li>
+&lt;/ul>
+&lt;p>즉, 세션이 없는 게 아니라 &lt;strong>WS 경로에서 세션을 읽어올 수 없는 구조&lt;/strong>였습니다.&lt;/p>
+&lt;h2 id="첫-시도-handleconnection-훅에서-쿠키-직접-파싱">첫 시도: &lt;code>handleConnection&lt;/code> 훅에서 쿠키 직접 파싱&lt;/h2>
+&lt;p>Nest Gateway 라이프사이클에서 &lt;code>handleConnection(client, ...args)&lt;/code>는 &lt;strong>클라이언트 연결 시 1회 호출&lt;/strong>되며 구현에 따라 &lt;strong>원본 HTTP 요청&lt;/strong>을 인자로 받을 수 있습니다.&lt;/p>
+&lt;p>처음에는 이 훅에서 쿠키를 직접 파싱하여 세션 ID를 추출했습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// gateways/play.gateway.ts (요약)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">WebSocketGateway&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">OnGatewayConnection&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@nestjs/websockets&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">WebSocket&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;ws&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">IncomingMessage&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;http&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">parse&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;cookie&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/ws/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="kr">implements&lt;/span> &lt;span class="nx">OnGatewayConnection&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">handleConnection&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">client&lt;/span>: &lt;span class="kt">WebSocket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">request&lt;/span>: &lt;span class="kt">IncomingMessage&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">cookies&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">parse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">headers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">cookie&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;sessionId&amp;#39;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">cookies&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;connect.sid&amp;#39;&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nx">split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">slice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="기존-방식의-한계">기존 방식의 한계&lt;/h3>
+&lt;p>간단히 동작했지만 곧 한계가 드러났습니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>쿠키 포맷과 서명 정책에 강하게 결합&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>connect.sid&lt;/code> 값은 보통 &lt;code>s:&lt;/code> 접두가 붙은 서명된 문자열입니다. 당시 구현은 단순한 문자열 분해로 임시 ID를 뽑아 쓰는 수준이었기 때문에, 쿠키 이름이나 옵션, 서명 방식이 조금만 바뀌어도 쉽게 깨지는 방식으로 쿠키 포맷과 서명 정책에 강하게 결합되어 있었습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>무결성 검증을 우회&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>express-session&lt;/code>은 서명 검증, 재발급(regenerate), 삭제된 세션 식별 같은 절차를 미들웨어에서 처리하지만, handleConnection에서 직접 파싱하면 이 과정을 건너뛰게 되어, 변조된 쿠키나 이미 폐기된 세션을 걸러낼 근거가 없습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>세션 수명 관리&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>express-session&lt;/code>은 요청마다 touch()로 TTL을 연장하고, 스토어에서 최신 세션 내용을 불러오지만, 이 방식은 스토어 조회를 하지 않기 때문에 WS 쪽 상태가 갱신되지 않고, 게임 도중 세션이 만료될 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>프레임워크 버전 변경에 취약&lt;/strong>
+&lt;ul>
+&lt;li>쿠키 포맷이나 미들웨어 내부 정책이 바뀌면, 게이트웨이에 흩어진 파싱 로직을 모두 수정해야 합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>요약하면, 이 시도는 ‘세션처럼 보이게’만 한 것이지, 세션이 제공하는 검증·갱신·저장의 보장을 사용하지 못한 상태였습니다.&lt;/p>
+&lt;h2 id="내부-구조-이해">내부 구조 이해&lt;/h2>
+&lt;p>Nest는 기본적으로 &lt;strong>Express 위에서&lt;/strong> 동작합니다. 관건은 REST와 WS의 경로가 &lt;strong>다른 파이프라인&lt;/strong>으로 처리된다는 점입니다.&lt;/p>
+&lt;h3 id="rest-요청의-흐름">REST 요청의 흐름&lt;/h3>
+&lt;p>Express 라우터 체인을 통과하며 &lt;code>cookie-parser&lt;/code> → &lt;code>express-session&lt;/code> → &lt;code>Controller&lt;/code> 순으로 실행됩니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">graph LR
+A[클라이언트 요청] --> B[cookie-parser]
+B --> C[express-session]
+C --> D[Controller]
+&lt;/pre>
+&lt;h3 id="websocket-요청의-흐름">WebSocket 요청의 흐름&lt;/h3>
+&lt;p>WS 연결은 HTTP 업그레이드로 시작되며, &lt;strong>Express 라우터 체인을 거치지 않습니다&lt;/strong>.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+participant Client as 브라우저
+participant Server as 서버(HTTP)
+Client->>Server: GET /ws (Upgrade: websocket)
+Server-->>Client: 101 Switching Protocols
+Note over Client,Server: 이후 WebSocket 프레임으로 통신
+&lt;/pre>
+&lt;p>Nest의 &lt;code>WsAdapter&lt;/code>는 업그레이드 요청을 받아 &lt;code>ws&lt;/code> 서버로 위임합니다.&lt;/p>
+&lt;p>이 흐름 때문에 WS는 Express 미들웨어 체인을 통과하지 않아 기본 상태로는 &lt;code>req.session&lt;/code>을 사용할 수 없습니다.&lt;/p>
+&lt;h2 id="해결-방법-업그레이드-래핑">해결 방법: 업그레이드 래핑&lt;/h2>
+&lt;p>핵심 아이디어는 간단합니다.&lt;/p>
+&lt;p>Nest 기본 업그레이드 흐름을 그대로 재현하되, 그 앞단에 &lt;code>express-session&lt;/code> 미들웨어를 한 번 실행해 &lt;code>req.session&lt;/code>을 준비하고, 연결 직후 &lt;code>ws.session = req.session&lt;/code>을 추가하는 것입니다.&lt;/p>
+&lt;p>Nest의 WsAdapter에서 http 서버가 upgrade 요청이 발생했을 때 WS 서버로 위임해주는 과정은 &lt;code>ensureHttpServerExists&lt;/code> 메서드에서 처리됩니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">WsAdapter&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">AbstractWsAdapter&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">protected&lt;/span> &lt;span class="nx">ensureHttpServerExists&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">port&lt;/span>: &lt;span class="kt">number&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">httpServer&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">createServer&lt;/span>&lt;span class="p">(),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">httpServersRegistry&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">has&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">httpServersRegistry&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">httpServer&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">httpServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">on&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;upgrade&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">head&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">baseUrl&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;ws://&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">request&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">headers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">host&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s1">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">pathname&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">URL&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">url&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">baseUrl&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">pathname&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">wsServersCollection&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wsServersRegistry&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">let&lt;/span> &lt;span class="nx">isRequestDelegated&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">wsServer&lt;/span> &lt;span class="k">of&lt;/span> &lt;span class="nx">wsServersCollection&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">pathname&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">wsServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">path&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">wsServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handleUpgrade&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">head&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ws&lt;/span>: &lt;span class="kt">unknown&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">wsServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">emit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;connection&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ws&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">request&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">isRequestDelegated&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="nx">isRequestDelegated&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">destroy&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">end&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;HTTP/1.1 400\r\n&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">message&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">httpServer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 생략 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>http 서버에 &lt;code>upgrade&lt;/code> 이벤트를 등록하는 부분 &lt;code>httpServer.on('upgrade', (request, socket, head) =&amp;gt; {})&lt;/code>에서 넘겨주는 핸들러를 그대로 활용하여 세션만 붙이는 방식으로 기존 처리는 유지하면서 세션에 접근할 수 있도록 했습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// session-ws.adapter.ts (요약)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">SessionWsAdapter&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">WsAdapter&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">app&lt;/span>: &lt;span class="kt">NestApplication&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">sessionMiddleware&lt;/span>: &lt;span class="kt">RequestHandler&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">super&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">app&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>: &lt;span class="kt">number&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options?&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">httpServer&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getHttpServer&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">wsServer&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">super&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">httpServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">removeAllListeners&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;upgrade&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">httpServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">on&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;upgrade&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">req&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">head&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sessionMiddleware&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">req&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{}&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">any&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">pathname&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">URL&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">req&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">url&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;ws://&amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">req&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">headers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">host&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s1">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">pathname&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">wsServers&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">wsServersRegistry&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kr">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="k">of&lt;/span> &lt;span class="nx">wsServers&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">pathname&lt;/span> &lt;span class="o">===&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">path&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handleUpgrade&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">req&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">head&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ws&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nx">ws&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">any&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">session&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">req&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">any&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">emit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;connection&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ws&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">destroy&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">wsServer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>create 메서드를 다시 구현하여 기존 처리를 그대로 수행한 후, upgrade 이벤트 핸들러를 세션 미들웨어로 감싸 세션에 직접 접근할 수 있도록 했습니다.&lt;/p>
+&lt;p>이러한 처리를 통해 게이트웨이는 아무 수정 없이 세션을 그대로 사용할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// play.gateway.ts
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/ws/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@SubscribeMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;start&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">handleStart&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">@ConnectedSocket&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">client&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">sid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">nickname&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">nick&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 게임 로직...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="해결-방법의-한계">해결 방법의 한계&lt;/h3>
+&lt;p>이 방식은 동작이 분명하고 기존 코드를 거의 그대로 재사용할 수 있다는 장점이 있지만, 동시에 몇 가지 한계가 존재합니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>프레임워크 내부 변경에 취약&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>ensureHttpServerExists&lt;/code> 내부 흐름을 긁어와 쓰는 구조라 Nest나 ws/http 버전 업그레이드 시 동작이 달라질 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>세션 TTL 관리&lt;/strong>
+&lt;ul>
+&lt;li>업그레이드 시점에만 세션을 붙이므로 TTL 갱신(touch)이 자동으로 되지 않아 장시간 연결에서는 세션 만료 문제가 발생할 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>스케일 아웃 고려&lt;/strong>
+&lt;ul>
+&lt;li>사용자 증가로 멀티 노드 환경이 필요하다면, 현재 구현체를 그대로 활용하거나 변경하여 사용하는 방식은 매우 효과적이지 않을 것으로 예상됩니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="대안">대안&lt;/h2>
+&lt;p>선택한 방법 외에도 대안으로 선택될 수 있는 여러 옵션이 있었습니다.&lt;/p>
+&lt;h3 id="socketio-전환--전역-어댑터로-최소-변경-적용">Socket.IO 전환 — 전역 어댑터로 최소 변경 적용&lt;/h3>
+&lt;p>Socket.IO를 사용하면 위와 동일한 과정을 단순하게 처리할 수 있습니다.&lt;/p>
+&lt;p>게이트웨이마다 설정을 반복하지 않고, 전역 IoAdapter에서 한 번만 &lt;code>express-session&lt;/code> 미들웨어를 연결하면 프로젝트 전반에 일관되게 적용할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// session-io.adapter.ts
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">SessionIoAdapter&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">IoAdapter&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">app&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kr">private&lt;/span> &lt;span class="kr">readonly&lt;/span> &lt;span class="nx">sessionMiddleware&lt;/span>: &lt;span class="kt">RequestHandler&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">super&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">app&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">override&lt;/span> &lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>: &lt;span class="kt">number&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options?&lt;/span>: &lt;span class="kt">any&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">io&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">super&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">options&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="nx">IOServer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">io&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">use&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">socket&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">next&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sessionMiddleware&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">request&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">any&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{}&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">any&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">next&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">io&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// main.ts
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">app&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">NestFactory&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">AppModule&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">use&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cookieParser&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">COOKIE_SECRET&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">sessionMiddleware&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">session&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="cm">/* 기존 세션 설정 */&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">use&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">sessionMiddleware&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">useWebSocketAdapter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="nx">SessionIoAdapter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">app&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sessionMiddleware&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>위와 같은 처리를 통해 Nest의 기본 처리에 변경 없이 문제를 해결할 수 있고, 마찬가지로 게이트웨이에서는 추가 코드 없이 &lt;code>socket.request.session&lt;/code>을 그대로 사용할 수 있습니다.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// play.gateway.ts
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">@WebSocketGateway&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">path&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;/ws/play&amp;#39;&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">class&lt;/span> &lt;span class="nx">PlayGateway&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">@SubscribeMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;start&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">handleStart&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">@ConnectedSocket&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="nx">socket&lt;/span>: &lt;span class="kt">Socket&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">sid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">nick&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">socket&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">request&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">session&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">nick&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 게임 로직...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>마찬가지로 이 방법도 여러 한계와 고려사항을 검토해야 합니다.&lt;/p>
+&lt;ul>
+&lt;li>성능 오버헤드
+&lt;ul>
+&lt;li>Socket.IO는 ws보다 추상화 레이어가 있어 초고성능이 필요한 경우 오버헤드가 발생할 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>의존성 증가/리팩터링 비용
+&lt;ul>
+&lt;li>Socket.IO 고유의 API에 종속되므로 기존 ws 코드 전환 시 비용이 발생합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>스케일링 복잡성
+&lt;ul>
+&lt;li>멀티 노드 환경에서 Redis adapter 등 추가 설정이 필요합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>행동 차이
+&lt;ul>
+&lt;li>Socket.IO의 핸드셰이크/재연결/메시지 처리 방식이 ws와 달라 클라이언트 호환성 테스트가 필요합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="세션을-쓰지-않는-방법">세션을 쓰지 않는 방법&lt;/h3>
+&lt;p>세션을 끌고 오지 않아도 사용자를 식별할 수 있습니다.&lt;/p>
+&lt;p>서비스에서 쿠키와 세션을 활용한 이유는 어떠한 사용자라도 고유하게 사용자를 식별할 수 있는 수단이 필요했던 것 뿐이고, express-session을 통해 이미 구현된 기능을 통해 직접 구현을 최소화 하는 것을 원했기 때문입니다.&lt;/p>
+&lt;p>결과적으로 서버가 고유한 값을 발급하고, 클라이언트가 그 값을 명시적으로 전달하도록 하면 어떠한 방법이든 활용할 수 있으며, 대표적으로 JWT, Opaque 토큰과 같은 방법들을 고려해볼 수 있습니다.&lt;/p>
+&lt;p>JWT는 서명 검증만으로 식별이 가능하고, Opaque 토큰(WS 전용 토큰)은 서버 저장소에 &lt;code>token → 사용자 정보&lt;/code>를 저장해두었다가 조회하는 방식으로 처리합니다.&lt;/p>
+&lt;pre class="mermaid" style="text-align: center;">sequenceDiagram
+autonumber
+participant C as Client
+participant API as REST API
+participant R as Redis
+participant WS as WS 서버
+C->>API: POST /rooms/:id/join { nick }
+API->>R: 저장 (token → { roomId, nick })
+API-->>C: { token }
+C->>WS: GET /ws/play?token=... (Upgrade)
+WS->>R: token 조회
+R-->>WS: { roomId, nick }
+WS-->>C: 연결 수립 (ws.user 바인딩)
+&lt;/pre>
+&lt;p>연결 전에 “게스트 입장” 같은 API 단계를 두는 것이 일반적입니다.&lt;/p>
+&lt;p>클라이언트가 먼저 API를 호출하면 서버는 토큰을 발급하고, 클라이언트는 WS 연결 시 쿼리 파라미터나, &lt;code>Sec-WebSocket-Protocol&lt;/code>로 전달합니다. 서버는 이를 검증해 사용자 정보를 연결에 부착합니다.&lt;/p>
+&lt;p>JWT를 사용하는 경우에는 서버 저장소 조회가 필요 없지만, 만료 관리와 강제 무효화 설계는 별도로 고려해야 합니다.&lt;/p>
+&lt;p>위 방법도 여러 문제들을 먼저 고려해야 합니다.&lt;/p>
+&lt;ul>
+&lt;li>JWT: 만료·갱신·강제무효화
+&lt;ul>
+&lt;li>JWT는 stateless이므로 리프레시 토큰이나 블랙리스트 등 만료/무효화 전략이 필요합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>JWT: 전달 경로 제약
+&lt;ul>
+&lt;li>브라우저의 업그레이드 요청에서 Authorization 헤더를 자동으로 보내지 않으므로 Sec-WebSocket-Protocol이나 쿼리 파라미터 사용을 고려해야 합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Opaque 토큰: 저장소 의존성
+&lt;ul>
+&lt;li>Redis 등 중앙 저장소가 장애를 겪으면 인증/접속 흐름이 영향을 받습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>토큰 관리 복잡성
+&lt;ul>
+&lt;li>TTL 설계, 연장(heartbeat), 동시 접속 제어 등 정책을 잘 설계해야 합니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>운영·모니터링 비용
+&lt;ul>
+&lt;li>발급/사용/회수 로그, 이상행동 탐지, 토큰 재발급 로직의 모니터링 필요할 수 있습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="회고">회고&lt;/h2>
+&lt;p>문제의 원인은 &lt;strong>WS 경로가 Express 미들웨어 체인을 통과하지 않는다&lt;/strong>는 구조에 있었습니다.&lt;/p>
+&lt;p>해결은 Nest 기본 업그레이드 흐름 앞단에 &lt;code>express-session&lt;/code>을 실행해 WS에 세션을 붙여 REST와 WS가 동일한 세션 컨텍스트를 공유했습니다.&lt;/p>
+&lt;p>다만 당시 프로젝트 상황에서는 빠른 기능 구현과 안정적인 데모가 더 중요했기 때문에, 구조를 크게 바꾸기보다는 WsAdapter를 감싸는 방식으로 해결했습니다.&lt;/p>
+&lt;p>이후 장기적으로는 &lt;strong>Socket.IO 전환&lt;/strong>이나 &lt;strong>JWT/WS 전용 토큰 방식&lt;/strong>으로 구조를 단순화하는 것도 충분히 고려할 수 있습니다.&lt;/p>
+&lt;p>결국 중요한 것은 서비스 요구와 운영 조건에 맞는 선택을 하는 것입니다.&lt;/p></description></item></channel></rss>

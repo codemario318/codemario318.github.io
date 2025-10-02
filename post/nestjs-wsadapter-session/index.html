@@ -1,0 +1,315 @@
+<!doctype html><html lang=ko dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="WS에서도 Express 세션을 활용하기 위한 구조 개선 기록"><title>NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기</title><link rel=canonical href=https://codemario318.github.io/post/nestjs-wsadapter-session/><link rel=stylesheet href=/scss/style.min.cbce94e2760d14d60414e59d5a36ab2819232375817e010dbe7be2234b67da1b.css><meta property="og:title" content="NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기"><meta property="og:description" content="WS에서도 Express 세션을 활용하기 위한 구조 개선 기록"><meta property="og:url" content="https://codemario318.github.io/post/nestjs-wsadapter-session/"><meta property="og:site_name" content="Mario Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="NestJS"><meta property="article:tag" content="WebSocket"><meta property="article:tag" content="express-session"><meta property="article:tag" content="Adapter"><meta property="article:tag" content="Backend"><meta property="article:published_time" content="2025-09-24T12:00:00+09:00"><meta property="article:modified_time" content="2025-09-24T12:00:00+09:00"><meta property="og:image" content="https://codemario318.github.io/post/nestjs-wsadapter-session/cover.png"><meta name=twitter:title content="NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기"><meta name=twitter:description content="WS에서도 Express 세션을 활용하기 위한 구조 개선 기록"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://codemario318.github.io/post/nestjs-wsadapter-session/cover.png"><script async src="https://www.googletagmanager.com/gtag/js?id=G-K99591YLGK"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-K99591YLGK",{anonymize_ip:!1})}</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3183752545292673" crossorigin=anonymous></script><meta name=naver-site-verification content="2315bde85c86f66092140cc465c340a2170f3187"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu760fd15c5fbb2f30cf0868dc4a5dc41a_14271_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>Mario Blog</a></h1><h2 class=site-description></h2></div></header><ol class=social-menu><li><a href=https://github.com/codemario318 target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><ul class="menu sub-menu"><li><a href=/categories/backend/><span>Backend</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/boostcamp/><span>부스트캠프</span>
+<span class=content-count>11</span></a></li><li><a href=/categories/cleancode/><span>Clean Code</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/common/><span>Common</span>
+<span class=content-count>80</span></a></li><li><a href=/categories/data/><span>Data</span>
+<span class=content-count>3</span></a></li><li><a href=/categories/db/><span>DB</span>
+<span class=content-count>2</span></a></li><li><a href=/categories/frontend/><span>Frontend</span>
+<span class=content-count>10</span></a></li><li><a href=/categories/golang/><span>GoLang</span>
+<span class=content-count>13</span></a></li><li><a href=/categories/headfirstdesignpatterns/><span>헤드 퍼스트 디자인 패턴</span>
+<span class=content-count>22</span></a></li><li><a href=/categories/infra/><span>Infra</span>
+<span class=content-count>14</span></a></li><li><a href=/categories/nest/><span>Nest</span>
+<span class=content-count>2</span></a></li><li><a href=/categories/network/><span>네트워크</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/node/><span>Node</span>
+<span class=content-count>6</span></a></li><li><a href=/categories/others/><span>Others</span>
+<span class=content-count>4</span></a></li><li><a href=/categories/problemsolving/><span>Problem Solving</span>
+<span class=content-count>1</span></a></li><li><a href=/categories/project/><span>Project</span>
+<span class=content-count>5</span></a></li><li><a href=/categories/realmysql/><span>Real MySQL</span>
+<span class=content-count>53</span></a></li></ul><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>Dark Mode</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#문제-발견>문제 발견</a></li><li><a href=#첫-시도-handleconnection-훅에서-쿠키-직접-파싱>첫 시도: <code>handleConnection</code> 훅에서 쿠키 직접 파싱</a><ol><li><a href=#기존-방식의-한계>기존 방식의 한계</a></li></ol></li><li><a href=#내부-구조-이해>내부 구조 이해</a><ol><li><a href=#rest-요청의-흐름>REST 요청의 흐름</a></li><li><a href=#websocket-요청의-흐름>WebSocket 요청의 흐름</a></li></ol></li><li><a href=#해결-방법-업그레이드-래핑>해결 방법: 업그레이드 래핑</a><ol><li><a href=#해결-방법의-한계>해결 방법의 한계</a></li></ol></li><li><a href=#대안>대안</a><ol><li><a href=#socketio-전환--전역-어댑터로-최소-변경-적용>Socket.IO 전환 — 전역 어댑터로 최소 변경 적용</a></li><li><a href=#세션을-쓰지-않는-방법>세션을 쓰지 않는 방법</a></li></ol></li><li><a href=#회고>회고</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/post/nestjs-wsadapter-session/><img src=/post/nestjs-wsadapter-session/cover_huaf282f98e638ef9375931aa0cee42541_1381723_800x0_resize_box_3.png srcset="/post/nestjs-wsadapter-session/cover_huaf282f98e638ef9375931aa0cee42541_1381723_800x0_resize_box_3.png 800w, /post/nestjs-wsadapter-session/cover_huaf282f98e638ef9375931aa0cee42541_1381723_1600x0_resize_box_3.png 1600w" width=800 height=800 loading=lazy alt="Featured image of post NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기"></a></div><div class=article-details><header class=article-category><a href=/categories/nest/>Nest</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/nestjs-wsadapter-session/>NestJS에서 WsAdapter 커스터마이징으로 세션 공유하기</a></h2><h3 class=article-subtitle>WS에서도 Express 세션을 활용하기 위한 구조 개선 기록</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2025/09/24</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>8 minute read</time></div></footer></div></header><section class=article-content><p>부스트캠프 9기 실시간 퀴즈 게임 프로젝트에서는 로그인 절차 없이 바로 참여할 수 있도록 <strong>세션 기반 사용자 식별</strong>을 적용했습니다.</p><p>사용자가 서비스에 접근하면 초기 API를 반드시 호출하도록 설계했고, 이때 <strong>쿠키에 세션 ID를 담아</strong> 식별에 활용했습니다.</p><p>문제는 REST API에서는 세션이 정상 동작하지만, WebSocket Gateway에서는 동일한 쿠키가 전달되어도 <strong>세션이 보이지 않는</strong> 상황이었습니다.</p><p>이 글은 <strong>왜 그런지</strong>를 구조적으로 짚고, 제가 실제로 적용한 <strong>해결법</strong>과 <strong>대안들</strong>을 정리한 기록입니다.</p><h2 id=문제-발견>문제 발견</h2><ul><li>REST API: <code>req.session</code> 정상</li><li>WebSocket Gateway: 동일 쿠키가 있어도 <code>req.session</code> 접근 불가</li><li>브라우저/서버 로그로 세션 생성 자체는 확인</li></ul><p>즉, 세션이 없는 게 아니라 <strong>WS 경로에서 세션을 읽어올 수 없는 구조</strong>였습니다.</p><h2 id=첫-시도-handleconnection-훅에서-쿠키-직접-파싱>첫 시도: <code>handleConnection</code> 훅에서 쿠키 직접 파싱</h2><p>Nest Gateway 라이프사이클에서 <code>handleConnection(client, ...args)</code>는 <strong>클라이언트 연결 시 1회 호출</strong>되며 구현에 따라 <strong>원본 HTTP 요청</strong>을 인자로 받을 수 있습니다.</p><p>처음에는 이 훅에서 쿠키를 직접 파싱하여 세션 ID를 추출했습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=c1>// gateways/play.gateway.ts (요약)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>WebSocketGateway</span><span class=p>,</span> <span class=nx>OnGatewayConnection</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@nestjs/websockets&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=kr>type</span> <span class=p>{</span> <span class=nx>WebSocket</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;ws&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=kr>type</span> <span class=p>{</span> <span class=nx>IncomingMessage</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;http&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>parse</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;cookie&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/ws/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=kr>implements</span> <span class=nx>OnGatewayConnection</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>async</span> <span class=nx>handleConnection</span><span class=p>(</span><span class=nx>client</span>: <span class=kt>WebSocket</span><span class=p>,</span> <span class=nx>request</span>: <span class=kt>IncomingMessage</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>cookies</span> <span class=o>=</span> <span class=nx>parse</span><span class=p>(</span><span class=nx>request</span><span class=p>.</span><span class=nx>headers</span><span class=p>.</span><span class=nx>cookie</span> <span class=o>??</span> <span class=s1>&#39;&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>client</span><span class=p>[</span><span class=s1>&#39;sessionId&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=nx>cookies</span><span class=p>[</span><span class=s1>&#39;connect.sid&#39;</span><span class=p>].</span><span class=nx>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>).</span><span class=nx>at</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span><span class=o>?</span><span class=p>.</span><span class=nx>slice</span><span class=p>(</span><span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=기존-방식의-한계>기존 방식의 한계</h3><p>간단히 동작했지만 곧 한계가 드러났습니다.</p><ul><li><strong>쿠키 포맷과 서명 정책에 강하게 결합</strong><ul><li><code>connect.sid</code> 값은 보통 <code>s:</code> 접두가 붙은 서명된 문자열입니다. 당시 구현은 단순한 문자열 분해로 임시 ID를 뽑아 쓰는 수준이었기 때문에, 쿠키 이름이나 옵션, 서명 방식이 조금만 바뀌어도 쉽게 깨지는 방식으로 쿠키 포맷과 서명 정책에 강하게 결합되어 있었습니다.</li></ul></li><li><strong>무결성 검증을 우회</strong><ul><li><code>express-session</code>은 서명 검증, 재발급(regenerate), 삭제된 세션 식별 같은 절차를 미들웨어에서 처리하지만, handleConnection에서 직접 파싱하면 이 과정을 건너뛰게 되어, 변조된 쿠키나 이미 폐기된 세션을 걸러낼 근거가 없습니다.</li></ul></li><li><strong>세션 수명 관리</strong><ul><li><code>express-session</code>은 요청마다 touch()로 TTL을 연장하고, 스토어에서 최신 세션 내용을 불러오지만, 이 방식은 스토어 조회를 하지 않기 때문에 WS 쪽 상태가 갱신되지 않고, 게임 도중 세션이 만료될 수 있습니다.</li></ul></li><li><strong>프레임워크 버전 변경에 취약</strong><ul><li>쿠키 포맷이나 미들웨어 내부 정책이 바뀌면, 게이트웨이에 흩어진 파싱 로직을 모두 수정해야 합니다.</li></ul></li></ul><p>요약하면, 이 시도는 ‘세션처럼 보이게’만 한 것이지, 세션이 제공하는 검증·갱신·저장의 보장을 사용하지 못한 상태였습니다.</p><h2 id=내부-구조-이해>내부 구조 이해</h2><p>Nest는 기본적으로 <strong>Express 위에서</strong> 동작합니다. 관건은 REST와 WS의 경로가 <strong>다른 파이프라인</strong>으로 처리된다는 점입니다.</p><h3 id=rest-요청의-흐름>REST 요청의 흐름</h3><p>Express 라우터 체인을 통과하며 <code>cookie-parser</code> → <code>express-session</code> → <code>Controller</code> 순으로 실행됩니다.</p><pre class=mermaid style=text-align:center>graph LR
+    A[클라이언트 요청] --> B[cookie-parser]
+    B --> C[express-session]
+    C --> D[Controller]
+</pre><h3 id=websocket-요청의-흐름>WebSocket 요청의 흐름</h3><p>WS 연결은 HTTP 업그레이드로 시작되며, <strong>Express 라우터 체인을 거치지 않습니다</strong>.</p><pre class=mermaid style=text-align:center>sequenceDiagram
+    participant Client as 브라우저
+    participant Server as 서버(HTTP)
+    Client->>Server: GET /ws (Upgrade: websocket)
+    Server-->>Client: 101 Switching Protocols
+    Note over Client,Server: 이후 WebSocket 프레임으로 통신
+</pre><p>Nest의 <code>WsAdapter</code>는 업그레이드 요청을 받아 <code>ws</code> 서버로 위임합니다.</p><p>이 흐름 때문에 WS는 Express 미들웨어 체인을 통과하지 않아 기본 상태로는 <code>req.session</code>을 사용할 수 없습니다.</p><h2 id=해결-방법-업그레이드-래핑>해결 방법: 업그레이드 래핑</h2><p>핵심 아이디어는 간단합니다.</p><p>Nest 기본 업그레이드 흐름을 그대로 재현하되, 그 앞단에 <code>express-session</code> 미들웨어를 한 번 실행해 <code>req.session</code>을 준비하고, 연결 직후 <code>ws.session = req.session</code>을 추가하는 것입니다.</p><p>Nest의 WsAdapter에서 http 서버가 upgrade 요청이 발생했을 때 WS 서버로 위임해주는 과정은 <code>ensureHttpServerExists</code> 메서드에서 처리됩니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>WsAdapter</span> <span class=kr>extends</span> <span class=nx>AbstractWsAdapter</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl>  <span class=kr>protected</span> <span class=nx>ensureHttpServerExists</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>port</span>: <span class=kt>number</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>httpServer</span> <span class=o>=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>createServer</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>httpServersRegistry</span><span class=p>.</span><span class=nx>has</span><span class=p>(</span><span class=nx>port</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>httpServersRegistry</span><span class=p>.</span><span class=kr>set</span><span class=p>(</span><span class=nx>port</span><span class=p>,</span> <span class=nx>httpServer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>httpServer</span><span class=p>.</span><span class=nx>on</span><span class=p>(</span><span class=s1>&#39;upgrade&#39;</span><span class=p>,</span> <span class=p>(</span><span class=nx>request</span><span class=p>,</span> <span class=nx>socket</span><span class=p>,</span> <span class=nx>head</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>baseUrl</span> <span class=o>=</span> <span class=s1>&#39;ws://&#39;</span> <span class=o>+</span> <span class=nx>request</span><span class=p>.</span><span class=nx>headers</span><span class=p>.</span><span class=nx>host</span> <span class=o>+</span> <span class=s1>&#39;/&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>pathname</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>URL</span><span class=p>(</span><span class=nx>request</span><span class=p>.</span><span class=nx>url</span><span class=o>!</span><span class=p>,</span> <span class=nx>baseUrl</span><span class=p>).</span><span class=nx>pathname</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>wsServersCollection</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>wsServersRegistry</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>port</span><span class=p>)</span><span class=o>!</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>let</span> <span class=nx>isRequestDelegated</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kr>const</span> <span class=nx>wsServer</span> <span class=k>of</span> <span class=nx>wsServersCollection</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=k>if</span> <span class=p>(</span><span class=nx>pathname</span> <span class=o>===</span> <span class=nx>wsServer</span><span class=p>.</span><span class=nx>path</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>wsServer</span><span class=p>.</span><span class=nx>handleUpgrade</span><span class=p>(</span><span class=nx>request</span><span class=p>,</span> <span class=nx>socket</span><span class=p>,</span> <span class=nx>head</span><span class=p>,</span> <span class=p>(</span><span class=nx>ws</span>: <span class=kt>unknown</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>              <span class=nx>wsServer</span><span class=p>.</span><span class=nx>emit</span><span class=p>(</span><span class=s1>&#39;connection&#39;</span><span class=p>,</span> <span class=nx>ws</span><span class=p>,</span> <span class=nx>request</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>});</span>
+</span></span><span class=line><span class=cl>            <span class=nx>isRequestDelegated</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>isRequestDelegated</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>socket</span><span class=p>.</span><span class=nx>destroy</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>socket</span><span class=p>.</span><span class=nx>end</span><span class=p>(</span><span class=s1>&#39;HTTP/1.1 400\r\n&#39;</span> <span class=o>+</span> <span class=nx>err</span><span class=p>.</span><span class=nx>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>httpServer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* 생략 */</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>http 서버에 <code>upgrade</code> 이벤트를 등록하는 부분 <code>httpServer.on('upgrade', (request, socket, head) => {})</code>에서 넘겨주는 핸들러를 그대로 활용하여 세션만 붙이는 방식으로 기존 처리는 유지하면서 세션에 접근할 수 있도록 했습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=c1>// session-ws.adapter.ts (요약)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>export</span> <span class=kr>class</span> <span class=nx>SessionWsAdapter</span> <span class=kr>extends</span> <span class=nx>WsAdapter</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>app</span>: <span class=kt>NestApplication</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>sessionMiddleware</span>: <span class=kt>RequestHandler</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>super</span><span class=p>(</span><span class=nx>app</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>create</span><span class=p>(</span><span class=nx>port</span>: <span class=kt>number</span><span class=p>,</span> <span class=nx>options?</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>httpServer</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>app</span><span class=p>.</span><span class=nx>getHttpServer</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>wsServer</span> <span class=o>=</span> <span class=kr>super</span><span class=p>.</span><span class=nx>create</span><span class=p>(</span><span class=nx>port</span><span class=p>,</span> <span class=nx>options</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>httpServer</span><span class=p>.</span><span class=nx>removeAllListeners</span><span class=p>(</span><span class=s1>&#39;upgrade&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>httpServer</span><span class=p>.</span><span class=nx>on</span><span class=p>(</span><span class=s1>&#39;upgrade&#39;</span><span class=p>,</span> <span class=p>(</span><span class=nx>req</span><span class=p>,</span> <span class=nx>socket</span><span class=p>,</span> <span class=nx>head</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=p>.</span><span class=nx>sessionMiddleware</span><span class=p>(</span><span class=nx>req</span><span class=p>,</span> <span class=p>{}</span> <span class=kr>as</span> <span class=kt>any</span><span class=p>,</span> <span class=p>()</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>pathname</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>URL</span><span class=p>(</span><span class=nx>req</span><span class=p>.</span><span class=nx>url</span><span class=o>!</span><span class=p>,</span> <span class=s1>&#39;ws://&#39;</span> <span class=o>+</span> <span class=nx>req</span><span class=p>.</span><span class=nx>headers</span><span class=p>.</span><span class=nx>host</span> <span class=o>+</span> <span class=s1>&#39;/&#39;</span><span class=p>).</span><span class=nx>pathname</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>wsServers</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>wsServersRegistry</span><span class=p>.</span><span class=kr>get</span><span class=p>(</span><span class=nx>port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kr>const</span> <span class=nx>s</span> <span class=k>of</span> <span class=nx>wsServers</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=k>if</span> <span class=p>(</span><span class=nx>pathname</span> <span class=o>===</span> <span class=nx>s</span><span class=p>.</span><span class=nx>path</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>s</span><span class=p>.</span><span class=nx>handleUpgrade</span><span class=p>(</span><span class=nx>req</span><span class=p>,</span> <span class=nx>socket</span><span class=p>,</span> <span class=nx>head</span><span class=p>,</span> <span class=p>(</span><span class=nx>ws</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>              <span class=p>(</span><span class=nx>ws</span> <span class=kr>as</span> <span class=kt>any</span><span class=p>).</span><span class=nx>session</span> <span class=o>=</span> <span class=p>(</span><span class=nx>req</span> <span class=kr>as</span> <span class=kt>any</span><span class=p>).</span><span class=nx>session</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>              <span class=nx>s</span><span class=p>.</span><span class=nx>emit</span><span class=p>(</span><span class=s1>&#39;connection&#39;</span><span class=p>,</span> <span class=nx>ws</span><span class=p>,</span> <span class=nx>req</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>});</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>socket</span><span class=p>.</span><span class=nx>destroy</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>      <span class=p>});</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>wsServer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>create 메서드를 다시 구현하여 기존 처리를 그대로 수행한 후, upgrade 이벤트 핸들러를 세션 미들웨어로 감싸 세션에 직접 접근할 수 있도록 했습니다.</p><p>이러한 처리를 통해 게이트웨이는 아무 수정 없이 세션을 그대로 사용할 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=c1>// play.gateway.ts
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/ws/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>@SubscribeMessage</span><span class=p>(</span><span class=s1>&#39;start&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>handleStart</span><span class=p>(</span><span class=kd>@ConnectedSocket</span><span class=p>()</span> <span class=nx>client</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>sid</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>.</span><span class=nx>id</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>nickname</span> <span class=o>=</span> <span class=nx>client</span><span class=p>.</span><span class=nx>session</span><span class=p>.</span><span class=nx>nick</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 게임 로직...
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=해결-방법의-한계>해결 방법의 한계</h3><p>이 방식은 동작이 분명하고 기존 코드를 거의 그대로 재사용할 수 있다는 장점이 있지만, 동시에 몇 가지 한계가 존재합니다.</p><ul><li><strong>프레임워크 내부 변경에 취약</strong><ul><li><code>ensureHttpServerExists</code> 내부 흐름을 긁어와 쓰는 구조라 Nest나 ws/http 버전 업그레이드 시 동작이 달라질 수 있습니다.</li></ul></li><li><strong>세션 TTL 관리</strong><ul><li>업그레이드 시점에만 세션을 붙이므로 TTL 갱신(touch)이 자동으로 되지 않아 장시간 연결에서는 세션 만료 문제가 발생할 수 있습니다.</li></ul></li><li><strong>스케일 아웃 고려</strong><ul><li>사용자 증가로 멀티 노드 환경이 필요하다면, 현재 구현체를 그대로 활용하거나 변경하여 사용하는 방식은 매우 효과적이지 않을 것으로 예상됩니다.</li></ul></li></ul><h2 id=대안>대안</h2><p>선택한 방법 외에도 대안으로 선택될 수 있는 여러 옵션이 있었습니다.</p><h3 id=socketio-전환--전역-어댑터로-최소-변경-적용>Socket.IO 전환 — 전역 어댑터로 최소 변경 적용</h3><p>Socket.IO를 사용하면 위와 동일한 과정을 단순하게 처리할 수 있습니다.</p><p>게이트웨이마다 설정을 반복하지 않고, 전역 IoAdapter에서 한 번만 <code>express-session</code> 미들웨어를 연결하면 프로젝트 전반에 일관되게 적용할 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=c1>// session-io.adapter.ts
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>export</span> <span class=kr>class</span> <span class=nx>SessionIoAdapter</span> <span class=kr>extends</span> <span class=nx>IoAdapter</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>constructor</span><span class=p>(</span><span class=nx>app</span>: <span class=kt>any</span><span class=p>,</span> <span class=kr>private</span> <span class=kr>readonly</span> <span class=nx>sessionMiddleware</span>: <span class=kt>RequestHandler</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>super</span><span class=p>(</span><span class=nx>app</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>override</span> <span class=nx>create</span><span class=p>(</span><span class=nx>port</span>: <span class=kt>number</span><span class=p>,</span> <span class=nx>options?</span>: <span class=kt>any</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>io</span> <span class=o>=</span> <span class=kr>super</span><span class=p>.</span><span class=nx>create</span><span class=p>(</span><span class=nx>port</span><span class=p>,</span> <span class=nx>options</span><span class=p>)</span> <span class=kr>as</span> <span class=nx>IOServer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>io</span><span class=p>.</span><span class=nx>use</span><span class=p>((</span><span class=nx>socket</span><span class=p>,</span> <span class=nx>next</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=k>this</span><span class=p>.</span><span class=nx>sessionMiddleware</span><span class=p>(</span><span class=nx>socket</span><span class=p>.</span><span class=nx>request</span> <span class=kr>as</span> <span class=kt>any</span><span class=p>,</span> <span class=p>{}</span> <span class=kr>as</span> <span class=kt>any</span><span class=p>,</span> <span class=nx>next</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>io</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// main.ts
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>app</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>NestFactory</span><span class=p>.</span><span class=nx>create</span><span class=p>(</span><span class=nx>AppModule</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>app</span><span class=p>.</span><span class=nx>use</span><span class=p>(</span><span class=nx>cookieParser</span><span class=p>(</span><span class=nx>process</span><span class=p>.</span><span class=nx>env</span><span class=p>.</span><span class=nx>COOKIE_SECRET</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>sessionMiddleware</span> <span class=o>=</span> <span class=nx>session</span><span class=p>({</span> <span class=cm>/* 기존 세션 설정 */</span><span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=nx>app</span><span class=p>.</span><span class=nx>use</span><span class=p>(</span><span class=nx>sessionMiddleware</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>app</span><span class=p>.</span><span class=nx>useWebSocketAdapter</span><span class=p>(</span><span class=k>new</span> <span class=nx>SessionIoAdapter</span><span class=p>(</span><span class=nx>app</span><span class=p>,</span> <span class=nx>sessionMiddleware</span><span class=p>));</span>
+</span></span></code></pre></td></tr></table></div></div><p>위와 같은 처리를 통해 Nest의 기본 처리에 변경 없이 문제를 해결할 수 있고, 마찬가지로 게이트웨이에서는 추가 코드 없이 <code>socket.request.session</code>을 그대로 사용할 수 있습니다.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=c1>// play.gateway.ts
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>@WebSocketGateway</span><span class=p>({</span> <span class=nx>path</span><span class=o>:</span> <span class=s1>&#39;/ws/play&#39;</span> <span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>class</span> <span class=nx>PlayGateway</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>@SubscribeMessage</span><span class=p>(</span><span class=s1>&#39;start&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>handleStart</span><span class=p>(</span><span class=kd>@ConnectedSocket</span><span class=p>()</span> <span class=nx>socket</span>: <span class=kt>Socket</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>sid</span> <span class=o>=</span> <span class=nx>socket</span><span class=p>.</span><span class=nx>request</span><span class=p>.</span><span class=nx>session</span><span class=o>?</span><span class=p>.</span><span class=nx>id</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>const</span> <span class=nx>nick</span> <span class=o>=</span> <span class=nx>socket</span><span class=p>.</span><span class=nx>request</span><span class=p>.</span><span class=nx>session</span><span class=o>?</span><span class=p>.</span><span class=nx>nick</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 게임 로직...
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>마찬가지로 이 방법도 여러 한계와 고려사항을 검토해야 합니다.</p><ul><li>성능 오버헤드<ul><li>Socket.IO는 ws보다 추상화 레이어가 있어 초고성능이 필요한 경우 오버헤드가 발생할 수 있습니다.</li></ul></li><li>의존성 증가/리팩터링 비용<ul><li>Socket.IO 고유의 API에 종속되므로 기존 ws 코드 전환 시 비용이 발생합니다.</li></ul></li><li>스케일링 복잡성<ul><li>멀티 노드 환경에서 Redis adapter 등 추가 설정이 필요합니다.</li></ul></li><li>행동 차이<ul><li>Socket.IO의 핸드셰이크/재연결/메시지 처리 방식이 ws와 달라 클라이언트 호환성 테스트가 필요합니다.</li></ul></li></ul><h3 id=세션을-쓰지-않는-방법>세션을 쓰지 않는 방법</h3><p>세션을 끌고 오지 않아도 사용자를 식별할 수 있습니다.</p><p>서비스에서 쿠키와 세션을 활용한 이유는 어떠한 사용자라도 고유하게 사용자를 식별할 수 있는 수단이 필요했던 것 뿐이고, express-session을 통해 이미 구현된 기능을 통해 직접 구현을 최소화 하는 것을 원했기 때문입니다.</p><p>결과적으로 서버가 고유한 값을 발급하고, 클라이언트가 그 값을 명시적으로 전달하도록 하면 어떠한 방법이든 활용할 수 있으며, 대표적으로 JWT, Opaque 토큰과 같은 방법들을 고려해볼 수 있습니다.</p><p>JWT는 서명 검증만으로 식별이 가능하고, Opaque 토큰(WS 전용 토큰)은 서버 저장소에 <code>token → 사용자 정보</code>를 저장해두었다가 조회하는 방식으로 처리합니다.</p><pre class=mermaid style=text-align:center>sequenceDiagram
+    autonumber
+    participant C as Client
+    participant API as REST API
+    participant R as Redis
+    participant WS as WS 서버
+
+    C->>API: POST /rooms/:id/join { nick }
+    API->>R: 저장 (token → { roomId, nick })
+    API-->>C: { token }
+
+    C->>WS: GET /ws/play?token=... (Upgrade)
+    WS->>R: token 조회
+    R-->>WS: { roomId, nick }
+    WS-->>C: 연결 수립 (ws.user 바인딩)
+</pre><p>연결 전에 “게스트 입장” 같은 API 단계를 두는 것이 일반적입니다.</p><p>클라이언트가 먼저 API를 호출하면 서버는 토큰을 발급하고, 클라이언트는 WS 연결 시 쿼리 파라미터나, <code>Sec-WebSocket-Protocol</code>로 전달합니다. 서버는 이를 검증해 사용자 정보를 연결에 부착합니다.</p><p>JWT를 사용하는 경우에는 서버 저장소 조회가 필요 없지만, 만료 관리와 강제 무효화 설계는 별도로 고려해야 합니다.</p><p>위 방법도 여러 문제들을 먼저 고려해야 합니다.</p><ul><li>JWT: 만료·갱신·강제무효화<ul><li>JWT는 stateless이므로 리프레시 토큰이나 블랙리스트 등 만료/무효화 전략이 필요합니다.</li></ul></li><li>JWT: 전달 경로 제약<ul><li>브라우저의 업그레이드 요청에서 Authorization 헤더를 자동으로 보내지 않으므로 Sec-WebSocket-Protocol이나 쿼리 파라미터 사용을 고려해야 합니다.</li></ul></li><li>Opaque 토큰: 저장소 의존성<ul><li>Redis 등 중앙 저장소가 장애를 겪으면 인증/접속 흐름이 영향을 받습니다.</li></ul></li><li>토큰 관리 복잡성<ul><li>TTL 설계, 연장(heartbeat), 동시 접속 제어 등 정책을 잘 설계해야 합니다.</li></ul></li><li>운영·모니터링 비용<ul><li>발급/사용/회수 로그, 이상행동 탐지, 토큰 재발급 로직의 모니터링 필요할 수 있습니다.</li></ul></li></ul><h2 id=회고>회고</h2><p>문제의 원인은 <strong>WS 경로가 Express 미들웨어 체인을 통과하지 않는다</strong>는 구조에 있었습니다.</p><p>해결은 Nest 기본 업그레이드 흐름 앞단에 <code>express-session</code>을 실행해 WS에 세션을 붙여 REST와 WS가 동일한 세션 컨텍스트를 공유했습니다.</p><p>다만 당시 프로젝트 상황에서는 빠른 기능 구현과 안정적인 데모가 더 중요했기 때문에, 구조를 크게 바꾸기보다는 WsAdapter를 감싸는 방식으로 해결했습니다.</p><p>이후 장기적으로는 <strong>Socket.IO 전환</strong>이나 <strong>JWT/WS 전용 토큰 방식</strong>으로 구조를 단순화하는 것도 충분히 고려할 수 있습니다.</p><p>결국 중요한 것은 서비스 요구와 운영 조건에 맞는 선택을 하는 것입니다.</p></section><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script><footer class=article-footer><section class=article-tags><a href=/tags/nestjs/>NestJS</a>
+<a href=/tags/websocket/>Websocket</a>
+<a href=/tags/express-session/>express-session</a>
+<a href=/tags/adapter/>Adapter</a>
+<a href=/tags/backend/>Backend</a></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity="sha256-J+iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s=" crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity="sha256-InsNdER1b2xUewP+pKCUJpkhiqwHgqiPXDlIk7GzBu4=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.querySelector(`.article-content`),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><div class="article-list--compact links"><article><a href=https://docs.nestjs.com/websockets/gateways target=_blank rel=noopener><div class=article-details><h2 class=article-title>NestJS WebSocket 공식 문서</h2><footer class=article-time>https://docs.nestjs.com/websockets/gateways</footer></div></a></article><article><a href=https://docs.nestjs.com/websockets/adapter target=_blank rel=noopener><div class=article-details><h2 class=article-title>NestJS Platform Adapters</h2><footer class=article-time>https://docs.nestjs.com/websockets/adapter</footer></div></a></article><article><a href=https://github.com/expressjs/session target=_blank rel=noopener><div class=article-details><h2 class=article-title>express-session</h2><footer class=article-time>https://github.com/expressjs/session</footer></div></a></article><article><a href=https://nodejs.org/api/http.html#event-upgrade target=_blank rel=noopener><div class=article-details><h2 class=article-title>Node.js HTTP upgrade 이벤트</h2><footer class=article-time>https://nodejs.org/api/http.html#event-upgrade</footer></div></a></article><article><a href=https://www.rfc-editor.org/rfc/rfc6455 target=_blank rel=noopener><div class=article-details><h2 class=article-title>WebSocket RFC 6455</h2><footer class=article-time>https://www.rfc-editor.org/rfc/rfc6455</footer></div></a></article><article><a href=https://github.com/boostcampwm-2024/web08-BooQuiz/pull/119 target=_blank rel=noopener><div class=article-details><h2 class=article-title>프로젝트 PR</h2><footer class=article-time>https://github.com/boostcampwm-2024/web08-BooQuiz/pull/119</footer></div></a></article></div><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/post/nest/di/><div class=article-image><img src=/post/nest/di/cover.c084731e6a37fe0d3bd7abd9c1b920d5_hu090a5700ed1a918e2464c0afb86f7bb9_17269_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 인터페이스 의존성 주입" data-key=nest/di data-hash="md5-wIRzHmo3/g0716vZwbkg1Q=="></div><div class=article-details><h2 class=article-title>인터페이스 의존성 주입</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=codemario318/codemario318.github.io issue-term=pathname label=Comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Mario Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
